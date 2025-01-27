@@ -16,6 +16,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('action', 'App\Http\Controllers\GuestController@apiAction');
+// Route::get('action', 'App\Http\Controllers\GuestController@apiAction');
 
-Route::post('user', [GuestController::class, 'action']);
+Route::middleware('validate.token')->post('user', [GuestController::class, 'action']);

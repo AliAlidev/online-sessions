@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class GuestController extends Controller
 {
@@ -27,8 +29,7 @@ class GuestController extends Controller
 
     public function action(Request $request)
     {
-        dd(Auth::guard('api')->user());
-
-        return response()->json(['status' => 'error', 'message' => 'No valid token found'], 401);
+        return JWTAuth::authenticate();
+        return User::all();
     }
 }

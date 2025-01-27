@@ -13,6 +13,4 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/landing', 'App\Http\Controllers\GuestController@landing');
-
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::middleware('ensure.token')->get('/landing', 'App\Http\Controllers\GuestController@landing');
