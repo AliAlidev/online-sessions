@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\dashboard\EventController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,3 +15,8 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/landing', 'App\Http\Controllers\GuestController@landing');
+
+Route::controller(EventController::class)->group(function(){
+    Route::get('/', 'index');
+    Route::get('/event/{slug}', 'show');
+});

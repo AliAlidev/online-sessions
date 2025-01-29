@@ -6,7 +6,6 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Tymon\JWTAuth\Facades\JWTAuth;
-use Illuminate\Support\Str;
 
 
 class GuestController extends Controller
@@ -14,7 +13,7 @@ class GuestController extends Controller
 
     public function landing()
     {
-        return view('landing');
+        return view('website/landing');
     }
 
     public function apiAction(Request $request)
