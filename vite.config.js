@@ -8,4 +8,16 @@ export default defineConfig({
             refresh: true,
         }),
     ],
+    build: {
+        outDir: 'public/build',
+        assetsDir: 'assets',
+        sourcemap: false,
+        minify: 'terser'
+    },
+    server: {
+        cors: {
+            origin: 'http://online-sessions-app.local',
+            credentials: true
+        },
+    },
 });

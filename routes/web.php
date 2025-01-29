@@ -13,4 +13,4 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('ensure.token')->get('/landing', 'App\Http\Controllers\GuestController@landing');
+Route::get('/landing', 'App\Http\Controllers\GuestController@landing');

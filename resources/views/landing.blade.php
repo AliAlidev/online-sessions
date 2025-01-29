@@ -5,23 +5,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Landing Page</title>
-    <script src="/js/app.js"></script>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
 <body>
     <h1>Welcome to the Landing Page</h1>
-    <button onclick="callAPI()">Call API</button>
-    <script>
-        function callAPI() {
-            fetch('/api/user', {
-                    method: 'POST',
-                    credentials: 'include' // Important for cookies to be sent
-                })
-                .then(response => response.json())
-                .then(data => console.log(JSON.stringify(data)))
-                .catch(error => console.error('Error:', error));
-        }
-    </script>
+    <input type="hidden" id="auth-token-url" value="{{ route('get_auth_token') }}">
+    <button id="call-api-button">Call API</button>
+    <script src="{{ asset('sha256.min.js') }}"></script>
+
 </body>
 
 </html>

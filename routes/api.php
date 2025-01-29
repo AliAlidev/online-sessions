@@ -18,4 +18,5 @@ use Illuminate\Support\Facades\Route;
 
 // Route::get('action', 'App\Http\Controllers\GuestController@apiAction');
 
-Route::middleware('validate.token')->post('user', [GuestController::class, 'action']);
+Route::middleware('auth:api')->post('user', [GuestController::class, 'action']);
+Route::post('auth', [GuestController::class, 'getAuthToken'])->name('get_auth_token');

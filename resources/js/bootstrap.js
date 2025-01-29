@@ -5,9 +5,23 @@
  */
 
 import axios from 'axios';
+import { getUserToken } from './auth';
 window.axios = axios;
-
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+
+async function setupAxios() {
+    axios.defaults.headers.common['Accept'] = 'application/json';
+    axios.defaults.headers.common['Content-Type'] = 'application/json';
+    try {
+        const token = await getUserToken();
+        if (token) {
+            axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+        }
+    } catch (error) {
+        console.error('Error retrieving token:', error);
+    }
+}
+setupAxios();
 
 /**
  * Echo exposes an expressive API for subscribing to channels and listening

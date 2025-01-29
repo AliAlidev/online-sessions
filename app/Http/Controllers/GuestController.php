@@ -4,9 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 use Tymon\JWTAuth\Facades\JWTAuth;
+use Illuminate\Support\Str;
+
 
 class GuestController extends Controller
 {
@@ -29,7 +30,18 @@ class GuestController extends Controller
 
     public function action(Request $request)
     {
-        return JWTAuth::authenticate();
         return User::all();
+    }
+
+    function getAuthToken(Request $request) {
+        $data = $request->all();
+        $guest_id = strtolower($data['fingerprint']);
+        $user = User::firstOrCreate(['email' => $guest_id . '@guest.com'],[
+            'name' => 'Guest_' . $guest_id,
+            'email' => $guest_id . '@guest.com',
+            'password' => bcrypt('guest')
+        ]);
+        $token = JWTAuth::customClaims([])->fromUser($user);
+        return response()->json(['status' => 'success', 'token' => $token]);
     }
 }
