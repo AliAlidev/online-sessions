@@ -749,11 +749,11 @@ progress {
     }
 }
 
-@media(min-width: 1400px) {
+/* @media(min-width: 1400px) {
     .container-xxl,.container-xl,.container-lg,.container-md,.container-sm,.container {
         max-width:1440px
     }
-}
+} */
 
 :root {
     --bs-breakpoint-xs: 0;
@@ -26349,9 +26349,9 @@ li:not(:first-child) .dropdown-item,.dropdown-menu .dropdown-item:not(:first-chi
     inline-size: calc(100% - 1.625rem*2);
     margin-block:1rem 0;padding-block:0;padding-inline:1.5rem}
 
-.layout-navbar.navbar-detached.container-xxl {
+/* .layout-navbar.navbar-detached.container-xxl {
     max-inline-size: calc(1440px - 1.625rem*2)
-}
+} */
 
 .layout-navbar-fixed .layout-navbar.navbar-detached {
     inline-size: calc(100% - 1.625rem*2 - 16.25rem)

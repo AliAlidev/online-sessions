@@ -1,7 +1,6 @@
 <!doctype html>
 
-<html lang="en" class="light-style layout-menu-fixed layout-compact" dir="ltr" data-theme="theme-default"
-    data-assets-path="../assets/" data-template="vertical-menu-template-free" data-style="light">
+<html lang="en" class="light-style layout-menu-fixed layout-compact" dir="ltr"  data-style="light">
 
 <head>
     <meta charset="utf-8" />
@@ -10,9 +9,10 @@
 
     <title>Online Session Reservations</title>
     <meta name="description" content="" />
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
     @include('layouts.styles')
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
-
 </head>
 
 <body>
