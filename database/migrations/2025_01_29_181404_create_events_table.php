@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('events', function (Blueprint $table) {
             $table->id();
             $table->string('event_name');
-            $table->string('event_type');  // ['Wedding', 'Engagement', 'Birthday', 'Graduation', 'Conference']
+            $table->unsignedBigInteger('event_type_id')->nullable();
             $table->unsignedBigInteger('client_id')->nullable();
             $table->string('customer');
             $table->string('venue')->nullable();
@@ -32,6 +32,7 @@ return new class extends Migration
 
             // Foreign key constraint for client_id
             $table->foreign('client_id')->references('id')->on('clients')->onDelete('set null');
+            $table->foreign('event_type_id')->references('id')->on('event_types')->onDelete('set null');
         });
     }
 

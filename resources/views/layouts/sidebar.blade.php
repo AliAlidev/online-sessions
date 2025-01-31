@@ -61,9 +61,15 @@
             <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="fa-solid fa-business-time" style="font-size: 20px; margin: 0 10px 0 0"></i>
                 <div class="text-truncate" data-i18n="Dashboards">Events</div>
-                <span class="badge rounded-pill bg-danger ms-auto">{{ getEventsCount() }}</span>
+                <span id="sidebar-events-count" class="badge rounded-pill bg-danger ms-auto">{{ getEventsCount() }}</span>
             </a>
             <ul class="menu-sub">
+                <li class="menu-item {{ Route::is('events.types.index') ? 'active': ''}}">
+                    <a href="{{ route('events.types.index') }}"
+                        target="" class="menu-link">
+                        <div class="text-truncate" data-i18n="CRM">Types</div>
+                    </a>
+                </li>
                 <li class="menu-item {{ Route::is('events.create') ? 'active': ''}}">
                     <a href="{{ route('events.create') }}"
                         target="" class="menu-link">

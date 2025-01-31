@@ -2,6 +2,15 @@
 
 @section('styles')
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
+    <style>
+        table>thead>tr>th {
+            text-align: center;
+        }
+
+        table>tbody>tr>td {
+            text-align: center;
+        }
+    </style>
 @endsection
 
 @section('content')
@@ -15,39 +24,18 @@
             </div>
             <div class="card-datatable">
                 <div class="justify-content-between dt-layout-table" style="padding: 20px">
-                    <table id="events-datatable" style="width: 100%;">
+                    <table id="events-datatable" class="table table-responsive table-hover text-nowrap"
+                        style="width: 100%;">
                         <thead>
                             <tr>
-                                <th data-dt-column="0" class="control dt-orderable-none" rowspan="1" colspan="1"
-                                    aria-label=""><span class="dt-column-title"></span><span
-                                        class="dt-column-order"></span></th>
-                                <th data-dt-column="3" rowspan="1" colspan="1"
-                                    class="dt-orderable-asc dt-orderable-desc" aria-label="Name: Activate to sort"
-                                    tabindex="0"><span class="dt-column-title" role="button">Name</span><span
-                                        class="dt-column-order"></span></th>
-                                <th data-dt-column="4" rowspan="1" colspan="1"
-                                    class="dt-orderable-asc dt-orderable-desc" aria-label="Email: Activate to sort"
-                                    tabindex="0"><span class="dt-column-title" role="button">Type</span><span
-                                        class="dt-column-order"></span></th>
-                                <th data-dt-column="5" rowspan="1" colspan="1"
-                                    class="dt-orderable-asc dt-orderable-desc" aria-label="Date: Activate to sort"
-                                    tabindex="0"><span class="dt-column-title" role="button">Customer</span><span
-                                        class="dt-column-order"></span></th>
-                                <th data-dt-column="6" rowspan="1" colspan="1"
-                                    class="dt-orderable-asc dt-orderable-desc" aria-label="Salary: Activate to sort"
-                                    tabindex="0"><span class="dt-column-title" role="button">Start Date</span><span
-                                        class="dt-column-order"></span></th>
-                                <th data-dt-column="7" rowspan="1" colspan="1"
-                                    class="dt-orderable-asc dt-orderable-desc" aria-label="Status: Activate to sort"
-                                    tabindex="0"><span class="dt-column-title" role="button">End Date</span><span
-                                        class="dt-column-order"></span></th>
-                                <th data-dt-column="7" rowspan="1" colspan="1"
-                                    class="dt-orderable-asc dt-orderable-desc" aria-label="Status: Activate to sort"
-                                    tabindex="0"><span class="dt-column-title" role="button">QR Code</span><span
-                                        class="dt-column-order"></span></th>
-                                <th class="d-flex align-items-center dt-orderable-none" data-dt-column="8" rowspan="1"
-                                    colspan="1" aria-label="Actions"><span class="dt-column-title">Actions</span><span
-                                        class="dt-column-order"></span></th>
+                                <th class="control dt-orderable-none">ID</th>
+                                <th class="control dt-orderable-none">Name</th>
+                                <th class="control dt-orderable-none">Type</th>
+                                <th class="control dt-orderable-none">Customer</th>
+                                <th class="control dt-orderable-none">Start Date</th>
+                                <th class="control dt-orderable-none">End Date</th>
+                                <th class="control dt-orderable-none">QR Code</th>
+                                <th class="control dt-orderable-none">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -62,9 +50,13 @@
 @section('scripts')
     <script type="text/javascript" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
     <script>
+        var table;
         $(document).ready(function() {
-            $('#events-datatable').DataTable({
+            table = $('#events-datatable').DataTable({
                 processing: true,
                 serverSide: true,
                 ajax: "{{ route('events.index') }}",
@@ -107,8 +99,65 @@
                         orderable: false,
                         searchable: false
                     }
-                ]
+                ],
+                ordering: false
             });
+
+            $(document).on('click', '.delete-event', function() {
+                var url = $(this).data('url');
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: 'You are about to delete item',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes, delete it!',
+                    cancelButtonText: 'Cancel',
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        deleteItem(url, table);
+                    }
+                });
+            });
+
+            function deleteItem(url, table) {
+                $.ajax({
+                    url: url,
+                    type: 'GET',
+                    success: function(response) {
+                        if (response.success) {
+                            table.draw();
+                            $('#sidebar-events-count').text(response.count);
+                            Swal.fire(
+                                'Deleted!',
+                                'The item has been deleted.',
+                                'success'
+                            );
+                        } else {
+                            Swal.fire(
+                                'Error!',
+                                'There was a problem deleting the item.',
+                                'error'
+                            );
+                        }
+                    },
+                    error: function() {
+                        Swal.fire(
+                            'Error!',
+                            'There was an error with the request.',
+                            'error'
+                        );
+                    }
+                });
+            }
+        });
+    </script>
+
+    <script>
+        $(document).ready(function() {
+            setTimeout(() => {
+                $('.global-alert-section').remove();
+            }, 5000);
         });
     </script>
 @endsection

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\dashboard\EventController;
+use App\Http\Controllers\dashboard\EventTypeController;
 use App\Http\Controllers\landing\LandingPageEventController;
 use Illuminate\Support\Facades\Route;
 
@@ -16,6 +17,14 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/landing', 'App\Http\Controllers\GuestController@landing');
+
+Route::controller(EventTypeController::class)->prefix('events-types')->name('events.types.')->group(function(){
+    Route::get('/index', 'index')->name('index');
+    Route::post('/store', 'store')->name('store');
+    Route::post('/update/{id}', 'update')->name('update');
+    Route::get('/show/{id}', 'show')->name('show');
+    Route::get('/delete/{id}', 'delete')->name('delete');
+});
 
 Route::controller(EventController::class)->prefix('events')->name('events.')->group(function(){
     Route::get('/index', 'index')->name('index');

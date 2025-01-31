@@ -22,16 +22,16 @@ class CreateEventRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'event_name' => 'required|string|max:255',
+            'event_name' => 'required|string|unique:events,event_name',
             'cover_image' => 'required|image|mimes:jpeg,png,jpg,gif,svg,webp',
-            'event_type' => 'required|string|max:255',
+            'event_type' => 'required|string',
             'profile_picture' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp',
             'client_id' => 'required|exists:clients,id',
             'start_date' => 'required|date',
             'end_date' => 'required|date|after_or_equal:start_date',
-            'customer' => 'required|string|max:255',
-            'venue' => 'nullable|string|max:255',
-            'active_duration' => 'nullable|string|max:255',
+            'customer' => 'required|string',
+            'venue' => 'nullable|string',
+            'active_duration' => 'nullable|string',
             'description' => 'nullable|string',
             'event_link' => 'required|url',
             'event_password' => 'nullable|string|min:6',
