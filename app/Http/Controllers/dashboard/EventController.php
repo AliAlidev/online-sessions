@@ -31,10 +31,31 @@ class EventController extends Controller
         return view('dashboard.event.create');
     }
 
-    function store(CreateEventRequest $request) {
-        dd($request->validated());
-       $url = uploadBase64File($request->all()['event_qr_code'], 'event_qr_code');
-        dd($url);
+    function store(CreateEventRequest $request)
+    {
+        $data = $request->validated();
+        $data['cover_image'] = $request->hasFile('cover_image') ? 'storage/'. uploadFile($request->file('cover_image'), 'event_cover_image') : null;
+        $data['profile_picture'] = $request->hasFile('profile_picture') ? 'storage/'. uploadFile($request->file('profile_picture'), 'profile_picture') : null;
+        $data['qr_code']= 'storage/'. uploadBase64File($data['qr_code'], 'event_qr_code');
+        Event::create([
+            'event_name' => $data['event_name'],
+            'cover_image' => $data['cover_image'],
+            'event_type' => $data['event_type'],
+            'profile_picture' => $data['profile_picture'],
+            'client_id' => $data['client_id'],
+            'start_date' => $data['start_date'],
+            'end_date' => $data['end_date'],
+            'customer' => $data['customer'],
+            'venue' => $data['venue'],
+            'active_duration' => $data['active_duration'],
+            'description' => $data['description'],
+            'event_link' => $data['event_link'],
+            'event_password' => $data['event_password'],
+            'welcome_message' => $data['welcome_message'],
+            'qr_code' => $data['qr_code'],
+        ]);
+        session()->flash('success', 'Event has been created successfully');
+        return response()->json(['success' => true, 'url' => route('events.index')]);
     }
 
     function edit($id)
@@ -43,7 +64,7 @@ class EventController extends Controller
         return view('dashboard.event.update', compact('event'))->render();
     }
 
-    function update(Request $request ,$id)
+    function update(Request $request, $id)
     {
         $event = Event::find($id);
         dd($event);

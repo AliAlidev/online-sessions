@@ -20,7 +20,6 @@ return new class extends Migration
             $table->boolean('allow_upload')->default(false);
             $table->boolean('auto_image_approve')->default(false);
             $table->boolean('allow_image_download')->default(false);
-            $table->string('color_palette')->nullable();
             $table->string('theme')->nullable();
             $table->string('accent_color')->nullable();
             $table->string('font')->nullable();

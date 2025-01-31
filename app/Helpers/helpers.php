@@ -26,7 +26,6 @@ if (!function_exists('uploadBase64File')) {
         $fileNameToStore = $path . '/qrcode_' . time() . '.png';
         $uploadedPath = Storage::disk('public')->put($fileNameToStore, $file);
         $uploadedPath = Storage::disk('public')->url($uploadedPath);
-        $fileNameToStore = $path . '/' . basename($uploadedPath);
         return $fileNameToStore;
     }
 }

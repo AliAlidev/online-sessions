@@ -23,9 +23,9 @@ class CreateEventRequest extends FormRequest
     {
         return [
             'event_name' => 'required|string|max:255',
-            'cover_image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'cover_image' => 'required|image|mimes:jpeg,png,jpg,gif,svg,webp',
             'event_type' => 'required|string|max:255',
-            'profile_picture' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'profile_picture' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp',
             'client_id' => 'required|exists:clients,id',
             'start_date' => 'required|date',
             'end_date' => 'required|date|after_or_equal:start_date',
@@ -36,7 +36,7 @@ class CreateEventRequest extends FormRequest
             'event_link' => 'required|url',
             'event_password' => 'nullable|string|min:6',
             'welcome_message' => 'nullable|string',
-            'event_qr_code' => 'required|string',
+            'qr_code' => 'required|string',
             'accent_color' => 'required|string'
         ];
     }

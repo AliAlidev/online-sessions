@@ -17,14 +17,14 @@ return new class extends Migration
             $table->string('event_type');  // ['Wedding', 'Engagement', 'Birthday', 'Graduation', 'Conference']
             $table->unsignedBigInteger('client_id')->nullable();
             $table->string('customer');
-            $table->string('venue');
+            $table->string('venue')->nullable();
             $table->text('description')->nullable();
             $table->text('welcome_message')->nullable();
             $table->string('cover_image')->nullable();
             $table->string('profile_picture')->nullable();
             $table->date('start_date');
             $table->date('end_date');
-            $table->integer('active_duration')->default(0);
+            $table->string('active_duration')->nullable();
             $table->string('event_link');
             $table->string('event_password')->nullable();
             $table->string('qr_code');

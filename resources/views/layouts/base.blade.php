@@ -32,7 +32,7 @@
                 <!-- Content wrapper -->
                 <div class="content-wrapper">
                     <!-- Content -->
-
+                    @include('layouts.partials.alert')
                     @yield('content')
                     <!-- / Content -->
 

@@ -81,6 +81,13 @@
             transform: scale(1.2);
             box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
         }
+
+        #basic-default-password2 {
+            pointer-events: auto;
+            /* Ensure the icon is clickable */
+            z-index: 1;
+            /* Ensure it's above other elements */
+        }
     </style>
 @endsection
 
@@ -110,7 +117,7 @@
                                         <div class="col-md-6">
                                             <label for="cover-image-file" class="form-label">Cover Image</label>
                                             <input class="form-control" type="file" id="cover-image-file"
-                                                name="cover_image">
+                                                name="cover_image" accept="image/jpeg,png,jpg,gif,svg,webp">
                                             <small class="text-body float-start uploaded-file-name"
                                                 style="color: #000; font-style: italic;"></small>
                                             <small class="text-body float-start error-message-div cover_image-error"
@@ -132,8 +139,8 @@
                                         </div>
                                         <div class="col-md-6">
                                             <label for="formFile" class="form-label">Profile Picture</label>
-                                            <input class="form-control" type="file" id="formFile"
-                                                name="profile_picture">
+                                            <input class="form-control" type="file" id="formFile" name="profile_picture"
+                                                accept="image/jpeg,png,jpg,gif,svg,webp">
                                             <small class="text-body float-start uploaded-file-name"
                                                 style="color: #000; font-style: italic;"></small>
                                             <small class="text-body float-start profile_picture-error"
@@ -198,7 +205,7 @@
                                             <label for="exampleFormControlTextarea1"
                                                 class="form-label">Description</label>
                                             <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="description"></textarea>
-                                            <small class="text-body float-start error-message-div active_duration-error"
+                                            <small class="text-body float-start error-message-div Description-error"
                                                 style="color: #ff0000 !important" hidden></small>
                                         </div>
                                         <div class="col md-6">
@@ -222,14 +229,19 @@
                                             <small class="text-body float-start error-message-div welcome_message-error"
                                                 style="color: #ff0000 !important" hidden></small>
                                         </div>
-                                        <div class="col md-6">
+                                        <div class="col-md-6">
                                             <div class="form-password-toggle">
-                                                <label class="form-label" for="basic-default-password32">Password</label>
-                                                <div class="input-group input-group-merge">
-                                                  <input type="text" class="form-control" id="basic-default-password32" placeholder="············" aria-describedby="basic-default-password">
-                                                  <span class="input-group-text cursor-pointer" id="basic-default-password"><i class="bx bx-show"></i></span>
+                                                <label class="form-label" for="basic-default-password12">Password</label>
+                                                <div class="input-group">
+                                                    <input type="password" class="form-control"
+                                                        id="basic-default-password12" placeholder="············"
+                                                        name="event_password">
+                                                    <span id="basic-default-password2"
+                                                        class="input-group-text cursor-pointer">
+                                                        <i class="bx bx-hide"></i> <!-- Ensure this is the eye icon -->
+                                                    </span>
                                                 </div>
-                                              </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -241,7 +253,7 @@
                                     </div>
                                     <div class="row qr-code mt-5">
                                         <div class="col-md-12 d-flex justify-content-center">
-                                            <input type="hidden" name="event_qr_code" id="event_qr_code">
+                                            <input type="hidden" name="qr_code" id="event_qr_code">
                                             <div id="qr-code-section"></div>
                                         </div>
                                     </div>
@@ -302,17 +314,20 @@
                                     <h5>General Settings</h5>
                                     <div class="row mb-6" style="margin: 3px">
                                         <div class="form-check form-switch mb-2">
-                                            <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked">
+                                            <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked"
+                                                name="image_share_guest_book">
                                             <label class="form-check-label" for="flexSwitchCheckChecked">Image Share -
                                                 Guest Upload</label>
                                         </div>
                                         <div class="form-check form-switch mb-2">
-                                            <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked">
+                                            <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked"
+                                                name="image_folders">
                                             <label class="form-check-label" for="flexSwitchCheckChecked">Image
                                                 Folders</label>
                                         </div>
                                         <div class="form-check form-switch mb-2">
-                                            <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked">
+                                            <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked"
+                                                name="video_playlist">
                                             <label class="form-check-label" for="flexSwitchCheckChecked">Video
                                                 Folders</label>
                                         </div>
@@ -322,17 +337,20 @@
                                     <h5>Guest Upload Folder Settings</h5>
                                     <div class="row mb-6" style="margin: 3px">
                                         <div class="form-check form-switch mb-2">
-                                            <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked">
+                                            <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked"
+                                                name="allow_upload">
                                             <label class="form-check-label" for="flexSwitchCheckChecked">Enable
                                                 Upload</label>
                                         </div>
                                         <div class="form-check form-switch mb-2">
-                                            <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked">
+                                            <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked"
+                                                name="auto_image_approve">
                                             <label class="form-check-label" for="flexSwitchCheckChecked">Auto Image
                                                 Approval</label>
                                         </div>
                                         <div class="form-check form-switch mb-2">
-                                            <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked">
+                                            <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked"
+                                                name="allow_image_download">
                                             <label class="form-check-label" for="flexSwitchCheckChecked">Allow Image
                                                 Download</label>
                                         </div>
@@ -437,9 +455,9 @@
                     spinner.show();
                 },
                 success: function(response) {
-
                     spinner.hide();
                     submitBtn.prop('disabled', false);
+                    window.location.href = response.url;
                 },
                 error: function(xhr) {
                     if (xhr.status === 422) {
@@ -612,23 +630,4 @@
             return duration.length > 0 ? duration.join(", ") : "No difference";
         }
     </script>
-
-    {{-- <script>
-        function togglePasswordVisibility() {
-            const passwordInput = document.getElementById('basic-default-password12');
-            const eyeIcon = document.querySelector('#basic-default-password2 i');
-            console.log(passwordInput);
-            console.log(eyeIcon);
-
-            if (passwordInput.type === 'password') {
-                passwordInput.type = 'text';
-                eyeIcon.classList.remove('bx-show');
-                eyeIcon.classList.add('bx-hide');
-            } else {
-                passwordInput.type = 'password';
-                eyeIcon.classList.remove('bx-hide');
-                eyeIcon.classList.add('bx-show');
-            }
-        }
-    </script> --}}
 @endsection
