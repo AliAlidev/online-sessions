@@ -22,11 +22,11 @@ class CreateFolderRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'folder_name' => 'required|string',
-            'folder_type' => 'in:image,video,link',
+            'folder_name' => 'required|string|unique:event_folders,folder_name',
+            'folder_type' => 'required|in:image,video,link',
             'description' => 'nullable|string',
             'folder_thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
-            'folder_link' => 'nullable|url',
+            'folder_link' => 'nullable|url'
         ];
     }
 }

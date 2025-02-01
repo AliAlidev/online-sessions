@@ -30,6 +30,11 @@
                 transform: rotate(360deg);
             }
         }
+
+        .update-role:hover i,
+        .delete-role:hover i {
+            color: white !important;
+        }
     </style>
 @endsection
 

@@ -19,8 +19,8 @@ class RoleController extends Controller
             return DataTables::of($events)
                 ->addIndexColumn()
                 ->addColumn('actions', function ($role) {
-                    return '<a href="#" data-id=' . $role->id . ' class="update-role"><i class="bx bx-edit-alt me-1" style="color:gray"></i></a>
-                            <a href="#" data-url="' . route('roles.delete', $role->id) . '" class="delete-role"><i class="bx bx-trash me-1" style="color:red"></i> </a>';
+                    return '<a href="#" data-id=' . $role->id . ' class="update-role btn btn-icon btn-outline-primary"><i class="bx bx-edit-alt" style="color:gray"></i></a>
+                            <a href="#" data-url="' . route('roles.delete', $role->id) . '" class="delete-role btn btn-icon btn-outline-primary"><i class="bx bx-trash" style="color:red"></i> </a>';
                 })
                 ->rawColumns(['actions'])
                 ->make(true);

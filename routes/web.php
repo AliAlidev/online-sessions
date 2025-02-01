@@ -31,7 +31,7 @@ Route::controller(EventTypeController::class)->prefix('events-types')->name('eve
 
 Route::controller(FolderController::class)->prefix('folders')->name('folders.')->group(function(){
     Route::get('/{event_id}/index', 'index')->name('index');
-    Route::post('/store', 'store')->name('store');
+    Route::post('/{event_id}/store', 'store')->name('store');
     Route::post('/update/{id}', 'update')->name('update');
     Route::get('/show/{id}', 'show')->name('show');
     Route::get('/delete/{id}', 'delete')->name('delete');

@@ -28,109 +28,61 @@
     <div class="container-xxl flex-grow-1 container-p-y">
         <div class="row">
             <div class="col-xl">
-                <form id="createClientForm">
-                    <h5 class="mb-0">{{ __('Create New Client') }}</h5>
-                    <div class="card mb-6">
-                        <div class="card-header">
-                            <h5 class="mb-0">Client Information</h5>
-                        </div>
-                        <div class="card-body">
-                            <div class="row mb-6">
-                                <div class="col-md-6">
-                                    <label for="planner-name" class="form-label">Planner Name</label>
-                                    <input type="text" id="planner-name" class="form-control" name="planner_name"
-                                        placeholder="Enter Planner Name">
-                                    <small class="text-body float-start error-message-div planner_name-error"
-                                        style="color: #ff0000 !important" hidden></small>
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="logo" class="form-label">Logo</label>
-                                    <input type="file" id="logo" class="form-control" name="logo"
-                                        accept="image/jpeg,png,jpg,gif,svg,webp">
-                                    <small class="text-body float-start uploaded-file-name"
-                                        style="color: #000; font-style: italic;"></small>
-                                    <small class="text-body float-start error-message-div logo-error"
-                                        style="color: #ff0000 !important" hidden></small>
-                                </div>
-                            </div>
-                            <div class="row mb-6">
-                                <div class="col-md-6">
-                                    <label for="planner-business-name" class="form-label">Planner Business Name</label>
-                                    <input type="text" id="planner-business-name" class="form-control"
-                                        name="planner_business_name" placeholder="Enter Planner Business Name">
-                                    <small class="text-body float-start error-message-div planner_business_name-error"
-                                        style="color: #ff0000 !important" hidden></small>
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="profile-picture" class="form-label">Profile Picture</label>
-                                    <input type="file" id="profile-picture" class="form-control" name="profile_picture"
-                                        accept="image/jpeg,png,jpg,gif,svg,webp">
-                                    <small class="text-body float-start uploaded-file-name"
-                                        style="color: #000; font-style: italic;"></small>
-                                    <small class="text-body float-start error-message-div profile_picture-error"
-                                        style="color: #ff0000 !important" hidden></small>
-                                </div>
-                            </div>
-                            <div class="row mb-6">
-                                <div class="col-md-6">
-                                    <label for="phone-number" class="form-label">Phone Number</label>
-                                    <input type="tel" id="phone-number" class="form-control" name="phone_number"
-                                        placeholder="Enter Phone Number" value="">
-                                    <small class="text-body float-start error-message-div phone_number-error"
-                                        style="color: #ff0000 !important" hidden></small>
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="contact-button-text" class="form-label">Contact Button Text</label>
-                                    <input type="text" id="contact-button-text" class="form-control"
-                                        name="contact_button_text" placeholder="Enter Contact Button Text">
-                                    <small class="text-body float-start error-message-div contact_button_text-error"
-                                        style="color: #ff0000 !important" hidden></small>
-                                </div>
-                            </div>
-                            <div class="row mb-6">
-                                <div class="col-md-6">
-                                    <label for="email" class="form-label">Email</label>
-                                    <input type="email" id="email" class="form-control" name="email"
-                                        placeholder="Enter Email">
-                                    <small class="text-body float-start error-message-div email-error"
-                                        style="color: #ff0000 !important" hidden></small>
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="contact-link" class="form-label">Contact Button Link</label>
-                                    <input type="url" id="contact-link" class="form-control" name="contact_button_link"
-                                        placeholder="Enter Contact Link" value="">
-                                    <small class="text-body float-start error-message-div contact_button_link-error"
-                                        style="color: #ff0000 !important" hidden></small>
-                                </div>
-                            </div>
-                            <div class="row mb-6">
-                                <div class="col-md-6">
-                                    <label for="exampleFormControlSelect1" class="form-label">Role</label>
-                                    <select class="form-select" id="exampleFormControlSelect1" name="role"
-                                        aria-label="Default select example">
-                                        <option selected disabled>Select Type</option>
-                                        @foreach ($roles as $key => $role)
-                                            <option value="{{ $key }}"> {{ $role }} </option>
-                                        @endforeach
-                                    </select>
-                                    <small class="text-body float-start error-message-div role-error"
-                                        style="color: #ff0000 !important" hidden></small>
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="description" class="form-label">Description</label>
-                                    <textarea id="description" class="form-control" name="description" rows="4" placeholder="Enter Description"></textarea>
-                                    <small class="text-body float-start error-message-div description-error"
-                                        style="color: #ff0000 !important" hidden></small>
-                                </div>
-                            </div>
-                        </div>
+                <form id="createFolderForm">
+                    <h5>Create New Folder</h5>
+
+                    <div class="form-group">
+                        <label for="folderName">Folder Name</label>
+                        <input type="text" id="folderName" class="form-control" name="folder_name" placeholder="Enter text">
+                        <small class="text-body float-start error-message-div folder_name-error" style="color: #ff0000 !important" hidden>
+                            Error message
+                        </small>
                     </div>
-                    <button type="submit" class="btn btn-primary" style="float: right" id="storeButton">Crete Client
-                        <span id="spinner" style="display:none;">
-                            <i class="fa fa-spinner fa-spin"></i>
-                        </span>
-                    </button>
+
+                    <div class="form-group">
+                        <label for="folderType">Folder Type</label>
+                        <select id="folderType" class="form-control" name="folder_type">
+                            <option value="" disabled selected>Select Type</option>
+                            <option value="guest_upload">Guest Upload</option>
+                            <option value="image">Image</option>
+                            <option value="video">Video</option>
+                            <option value="link">Link</option>
+                        </select>
+                        <small class="text-body float-start error-message-div folder_type-error" style="color: #ff0000 !important" hidden>
+                            Error message
+                        </small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="description">Description</label>
+                        <textarea id="description" class="form-control" name="description" placeholder="Enter text"></textarea>
+                        <small class="text-body float-start error-message-div description-error" style="color: #ff0000 !important" hidden>
+                            Error message
+                        </small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="folderThumbnail">Folder Thumbnail</label>
+                        <input type="file" id="folderThumbnail" class="form-control" name="folder_thumbnail" accept="image/*">
+                        <small class="text-body float-start uploaded-file-name" style="color: #000; font-style: italic;">
+                            Uploaded file name
+                        </small>
+                        <small class="text-body float-start error-message-div folder_thumbnail-error" style="color: #ff0000 !important" hidden>
+                            Error message
+                        </small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="folderLink">Folder Link</label>
+                        <input type="url" id="folderLink" class="form-control" name="folder_link" placeholder="Folder Link">
+                        <small class="text-body float-start error-message-div folder_link-error" style="color: #ff0000 !important" hidden>
+                            Error message
+                        </small>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Create Folder</button>
                 </form>
+
             </div>
         </div>
     </div>
@@ -144,7 +96,7 @@
             });
         }
 
-        $('#createClientForm').submit(function(e) {
+        $('#createFolderForm').submit(function(e) {
             e.preventDefault();
             clearErrors();
             var formData = new FormData(this);
@@ -153,7 +105,7 @@
             var spinner = $(submitBtn).find("#spinner");
 
             $.ajax({
-                url: "{{ route('clients.store') }}",
+                url: "{{ route('folders.store', request()->route('event_id')) }}",
                 type: 'POST',
                 processData: false,
                 contentType: false,
