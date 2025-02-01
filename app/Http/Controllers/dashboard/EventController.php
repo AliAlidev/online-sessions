@@ -42,10 +42,10 @@ class EventController extends Controller
                 ->addColumn('actions', function ($event) {
                     return '<a href="' . route('events.edit', $event->id) . '" class="update-event btn btn-icon btn-outline-primary"><i class="bx bx-edit-alt"></i></a>
                             <a href="#" data-url="' . route('events.delete', $event->id) . '" class="delete-event btn btn-icon btn-outline-primary"><i class="bx bx-trash" style="color:red"></i> </a>
-                            <a title="Folders" href="' . route('folders.index' , $event->id) . '" class="btn rounded-pill btn-icon btn-primary"><i class="bx bx-folder" style="color:white"></i> </a>';
+                            <a title="Folders" href="' . route('folders.index', $event->id) . '" class="btn rounded-pill btn-icon btn-primary"><i class="bx bx-folder" style="color:white"></i> </a>';
                 })
                 ->addIndexColumn()
-                ->rawColumns(['qr_code', 'profile_picture','event_link', 'cover_image', 'actions'])
+                ->rawColumns(['qr_code', 'profile_picture', 'event_link', 'cover_image', 'actions'])
                 ->make(true);
         }
         return view('dashboard.event.index');
@@ -159,7 +159,12 @@ class EventController extends Controller
 
     function delete($id)
     {
-        Event::find($id)->delete();
+        $event = Event::find($id);
+        $coverImage = str_replace("storage/", "", $event->cover_image);
+        deleteFile($coverImage);
+        $profilePicture = str_replace("storage/", "", $event->profile_picture);
+        deleteFile($profilePicture);
+        $event->delete();
         $count = Event::count();
         return response()->json(['success' => true, 'count' => $count]);
     }
