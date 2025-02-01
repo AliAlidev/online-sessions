@@ -1,17 +1,17 @@
 <?php
 
-namespace App\Http\Requests\event_types;
+namespace App\Http\Requests\events\folders;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateEventTypeRequest extends FormRequest
+class UpdateFolderRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return true;
+        return false;
     }
 
     /**
@@ -21,10 +21,8 @@ class UpdateEventTypeRequest extends FormRequest
      */
     public function rules(): array
     {
-        $id = request()->get('event_type_id')?? null;
         return [
-            'event_type_id' => 'required|exists:event_types,id',
-            'name' => 'required|unique:event_types,name,' . $id
+            //
         ];
     }
 }

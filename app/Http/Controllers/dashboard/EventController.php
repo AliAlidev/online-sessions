@@ -3,9 +3,15 @@
 namespace App\Http\Controllers\dashboard;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\event_types\UpdateEventTypeRequest;
 use App\Http\Requests\events\CreateEventRequest;
+use App\Http\Requests\events\UpdateEventRequest;
+use App\Models\Client;
 use App\Models\Event;
+use App\Models\EventSetting;
+use App\Models\EventType;
 use Illuminate\Http\Request;
+use Spatie\Permission\Models\Role;
 use Yajra\DataTables\DataTables;
 
 class EventController extends Controller
@@ -13,17 +19,33 @@ class EventController extends Controller
     function index(Request $request)
     {
         if ($request->ajax()) {
-            $events = Event::get();
+            $events = Event::orderBy('created_at', 'desc')->get();
             return DataTables::of($events)
                 ->editColumn('qr_code', function ($row) {
-                    return '<img src="/'.$row->qr_code.'" alt="" width="100px" height="100px">';
+                    return '<img src="/' . $row->qr_code . '" alt="" width="100px" height="100px">';
+                })
+                ->editColumn('profile_picture', function ($row) {
+                    return $row->profile_picture ? '<img src="/' . $row->profile_picture . '" alt="" width="100px" height="100px">' : '';
+                })
+                ->editColumn('cover_image', function ($row) {
+                    return $row->cover_image ? '<img src="/' . $row->cover_image . '" alt="" width="100px" height="100px">' : '';
+                })
+                ->addColumn('event_type', function ($row) {
+                    return $row->type->name;
+                })
+                ->addColumn('event_client', function ($row) {
+                    return $row->client->planner_name;
+                })
+                ->editColumn('event_link', function ($row) {
+                    return '<a target="_blank" class="btn btn-label-linkedin" href="' . $row->event_link . '"> Link </a>';
                 })
                 ->addColumn('actions', function ($event) {
-                    return '<a href="' . route('events.edit', $event->id) . '" class="update-event"><i class="bx bx-edit-alt me-1" style="color:gray"></i></a>
-                            <a href="#" data-url="' . route('events.delete', $event->id) . '" class="delete-event"><i class="bx bx-trash me-1" style="color:red"></i> </a>';
+                    return '<a href="' . route('events.edit', $event->id) . '" class="update-event btn btn-icon btn-outline-primary"><i class="bx bx-edit-alt"></i></a>
+                            <a href="#" data-url="' . route('events.delete', $event->id) . '" class="delete-event btn btn-icon btn-outline-primary"><i class="bx bx-trash" style="color:red"></i> </a>
+                            <a title="Folders" href="' . route('folders.index' , $event->id) . '" class="btn rounded-pill btn-icon btn-primary"><i class="bx bx-folder" style="color:white"></i> </a>';
                 })
                 ->addIndexColumn()
-                ->rawColumns(['qr_code','actions'])
+                ->rawColumns(['qr_code', 'profile_picture','event_link', 'cover_image', 'actions'])
                 ->make(true);
         }
         return view('dashboard.event.index');
@@ -31,7 +53,10 @@ class EventController extends Controller
 
     function create()
     {
-        return view('dashboard.event.create');
+        $types = EventType::pluck('name', 'id');
+        $roles = Role::pluck('name', 'id');
+        $clients = Client::pluck('planner_name', 'id');
+        return view('dashboard.event.create', ['types' => $types, 'roles' => $roles, 'clients' => $clients]);
     }
 
     function store(CreateEventRequest $request)
@@ -40,10 +65,10 @@ class EventController extends Controller
         $data['cover_image'] = $request->hasFile('cover_image') ? 'storage/' . uploadFile($request->file('cover_image'), 'event_cover_image') : null;
         $data['profile_picture'] = $request->hasFile('profile_picture') ? 'storage/' . uploadFile($request->file('profile_picture'), 'profile_picture') : null;
         $data['qr_code'] = 'storage/' . uploadBase64File($data['qr_code'], 'event_qr_code');
-        Event::create([
+        $event = Event::create([
             'event_name' => $data['event_name'],
             'cover_image' => $data['cover_image'],
-            'event_type' => $data['event_type'],
+            'event_type_id' => $data['event_type_id'],
             'profile_picture' => $data['profile_picture'],
             'client_id' => $data['client_id'],
             'start_date' => $data['start_date'],
@@ -57,20 +82,79 @@ class EventController extends Controller
             'welcome_message' => $data['welcome_message'],
             'qr_code' => $data['qr_code'],
         ]);
+        $event->setting()->create([
+            'image_share_guest_book' => isset($data['image_share_guest_book']) && $data['image_share_guest_book'] == 'on' ? 1 : 0,
+            'image_folders' => isset($data['image_folders']) && $data['image_folders'] == 'on' ? 1 : 0,
+            'video_playlist' => isset($data['video_playlist']) && $data['video_playlist'] == 'on' ? 1 : 0,
+            'allow_upload' => isset($data['allow_upload']) && $data['allow_upload'] == 'on' ? 1 : 0,
+            'auto_image_approve' => isset($data['auto_image_approve']) && $data['auto_image_approve'] == 'on' ? 1 : 0,
+            'allow_image_download' => isset($data['allow_image_download']) && $data['allow_image_download'] == 'on' ? 1 : 0,
+            'theme' => isset($data['theme']) ? $data['theme'] : '',
+            'accent_color' => isset($data['accent_color']) ? $data['accent_color'] : '',
+            'font' => isset($data['font']) ? $data['font'] : ''
+        ]);
+        $event->organizers()->createMany($data['organizers']);
         session()->flash('success', 'Event has been created successfully');
         return response()->json(['success' => true, 'url' => route('events.index')]);
     }
 
     function edit($id)
     {
-        $event = Event::find($id);
-        return view('dashboard.event.update', compact('event'))->render();
+        $event = Event::with(['type', 'setting', 'organizers'])->find($id);
+        $types = EventType::pluck('name', 'id');
+        $roles = Role::pluck('name', 'id');
+        $clients = Client::pluck('planner_name', 'id');
+        return view('dashboard.event.update', ['event' => $event, 'types' => $types, 'roles' => $roles, 'clients' => $clients]);
     }
 
-    function update(Request $request, $id)
+    function update(UpdateEventRequest $request, $id)
     {
         $event = Event::find($id);
-        dd($event);
+        $data = $request->validated();
+        $data['cover_image'] = $request->hasFile('cover_image') ? 'storage/' . uploadFile($request->file('cover_image'), 'event_cover_image') :  $event->event_cover_image;
+        $data['profile_picture'] = $request->hasFile('profile_picture') ? 'storage/' . uploadFile($request->file('profile_picture'), 'profile_picture') :  $event->profile_picture;
+        $data['qr_code'] = 'storage/' . uploadBase64File($data['qr_code'], 'event_qr_code');
+        $event->setting()->update([
+            'image_share_guest_book' => isset($data['image_share_guest_book']) && $data['image_share_guest_book'] == 'on' ? 1 : 0,
+            'image_folders' => isset($data['image_folders']) && $data['image_folders'] == 'on' ? 1 : 0,
+            'video_playlist' => isset($data['video_playlist']) && $data['video_playlist'] == 'on' ? 1 : 0,
+            'allow_upload' => isset($data['allow_upload']) && $data['allow_upload'] == 'on' ? 1 : 0,
+            'auto_image_approve' => isset($data['auto_image_approve']) && $data['auto_image_approve'] == 'on' ? 1 : 0,
+            'allow_image_download' => isset($data['allow_image_download']) && $data['allow_image_download'] == 'on' ? 1 : 0,
+            'theme' => isset($data['theme']) ? $data['theme'] : '',
+            'accent_color' => isset($data['accent_color']) ? $data['accent_color'] : '',
+            'font' => isset($data['font']) ? $data['font'] : ''
+        ]);
+        $event->update([
+            'event_name' => $data['event_name'],
+            'cover_image' => $data['cover_image'],
+            'event_type_id' => $data['event_type_id'],
+            'profile_picture' => $data['profile_picture'],
+            'client_id' => $data['client_id'],
+            'start_date' => $data['start_date'],
+            'end_date' => $data['end_date'],
+            'customer' => $data['customer'],
+            'venue' => $data['venue'],
+            'active_duration' => $data['active_duration'],
+            'description' => $data['description'],
+            'event_link' => $data['event_link'],
+            'event_password' => $data['event_password'],
+            'welcome_message' => $data['welcome_message'],
+            'qr_code' => $data['qr_code'],
+        ]);
+        $event->organizers()->whereNotIn('id', array_column($data['organizers'], 'organizer_model_id'))->delete();
+        array_map(function ($organizer) use ($event) {
+            if (isset($organizer['organizer_model_id'])) {
+                $rowId = $organizer['organizer_model_id'];
+                unset($organizer['organizer_model_id']);
+                $event->organizers()->find($rowId)->update($organizer);
+            } else {
+                unset($organizer['organizer_model_id']);
+                $event->organizers()->create($organizer);
+            }
+        }, $data['organizers']);
+        session()->flash('success', 'Event has been updated successfully');
+        return response()->json(['success' => true, 'url' => route('events.index')]);
     }
 
     function delete($id)

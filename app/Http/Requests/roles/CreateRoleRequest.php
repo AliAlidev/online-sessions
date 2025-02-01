@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\event_types;
+namespace App\Http\Requests\roles;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateEventTypeRequest extends FormRequest
+class CreateRoleRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -21,10 +21,8 @@ class UpdateEventTypeRequest extends FormRequest
      */
     public function rules(): array
     {
-        $id = request()->get('event_type_id')?? null;
         return [
-            'event_type_id' => 'required|exists:event_types,id',
-            'name' => 'required|unique:event_types,name,' . $id
+            'name' => 'required|unique:roles,name'
         ];
     }
 }

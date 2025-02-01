@@ -40,11 +40,11 @@
         <div class="card">
             <div class="row card-header flex-column flex-md-row pb-0">
                 <div class="d-md-flex justify-content-between align-items-center dt-layout-start col-md-auto me-auto mt-0">
-                    <h5 class="mb-0">{{ __('Event Types List') }}</h5>
+                    <h5 class="mb-0">{{ __('Roles List') }}</h5>
                 </div>
                 <div class="d-md-flex justify-content-between align-items-center dt-layout-end col-md-auto ms-auto mt-0">
                     <div class="dt-buttons btn-group flex-wrap mb-0">
-                        <button class="btn btn-sm btn-primary" data-bs-target="#CreateEventTypeModal" data-bs-toggle="modal"
+                        <button class="btn btn-sm btn-primary" data-bs-target="#CreateRoleModal" data-bs-toggle="modal"
                             type="button"><span><span class="d-flex align-items-center gap-2">
                                     <span class="d-none d-sm-inline-block">Add</span>
                                     <i class="icon-base bx bx-plus icon-sm"></i>
@@ -56,8 +56,7 @@
             </div>
             <div class="card-datatable">
                 <div class="justify-content-between dt-layout-table" style="padding: 20px">
-                    <table id="event-types-datatable" class="table table-responsive table-hover text-nowrap"
-                        style="width: 100%;">
+                    <table id="roles-datatable" class="table table-responsive table-hover text-nowrap" style="width: 100%;">
                         <thead>
                             <tr>
                                 <th class="control dt-orderable-none">ID</th>
@@ -73,13 +72,13 @@
         </div>
     </div>
 
-    {{-- ////////////// create type modal ////////////// --}}
-    <div class="modal fade" id="CreateEventTypeModal" tabindex="-1" style="display: none;" aria-hidden="true">
+    {{-- ////////////// create role modal ////////////// --}}
+    <div class="modal fade" id="CreateRoleModal" tabindex="-1" style="display: none;" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
-                <form id="createEventType">
+                <form id="createRole">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="modalCenterTitle">Create New Event Type</h5>
+                        <h5 class="modal-title" id="modalCenterTitle">Create New Role</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
@@ -105,21 +104,21 @@
         </div>
     </div>
 
-    {{-- ////////////// update type modal ////////////// --}}
-    <div class="modal fade" id="UpdateEventTypeModal" tabindex="-1" style="display: none;" aria-hidden="true">
+    {{-- ////////////// update role modal ////////////// --}}
+    <div class="modal fade" id="UpdateRoleModal" tabindex="-1" style="display: none;" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
-                <form id="updateEventTypeForm">
-                    <input type="hidden" name="event_type_id" id="eventTypeId">
+                <form id="updateRoleForm">
+                    <input type="hidden" name="role_id" id="roleId">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="modalCenterTitle">Create New Event Type</h5>
+                        <h5 class="modal-title" id="modalCenterTitle">Create New Role</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <div class="row">
                             <div class="col mb-6">
                                 <label for="nameWithTitle" class="form-label">Name</label>
-                                <input id="eventTypeNameInputId" type="text" name="name" class="form-control"
+                                <input id="roleNameInputId" type="text" name="name" class="form-control"
                                     placeholder="Enter Name" value="">
                                 <small class="text-body float-start error-message-div name-error"
                                     style="color: #ff0000 !important" hidden></small>
@@ -147,10 +146,10 @@
     <script>
         var table;
         $(document).ready(function() {
-            table = $('#event-types-datatable').DataTable({
+            table = $('#roles-datatable').DataTable({
                 processing: true,
                 serverSide: true,
-                ajax: "{{ route('events.types.index') }}",
+                ajax: "{{ route('roles.index') }}",
                 scrollX: true,
                 scrollY: '400px',
                 scrollCollapse: true,
@@ -174,7 +173,7 @@
                 ordering: false
             });
 
-            $(document).on('click', '.delete-event-type', function() {
+            $(document).on('click', '.delete-role', function() {
                 var url = $(this).data('url');
                 Swal.fire({
                     title: 'Are you sure?',
@@ -191,16 +190,16 @@
                 });
             });
 
-            $(document).on('click', '.update-event-type', function() {
+            $(document).on('click', '.update-role', function() {
                 var id = $(this).data('id')
                 $.ajax({
-                    url: "{{ url('events-types/show') }}/" + id,
+                    url: "{{ url('roles/show') }}/" + id,
                     type: 'GET',
                     success: function(response) {
                         if (response.success) {
-                            $('#eventTypeNameInputId').val(response.data.name);
-                            $('#eventTypeId').val(response.data.id);
-                            $('#UpdateEventTypeModal').modal('show');
+                            $('#roleNameInputId').val(response.data.name);
+                            $('#roleId').val(response.data.id);
+                            $('#UpdateRoleModal').modal('show');
                         }
                     }
                 })
@@ -236,7 +235,7 @@
                 });
             }
 
-            $('#createEventType').submit(function(e) {
+            $('#createRole').submit(function(e) {
                 e.preventDefault();
                 var formData = new FormData(this);
                 let csrfToken = $('meta[name="csrf-token"]').attr('content');
@@ -244,7 +243,7 @@
                 var spinner = submitBtn.find('#spinner');
 
                 $.ajax({
-                    url: "{{ route('events.types.store') }}",
+                    url: "{{ route('roles.store') }}",
                     type: 'POST',
                     processData: false,
                     contentType: false,
@@ -260,8 +259,8 @@
                     success: function(response) {
                         spinner.hide();
                         submitBtn.prop('disabled', false);
-                        $('#CreateEventTypeModal').modal('hide');
-                        resetForm('createEventType');
+                        $('#CreateRoleModal').modal('hide');
+                        resetForm('createRole');
                         table.draw();
                         showAlertMessage(response.message)
                     },
@@ -282,15 +281,15 @@
         });
 
 
-        $('#updateEventTypeForm').submit(function(e) {
+        $('#updateRoleForm').submit(function(e) {
             e.preventDefault();
             var formData = new FormData(this);
             let csrfToken = $('meta[name="csrf-token"]').attr('content');
             var submitBtn = $("#updateButton");
             var spinner = submitBtn.find('#spinner');
-            var id = $('#eventTypeId').val();
+            var id = $('#RoleId').val();
             $.ajax({
-                url: "{{ url('events-types/update') }}/" + id,
+                url: "{{ url('roles/update') }}/" + id,
                 type: 'POST',
                 processData: false,
                 contentType: false,
@@ -306,7 +305,7 @@
                 success: function(response) {
                     spinner.hide();
                     submitBtn.prop('disabled', false);
-                    $('#UpdateEventTypeModal').modal('hide');
+                    $('#UpdateRoleModal').modal('hide');
                     table.draw();
                     showAlertMessage(response.message)
                 },
@@ -325,7 +324,7 @@
             });
         });
 
-        $('#UpdateEventTypeModal,#CreateEventTypeModal').on('hidden.bs.modal', function() {
+        $('#UpdateRoleModal,#CreateRoleModal').on('hidden.bs.modal', function() {
             var form = $(this).find('form').attr('id');
             resetForm(form);
         });

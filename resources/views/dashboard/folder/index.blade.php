@@ -19,7 +19,8 @@
             float: right;
         }
 
-        .update-event:hover i, .delete-event:hover i {
+        .update-folder:hover i,
+        .delete-folder:hover i {
             color: white !important;
         }
     </style>
@@ -27,34 +28,24 @@
 
 @section('content')
     <div class="container-xxl flex-grow-1 container-p-y">
-
-        <!-- DataTable with Buttons -->
         <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
-                <h5 class="mb-0">{{ __('Events List') }}</h5>
+                <h5 class="mb-0">{{ __('Event Folders List') }}</h5>
                 <small class="text-body float-end"></small>
             </div>
             <div class="card-datatable">
                 <div class="justify-content-between dt-layout-table" style="padding: 20px">
-                    <table id="events-datatable" class="table table-responsive table-hover text-nowrap"
+                    <table id="folders-datatable" class="table table-responsive table-hover text-nowrap"
                         style="width: 100%;">
                         <thead>
                             <tr>
                                 <th class="control dt-orderable-none">ID</th>
-                                <th class="control dt-orderable-none">Name</th>
-                                <th class="control dt-orderable-none">Type</th>
-                                <th class="control dt-orderable-none">Client</th>
-                                <th class="control dt-orderable-none">Customer</th>
-                                <th class="control dt-orderable-none">Venue</th>
-                                <th class="control dt-orderable-none">Start Date</th>
-                                <th class="control dt-orderable-none">End Date</th>
-                                <th class="control dt-orderable-none">Active Duration</th>
-                                <th class="control dt-orderable-none">Event Link</th>
-                                <th class="control dt-orderable-none">QR Code</th>
+                                <th class="control dt-orderable-none">Event</th>
+                                <th class="control dt-orderable-none">Folder Name</th>
+                                <th class="control dt-orderable-none">Folder Type</th>
                                 <th class="control dt-orderable-none">Description</th>
-                                <th class="control dt-orderable-none">Welcome Message</th>
-                                <th class="control dt-orderable-none">Cover Image</th>
-                                <th class="control dt-orderable-none">Profile Picture</th>
+                                <th class="control dt-orderable-none">Folder Thumbnail</th>
+                                <th class="control dt-orderable-none">Folder Link</th>
                                 <th class="control dt-orderable-none">Actions</th>
                             </tr>
                         </thead>
@@ -72,15 +63,13 @@
     <script src="https://cdn.datatables.net/buttons/2.2.2/js/dataTables.buttons.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.colVis.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-
     <script>
         var table;
         $(document).ready(function() {
-            table = $('#events-datatable').DataTable({
+            table = $('#folders-datatable').DataTable({
                 processing: true,
                 serverSide: true,
-                ajax: "{{ route('events.index') }}",
+                ajax: "{{ route('folders.index', request()->route('event_id')) }}",
                 scrollX: true,
                 scrollY: '400px',
                 scrollCollapse: true,
@@ -91,60 +80,28 @@
                         searchable: false
                     },
                     {
-                        data: 'event_name',
-                        name: 'event_name'
+                        data: 'event_id',
+                        name: 'event_id'
                     },
                     {
-                        data: 'event_type',
-                        name: 'event_type'
+                        data: 'folder_name',
+                        name: 'folder_name'
                     },
                     {
-                        data: 'event_client',
-                        name: 'event_client'
-                    },
-                    {
-                        data: 'customer',
-                        name: 'customer'
-                    },
-                    {
-                        data: 'venue',
-                        name: 'venue'
-                    },
-                    {
-                        data: 'start_date',
-                        name: 'start_date'
-                    },
-                    {
-                        data: 'end_date',
-                        name: 'end_date'
-                    },
-                    {
-                        data: 'active_duration',
-                        name: 'active_duration'
-                    },
-                    {
-                        data: 'event_link',
-                        name: 'event_link'
-                    },
-                    {
-                        data: 'qr_code',
-                        name: 'qr_code'
+                        data: 'folder_type',
+                        name: 'folder_type'
                     },
                     {
                         data: 'description',
                         name: 'description'
                     },
                     {
-                        data: 'welcome_message',
-                        name: 'welcome_message'
+                        data: 'folder_thumbnail',
+                        name: 'folder_thumbnail'
                     },
                     {
-                        data: 'cover_image',
-                        name: 'cover_image'
-                    },
-                    {
-                        data: 'profile_picture',
-                        name: 'profile_picture'
+                        data: 'folder_link',
+                        name: 'folder_link'
                     },
                     {
                         data: 'actions',
@@ -155,31 +112,27 @@
                 ],
                 ordering: false,
                 dom: 'lfBrtip',
-                buttons: [{
-                    extend: 'colvis',
-                    text: 'Columns',
-                    className: 'btn btn-primary'
-                }],
-                columnDefs: [{
-                        targets: 11,
-                        visible: false
-                    },
-                    {
-                        targets: 12,
-                        visible: false
-                    },
-                    {
-                        targets: 13,
-                        visible: false
-                    },
-                    {
-                        targets: 14,
-                        visible: false
-                    }
-                ]
+                // buttons: [{
+                //     extend: 'colvis', // Column visibility button
+                //     text: 'Columns', // Customize the button text
+                //     className: 'btn btn-primary' // Add a class for styling
+                // }],
+                // columnDefs: [{
+                //         targets: 8,
+                //         visible: false
+                //     },
+                //     {
+                //         targets: 9,
+                //         visible: false
+                //     },
+                //     {
+                //         targets: 10,
+                //         visible: false
+                //     }
+                // ]
             });
 
-            $(document).on('click', '.delete-event', function() {
+            $(document).on('click', '.delete-folder', function() {
                 var url = $(this).data('url');
                 Swal.fire({
                     title: 'Are you sure?',
@@ -203,7 +156,6 @@
                     success: function(response) {
                         if (response.success) {
                             table.draw();
-                            $('#sidebar-events-count').text(response.count);
                             Swal.fire(
                                 'Deleted!',
                                 'The item has been deleted.',

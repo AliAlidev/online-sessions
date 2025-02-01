@@ -127,14 +127,14 @@
                                     <div class="row mb-6">
                                         <div class="col-md-6">
                                             <label for="exampleFormControlSelect1" class="form-label">Type</label>
-                                            <select class="form-select" id="exampleFormControlSelect1" name="event_type"
+                                            <select class="form-select" id="exampleFormControlSelect1" name="event_type_id"
                                                 aria-label="Default select example">
                                                 <option selected disabled>Select Type</option>
-                                                <option value="1">One</option>
-                                                <option value="2">Two</option>
-                                                <option value="3">Three</option>
+                                                @foreach ($types as $key => $type)
+                                                    <option value="{{ $key }}">{{ $type }}</option>
+                                                @endforeach
                                             </select>
-                                            <small class="text-body float-start error-message-div event_type-error"
+                                            <small class="text-body float-start error-message-div event_type_id-error"
                                                 style="color: #ff0000 !important" hidden></small>
                                         </div>
                                         <div class="col-md-6">
@@ -153,9 +153,9 @@
                                             <select class="form-select" id="exampleFormControlSelect1" name="client_id"
                                                 aria-label="Default select example">
                                                 <option selected disabled>Select Client</option>
-                                                <option value="1">One</option>
-                                                <option value="2">Two</option>
-                                                <option value="3">Three</option>
+                                                @foreach ($clients as $key => $client)
+                                                    <option value="{{ $key }}">{{ $client }}</option>
+                                                @endforeach
                                             </select>
                                             <small class="text-body float-start error-message-div client_id-error"
                                                 style="color: #ff0000 !important" hidden></small>
@@ -277,23 +277,23 @@
                             <div class="organizer-container">
                                 <div class="row organizer-row mb-6">
                                     <div class="col-md-4">
-                                        <select class="form-select" name="organizers[0][client_id]">
-                                            <option selected disabled>Select Option</option>
-                                            <option value="1">One</option>
-                                            <option value="2">Two</option>
-                                            <option value="3">Three</option>
+                                        <select class="form-select organizers-organizer_id">
+                                            <option value="" selected disabled>Select Option</option>
+                                            @foreach ($clients as $key => $client)
+                                                <option value="{{ $key }}">{{ $client }}</option>
+                                            @endforeach
                                         </select>
-                                        <small class="text-body float-start error-message-div client_id-error"
+                                        <small class="text-body float-start error-message-div"
                                             style="color: #ff0000 !important" hidden></small>
                                     </div>
                                     <div class="col-md-4">
-                                        <select class="form-select" name="organizers[0][role_id]">
-                                            <option selected disabled>Role In Event</option>
-                                            <option value="1">One</option>
-                                            <option value="2">Two</option>
-                                            <option value="3">Three</option>
+                                        <select class="form-select organizers-role_in_event">
+                                            <option value="" selected disabled>Role In Event</option>
+                                            @foreach ($roles as $key => $role)
+                                                <option value="{{ $key }}">{{ $role }}</option>
+                                            @endforeach
                                         </select>
-                                        <small class="text-body float-start error-message-div client_id-error"
+                                        <small class="text-body float-start error-message-div"
                                             style="color: #ff0000 !important" hidden></small>
                                     </div>
                                     <div class="col-md-4">
@@ -439,9 +439,15 @@
             clearErrors();
             var formData = new FormData(this);
             let csrfToken = $('meta[name="csrf-token"]').attr('content');
-            var submitBtn = $("#storeButton"); // The submit button
-            var spinner = $("#spinner"); // The spinner element
-
+            var submitBtn = $("#storeButton");
+            var spinner = $("#spinner");
+            var organizers = [];
+            $('.organizer-row').each(function(index, item) {
+                var clientId = $(item).find('.organizers-organizer_id :selected').val();
+                var roleId = $(item).find('.organizers-role_in_event :selected').val();
+                formData.append(`organizers[${index}][organizer_id]`, clientId);
+                formData.append(`organizers[${index}][role_in_event]`, roleId);
+            });
             $.ajax({
                 url: "{{ route('events.store') }}",
                 type: 'POST',
@@ -465,11 +471,22 @@
                     if (xhr.status === 422) {
                         let errors = xhr.responseJSON.errors;
                         $.each(errors, function(field, messages) {
-                            console.log(field);
-
-                            let inputField = $(`.${field}-error`);
-                            inputField.attr('hidden', false);
-                            inputField.text(messages[0]);
+                            if (field.includes('organizers')) {
+                                var fieldName = field.split('.');
+                                var indexError = fieldName[1];
+                                var elementError = fieldName[2];
+                                $('.organizer-row').each(function(index, item) {
+                                    if (indexError == index) {
+                                        var errorDiv = $(item).find('.organizers-'+ elementError).closest('.col-md-4').find('.error-message-div');
+                                        errorDiv.text("The " + elementError+ " field is required");
+                                        errorDiv.attr('hidden', false);
+                                    }
+                                });
+                            } else {
+                                let inputField = $(`.${field}-error`);
+                                inputField.attr('hidden', false);
+                                inputField.text(messages[0]);
+                            }
                         });
                     }
                     spinner.hide();
@@ -540,7 +557,6 @@
                 const uniqueId = Date.now();
                 newOrganizerRow.find('select').each(function() {
                     const name = $(this).attr('name');
-                    $(this).attr('name', name.replace(/\[.*?\]/, `[${uniqueId}]`));
                 });
                 $('.organizer-container').append(newOrganizerRow);
             });

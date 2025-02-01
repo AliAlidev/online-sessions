@@ -56,8 +56,34 @@
     <div class="menu-inner-shadow"></div>
 
     <ul class="menu-inner py-1">
-        <!-- Dashboards -->
-        <li class="menu-item {{ Route::is('events.*') ? 'active': ''}} open">
+        <li class="menu-item {{ Route::is('clients.*') || Route::is('roles.*') ? 'active': ''}} open">
+            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="fa-solid fa-users" style="font-size: 20px; margin: 0 10px 0 0"></i>
+                <div class="text-truncate" data-i18n="Dashboards">Clients</div>
+                <span id="sidebar-clients-count" class="badge rounded-pill bg-danger ms-auto">{{ getClientsCount() }}</span>
+            </a>
+            <ul class="menu-sub">
+                <li class="menu-item {{ Route::is('roles.index') ? 'active': ''}}">
+                    <a href="{{ route('roles.index') }}"
+                        target="" class="menu-link">
+                        <div class="text-truncate" data-i18n="CRM">Client Roles</div>
+                    </a>
+                </li>
+                <li class="menu-item {{ Route::is('clients.create') ? 'active': ''}}">
+                    <a href="{{ route('clients.create') }}"
+                        target="" class="menu-link">
+                        <div class="text-truncate" data-i18n="CRM">Create Client</div>
+                    </a>
+                </li>
+                <li class="menu-item {{ Route::is('clients.index') ? 'active': ''}}">
+                    <a href="{{ route('clients.index') }}"
+                        target="" class="menu-link">
+                        <div class="text-truncate" data-i18n="CRM">List Clients</div>
+                    </a>
+                </li>
+            </ul>
+        </li>
+        <li class="menu-item {{ Route::is('events.*') || Route::is('folders.*') ? 'active': ''}} open">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="fa-solid fa-business-time" style="font-size: 20px; margin: 0 10px 0 0"></i>
                 <div class="text-truncate" data-i18n="Dashboards">Events</div>
@@ -67,19 +93,19 @@
                 <li class="menu-item {{ Route::is('events.types.index') ? 'active': ''}}">
                     <a href="{{ route('events.types.index') }}"
                         target="" class="menu-link">
-                        <div class="text-truncate" data-i18n="CRM">Types</div>
+                        <div class="text-truncate" data-i18n="CRM">Event Types</div>
                     </a>
                 </li>
                 <li class="menu-item {{ Route::is('events.create') ? 'active': ''}}">
                     <a href="{{ route('events.create') }}"
                         target="" class="menu-link">
-                        <div class="text-truncate" data-i18n="CRM">Create</div>
+                        <div class="text-truncate" data-i18n="CRM">Create Event</div>
                     </a>
                 </li>
                 <li class="menu-item {{ Route::is('events.index') ? 'active': ''}}">
                     <a href="{{ route('events.index') }}"
                         target="" class="menu-link">
-                        <div class="text-truncate" data-i18n="CRM">List</div>
+                        <div class="text-truncate" data-i18n="CRM">List Events</div>
                     </a>
                 </li>
             </ul>

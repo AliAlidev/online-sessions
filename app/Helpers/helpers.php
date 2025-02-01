@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Client;
 use App\Models\Event;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -13,6 +14,16 @@ if (!function_exists('uploadFile')) {
         $uploadedPath = Storage::disk('public')->url($uploadedPath);
         $fileNameToStore = $path . '/' . basename($uploadedPath);
         return $fileNameToStore;
+    }
+}
+
+if (!function_exists('deleteFile')) {
+    function deleteFile($path)
+    {
+        if (Storage::disk('public')->exists($path)) {
+            return Storage::disk('public')->delete($path);
+        }
+        return false;
     }
 }
 
@@ -34,5 +45,12 @@ if (!function_exists('getEventsCount')) {
     function getEventsCount()
     {
         return Event::count();
+    }
+}
+
+if (!function_exists('getClientsCount')) {
+    function getClientsCount()
+    {
+        return Client::count();
     }
 }

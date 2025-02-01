@@ -1,7 +1,10 @@
 <?php
 
+use App\Http\Controllers\dashboard\ClientController;
 use App\Http\Controllers\dashboard\EventController;
 use App\Http\Controllers\dashboard\EventTypeController;
+use App\Http\Controllers\dashboard\FolderController;
+use App\Http\Controllers\dashboard\RoleController;
 use App\Http\Controllers\landing\LandingPageEventController;
 use Illuminate\Support\Facades\Route;
 
@@ -26,6 +29,14 @@ Route::controller(EventTypeController::class)->prefix('events-types')->name('eve
     Route::get('/delete/{id}', 'delete')->name('delete');
 });
 
+Route::controller(FolderController::class)->prefix('folders')->name('folders.')->group(function(){
+    Route::get('/{event_id}/index', 'index')->name('index');
+    Route::post('/store', 'store')->name('store');
+    Route::post('/update/{id}', 'update')->name('update');
+    Route::get('/show/{id}', 'show')->name('show');
+    Route::get('/delete/{id}', 'delete')->name('delete');
+});
+
 Route::controller(EventController::class)->prefix('events')->name('events.')->group(function(){
     Route::get('/index', 'index')->name('index');
     Route::get('/create', 'create')->name('create');
@@ -33,7 +44,26 @@ Route::controller(EventController::class)->prefix('events')->name('events.')->gr
     Route::get('/edit/{id}', 'edit')->name('edit');
     Route::post('/update/{id}', 'update')->name('update');
     Route::get('/delete/{id}', 'delete')->name('delete');
-    Route::get('/show/{slug}', 'show');
+    Route::get('/show/{id}', 'show');
+});
+
+Route::controller(RoleController::class)->prefix('roles')->name('roles.')->group(function(){
+    Route::get('/index', 'index')->name('index');
+    Route::get('/create', 'create')->name('create');
+    Route::post('/store', 'store')->name('store');
+    Route::get('/edit/{id}', 'edit')->name('edit');
+    Route::post('/update/{id}', 'update')->name('update');
+    Route::get('/delete/{id}', 'delete')->name('delete');
+    Route::get('/show/{id}', 'show');
+});
+
+Route::controller(ClientController::class)->prefix('clients')->name('clients.')->group(function(){
+    Route::get('/index', 'index')->name('index');
+    Route::get('/create', 'create')->name('create');
+    Route::post('/store', 'store')->name('store');
+    Route::get('/edit/{id}', 'edit')->name('edit');
+    Route::post('/update/{id}', 'update')->name('update');
+    Route::get('/delete/{id}', 'delete')->name('delete');
 });
 
 

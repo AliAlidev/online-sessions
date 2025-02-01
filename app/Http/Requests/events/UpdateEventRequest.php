@@ -4,7 +4,7 @@ namespace App\Http\Requests\events;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class CreateEventRequest extends FormRequest
+class UpdateEventRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -21,9 +21,11 @@ class CreateEventRequest extends FormRequest
      */
     public function rules(): array
     {
+        $id = request()->route('id');
         return [
-            'event_name' => 'required|string|unique:events,event_name',
-            'cover_image' => 'required|image|mimes:jpeg,png,jpg,gif,svg,webp',
+            'event_id' => 'required|exists:events,id',
+            'event_name' => 'required|string|unique:events,event_name,' . $id,
+            'cover_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp',
             'event_type_id' => 'required|exists:event_types,id',
             'profile_picture' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp',
             'client_id' => 'required|exists:clients,id',
@@ -41,6 +43,7 @@ class CreateEventRequest extends FormRequest
             'organizers' => 'required|array',
             'organizers.*.organizer_id' => 'required|exists:clients,id',
             'organizers.*.role_in_event' => 'required|exists:roles,id',
+            'organizers.*.organizer_model_id' => 'nullable|exists:event_organizers,id',
             'image_share_guest_book' => 'nullable',
             'image_folders' => 'nullable',
             'video_playlist' => 'nullable',
