@@ -466,6 +466,10 @@
             $('.error-message-div').each(function() {
                 $(this).attr('hidden', true);
             });
+            $('.uploaded-file-name').each(function() {
+                $(this).attr('hidden', true);
+            });
+
             $('#folderLink,#folderLinkInput').parent().attr('hidden', true);
         }
     </script>
@@ -514,6 +518,7 @@
                     fileName = nameWithoutExtension.substring(0, 20) + '...' + '.' +
                         fileExtension;
                 }
+                fileNameDisplay.attr('hidden', false);
                 fileNameDisplay.text(`Uploaded File: ${fileName}`);
             } else {
                 fileNameDisplay.text('');
