@@ -32,9 +32,11 @@ return [
     ],
 
     'bunny' => [
+        'region' => env('BUNNY_REGION'),
         'storage_zone' => env('BUNNY_STORAGE_ZONE'),
         'storage_access_key' => env('BUNNY_STORAGE_ACCESS_KEY'),
-        'api_key' => env('BUNNY_API_KEY')
+        'api_key' => env('BUNNY_API_KEY'),
+        'cdn_pull_zone' => env('CDN_PULL_ZONE')
     ]
 
 ];

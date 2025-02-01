@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Log;
 
 class BunnyService
 {
+    private $region;
     private $storageZone;
     private $storageAccessKey;
     private $apiKey;
@@ -15,10 +16,36 @@ class BunnyService
 
     public function __construct()
     {
-        $this->storageZone = config('bunny.storage_zone');
-        $this->storageAccessKey = config('bunny.storage_access_key');
-        $this->apiKey = config('bunny.api_key');
+        $this->region = config('services.bunny.region');
+        $this->storageZone = config('services.bunny.storage_zone');
+        $this->storageAccessKey = config('services.bunny.storage_access_key');
+        $this->apiKey = config('services.bunny.api_key');
         $this->client = new Client();
+    }
+
+    public function createFolder($folderPath)
+    {
+        // Ensure the folder path ends with a slash
+        if (substr($folderPath, -1) !== '/') {
+            $folderPath .= '/';
+        }
+
+        // Create a placeholder file (e.g., .keep)
+        $placeholderFileName = '.keep';
+        $placeholderFilePath = $folderPath . $placeholderFileName;
+
+        // Create a temporary empty file
+        $tempFile = tmpfile();
+        fwrite($tempFile, ''); // Write empty content
+        $tempFilePath = stream_get_meta_data($tempFile)['uri'];
+
+        // Upload the placeholder file
+        $result = $this->uploadFile($tempFilePath, $placeholderFilePath);
+
+        // Close the temporary file
+        fclose($tempFile);
+
+        return $result;
     }
 
     /**
@@ -30,7 +57,7 @@ class BunnyService
      */
     public function uploadFile($filePath, $uploadPath)
     {
-        $url = "https://{$this->storageZone}.b-cdn.net/{$uploadPath}";
+        $url = "https://{$this->region}.bunnycdn.com/{$this->storageZone}/{$uploadPath}";
 
         try {
             $response = $this->client->put($url, [
@@ -55,7 +82,7 @@ class BunnyService
      */
     public function listFiles($directory = '')
     {
-        $url = "https://{$this->storageZone}.b-cdn.net/{$directory}";
+        $url = "https://{$this->region}.bunnycdn.com/{$this->storageZone}/{$directory}";
 
         try {
             $response = $this->client->get($url, [
@@ -79,7 +106,7 @@ class BunnyService
      */
     public function deleteFile($filePath)
     {
-        $url = "https://{$this->storageZone}.b-cdn.net/{$filePath}";
+        $url = "https://{$this->region}.bunnycdn.com/{$this->storageZone}/{$filePath}";
 
         try {
             $response = $this->client->delete($url, [
@@ -215,6 +242,113 @@ class BunnyService
             return json_decode($response->getBody(), true);
         } catch (GuzzleException $e) {
             Log::error('Bunny.net Storage Zone Statistics Error: ' . $e->getMessage());
+            return false;
+        }
+    }
+
+    public function renameFolder($oldFolderPath, $newFolderPath)
+    {
+        // Ensure the folder paths end with a slash
+        if (substr($oldFolderPath, -1) !== '/') {
+            $oldFolderPath .= '/';
+        }
+        if (substr($newFolderPath, -1) !== '/') {
+            $newFolderPath .= '/';
+        }
+
+        // List all files in the old folder
+        $files = $this->listFiles($oldFolderPath);
+
+        if (empty($files)) {
+            Log::error('No files found in the folder: ' . $oldFolderPath);
+            return false;
+        }
+
+        // Move each file to the new folder
+        foreach ($files as $file) {
+            try {
+                $oldFilePath = $oldFolderPath . $file['ObjectName'];
+                $newFilePath = $newFolderPath . $file['ObjectName'];
+
+                // Download the file from the old path
+                $tempFilePath = tempnam(sys_get_temp_dir(), 'bunny');
+                if (!$this->downloadFile($oldFilePath, $tempFilePath)) {
+                    Log::error('Failed to download file: ' . $oldFilePath);
+                    return false;
+                }
+
+                // Upload the file to the new path
+                if (!$this->uploadFile($tempFilePath, $newFilePath)) {
+                    Log::error('Failed to upload file: ' . $newFilePath);
+                    return false;
+                }
+
+                // Delete the file from the old path
+                if (!$this->deleteFile($oldFilePath)) {
+                    Log::error('Failed to delete file: ' . $oldFilePath);
+                    return false;
+                }
+
+                // Clean up the temporary file
+                unlink($tempFilePath);
+            } catch (\Throwable $th) {
+                Log::error('Failed to copy file: ' . $th->getMessage());
+                //throw $th;
+            }
+        }
+
+        return true;
+    }
+
+    public function deleteFolder($folderPath)
+    {
+        // Ensure the folder path ends with a slash
+        if (substr($folderPath, -1) !== '/') {
+            $folderPath .= '/';
+        }
+
+        // List all files in the folder
+        $files = $this->listFiles($folderPath);
+
+        if (empty($files)) {
+            Log::error('No files found in the folder: ' . $folderPath);
+            return false;
+        }
+
+        // Delete each file in the folder
+        foreach ($files as $file) {
+            $filePath = $folderPath . $file['ObjectName'];
+
+            if (!$this->deleteFile($filePath)) {
+                Log::error('Failed to delete file: ' . $filePath);
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Download a file from Bunny.net storage.
+     *
+     * @param string $filePath
+     * @param string $destination
+     * @return bool
+     */
+    public function downloadFile($filePath, $destination)
+    {
+        $url = "https://{$this->region}.bunnycdn.com/{$this->storageZone}/{$filePath}";
+        try {
+            $response = $this->client->get($url, [
+                'headers' => [
+                    'AccessKey' => $this->storageAccessKey,
+                ],
+            ]);
+
+            file_put_contents($destination, $response->getBody());
+            return true;
+        } catch (GuzzleException $e) {
+            Log::error('Bunny.net Download Error: ' . $e->getMessage());
             return false;
         }
     }

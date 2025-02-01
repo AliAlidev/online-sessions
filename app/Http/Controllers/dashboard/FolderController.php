@@ -7,12 +7,19 @@ use App\Http\Requests\events\folders\CreateFolderRequest;
 use App\Http\Requests\events\folders\UpdateFolderRequest;
 use App\Models\Event;
 use App\Models\EventFolder;
-use App\Models\Folder;
+use Illuminate\Support\Str;
+use App\Services\BunnyService;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
 
 class FolderController extends Controller
 {
+    protected BunnyService $bunnyService;
+    function __construct(BunnyService $bunnyService)
+    {
+        $this->bunnyService = $bunnyService;
+    }
+
     function index(Request $request, $eventId)
     {
         if ($request->ajax()) {
@@ -46,7 +53,11 @@ class FolderController extends Controller
         $data = $request->validated();
         $data['folder_thumbnail'] = isset($data['folder_thumbnail']) ? 'storage/' . uploadFile($data['folder_thumbnail'], 'folder_thumbnail') : null;
         $data['event_id'] = $eventId;
+        $fileName = Str::slug($data['folder_name']);
+        $data['bunny_cdn_link'] = config('services.bunny.cdn_pull_zone') . '.b-cdn.net/' . $fileName;
+        $data['bunny_link'] = config('services.bunny.region') . '.bunnycdn.com/' . config('services.bunny.storage_zone') . '/' . $fileName;
         EventFolder::create($data);
+        $this->bunnyService->createFolder($fileName);
         return response()->json(['success' => true, 'message' => 'Folder has been created successfully']);
     }
 
@@ -56,6 +67,7 @@ class FolderController extends Controller
         $folder = EventFolder::find($data['folder_id']);
         $data['folder_thumbnail'] = isset($data['folder_thumbnail']) ? 'storage/' . uploadFile($data['folder_thumbnail'], 'folder_thumbnail') : $folder->folder_thumbnail;
         unset($data['folder_id']);
+        $this->bunnyService->renameFolder($folder->folder_name, Str::slug($data['folder_name']));
         $folder->update($data);
         return response()->json(['success' => true, 'message' => 'Folder has been updated successfully']);
     }

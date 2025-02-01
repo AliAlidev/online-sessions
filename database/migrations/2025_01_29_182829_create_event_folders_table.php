@@ -19,6 +19,8 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->string('folder_thumbnail')->nullable(); // Path to the thumbnail file
             $table->string('folder_link')->nullable();
+            $table->string('bunny_link')->nullable();
+            $table->string('bunny_cdn_link')->nullable();
             $table->timestamps();
         });
     }
