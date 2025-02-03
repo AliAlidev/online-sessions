@@ -54,3 +54,61 @@ if (!function_exists('getClientsCount')) {
         return Client::count();
     }
 }
+
+if (!function_exists('getEventsIncreasingCount')) {
+    function getEventsIncreasingCount()
+    {
+        $compare_start_date = now()->subMonths(2)->subDay()->startOfDay()->toDateTimeString();
+        $compare_end_date = now()->subMonth()->subDay()->endOfDay()->toDateTimeString();;
+        $start_date = now()->subMonth()->startOfDay()->toDateTimeString();
+        $end_date = now()->toDateTimeString();
+
+        $previous = Event::whereBetween('created_at', [$compare_start_date, $compare_end_date])->count();
+        $current = Event::whereBetween('created_at', [$start_date, $end_date])->count();
+        if ( $current > $previous) {
+            $previous = $previous == 0 ? 1 : $previous;
+            $percentage = abs(($current - $previous) / $previous) * 100;
+            $color =  '#68c790';
+            $sign = '+';
+        } else if ( $current < $previous) {
+            $current = $current == 0 ? 1 : $current;
+            $percentage = abs(($previous - $current) / $current) * 100;
+            $color =  'red';
+            $sign = '-';
+        }else{
+            $percentage = 0;
+            $color =  '#68c790';
+            $sign = '';
+        }
+        return ['percentage' => $percentage, 'color' => $color, 'sign' => $sign];
+    }
+}
+
+if (!function_exists('getClientsIncreasingCount')) {
+    function getClientsIncreasingCount()
+    {
+        $compare_start_date = now()->subMonths(2)->subDay()->startOfDay()->toDateTimeString();
+        $compare_end_date = now()->subMonth()->subDay()->endOfDay()->toDateTimeString();;
+        $start_date = now()->subMonth()->startOfDay()->toDateTimeString();
+        $end_date = now()->toDateTimeString();
+
+        $previous = client::whereBetween('created_at', [$compare_start_date, $compare_end_date])->count();
+        $current = client::whereBetween('created_at', [$start_date, $end_date])->count();
+        if ( $current > $previous) {
+            $previous = $previous == 0 ? 1 : $previous;
+            $percentage = abs(($current - $previous) / $previous) * 100;
+            $color =  '#68c790';
+            $sign = '+';
+        } else if ( $current < $previous) {
+            $current = $current == 0 ? 1 : $current;
+            $percentage = abs(($previous - $current) / $current) * 100;
+            $color =  'red';
+            $sign = '-';
+        }else{
+            $percentage = 0;
+            $color =  '#68c790';
+            $sign = '';
+        }
+        return ['percentage' => $percentage, 'color' => $color, 'sign' => $sign];
+    }
+}

@@ -18,7 +18,7 @@ class EventTypeController extends Controller
             return DataTables::of($events)
                 ->addIndexColumn()
                 ->addColumn('actions', function ($event) {
-                    return '<a href="#" data-id=' . $event->id . ' class="update-event-type btn btn-icon btn-outline-primary"><i class="bx bx-edit-alt" style="color:gray"></i></a>
+                    return '<a href="#" data-id=' . $event->id . ' class="update-event-type btn btn-icon btn-outline-primary"><i class="bx bx-edit-alt" style="color:#696cff"></i></a>
                             <a href="#" data-url="' . route('events.types.delete', $event->id) . '" class="delete-event-type btn btn-icon btn-outline-primary"><i class="bx bx-trash" style="color:red"></i> </a>';
                 })
                 ->rawColumns(['actions'])

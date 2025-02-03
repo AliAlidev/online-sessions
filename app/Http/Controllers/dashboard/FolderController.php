@@ -26,8 +26,9 @@ class FolderController extends Controller
             $folders = Event::find($eventId)->folders;
             return DataTables::of($folders)
                 ->addColumn('actions', function ($folder) {
-                    return '<a data-id="' . $folder->id . '" href="' . route('folders.update', $folder->id) . '" class="update-folder btn btn-icon btn-outline-primary"><i class="bx bx-edit-alt"></i></a>
-                            <a href="#" data-url="' . route('folders.delete', $folder->id) . '" class="delete-folder btn btn-icon btn-outline-primary"><i class="bx bx-trash" style="color:red"></i> </a>';
+                    return '<a data-id="' . $folder->id . '" href="' . route('folders.update', $folder->id) . '" class="update-folder btn btn-icon btn-outline-primary"><i class="bx bx-edit-alt" style="color:#696cff"></i></a>
+                            <a href="#" data-url="' . route('folders.delete', $folder->id) . '" class="delete-folder btn btn-icon btn-outline-primary"><i class="bx bx-trash" style="color:red"></i> </a>
+                            <a title="Files" href="' . route('files.index', [$folder->id, $folder->folder_type]) . '" class="btn rounded-pill btn-icon btn-primary"><i class="bx bx-file" style="color:white"></i> </a>';
                 })
                 ->addIndexColumn()
                 ->editColumn('folder_thumbnail', function ($row) {

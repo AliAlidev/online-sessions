@@ -47,7 +47,8 @@
                 <div class="d-md-flex justify-content-between align-items-center dt-layout-start col-md-auto me-auto mt-0">
                     <h5 class="mb-0">{{ __('Event Folders List') }}</h5>
                 </div>
-                <div class="d-md-flex justify-content-between align-items-center dt-layout-end col-md-auto ms-auto mt-0">
+                <div class="d-md-flex justify-content-between align-items-center dt-layout-end col-md-auto ms-auto mt-0" style="gap: 10px">
+                    <a href="javascript:history.back()" class="btn btn-label-primary btn-sm">Back</a>
                     <div class="dt-buttons btn-group flex-wrap mb-0">
                         <button class="btn btn-sm btn-primary" data-bs-target="#CreateFolderModal" data-bs-toggle="modal"
                             type="button"><span><span class="d-flex align-items-center gap-2">

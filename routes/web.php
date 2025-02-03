@@ -4,7 +4,9 @@ use App\Http\Controllers\dashboard\ClientController;
 use App\Http\Controllers\dashboard\EventController;
 use App\Http\Controllers\dashboard\EventTypeController;
 use App\Http\Controllers\dashboard\FolderController;
+use App\Http\Controllers\dashboard\FolderFileController;
 use App\Http\Controllers\dashboard\RoleController;
+use App\Http\Controllers\Dashboard\SettingController;
 use App\Http\Controllers\landing\LandingPageEventController;
 use Illuminate\Support\Facades\Route;
 
@@ -37,6 +39,15 @@ Route::controller(FolderController::class)->prefix('folders')->name('folders.')-
     Route::get('/delete/{id}', 'delete')->name('delete');
 });
 
+Route::controller(FolderFileController::class)->prefix('files')->name('files.')->group(function(){
+    Route::get('/{folder_id}/index/{type}', 'index')->name('index');
+    Route::post('/{folder_id}/store/{type}', 'store')->name('store');
+    Route::post('/update/{id}', 'update')->name('update');
+    Route::get('/show/{id}', 'show')->name('show');
+    Route::get('/delete/{id}', 'delete')->name('delete');
+    Route::post('/change-status', 'changeStatus')->name('change.status');
+});
+
 Route::controller(EventController::class)->prefix('events')->name('events.')->group(function(){
     Route::get('/index', 'index')->name('index');
     Route::get('/create', 'create')->name('create');
@@ -66,9 +77,16 @@ Route::controller(ClientController::class)->prefix('clients')->name('clients.')-
     Route::get('/delete/{id}', 'delete')->name('delete');
 });
 
+Route::controller(SettingController::class)->prefix('settings')->name('settings.')->group(function(){
+    Route::get('/bunny', 'bunnySetting')->name('bunny');
+    // Route::get('/bunny-video', 'bunnyVideoSetting')->name('bunny.video');
+});
+
 
 
 //////////////////////////// Landing Page ////////////////////////////
 Route::controller(LandingPageEventController::class)->prefix('events')->name('landing.events.')->group(function(){
     Route::get('/{year}/{month}/{customer}', 'index')->name('index');
 });
+
+// Route::get('login', [Logi])

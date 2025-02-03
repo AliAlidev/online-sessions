@@ -19,7 +19,7 @@ class ClientController extends Controller
             $clients = Client::get();
             return DataTables::of($clients)
                 ->addColumn('actions', function ($client) {
-                    return '<a data-id="' . $client->id . '" href="' . route('clients.edit', $client->id) . '" class="update-client btn btn-icon btn-outline-primary"><i class="bx bx-edit-alt"></i></a>
+                    return '<a data-id="' . $client->id . '" href="' . route('clients.edit', $client->id) . '" class="update-client btn btn-icon btn-outline-primary"><i class="bx bx-edit-alt" style="color:#696cff"></i></a>
                             <a href="#" data-url="' . route('clients.delete', $client->id) . '" class="delete-client btn btn-icon btn-outline-primary"><i class="bx bx-trash" style="color:red"></i> </a>';
                 })
                 ->editColumn('contact_button_link', function ($row) {

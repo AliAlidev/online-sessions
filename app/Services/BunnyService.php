@@ -13,6 +13,7 @@ class BunnyService
     private $storageAccessKey;
     private $apiKey;
     private $client;
+    private $cdnPullZone;
 
     public function __construct()
     {
@@ -20,6 +21,7 @@ class BunnyService
         $this->storageZone = config('services.bunny.storage_zone');
         $this->storageAccessKey = config('services.bunny.storage_access_key');
         $this->apiKey = config('services.bunny.api_key');
+        $this->cdnPullZone = config('services.bunny.cdn_pull_zone');
         $this->client = new Client();
     }
 
@@ -55,24 +57,74 @@ class BunnyService
      * @param string $uploadPath
      * @return bool
      */
-    public function uploadFile($filePath, $uploadPath)
+    public function uploadFile($file, $uploadPath)
     {
         $url = "https://{$this->region}.bunnycdn.com/{$this->storageZone}/{$uploadPath}";
+
+        $finalFile = null;
+        if (!is_string($file) && $file->isValid()) {
+            $finalFile = $file->getPathname();;
+        } else {
+            $finalFile = $file;
+        }
 
         try {
             $response = $this->client->put($url, [
                 'headers' => [
                     'AccessKey' => $this->storageAccessKey,
                 ],
-                'body' => fopen($filePath, 'r'),
+                'body' => fopen($finalFile, 'r'),
             ]);
 
-            return $response->getStatusCode() === 201;
+            if ($response->getStatusCode() === 201) {
+                return "https://{$this->cdnPullZone}.b-cdn.net/{$uploadPath}";
+            } else {
+                return false;
+            }
         } catch (GuzzleException $e) {
             Log::error('Bunny.net Upload Error: ' . $e->getMessage());
             return false;
         }
     }
+
+    public function GuarantiedUploadFile($file, $uploadPath)
+    {
+        $finalFile = null;
+        if (!is_string($file) && $file->isValid()) {
+            $finalFile = $file->getPathname();;
+        } else {
+            $finalFile = $file;
+        }
+        $url = "https://{$this->region}.bunnycdn.com/{$this->storageZone}/{$uploadPath}";
+        $maxRetries = 3;
+        $retryDelay = 2;
+        $attempts = 0;
+        while ($attempts < $maxRetries) {
+            try {
+                $response = $this->client->put($url, [
+                    'headers' => [
+                        'AccessKey' => $this->storageAccessKey,
+                    ],
+                    'body' => fopen($finalFile, 'r')
+                ]);
+                if ($response->getStatusCode() === 201) {
+                    return "https://{$this->cdnPullZone}.b-cdn.net/{$uploadPath}";
+                }
+                if ($attempts < $maxRetries - 1) {
+                    sleep($retryDelay);
+                    $retryDelay *= 2;
+                }
+            } catch (GuzzleException $e) {
+                if ($attempts < $maxRetries - 1) {
+                    sleep($retryDelay);
+                    $retryDelay *= 2;
+                }
+            }
+            $attempts++;
+        }
+        return false;
+    }
+
 
     /**
      * List files in a directory.

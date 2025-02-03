@@ -40,7 +40,7 @@ class EventController extends Controller
                     return '<a target="_blank" class="btn btn-label-linkedin" href="' . $row->event_link . '"> Link </a>';
                 })
                 ->addColumn('actions', function ($event) {
-                    return '<a href="' . route('events.edit', $event->id) . '" class="update-event btn btn-icon btn-outline-primary"><i class="bx bx-edit-alt"></i></a>
+                    return '<a href="' . route('events.edit', $event->id) . '" class="update-event btn btn-icon btn-outline-primary"><i class="bx bx-edit-alt" style="color:#696cff"></i></a>
                             <a href="#" data-url="' . route('events.delete', $event->id) . '" class="delete-event btn btn-icon btn-outline-primary"><i class="bx bx-trash" style="color:red"></i> </a>
                             <a title="Folders" href="' . route('folders.index', $event->id) . '" class="btn rounded-pill btn-icon btn-primary"><i class="bx bx-folder" style="color:white"></i> </a>';
                 })
