@@ -9,4 +9,8 @@ class FolderFile extends Model
 {
     use HasFactory;
     protected $guarded = [];
+
+    function folder() {
+        return $this->belongsTo(EventFolder::class, 'folder_id');
+    }
 }

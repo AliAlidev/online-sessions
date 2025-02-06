@@ -11,6 +11,12 @@
     <div class="menu-inner-shadow"></div>
 
     <ul class="menu-inner py-1">
+        <li class="menu-item class='menu-item' {{ Route::is('insights.*') ? 'active': ''}}" >
+            <a href="{{ route('insights.index') }}" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-home-smile"></i>
+                <div class="text-truncate" data-i18n="Dashboards">Insights</div>
+            </a>
+        </li>
         <li class="menu-item {{ Route::is('clients.*') || Route::is('roles.*') ? 'active open': ''}}">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="fa-solid fa-users" style="font-size: 20px; margin: 0 10px 0 0"></i>

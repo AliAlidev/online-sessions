@@ -31,12 +31,18 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
-    'bunny' => [
+    'bunny_image' => [
         'region' => env('BUNNY_REGION'),
         'storage_zone' => env('BUNNY_STORAGE_ZONE'),
         'storage_access_key' => env('BUNNY_STORAGE_ACCESS_KEY'),
         'api_key' => env('BUNNY_API_KEY'),
         'cdn_pull_zone' => env('CDN_PULL_ZONE')
+    ],
+
+    'bunny_video' => [
+        'api_key' => env('BUNNY_VIDEO_API_KEY'),
+        'library_id' => env('BUNNY_VIDEO_LIBRARY_ID'),
+        'base_url' => env('BUNNY_VIDEO_BASE_URL')
     ]
 
 ];

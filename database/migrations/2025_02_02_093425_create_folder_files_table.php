@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('file_status')->nullable();
             $table->string('file_type')->nullable();
             $table->string('file_size')->nullable();
+            $table->string('file_bunny_id')->nullable();
 
             $table->foreign('folder_id')->references('id')->on('event_folders')->onDelete('cascade');
             $table->timestamps();

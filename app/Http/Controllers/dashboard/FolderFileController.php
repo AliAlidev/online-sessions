@@ -7,17 +7,21 @@ use App\Http\Requests\events\files\CreateFileRequest;
 use App\Http\Requests\events\files\UpdateFileRequest;
 use App\Models\EventFolder;
 use App\Models\FolderFile;
-use App\Services\BunnyService;
+use App\Services\BunnyImageService;
+use App\Services\BunnyVideoService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
 
 class FolderFileController extends Controller
 {
-    protected BunnyService $bunnyService;
-    function __construct(BunnyService $bunnyService)
+    protected BunnyImageService $bunnyService;
+    protected BunnyVideoService $bunnyVideoService;
+
+    function __construct(BunnyImageService $bunnyService, BunnyVideoService $bunnyVideoService)
     {
         $this->bunnyService = $bunnyService;
+        $this->bunnyVideoService = $bunnyVideoService;
     }
 
     function index(Request $request, $folderId, $folderType)
@@ -80,9 +84,20 @@ class FolderFileController extends Controller
         $data['folder_id'] = $folderId;
         $data['file_type'] = $folderType;
         $folder = EventFolder::find($folderId);
-        $path = $folder->folder_name . '/'. $data['file_name'];
-        $path = $this->bunnyService->GuarantiedUploadFile($data['file'], $path);
-        $data['file'] = $path;
+        if ($folder->folder_type == 'image') {
+            $path = $folder->folder_name . '/' . $data['file_name'];
+            $path = $this->bunnyService->GuarantiedUploadFile($data['file'], $path);
+            if (!$path['success'])
+                return response()->json(['success' => false, 'message' => 'Error happen during image uploading']);
+            $data['file'] = $path;
+        } else if ($folder->folder_type == 'video') {
+            $path = $folder->folder_name . '/' . $data['file_name'];
+            $path = $this->bunnyVideoService->GuarantiedUploadVideo($data['file'], $path);
+            if (!$path['success'])
+                return response()->json(['success' => false, 'message' => 'Error happen during video uploading']);
+            $data['file'] = $path['path'];
+            $data['file_bunny_id'] = $path['guid'];
+        }
         FolderFile::create($data);
         return response()->json(['success' => true, 'message' => 'File has been uploaded successfully']);
     }
@@ -91,7 +106,27 @@ class FolderFileController extends Controller
     {
         $data = $request->validated();
         $file = FolderFile::find($data['file_id']);
-        $data['file'] = isset($data['file']) ? 'storage/' . uploadFile($data['file'], 'folder_files') : $file->file;
+        $folderType = $file->folder->folder_type;
+        if ($folderType == 'image') {
+            if (isset($data['file_name'])) {
+                $path = $file->folder->folder_name . '/' . $data['file_name'];
+                $path = $this->bunnyService->GuarantiedUploadFile($data['file'], $path);
+                if (!$path['success'])
+                    return response()->json(['success' => false, 'message' => 'Error happen during image uploading']);
+                $this->bunnyService->deleteFile($file->file);
+                $data['file'] = $path;
+            }
+        } else if ($folderType == 'video') {
+            if (isset($data['file_name'])) {
+                $path = $this->bunnyVideoService->GuarantiedUploadVideo($data['file']);
+                if (!$path['success'])
+                    return response()->json(['success' => false, 'message' => 'Error happen during video uploading']);
+                $this->bunnyVideoService->deleteVideo($file->file);
+                $data['file'] = $path['path'];
+                $data['file_bunny_id'] = $path['guid'];
+            }
+        }
+        $data['file'] = isset($data['file']) ? $data['file'] : $file->file;
         unset($data['file_id']);
         $file->update($data);
         return response()->json(['success' => true, 'message' => 'File has been updated successfully']);
@@ -99,10 +134,12 @@ class FolderFileController extends Controller
 
     function delete($id)
     {
-        $folder = FolderFile::find($id);
-        $file = str_replace("storage/", "", $folder->file);
-        deleteFile($file);
-        $folder->delete();
+        $file = FolderFile::find($id);
+        if ($file->file_type == 'video')
+            $file->file_bunny_id ? $this->bunnyVideoService->deleteVideo($file->file_bunny_id) : null;
+        else if ($file->file_type == 'image')
+            $this->bunnyService->deleteFile($file->file);
+        $file->delete();
         return response()->json(['success' => true, 'message' => 'File has been deleted successfully']);
     }
 }

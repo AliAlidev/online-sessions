@@ -6,7 +6,7 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Support\Facades\Log;
 
-class BunnyService
+class BunnyImageService
 {
     private $region;
     private $storageZone;
@@ -17,11 +17,14 @@ class BunnyService
 
     public function __construct()
     {
-        $this->region = config('services.bunny.region');
-        $this->storageZone = config('services.bunny.storage_zone');
-        $this->storageAccessKey = config('services.bunny.storage_access_key');
-        $this->apiKey = config('services.bunny.api_key');
-        $this->cdnPullZone = config('services.bunny.cdn_pull_zone');
+        $setting = getSetting();
+        if ($setting) {
+            $this->region = $setting['image']['storage_region'];
+            $this->storageZone = $setting['image']['storage_zone_name'];
+            $this->storageAccessKey = $setting['image']['storage_access_token'];
+            $this->apiKey = config('services.bunny.api_key');
+            $this->cdnPullZone = $setting['image']['image_pull_zone'];
+        }
         $this->client = new Client();
     }
 
@@ -63,7 +66,7 @@ class BunnyService
 
         $finalFile = null;
         if (!is_string($file) && $file->isValid()) {
-            $finalFile = $file->getPathname();;
+            $finalFile = $file->getPathname();
         } else {
             $finalFile = $file;
         }
@@ -108,7 +111,7 @@ class BunnyService
                     'body' => fopen($finalFile, 'r')
                 ]);
                 if ($response->getStatusCode() === 201) {
-                    return "https://{$this->cdnPullZone}.b-cdn.net/{$uploadPath}";
+                    return ['success' => true, 'path' => "https://{$this->cdnPullZone}.b-cdn.net/{$uploadPath}"];
                 }
                 if ($attempts < $maxRetries - 1) {
                     sleep($retryDelay);
@@ -122,7 +125,7 @@ class BunnyService
             }
             $attempts++;
         }
-        return false;
+        return ['success' => false, 'path' => null];
     }
 
 

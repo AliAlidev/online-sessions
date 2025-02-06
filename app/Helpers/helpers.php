@@ -2,6 +2,7 @@
 
 use App\Models\Client;
 use App\Models\Event;
+use App\Models\Setting;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -110,5 +111,17 @@ if (!function_exists('getClientsIncreasingCount')) {
             $sign = '';
         }
         return ['percentage' => $percentage, 'color' => $color, 'sign' => $sign];
+    }
+}
+
+if (!function_exists('getSetting')) {
+    function getSetting()
+    {
+        $settingImage = Setting::where('type', 'image')->first();
+        $settingVideo = Setting::where('type', 'video')->first();
+        return[
+            'image' => $settingImage?->data[0],
+            'video' => $settingVideo?->data[0]
+        ];
     }
 }

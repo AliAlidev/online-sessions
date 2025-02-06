@@ -7,6 +7,7 @@ use App\Http\Controllers\dashboard\FolderController;
 use App\Http\Controllers\dashboard\FolderFileController;
 use App\Http\Controllers\dashboard\RoleController;
 use App\Http\Controllers\Dashboard\SettingController;
+use App\Http\Controllers\InsightController;
 use App\Http\Controllers\landing\LandingPageEventController;
 use Illuminate\Support\Facades\Route;
 
@@ -22,6 +23,10 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/landing', 'App\Http\Controllers\GuestController@landing');
+
+Route::controller(InsightController::class)->prefix('insights')->name('insights.')->group(function(){
+    Route::get('/index', 'index')->name('index');
+});
 
 Route::controller(EventTypeController::class)->prefix('events-types')->name('events.types.')->group(function(){
     Route::get('/index', 'index')->name('index');
@@ -78,7 +83,7 @@ Route::controller(ClientController::class)->prefix('clients')->name('clients.')-
 });
 
 Route::controller(SettingController::class)->prefix('settings')->name('settings.')->group(function(){
-    Route::get('/bunny', 'bunnySetting')->name('bunny');
+    Route::match(['get','post'],'/bunny', 'bunnySetting')->name('bunny');
     // Route::get('/bunny-video', 'bunnyVideoSetting')->name('bunny.video');
 });
 

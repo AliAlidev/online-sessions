@@ -10,7 +10,7 @@ class Setting extends Model
     use HasFactory;
     protected $guarded = [];
 
-    protected $cast = [
+    protected $casts = [
         "data" => "array"
     ];
 }
