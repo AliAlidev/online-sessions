@@ -10,7 +10,13 @@ class EventFolder extends Model
     use HasFactory;
     protected $guarded = [];
 
-    function files() {
+    function files()
+    {
         return $this->hasMany(FolderFile::class, 'folder_id');
+    }
+
+    function event()
+    {
+        return $this->belongsTo(Event::class, 'event_id');
     }
 }

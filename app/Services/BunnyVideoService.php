@@ -19,9 +19,9 @@ class BunnyVideoService
     {
         $setting = getSetting();
         if ($setting) {
-            $this->apiKey = $setting['video']['video_api_key'];
-            $this->libraryId = $setting['video']['video_library_id'];
-            $this->streamPullZone = $setting['video']['stream_pull_zone'];
+            $this->apiKey = isset($setting['video']['video_api_key']) ? $setting['video']['video_api_key'] : null;
+            $this->libraryId = isset($setting['video']['video_library_id']) ? $setting['video']['video_library_id'] : null;
+            $this->streamPullZone = isset($setting['video']['stream_pull_zone']) ? $setting['video']['stream_pull_zone'] : null;
         }
     }
 
@@ -40,13 +40,13 @@ class BunnyVideoService
                 $body = '{
                    "title": "' . $file->getClientOriginalName() . '"
                 }';
-                $request = new Psr7Request('POST', 'https://video.bunnycdn.com/library/379365/videos', $headers, $body);
+                $request = new Psr7Request('POST', 'https://video.bunnycdn.com/library/' . $this->libraryId . '/videos', $headers, $body);
                 $res = $client->sendAsync($request)->wait();
                 $guid = json_decode($res->getBody(), true)['guid'];
 
                 //////////////
                 $body = $file->get();
-                $request = new Psr7Request('PUT', 'https://video.bunnycdn.com/library/379365/videos/' . $guid, $headers, $body);
+                $request = new Psr7Request('PUT', 'https://video.bunnycdn.com/library/' . $this->libraryId . '/videos/' . $guid, $headers, $body);
                 $res = $client->sendAsync($request)->wait();
                 if ($res->getStatusCode() == 200) {
                     return ['success' => true, 'path' => "https://video.bunnycdn.com/play/" . $this->libraryId . "/" . $guid, 'guid' => $guid];
@@ -96,6 +96,19 @@ class BunnyVideoService
             return true;
         else
             return false;
+    }
+
+    public function deleteMultipleVideos(array $videoIds)
+    {
+        $client = new Client();
+        $headers = [
+            'AccessKey' => $this->apiKey
+        ];
+        foreach ($videoIds as $key => $videoId) {
+            $request = new Psr7Request('DELETE', "https://video.bunnycdn.com/library/" . $this->libraryId . "/videos/" . $videoId, $headers);
+            $res = $client->sendAsync($request)->wait();
+        }
+        return true;
     }
 
     /**

@@ -88,6 +88,10 @@
             z-index: 1;
             /* Ensure it's above other elements */
         }
+
+        #qr-code-section:hover {
+            cursor: pointer;
+        }
     </style>
 @endsection
 
@@ -109,7 +113,7 @@
                                         <div class="col-md-6">
                                             <label class="form-label" for="basic-default-email">{{ __('Name') }}</label>
                                             <div class="input-group input-group-merge">
-                                                <input type="text" id="basic-default-email" class="form-control"
+                                                <input type="text" id="basic-default-email" class="form-control" {{ $event->canUpdateName() ? '' : 'readonly disabled' }}
                                                     name="event_name" value="{{ $event->event_name }}">
                                             </div>
                                             <small class="text-body float-start error-message-div event_name-error"
@@ -282,12 +286,14 @@
                                 @if ($event->organizers->count() > 0)
                                     @foreach ($event->organizers as $index => $organizer)
                                         <div class="row organizer-row mb-6">
-                                            <input type="hidden" class="organizer-model-id" id="" value="{{ $organizer->id }}">
+                                            <input type="hidden" class="organizer-model-id" id=""
+                                                value="{{ $organizer->id }}">
                                             <div class="col-md-4">
                                                 <select class="form-select organizers-organizer_id">
                                                     <option value="" selected disabled>Select Option</option>
                                                     @foreach ($clients as $key => $client)
-                                                        <option {{ $organizer->organizer_id== $key ? 'selected': '' }} value="{{ $key }}">{{ $client }}</option>
+                                                        <option {{ $organizer->organizer_id == $key ? 'selected' : '' }}
+                                                            value="{{ $key }}">{{ $client }}</option>
                                                     @endforeach
                                                 </select>
                                                 <small class="text-body float-start error-message-div"
@@ -297,7 +303,8 @@
                                                 <select class="form-select organizers-role_in_event">
                                                     <option value="" selected disabled>Role In Event</option>
                                                     @foreach ($roles as $key => $role)
-                                                        <option {{ $organizer->role_in_event == $key ? 'selected': '' }} value="{{ $key }}">{{ $role }}</option>
+                                                        <option {{ $organizer->role_in_event == $key ? 'selected' : '' }}
+                                                            value="{{ $key }}">{{ $role }}</option>
                                                     @endforeach
                                                 </select>
                                                 <small class="text-body float-start error-message-div"
@@ -305,7 +312,8 @@
                                             </div>
                                             <div class="col-md-4">
                                                 <button type="button"
-                                                    class="btn rounded-pill btn-icon btn-danger remove-row organizer-remove-button" {{ $index !=0 ? '' : 'hidden' }}>
+                                                    class="btn rounded-pill btn-icon btn-danger remove-row organizer-remove-button"
+                                                    {{ $index != 0 ? '' : 'hidden' }}>
                                                     <span class="fa fa-minus" style="font-size: 15px"></span>
                                                 </button>
                                             </div>
@@ -334,7 +342,8 @@
                                                 style="color: #ff0000 !important" hidden></small>
                                         </div>
                                         <div class="col-md-4">
-                                            <button type="button" class="btn rounded-pill btn-icon btn-danger remove-row organizer-remove-button"
+                                            <button type="button"
+                                                class="btn rounded-pill btn-icon btn-danger remove-row organizer-remove-button"
                                                 hidden>
                                                 <span class="fa fa-minus" style="font-size: 15px"></span>
                                             </button>
@@ -417,18 +426,19 @@
                                         </div>
                                     </div>
                                     <div class="row mb-6">
-                                        <input type="hidden" name="accent_color" id="event-accent-color" value="{{ $event->setting?->accent_color }}">
+                                        <input type="hidden" name="accent_color" id="event-accent-color"
+                                            value="{{ $event->setting?->accent_color }}">
                                         <div class="col-md-6">
                                             <label class="form-label">Select Accent Color</label>
                                             <div class="color-picker">
-                                                <div class="color-box {{ $event->setting?->accent_color == '#b71c1c' ? 'selected' : '' }}" style="background-color: #b71c1c;"
-                                                    data-color="#b71c1c"></div>
-                                                <div class="color-box {{ $event->setting?->accent_color == '#1a237e' ? 'selected' : '' }}" style="background-color: #1a237e;"
-                                                    data-color="#1a237e"></div>
-                                                <div class="color-box {{ $event->setting?->accent_color == '#2e7d32' ? 'selected' : '' }}" style="background-color: #2e7d32;"
-                                                    data-color="#2e7d32"></div>
-                                                <div class="color-box {{ $event->setting?->accent_color == '#00838f' ? 'selected' : '' }}" style="background-color: #00838f;"
-                                                    data-color="#00838f"></div>
+                                                <div class="color-box {{ $event->setting?->accent_color == '#b71c1c' ? 'selected' : '' }}"
+                                                    style="background-color: #b71c1c;" data-color="#b71c1c"></div>
+                                                <div class="color-box {{ $event->setting?->accent_color == '#1a237e' ? 'selected' : '' }}"
+                                                    style="background-color: #1a237e;" data-color="#1a237e"></div>
+                                                <div class="color-box {{ $event->setting?->accent_color == '#2e7d32' ? 'selected' : '' }}"
+                                                    style="background-color: #2e7d32;" data-color="#2e7d32"></div>
+                                                <div class="color-box {{ $event->setting?->accent_color == '#00838f' ? 'selected' : '' }}"
+                                                    style="background-color: #00838f;" data-color="#00838f"></div>
                                             </div>
                                         </div>
                                         <div class="col-md-6 mt-7">
@@ -495,7 +505,7 @@
             $('.organizer-row').each(function(index, item) {
                 var clientId = $(item).find('.organizers-organizer_id :selected').val();
                 var roleId = $(item).find('.organizers-role_in_event :selected').val();
-                var organizerModelId = $(item).find('.organizer-model-id').val()??'';
+                var organizerModelId = $(item).find('.organizer-model-id').val() ?? '';
                 formData.append(`organizers[${index}][organizer_id]`, clientId);
                 formData.append(`organizers[${index}][role_in_event]`, roleId);
                 formData.append(`organizers[${index}][organizer_model_id]`, organizerModelId);
@@ -530,7 +540,9 @@
                                 var elementError = fieldName[2];
                                 $('.organizer-row').each(function(index, item) {
                                     if (indexError == index) {
-                                        var errorDiv = $(item).find('.organizers-' + elementError).closest('.col-md-4').find('.error-message-div');
+                                        var errorDiv = $(item).find('.organizers-' +
+                                            elementError).closest('.col-md-4').find(
+                                            '.error-message-div');
                                         console.log('.organizers-' + elementError);
 
                                         errorDiv.text("The " + elementError +
@@ -578,8 +590,11 @@
         })
 
         function generateQRCode(customer) {
-            var year = new Date().getFullYear();
-            var month = new Date().getMonth() + 1;
+            var dateTimeValue = $("input[name='start_date']").val();
+            if (dateTimeValue == '')
+                dateTimeValue = new Date();
+            var year = new Date(dateTimeValue).getFullYear();
+            var month = new Date(dateTimeValue).getMonth() + 1;
             var url = "{{ url('/') }}/events/" + year + "/" + month + "/" + getSlug(customer);
             $('#urlInput').val(url);
             new QRCode(document.getElementById("qr-code-section"), {
@@ -621,7 +636,7 @@
                 $('.organizer-container').append(newOrganizerRow);
             });
 
-            $(document).on('click', '.organizer-remove-button', function(){
+            $(document).on('click', '.organizer-remove-button', function() {
                 $(this).closest('.organizer-row').remove();
             })
         });
@@ -718,5 +733,18 @@
             var customer = $('#event-customer-name').val();
             generateQRCode(customer);
         })
+    </script>
+
+    <script>
+        $("#qr-code-section").click(function() {
+            let qrImage = $(this).find('img').attr("src"); // Get image source
+            let link = $("<a>").attr({
+                href: qrImage,
+                download: "QR_Code.png"
+            }).appendTo("body");
+
+            link[0].click();
+            link.remove();
+        });
     </script>
 @endsection

@@ -2,13 +2,13 @@
 
 namespace App\Services;
 
+use App\Models\FolderFile;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Support\Facades\Log;
 
 class BunnyImageService
 {
-    private $region;
     private $storageZone;
     private $storageAccessKey;
     private $apiKey;
@@ -19,11 +19,10 @@ class BunnyImageService
     {
         $setting = getSetting();
         if ($setting) {
-            $this->region = $setting['image']['storage_region'];
-            $this->storageZone = $setting['image']['storage_zone_name'];
-            $this->storageAccessKey = $setting['image']['storage_access_token'];
+            $this->storageZone = isset($setting['image']['storage_zone_name'])? $setting['image']['storage_zone_name']: null;
+            $this->storageAccessKey = isset($setting['image']['storage_access_token'])? $setting['image']['storage_access_token']:null;
             $this->apiKey = config('services.bunny.api_key');
-            $this->cdnPullZone = $setting['image']['image_pull_zone'];
+            $this->cdnPullZone = isset($setting['image']['image_pull_zone'])? $setting['image']['image_pull_zone']: null;
         }
         $this->client = new Client();
     }
@@ -62,7 +61,7 @@ class BunnyImageService
      */
     public function uploadFile($file, $uploadPath)
     {
-        $url = "https://{$this->region}.bunnycdn.com/{$this->storageZone}/{$uploadPath}";
+        $url = "https://storage.bunnycdn.com/{$this->storageZone}/{$uploadPath}";
 
         $finalFile = null;
         if (!is_string($file) && $file->isValid()) {
@@ -98,7 +97,7 @@ class BunnyImageService
         } else {
             $finalFile = $file;
         }
-        $url = "https://{$this->region}.bunnycdn.com/{$this->storageZone}/{$uploadPath}";
+        $url = "https://storage.bunnycdn.com/{$this->storageZone}/{$uploadPath}";
         $maxRetries = 3;
         $retryDelay = 2;
         $attempts = 0;
@@ -137,7 +136,7 @@ class BunnyImageService
      */
     public function listFiles($directory = '')
     {
-        $url = "https://{$this->region}.bunnycdn.com/{$this->storageZone}/{$directory}";
+        $url = "https://storage.bunnycdn.com/{$this->storageZone}/{$directory}";
 
         try {
             $response = $this->client->get($url, [
@@ -159,10 +158,14 @@ class BunnyImageService
      * @param string $filePath
      * @return bool
      */
-    public function deleteFile($filePath)
+    public function deleteFile($file, $withModelData = true)
     {
-        $url = "https://{$this->region}.bunnycdn.com/{$this->storageZone}/{$filePath}";
-
+        if($withModelData ){
+            $path = $file->folder->event->bunny_main_folder_name .'/'. $file->folder->event->event_name  . '/'. $file->folder->bunny_folder_name . '/' . $file->file_name;
+            $url = "https://storage.bunnycdn.com/{$this->storageZone}/{$path}";
+        }else{
+            $url = "https://storage.bunnycdn.com/{$this->storageZone}/{$file}";
+        }
         try {
             $response = $this->client->delete($url, [
                 'headers' => [
@@ -374,7 +377,7 @@ class BunnyImageService
         foreach ($files as $file) {
             $filePath = $folderPath . $file['ObjectName'];
 
-            if (!$this->deleteFile($filePath)) {
+            if (!$this->deleteFile($filePath, false)) {
                 Log::error('Failed to delete file: ' . $filePath);
                 return false;
             }
@@ -392,7 +395,7 @@ class BunnyImageService
      */
     public function downloadFile($filePath, $destination)
     {
-        $url = "https://{$this->region}.bunnycdn.com/{$this->storageZone}/{$filePath}";
+        $url = "https://storage.bunnycdn.com/{$this->storageZone}/{$filePath}";
         try {
             $response = $this->client->get($url, [
                 'headers' => [

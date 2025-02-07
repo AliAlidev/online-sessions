@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('events', function (Blueprint $table) {
             $table->id();
             $table->string('event_name');
+            $table->string('bunny_event_name');
             $table->unsignedBigInteger('event_type_id')->nullable();
             $table->unsignedBigInteger('client_id')->nullable();
             $table->string('customer');
@@ -28,6 +29,7 @@ return new class extends Migration
             $table->string('event_link');
             $table->string('event_password')->nullable();
             $table->string('qr_code');
+            $table->string('bunny_main_folder_name')->nullable();
             $table->timestamps();
 
             // Foreign key constraint for client_id

@@ -10,6 +10,7 @@ use App\Models\Client;
 use App\Models\Event;
 use App\Models\EventSetting;
 use App\Models\EventType;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Role;
 use Yajra\DataTables\DataTables;
@@ -22,7 +23,7 @@ class EventController extends Controller
             $events = Event::orderBy('created_at', 'desc')->get();
             return DataTables::of($events)
                 ->editColumn('qr_code', function ($row) {
-                    return '<img src="/' . $row->qr_code . '" alt="" width="100px" height="100px">';
+                    return '<a href="/' . $row->qr_code . '" download><img src="/' . $row->qr_code . '" alt="" width="100px" height="100px"></a>';
                 })
                 ->editColumn('profile_picture', function ($row) {
                     return $row->profile_picture ? '<img src="/' . $row->profile_picture . '" alt="" width="100px" height="100px">' : '';
@@ -81,6 +82,7 @@ class EventController extends Controller
             'event_password' => $data['event_password'],
             'welcome_message' => $data['welcome_message'],
             'qr_code' => $data['qr_code'],
+            'bunny_main_folder_name' => Carbon::parse($data['start_date'])->year
         ]);
         $event->setting()->create([
             'image_share_guest_book' => isset($data['image_share_guest_book']) && $data['image_share_guest_book'] == 'on' ? 1 : 0,
@@ -125,7 +127,7 @@ class EventController extends Controller
             'accent_color' => isset($data['accent_color']) ? $data['accent_color'] : '',
             'font' => isset($data['font']) ? $data['font'] : ''
         ]);
-        $event->update([
+        $eventData = [
             'event_name' => $data['event_name'],
             'cover_image' => $data['cover_image'],
             'event_type_id' => $data['event_type_id'],
@@ -140,8 +142,11 @@ class EventController extends Controller
             'event_link' => $data['event_link'],
             'event_password' => $data['event_password'],
             'welcome_message' => $data['welcome_message'],
-            'qr_code' => $data['qr_code'],
-        ]);
+            'qr_code' => $data['qr_code']
+        ];
+        if (!$event->canUpdateName())
+            unset($eventData['event_name']);
+        $event->update($eventData);
         $event->organizers()->whereNotIn('id', array_column($data['organizers'], 'organizer_model_id'))->delete();
         array_map(function ($organizer) use ($event) {
             if (isset($organizer['organizer_model_id'])) {

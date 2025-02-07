@@ -28,4 +28,69 @@
     });
 </script>
 
+<script>
+    var oldContent;
+
+    function showLoader(button) {
+        if ($(button).is('a')) {
+            oldContent = $(button).find('i');
+            $(button).find('i').hide();
+            $(button).append(
+                '<span class="spinner-border spinner-border-sm" role="status"></span>'
+            );
+        } else {
+            oldContent = $(button).parent().find('i');
+            $(button).parent().append(
+                '<span class="spinner-border spinner-border-sm" role="status"></span>'
+            );
+            $(button).parent().find('i').hide();
+        }
+    }
+
+    function hideLoader(button) {
+        if ($(button).is('a')) {
+            $(button).find('span').hide();
+            oldContent.show();
+        } else {
+            $(button).parent().find('span').hide();
+            oldContent.show();
+        }
+    }
+
+    function deleteItem(url, table, button) {
+        $.ajax({
+            url: url,
+            type: 'GET',
+            beforeSend: function() {
+                showLoader(button);
+            },
+            success: function(response) {
+                if (response.success) {
+                    hideLoader(button);
+                    table.draw();
+                    Swal.fire(
+                        'Deleted!',
+                        'The item has been deleted.',
+                        'success'
+                    );
+                } else {
+                    hideLoader(button);
+                    Swal.fire(
+                        'Error!',
+                        'There was a problem deleting the item.',
+                        'error'
+                    );
+                }
+            },
+            error: function() {
+                Swal.fire(
+                    'Error!',
+                    'There was an error with the request.',
+                    'error'
+                );
+            }
+        });
+    }
+</script>
+
 @yield('scripts')

@@ -88,6 +88,10 @@
             z-index: 1;
             /* Ensure it's above other elements */
         }
+
+        #qr-code-section:hover {
+            cursor: pointer;
+        }
     </style>
 @endsection
 
@@ -477,8 +481,11 @@
                                 var elementError = fieldName[2];
                                 $('.organizer-row').each(function(index, item) {
                                     if (indexError == index) {
-                                        var errorDiv = $(item).find('.organizers-'+ elementError).closest('.col-md-4').find('.error-message-div');
-                                        errorDiv.text("The " + elementError+ " field is required");
+                                        var errorDiv = $(item).find('.organizers-' +
+                                            elementError).closest('.col-md-4').find(
+                                            '.error-message-div');
+                                        errorDiv.text("The " + elementError +
+                                            " field is required");
                                         errorDiv.attr('hidden', false);
                                     }
                                 });
@@ -517,8 +524,11 @@
             $('#urlInput').val('');
             var customer = $(this).val();
             if (customer) {
-                var year = new Date().getFullYear();
-                var month = new Date().getMonth() + 1;
+                var dateTimeValue = $("input[name='start_date']").val();
+                if (dateTimeValue == '')
+                    dateTimeValue = new Date();
+                var year = new Date(dateTimeValue).getFullYear();
+                var month = new Date(dateTimeValue).getMonth() + 1;
                 var url = "{{ url('/') }}/events/" + year + "/" + month + "/" + getSlug(customer);
                 $('#urlInput').val(url);
                 new QRCode(document.getElementById("qr-code-section"), {
@@ -647,5 +657,18 @@
             // Join the parts and return the result
             return duration.length > 0 ? duration.join(", ") : "No difference";
         }
+    </script>
+
+    <script>
+        $("#qr-code-section").click(function() {
+            let qrImage = $(this).find('img').attr("src"); // Get image source
+            let link = $("<a>").attr({
+                href: qrImage,
+                download: "QR_Code.png"
+            }).appendTo("body");
+
+            link[0].click();
+            link.remove();
+        });
     </script>
 @endsection

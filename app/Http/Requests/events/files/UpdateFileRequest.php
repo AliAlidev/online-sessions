@@ -28,7 +28,7 @@ class UpdateFileRequest extends FormRequest
             'file_type'=>'nullable',
             'file_size'=>'nullable',
             'description'=>'nullable',
-            'file_status'=>'nullable',
+            'file_status'=>'required',
             'file_name' => 'nullable'
         ];
     }

@@ -47,7 +47,8 @@
                 <div class="d-md-flex justify-content-between align-items-center dt-layout-start col-md-auto me-auto mt-0">
                     <h5 class="mb-0">{{ __('Event Folders List') }}</h5>
                 </div>
-                <div class="d-md-flex justify-content-between align-items-center dt-layout-end col-md-auto ms-auto mt-0" style="gap: 10px">
+                <div class="d-md-flex justify-content-between align-items-center dt-layout-end col-md-auto ms-auto mt-0"
+                    style="gap: 10px">
                     <a href="javascript:history.back()" class="btn btn-label-primary btn-sm">Back</a>
                     <div class="dt-buttons btn-group flex-wrap mb-0">
                         <button class="btn btn-sm btn-primary" data-bs-target="#CreateFolderModal" data-bs-toggle="modal"
@@ -69,6 +70,7 @@
                                 <th class="control dt-orderable-none">ID</th>
                                 <th class="control dt-orderable-none">Event</th>
                                 <th class="control dt-orderable-none">Folder Name</th>
+                                <th class="control dt-orderable-none">Bunny Folder Name</th>
                                 <th class="control dt-orderable-none">Folder Type</th>
                                 <th class="control dt-orderable-none">Description</th>
                                 <th class="control dt-orderable-none">Folder Thumbnail</th>
@@ -256,6 +258,10 @@
                         name: 'folder_name'
                     },
                     {
+                        data: 'bunny_folder_name',
+                        name: 'bunny_folder_name'
+                    },
+                    {
                         data: 'folder_type',
                         name: 'folder_type'
                     },
@@ -313,7 +319,7 @@
                     reverseButtons: true
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        deleteItem(url, table);
+                        deleteItem(url, table, e.target);
                     }
                 });
             });
@@ -338,36 +344,6 @@
                     }
                 })
             });
-
-            function deleteItem(url, table) {
-                $.ajax({
-                    url: url,
-                    type: 'GET',
-                    success: function(response) {
-                        if (response.success) {
-                            table.draw();
-                            Swal.fire(
-                                'Deleted!',
-                                'The item has been deleted.',
-                                'success'
-                            );
-                        } else {
-                            Swal.fire(
-                                'Error!',
-                                'There was a problem deleting the item.',
-                                'error'
-                            );
-                        }
-                    },
-                    error: function() {
-                        Swal.fire(
-                            'Error!',
-                            'There was an error with the request.',
-                            'error'
-                        );
-                    }
-                });
-            }
 
             $('#createFolder').submit(function(e) {
                 e.preventDefault();

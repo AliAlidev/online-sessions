@@ -115,7 +115,7 @@
     <div class="modal fade" id="CreateFileModal" tabindex="-1" style="display: none;" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
-                <form id="createFile">
+                <form id="createFileForm">
                     <input type="hidden" class="uploaded-file-name-input" name="file_name">
                     <div class="modal-header">
                         <h5 class="modal-title" id="modalCenterTitle">Upload New {{ ucfirst($folderType) }}</h5>
@@ -172,10 +172,9 @@
                         </button>
                     </div>
 
-
                     <div class="progress" style="display: none; height: 10px;" id="uploadProgress">
-                        <div class="progress-bar" role="progressbar" style="width: 0%; height:10px; font-size: 7px" aria-valuenow="0"
-                            aria-valuemin="0" aria-valuemax="100">
+                        <div class="progress-bar" role="progressbar" style="width: 0%; height:10px; font-size: 7px"
+                            aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
                             0%
                         </div>
                     </div>
@@ -395,7 +394,7 @@
                     reverseButtons: true
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        deleteItem(url, table);
+                        deleteItem(url, table, e.target);
                     }
                 });
             });
@@ -450,137 +449,149 @@
                 }
             });
 
-            function deleteItem(url, table) {
-                $.ajax({
-                    url: url,
-                    type: 'GET',
-                    success: function(response) {
-                        if (response.success) {
-                            table.draw();
-                            Swal.fire(
-                                'Deleted!',
-                                'The item has been deleted.',
-                                'success'
-                            );
-                        } else {
-                            Swal.fire(
-                                'Error!',
-                                'There was a problem deleting the item.',
-                                'error'
-                            );
-                        }
-                    },
-                    error: function() {
-                        Swal.fire(
-                            'Error!',
-                            'There was an error with the request.',
-                            'error'
-                        );
-                    }
-                });
-            }
-
-            $('#createFile').submit(function(e) {
+            $('#createFileForm').submit(function(e) {
                 e.preventDefault();
                 clearErrors();
                 var formData = new FormData(this);
                 let csrfToken = $('meta[name="csrf-token"]').attr('content');
                 var submitBtn = $("#storeButton");
                 var spinner = submitBtn.find('#spinner');
-
                 submitBtn.prop('disabled', true);
                 spinner.show();
-
                 var xhr = new XMLHttpRequest();
-
-                // Open the request first
-                xhr.open('POST',
-                    "{{ route('files.store', [request()->route('folder_id'), request()->route('type')]) }}",
-                    true);
-
-                // Now set the CSRF token header after the request is opened
+                xhr.open('POST', "{{ route('files.store', [request()->route('folder_id'), request()->route('type')]) }}",true);
                 xhr.setRequestHeader('X-CSRF-TOKEN', csrfToken);
+                xhr.setRequestHeader('accept', 'application/json');
                 var progressBarWrapper = document.getElementById('uploadProgress');
                 progressBarWrapper.style.display = 'block';
-
-                // Handle progress event for client-side upload
                 var progressBar = document.querySelector('.progress-bar');
-                xhr.upload.onprogress = function(event) {
-                    if (event.lengthComputable) {
-                        var uploadPercent = (event.loaded / event.total) * 100;
-                        uploadPercent = parseInt(uploadPercent);
-                        progressBar.style.width = uploadPercent + '%';
-                        progressBar.textContent = Math.round(uploadPercent) + '%';
-                        progressBar.setAttribute('aria-valuenow', uploadPercent);
-                    }
-                };
-
-                // Handle load event (success)
+                var fileInput = document.getElementById('file');
+                if (fileInput.files.length > 0) {
+                    xhr.upload.onprogress = function(event) {
+                        if (event.lengthComputable) {
+                            var uploadPercent = (event.loaded / event.total) * 100;
+                            uploadPercent = parseInt(uploadPercent);
+                            progressBar.style.width = uploadPercent + '%';
+                            progressBar.textContent = Math.round(uploadPercent) + '%';
+                            progressBar.setAttribute('aria-valuenow', uploadPercent);
+                        }
+                    };
+                }
                 xhr.onload = function() {
+                    let response = JSON.parse(xhr.responseText);
                     if (xhr.status === 200) {
                         spinner.hide();
                         submitBtn.prop('disabled', false);
                         $('#CreateFileModal').modal('hide');
-                        resetForm('createFile');
+                        resetForm('createFileForm');
                         table.draw();
-                        showAlertMessage(xhr.message);
+                        var responseJson = JSON.parse(xhr.response);
+                        showAlertMessage(responseJson.message);
                         var progressBar = document.querySelector('.progress-bar');
                         progressBar.style.width = '100%';
                         progressBar.textContent = '100%';
                         progressBar.setAttribute('aria-valuenow', 100);
+                    } else if (xhr.status === 422) {
+                        let errorMessages = response.errors;
+                        Object.keys(errorMessages).forEach(function(key) {
+                            let inputField = $(`.${key}-error`);
+                            inputField.attr('hidden', false);
+                            inputField.text(errorMessages[key][0]);
+                        });
+                        spinner.hide();
+                        submitBtn.prop('disabled', false);
                     } else {
-                        alert('Error uploading file');
+                        var responseJson = JSON.parse(xhr.response);
+                        spinner.hide();
+                        submitBtn.prop('disabled', false);
+                        showErrorMessage(responseJson.message);
                     }
                 };
-
-                // Handle error event
                 xhr.onerror = function() {
+                    spinner.hide();
+                    submitBtn.prop('disabled', false);
                     alert('Error uploading file');
                 };
+                xhr.send(formData);
+            });
 
-                // Send the request with FormData
+            $('#updateFileForm').submit(function(e) {
+                e.preventDefault();
+                clearErrors();
+                var formData = new FormData(this);
+                let csrfToken = $('meta[name="csrf-token"]').attr('content');
+                var submitBtn = $("#updateButton");
+                var spinner = submitBtn.find('#spinner');
+                submitBtn.prop('disabled', true);
+                spinner.show();
+                var xhr = new XMLHttpRequest();
+                var id = $('#updateFileId').val();
+                var url = "{{ url('files/update') }}/" + id;
+
+                xhr.open('POST', url,true);
+                xhr.setRequestHeader('X-CSRF-TOKEN', csrfToken);
+                xhr.setRequestHeader('accept', 'application/json');
+                var progressBarWrapper = document.getElementById('uploadProgress');
+                progressBarWrapper.style.display = 'block';
+                var progressBar = document.querySelector('.progress-bar');
+                var fileInput = document.getElementById('file');
+                if (fileInput.files.length > 0) {
+                    xhr.upload.onprogress = function(event) {
+                        if (event.lengthComputable) {
+                            var uploadPercent = (event.loaded / event.total) * 100;
+                            uploadPercent = parseInt(uploadPercent);
+                            progressBar.style.width = uploadPercent + '%';
+                            progressBar.textContent = Math.round(uploadPercent) + '%';
+                            progressBar.setAttribute('aria-valuenow', uploadPercent);
+                        }
+                    };
+                }
+                xhr.onload = function() {
+                    let response = JSON.parse(xhr.responseText);
+                    if (xhr.status === 200) {
+                        spinner.hide();
+                        submitBtn.prop('disabled', false);
+                        $('#UpdateFileModal').modal('hide');
+                        resetForm('updateFileForm');
+                        table.draw();
+                        var responseJson = JSON.parse(xhr.response);
+                        showAlertMessage(responseJson.message);
+                        var progressBar = document.querySelector('.progress-bar');
+                        progressBar.style.width = '100%';
+                        progressBar.textContent = '100%';
+                        progressBar.setAttribute('aria-valuenow', 100);
+                    } else if (xhr.status === 422) {
+                        let errorMessages = response.errors;
+                        Object.keys(errorMessages).forEach(function(key) {
+                            let inputField = $(`.${key}-error`);
+                            inputField.attr('hidden', false);
+                            inputField.text(errorMessages[key][0]);
+                        });
+                        spinner.hide();
+                        submitBtn.prop('disabled', false);
+                    } else {
+                        var responseJson = JSON.parse(xhr.response);
+                        spinner.hide();
+                        submitBtn.prop('disabled', false);
+                        showErrorMessage(responseJson.message);
+                    }
+                };
+                xhr.onerror = function() {
+                    spinner.hide();
+                    submitBtn.prop('disabled', false);
+                    alert('Error uploading file');
+                };
                 xhr.send(formData);
 
 
-                // var xhr = new XMLHttpRequest();
-                // xhr.setRequestHeader('X-CSRF-TOKEN', csrfToken);
-
-                // // Set up progress event
-                // xhr.upload.onprogress = function(event) {
-                //     if (event.lengthComputable) {
-                //         var percent = (event.loaded / event.total) * 100;
-                //         $('#fileProgress').val(percent); // Update progress bar
-                //         $('#progressText').text(Math.round(percent) + '%'); // Update percentage text
-                //     }
-                // };
-
-                // xhr.onload = function() {
-                //     if (xhr.status === 200) {
-                //         spinner.hide();
-                //         submitBtn.prop('disabled', false);
-                //         $('#CreateFileModal').modal('hide');
-                //         resetForm('createFile');
-                //         table.draw();
-                //         showAlertMessage(xhr.message);
-                //     } else {
-                //         // Handle error
-                //         alert('Error uploading file');
-                //     }
-                // };
-
-                // xhr.onerror = function() {
-                //     spinner.hide();
-                //     submitBtn.prop('disabled', false);
-                // };
-
-                // // Open the request and send the data
-                // xhr.open('POST',
-                //     "{{ route('files.store', [request()->route('folder_id'), request()->route('type')]) }}",
-                //     true);
-                // xhr.send(formData);
-
+                // e.preventDefault();
+                // var formData = new FormData(this);
+                // let csrfToken = $('meta[name="csrf-token"]').attr('content');
+                // var submitBtn = $("#updateButton");
+                // var spinner = submitBtn.find('#spinner');
+                // var id = $('#FileId').val();
                 // $.ajax({
-                //     url: "{{ route('files.store', [request()->route('folder_id'), request()->route('type')]) }}",
+                //     url: "{{ url('files/update') }}/" + id,
                 //     type: 'POST',
                 //     processData: false,
                 //     contentType: false,
@@ -596,8 +607,7 @@
                 //     success: function(response) {
                 //         spinner.hide();
                 //         submitBtn.prop('disabled', false);
-                //         $('#CreateFileModal').modal('hide');
-                //         resetForm('createFile');
+                //         $('#UpdateFileModal').modal('hide');
                 //         table.draw();
                 //         showAlertMessage(response.message)
                 //     },
@@ -614,49 +624,6 @@
                 //         submitBtn.prop('disabled', false);
                 //     }
                 // });
-            });
-
-            $('#updateFileForm').submit(function(e) {
-                e.preventDefault();
-                var formData = new FormData(this);
-                let csrfToken = $('meta[name="csrf-token"]').attr('content');
-                var submitBtn = $("#updateButton");
-                var spinner = submitBtn.find('#spinner');
-                var id = $('#FileId').val();
-                $.ajax({
-                    url: "{{ url('files/update') }}/" + id,
-                    type: 'POST',
-                    processData: false,
-                    contentType: false,
-                    data: formData,
-                    dataType: "json",
-                    headers: {
-                        "X-CSRF-TOKEN": csrfToken
-                    },
-                    beforeSend: function() {
-                        submitBtn.prop('disabled', true);
-                        spinner.show();
-                    },
-                    success: function(response) {
-                        spinner.hide();
-                        submitBtn.prop('disabled', false);
-                        $('#UpdateFileModal').modal('hide');
-                        table.draw();
-                        showAlertMessage(response.message)
-                    },
-                    error: function(xhr) {
-                        if (xhr.status === 422) {
-                            let errors = xhr.responseJSON.errors;
-                            $.each(errors, function(field, messages) {
-                                let inputField = $(`.${field}-error`);
-                                inputField.attr('hidden', false);
-                                inputField.text(messages[0]);
-                            });
-                        }
-                        spinner.hide();
-                        submitBtn.prop('disabled', false);
-                    }
-                });
             });
 
             $('#UpdateFileModal,#CreateFileModal').on('hidden.bs.modal', function() {
@@ -712,6 +679,11 @@
             });
 
             $('#filesLink,#filesLinkInput').parent().attr('hidden', true);
+
+            var progressBar = document.querySelector('.progress-bar');
+            progressBar.style.width = '0%';
+            progressBar.textContent = '0%';
+            progressBar.setAttribute('aria-valuenow', 0);
         }
     </script>
 
@@ -719,6 +691,23 @@
         function showAlertMessage(message) {
             var element = `<div class="d-flex justify-content-end global-alert-section" style="margin-right: 25px">
             <div class="bs-toast toast fade show bg-success" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header">
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+                ${message}
+            </div>
+            </div>
+            </div>`;
+            $('.content-wrapper').prepend(element);
+            setTimeout(() => {
+                $('.global-alert-section').remove();
+            }, 5000);
+        }
+
+        function showErrorMessage(message) {
+            var element = `<div class="d-flex justify-content-end global-alert-section" style="margin-right: 25px">
+            <div class="bs-toast toast fade show bg-danger" role="alert" aria-live="assertive" aria-atomic="true">
             <div class="toast-header">
                 <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
             </div>

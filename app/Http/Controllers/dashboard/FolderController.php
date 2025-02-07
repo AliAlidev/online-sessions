@@ -7,6 +7,7 @@ use App\Http\Requests\events\folders\CreateFolderRequest;
 use App\Http\Requests\events\folders\UpdateFolderRequest;
 use App\Models\Event;
 use App\Models\EventFolder;
+use App\Models\FolderFile;
 use Illuminate\Support\Str;
 use App\Services\BunnyImageService;
 use App\Services\bunnyVideoService;
@@ -29,16 +30,21 @@ class FolderController extends Controller
             $folders = Event::find($eventId)->folders;
             return DataTables::of($folders)
                 ->addColumn('actions', function ($folder) {
-                    return '<a data-id="' . $folder->id . '" href="' . route('folders.update', $folder->id) . '" class="update-folder btn btn-icon btn-outline-primary"><i class="bx bx-edit-alt" style="color:#696cff"></i></a>
-                            <a href="#" data-url="' . route('folders.delete', $folder->id) . '" class="delete-folder btn btn-icon btn-outline-primary"><i class="bx bx-trash" style="color:red"></i> </a>
-                            <a title="Files" href="' . route('files.index', [$folder->id, $folder->folder_type]) . '" class="btn rounded-pill btn-icon btn-primary"><i class="bx bx-file" style="color:white"></i> </a>';
+                    $row = '<a data-id="' . $folder->id . '" href="' . route('folders.update', $folder->id) . '" class="update-folder btn btn-icon btn-outline-primary"><i class="bx bx-edit-alt" style="color:#696cff"></i></a>
+                            <a href="#" data-url="' . route('folders.delete', $folder->id) . '" class="delete-folder btn btn-icon btn-outline-primary"><i class="bx bx-trash" style="color:red"></i></a>';
+                    if ($folder->folder_type != "link")
+                        $row .= ('<a title="Files" href="' . route('files.index', [$folder->id, $folder->folder_type]) . '" class="btn rounded-pill btn-icon btn-primary" style="margin-left:3px"><i class="bx bx-file" style="color:white"></i> </a>');
+                    return $row;
                 })
                 ->addIndexColumn()
+                ->editColumn('event_id', function ($row) {
+                    return $row->event->event_name;
+                })
                 ->editColumn('folder_thumbnail', function ($row) {
-                    return '<img src="/' . $row->folder_thumbnail . '" alt="" width="100px" height="100px">';
+                    return $row->folder_thumbnail ? '<img src="/' . $row->folder_thumbnail . '" alt="" width="100px" height="100px">' : null;
                 })
                 ->editColumn('folder_link', function ($row) {
-                    return '<a target="_blank" class="btn btn-label-linkedin" href="' . $row->folder_link . '"> Link </a>';
+                    return $row->folder_type == "link" ? '<a target="_blank" class="btn btn-label-linkedin" href="' . $row->folder_link . '"> Link </a>':null;
                 })
                 ->rawColumns(['folder_thumbnail', 'folder_link', 'actions'])
                 ->make(true);
@@ -58,12 +64,9 @@ class FolderController extends Controller
         $data['folder_thumbnail'] = isset($data['folder_thumbnail']) ? 'storage/' . uploadFile($data['folder_thumbnail'], 'folder_thumbnail') : null;
         $data['event_id'] = $eventId;
         $data['folder_name'] = Str::slug($data['folder_name']);
+        $data['bunny_folder_name'] = $data['folder_name'];
         EventFolder::create($data);
         return response()->json(['success' => true, 'message' => 'Folder has been created successfully']);
-        // $fileName = Str::slug($data['folder_name']);
-        // $data['bunny_cdn_link'] = config('services.bunny.cdn_pull_zone') . '.b-cdn.net/' . $fileName;
-        // $data['bunny_link'] = config('services.bunny.region') . '.bunnycdn.com/' . config('services.bunny.storage_zone') . '/' . $fileName;
-        // $this->bunnyVideoService->createEmptyFolder($fileName);
     }
 
     function update(UpdateFolderRequest $request)
@@ -72,7 +75,6 @@ class FolderController extends Controller
         $folder = EventFolder::find($data['folder_id']);
         $data['folder_thumbnail'] = isset($data['folder_thumbnail']) ? 'storage/' . uploadFile($data['folder_thumbnail'], 'folder_thumbnail') : $folder->folder_thumbnail;
         unset($data['folder_id']);
-        // $this->bunnyService->renameFolder($folder->folder_name, Str::slug($data['folder_name']));
         $folder->update($data);
         return response()->json(['success' => true, 'message' => 'Folder has been updated successfully']);
     }
@@ -82,6 +84,14 @@ class FolderController extends Controller
         $folder = EventFolder::find($id);
         $folderThumbnail = str_replace("storage/", "", $folder->folder_thumbnail);
         deleteFile($folderThumbnail);
+        if ($folder->folder_type == "image") {
+            $this->bunnyService->deleteFolder($folder->event->bunny_main_folder_name . '/'. $folder->event->event_name . '/' . $folder->bunny_folder_name);
+        } else if ($folder->folder_type == "video") {
+            $folder = EventFolder::find($id);
+            $videos = $folder->files->pluck('file_bunny_id')->toArray();
+            $this->bunnyVideoService->deleteMultipleVideos($videos);
+        }
+
         $folder->delete();
         return response()->json(['success' => true, 'message' => 'Folder has been deleted successfully']);
     }

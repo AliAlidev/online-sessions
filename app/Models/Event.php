@@ -34,4 +34,11 @@ class Event extends Model
     {
         return $this->hasMany(EventFolder::class, 'event_id');
     }
+
+    function canUpdateName()
+    {
+        return array_reduce($this->folders()->withCount('files')->pluck('files_count')->toArray(), function ($carry, $count) {
+            return  $carry + $count;
+        }, 0) > 0 ? false : true;
+    }
 }

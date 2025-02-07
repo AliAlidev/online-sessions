@@ -179,7 +179,7 @@
                 ]
             });
 
-            $(document).on('click', '.delete-event', function() {
+            $(document).on('click', '.delete-event', function(e) {
                 var url = $(this).data('url');
                 Swal.fire({
                     title: 'Are you sure?',
@@ -191,41 +191,10 @@
                     reverseButtons: true
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        deleteItem(url, table);
+                        deleteItem(url, table, e.target);
                     }
                 });
             });
-
-            function deleteItem(url, table) {
-                $.ajax({
-                    url: url,
-                    type: 'GET',
-                    success: function(response) {
-                        if (response.success) {
-                            table.draw();
-                            $('#sidebar-events-count').text(response.count);
-                            Swal.fire(
-                                'Deleted!',
-                                'The item has been deleted.',
-                                'success'
-                            );
-                        } else {
-                            Swal.fire(
-                                'Error!',
-                                'There was a problem deleting the item.',
-                                'error'
-                            );
-                        }
-                    },
-                    error: function() {
-                        Swal.fire(
-                            'Error!',
-                            'There was an error with the request.',
-                            'error'
-                        );
-                    }
-                });
-            }
         });
     </script>
 
