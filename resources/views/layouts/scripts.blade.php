@@ -93,4 +93,10 @@
     }
 </script>
 
+<script>
+    $(document).on('click','.logoutButton', function(e) {
+        e.target.closest('form').submit();
+    })
+</script>
+
 @yield('scripts')

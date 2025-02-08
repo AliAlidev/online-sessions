@@ -12,6 +12,12 @@ class SettingController extends Controller
     {
         if ($request->ajax()) {
             Setting::updateOrCreate([
+                'type' => 'global'
+            ], [
+                'type' => 'global',
+                'data' => [$request->get('global')]
+            ]);
+            Setting::updateOrCreate([
                 'type' => 'image'
             ], [
                 'type' => 'image',
@@ -29,10 +35,13 @@ class SettingController extends Controller
         $settings = Setting::get();
         $imageSetting = $settings->where('type', 'image')->first();
         $videoSetting = $settings->where('type', 'video')->first();
+        $globalSetting = $settings->where('type', 'global')->first();
         if ($imageSetting)
             $imageSetting = $imageSetting->data[0];
         if ($videoSetting)
             $videoSetting = $videoSetting->data[0];
-        return view('dashboard.setting.bunny', ['imageSetting' => $imageSetting, 'videoSetting' => $videoSetting]);
+        if ($globalSetting)
+            $globalSetting = $globalSetting->data[0];
+        return view('dashboard.setting.bunny', ['imageSetting' => $imageSetting, 'videoSetting' => $videoSetting, 'globalSetting' => $globalSetting]);
     }
 }

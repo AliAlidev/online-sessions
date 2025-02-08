@@ -32,32 +32,52 @@
                 <form id="saveSettingForm">
                     <div class="card mb-6">
                         <div class="card-header">
+                            <h5 class="mb-0">Global Setting</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row mb-4">
+                                <div class="col-md-8">
+                                    <label for="api-key" class="form-label">Api Key</label>
+                                    <input type="text" id="api-key" class="form-control"
+                                        name="global[api_key]" placeholder="Enter Api Key"
+                                        value="{{ isset($globalSetting['api_key']) ? $globalSetting['api_key'] : '' }}">
+                                    <small class="text-body float-start error-message-div api_key-error"
+                                        style="color: #ff0000 !important" hidden></small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card mb-6">
+                        <div class="card-header">
                             <h5 class="mb-0">Bunny Image</h5>
                         </div>
                         <div class="card-body">
-                            <div class="row mb-6">
-                                <div class="row mb-6">
-                                    <div class="col-md-8">
-                                        <label for="storage-zone-name" class="form-label">Storage Zone Name</label>
-                                        <input type="text" id="storage-zone-name" class="form-control" name="image[storage_zone_name]"
-                                            placeholder="Enter Storage Zone Name" value="{{ isset($imageSetting['storage_zone_name']) ? $imageSetting['storage_zone_name'] : '' }}">
-                                        <small class="text-body float-start error-message-div storage_zone_name-error"
-                                            style="color: #ff0000 !important" hidden></small>
-                                    </div>
+                            <div class="row mb-4">
+                                <div class="col-md-8">
+                                    <label for="storage-zone-name" class="form-label">Storage Zone Name</label>
+                                    <input type="text" id="storage-zone-name" class="form-control"
+                                        name="image[storage_zone_name]" placeholder="Enter Storage Zone Name"
+                                        value="{{ isset($imageSetting['storage_zone_name']) ? $imageSetting['storage_zone_name'] : '' }}">
+                                    <small class="text-body float-start error-message-div storage_zone_name-error"
+                                        style="color: #ff0000 !important" hidden></small>
                                 </div>
+                            </div>
+                            <div class="row mb-4">
                                 <div class="col-md-8">
                                     <label for="storage-access-token" class="form-label">Storage Access Token</label>
-                                    <input type="text" id="storage-access-token" class="form-control" name="image[storage_access_token]"
-                                        placeholder="Enter Storage Access Token" value="{{ isset($imageSetting['storage_access_token']) ? $imageSetting['storage_access_token'] : '' }}">
+                                    <input type="text" id="storage-access-token" class="form-control"
+                                        name="image[storage_access_token]" placeholder="Enter Storage Access Token"
+                                        value="{{ isset($imageSetting['storage_access_token']) ? $imageSetting['storage_access_token'] : '' }}">
                                     <small class="text-body float-start error-message-div storage_access_token-error"
                                         style="color: #ff0000 !important" hidden></small>
                                 </div>
                             </div>
-                            <div class="row mb-6">
+                            <div class="row mb-4">
                                 <div class="col-md-8">
                                     <label for="image-pull-zone" class="form-label">Pull Zone</label>
-                                    <input type="text" id="image-pull-zone" class="form-control" name="image[image_pull_zone]"
-                                        placeholder="Enter Pull Zone" value="{{ isset($imageSetting['image_pull_zone']) ? $imageSetting['image_pull_zone'] : '' }}">
+                                    <input type="text" id="image-pull-zone" class="form-control"
+                                        name="image[image_pull_zone]" placeholder="Enter Pull Zone"
+                                        value="{{ isset($imageSetting['image_pull_zone']) ? $imageSetting['image_pull_zone'] : '' }}">
                                     <small class="text-body float-start error-message-div image_pull_zone-error"
                                         style="color: #ff0000 !important" hidden></small>
                                 </div>
@@ -72,8 +92,9 @@
                             <div class="row mb-6">
                                 <div class="col-md-8">
                                     <label for="video-api-key" class="form-label">Api Key</label>
-                                    <input type="text" id="video-api-key" class="form-control" name="video[video_api_key]"
-                                        placeholder="Enter Api Key" value="{{ isset($videoSetting['video_api_key']) ? $videoSetting['video_api_key'] : '' }}">
+                                    <input type="text" id="video-api-key" class="form-control"
+                                        name="video[video_api_key]" placeholder="Enter Api Key"
+                                        value="{{ isset($videoSetting['video_api_key']) ? $videoSetting['video_api_key'] : '' }}">
                                     <small class="text-body float-start error-message-div video_api_key-error"
                                         style="color: #ff0000 !important" hidden></small>
                                 </div>
@@ -81,8 +102,9 @@
                             <div class="row mb-6">
                                 <div class="col-md-8">
                                     <label for="video-library-id" class="form-label">Library ID</label>
-                                    <input type="text" id="video-library-id" class="form-control" name="video[video_library_id]"
-                                        placeholder="Enter Library ID" value="{{ isset($videoSetting['video_library_id']) ? $videoSetting['video_library_id'] : '' }}">
+                                    <input type="text" id="video-library-id" class="form-control"
+                                        name="video[video_library_id]" placeholder="Enter Library ID"
+                                        value="{{ isset($videoSetting['video_library_id']) ? $videoSetting['video_library_id'] : '' }}">
                                     <small class="text-body float-start error-message-div video_library_id-error"
                                         style="color: #ff0000 !important" hidden></small>
                                 </div>
@@ -90,8 +112,9 @@
                             <div class="row mb-6">
                                 <div class="col-md-8">
                                     <label for="stream-pull-zone" class="form-label">Stream Pull Zone</label>
-                                    <input type="text" id="stream-pull-zone" class="form-control" name="video[stream_pull_zone]"
-                                        placeholder="Enter Stream Pull Zone" value="{{ isset($videoSetting['stream_pull_zone']) ? $videoSetting['stream_pull_zone'] : '' }}">
+                                    <input type="text" id="stream-pull-zone" class="form-control"
+                                        name="video[stream_pull_zone]" placeholder="Enter Stream Pull Zone"
+                                        value="{{ isset($videoSetting['stream_pull_zone']) ? $videoSetting['stream_pull_zone'] : '' }}">
                                     <small class="text-body float-start error-message-div stream_pull_zone-error"
                                         style="color: #ff0000 !important" hidden></small>
                                 </div>

@@ -117,9 +117,11 @@ if (!function_exists('getClientsIncreasingCount')) {
 if (!function_exists('getSetting')) {
     function getSetting()
     {
+        $settingGlobal = Setting::where('type', 'global')->first();
         $settingImage = Setting::where('type', 'image')->first();
         $settingVideo = Setting::where('type', 'video')->first();
         return[
+            'global' => $settingGlobal?->data[0],
             'image' => $settingImage?->data[0],
             'video' => $settingVideo?->data[0]
         ];
