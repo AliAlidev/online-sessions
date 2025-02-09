@@ -14,12 +14,13 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        User::firstOrCreate([
+       $user = User::firstOrCreate([
             'email' => 'sadmin@app.com'
         ],[
             'name' => 'sadmin',
             'email' => 'sadmin@app.com',
             'password' => Hash::make('12345')
         ]);
+        $user->syncRoles('super-admin');
     }
 }

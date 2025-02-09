@@ -79,7 +79,7 @@
     </div>
 
     {{-- ////////////// create type modal ////////////// --}}
-    <div class="modal fade" id="CreateEventTypeModal" tabindex="-1" style="display: none;" aria-hidden="true">
+    <div class="modal fade" id="CreateEventTypeModal" tabindex="-1" style="display: none;" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <form id="createEventType">
@@ -111,7 +111,7 @@
     </div>
 
     {{-- ////////////// update type modal ////////////// --}}
-    <div class="modal fade" id="UpdateEventTypeModal" tabindex="-1" style="display: none;" aria-hidden="true">
+    <div class="modal fade" id="UpdateEventTypeModal" tabindex="-1" style="display: none;" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <form id="updateEventTypeForm">

@@ -68,6 +68,7 @@ class EventController extends Controller
         $data['qr_code'] = 'storage/' . uploadBase64File($data['qr_code'], 'event_qr_code');
         $event = Event::create([
             'event_name' => $data['event_name'],
+            'bunny_event_name' => $data['event_name'],
             'cover_image' => $data['cover_image'],
             'event_type_id' => $data['event_type_id'],
             'profile_picture' => $data['profile_picture'],
@@ -144,8 +145,6 @@ class EventController extends Controller
             'welcome_message' => $data['welcome_message'],
             'qr_code' => $data['qr_code']
         ];
-        if (!$event->canUpdateName())
-            unset($eventData['event_name']);
         $event->update($eventData);
         $event->organizers()->whereNotIn('id', array_column($data['organizers'], 'organizer_model_id'))->delete();
         array_map(function ($organizer) use ($event) {

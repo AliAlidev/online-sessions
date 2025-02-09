@@ -3,17 +3,9 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="viewport"
-        content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-
-    <title>Demo : Login Basic - Pages | sneat - Bootstrap Dashboard PRO</title>
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <title>Online Sessions App</title>
     <meta name="description" content="">
-
-    <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="../assets/img/favicon/favicon.ico">
-
-    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
     <link
@@ -21,21 +13,12 @@
         rel="stylesheet">
 
     <link rel="stylesheet" href="../assets/vendor/fonts/boxicons.css">
-
-    <!-- Core CSS -->
     <link rel="stylesheet" href="{{ asset('assets/vendor/css/core.css') }}" class="template-customizer-core-css">
     <link rel="stylesheet" href="{{ asset('assets/vendor/css/theme-default.css') }}"
         class="template-customizer-theme-css">
     <link rel="stylesheet" href="{{ asset('assets/css/demo.css') }}">
-
-    <!-- Vendors CSS -->
     <link rel="stylesheet" href="{{ asset('assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css') }}">
-
-    <!-- Page CSS -->
-    <!-- Page -->
     <link rel="stylesheet" href="{{ asset('assets/vendor/css/pages/page-auth.css') }}">
-
-    <!-- Helpers -->
     <script src="{{ asset('assets/vendor/js/helpers.js') }}"></script>
     <style type="text/css">
         .layout-menu-fixed .layout-navbar-full .layout-menu,
@@ -49,19 +32,13 @@
 
         #basic-default-password2 {
             pointer-events: auto;
-            /* Ensure the icon is clickable */
             z-index: 1;
-            /* Ensure it's above other elements */
         }
     </style>
-    <!--! Template customizer & Theme config files MUST be included after core stylesheets and helpers.js in the <head> section -->
-    <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
     <script src="{{ asset('assets/js/config.js') }}"></script>
 </head>
 
 <body>
-    <!-- Content -->
-
     <div class="container-xxl">
         <div class="authentication-wrapper authentication-basic container-p-y">
             <div class="authentication-inner">
@@ -69,7 +46,7 @@
                 <div class="card px-sm-6 px-0">
                     <div class="card-body">
                         <!-- Logo -->
-                        <div class="app-brand justify-content-center">
+                        {{-- <div class="app-brand justify-content-center">
                             <a href="index.html" class="app-brand-link gap-2">
                                 <span class="app-brand-logo demo">
                                     <svg width="25" viewBox="0 0 25 42" version="1.1"
@@ -119,11 +96,11 @@
                                         </g>
                                     </svg>
                                 </span>
-                                <span class="app-brand-text demo text-heading fw-bold">sneat</span>
+                                <span class="app-brand-text demo text-heading fw-bold">Online Sessions</span>
                             </a>
-                        </div>
+                        </div> --}}
                         <!-- /Logo -->
-                        <h4 class="mb-1">Welcome to sneat! 👋</h4>
+                        <h4 class="mb-1">Welcome to online sessions 👋</h4>
                         <p class="mb-6">Please sign-in to your account and start the adventure</p>
 
                         <form id="formAuthentication" class="mb-6" action="{{ route('login') }}" method="POST">
@@ -131,7 +108,7 @@
                             <div class="mb-6">
                                 <label for="email" class="form-label">Email</label>
                                 <input type="text" class="form-control" id="email" name="email"
-                                    placeholder="Enter your email or username" autofocus="">
+                                    placeholder="Enter your email" autofocus="">
                                 @error('email')
                                     <span style="color: red">{{ $message }}</span>
                                 @enderror
@@ -159,24 +136,13 @@
             </div>
         </div>
     </div>
-
-
     <script src="{{ asset('assets/vendor/libs/jquery/jquery.js') }}"></script>
     <script src="{{ asset('assets/vendor/libs/popper/popper.js') }}"></script>
     <script src="{{ asset('assets/vendor/js/bootstrap.js') }}"></script>
     <script src="{{ asset('assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js') }}"></script>
     <script src="{{ asset('assets/vendor/js/menu.js"') }}"></script>
-
-
-    <!-- Main JS -->
     <script src="{{ asset('assets/js/main.js') }}"></script>
-
-    <!-- Page JS -->
-
-    <!-- Place this tag before closing body tag for github widget button. -->
     <script async="" defer="" src="https://buttons.github.io/buttons.js"></script>
-
-
 </body>
 
 </html>

@@ -21,7 +21,7 @@ class BunnyImageService
         if ($setting) {
             $this->storageZone = isset($setting['image']['storage_zone_name'])? $setting['image']['storage_zone_name']: null;
             $this->storageAccessKey = isset($setting['image']['storage_access_token'])? $setting['image']['storage_access_token']:null;
-            $this->apiKey = config('services.bunny.api_key');
+            $this->apiKey = isset($setting['global']['api_key'])? $setting['global']['api_key']: null;
             $this->cdnPullZone = isset($setting['image']['image_pull_zone'])? $setting['image']['image_pull_zone']: null;
         }
         $this->client = new Client();
@@ -161,7 +161,7 @@ class BunnyImageService
     public function deleteFile($file, $withModelData = true)
     {
         if($withModelData ){
-            $path = $file->folder->event->bunny_main_folder_name .'/'. $file->folder->event->event_name  . '/'. $file->folder->bunny_folder_name . '/' . $file->file_name;
+            $path = $file->folder->event->bunny_main_folder_name .'/'. $file->folder->event->bunny_event_name  . '/'. $file->folder->bunny_folder_name . '/' . $file->file_name;
             $url = "https://storage.bunnycdn.com/{$this->storageZone}/{$path}";
         }else{
             $url = "https://storage.bunnycdn.com/{$this->storageZone}/{$file}";

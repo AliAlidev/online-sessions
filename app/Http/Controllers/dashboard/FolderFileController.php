@@ -10,6 +10,7 @@ use App\Models\FolderFile;
 use App\Services\BunnyImageService;
 use App\Services\BunnyVideoService;
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
 
@@ -87,15 +88,30 @@ class FolderFileController extends Controller
 
     function store(CreateFileRequest $request, $folderId, $folderType)
     {
+        if ($folderType == "image") {
+            $setting = getSetting()['image'];
+            if (!checkImageConfig($setting))
+                throw new Exception("Image uploading is not allowed, please check bunny setting");
+        }
+        if ($folderType == "video") {
+            $setting = getSetting()['video'];
+            if (!checkVideoConfig($setting))
+                throw new Exception("Video uploading is not allowed, please check bunny setting");
+        }
+
         try {
             $data = $request->validated();
+            $nameExists = FolderFile::where('file_name', $data['file_name'])->where('folder_id', $folderId)->exists();
+            if ($nameExists)
+                return response()->json(['success' => false, 'errors' => ['file_name' => ['File name already exists']]], 422);
             $data['folder_id'] = $folderId;
             $data['file_type'] = $folderType;
+            $data['file_status'] = "approved";
             $folder = EventFolder::find($folderId);
             if ($folder->folder_type == 'image') {
                 $bunnyMainFolderName = $folder->event->bunny_main_folder_name;
-                $bunnyEventFolderName = $folder->event->event_name;
-                $path = $bunnyMainFolderName . '/' . $bunnyEventFolderName. '/' . $folder->bunny_folder_name . '/' . $data['file_name'];
+                $bunnyEventFolderName = $folder->event->bunny_event_name;
+                $path = $bunnyMainFolderName . '/' . $bunnyEventFolderName . '/' . $folder->bunny_folder_name . '/' . $data['file_name'];
                 $path = $this->bunnyService->GuarantiedUploadFile($data['file'], $path);
                 if (!$path['success'])
                     return response()->json(['success' => false, 'message' => 'Error happen during image uploading']);
@@ -123,7 +139,7 @@ class FolderFileController extends Controller
         if ($folderType == 'image') {
             if (isset($data['file_name'])) {
                 $bunnyMainFolderName = $file->folder->event->bunny_main_folder_name;
-                $bunnyEventFolderName = $file->folder->event->event_name;
+                $bunnyEventFolderName = $file->folder->event->bunny_event_name;
                 $path = $bunnyMainFolderName . '/' . $bunnyEventFolderName . '/' . $file->folder->bunny_folder_name . '/' . $data['file_name'];
                 $path = $this->bunnyService->GuarantiedUploadFile($data['file'], $path);
                 if (!$path['success'])

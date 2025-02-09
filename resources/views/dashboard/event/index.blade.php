@@ -42,6 +42,7 @@
                             <tr>
                                 <th class="control dt-orderable-none">ID</th>
                                 <th class="control dt-orderable-none">Name</th>
+                                <th class="control dt-orderable-none">Bunny Name</th>
                                 <th class="control dt-orderable-none">Type</th>
                                 <th class="control dt-orderable-none">Client</th>
                                 <th class="control dt-orderable-none">Customer</th>
@@ -93,6 +94,10 @@
                     {
                         data: 'event_name',
                         name: 'event_name'
+                    },
+                    {
+                        data: 'bunny_event_name',
+                        name: 'bunny_event_name'
                     },
                     {
                         data: 'event_type',

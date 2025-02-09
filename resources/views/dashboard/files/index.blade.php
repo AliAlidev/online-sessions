@@ -112,7 +112,7 @@
     </div>
 
     {{-- ////////////// create file modal ////////////// --}}
-    <div class="modal fade" id="CreateFileModal" tabindex="-1" style="display: none;" aria-hidden="true">
+    <div class="modal fade" id="CreateFileModal" tabindex="-1" style="display: none;" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <form id="createFileForm">
@@ -130,7 +130,7 @@
                                     accept='{{ $folderType == 'image' ? 'image/jpeg,png,jpg,gif,svg,webp' : 'video/mp4' }}'>
                                 <small class="text-body float-start uploaded-file-name"
                                     style="color: #000; font-style: italic;"></small>
-                                <small class="text-body float-start error-message-div file-error"
+                                <small class="text-body float-start error-message-div file-error file_name-error"
                                     style="color: #ff0000 !important" hidden></small>
                             </div>
                             <div class="col-md-6">
@@ -149,7 +149,7 @@
                                     style="color: #ff0000 !important" hidden></small>
                             </div>
                         </div>
-                        <div class="row mb-6">
+                        {{-- <div class="row mb-6">
                             <div class="col-md-6">
                                 <label for="fileStatus" class="form-label">{{ ucfirst($folderType) }} Status</label>
                                 <select class="form-select" id="fileStatus" name="file_status">
@@ -161,7 +161,7 @@
                                 <small class="text-body float-start error-message-div file_status-error"
                                     style="color: #ff0000 !important" hidden></small>
                             </div>
-                        </div>
+                        </div> --}}
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal"> Close </button>
@@ -185,7 +185,7 @@
     </div>
 
     {{-- ////////////// update file modal ////////////// --}}
-    <div class="modal fade" id="UpdateFileModal" tabindex="-1" style="display: none;" aria-hidden="true">
+    <div class="modal fade" id="UpdateFileModal" tabindex="-1" style="display: none;" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <form id="updateFileForm">
@@ -252,7 +252,7 @@
     </div>
 
     {{-- ////////////// FilePreviewer modal ////////////// --}}
-    <div class="modal fade" id="FilePreviewer" tabindex="-1" style="display: none;" aria-hidden="true">
+    <div class="modal fade" id="FilePreviewer" tabindex="-1" style="display: none;" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <input type="hidden" id="updateFileId" name="file_id">
@@ -276,7 +276,7 @@
     </div>
 
     {{-- ////////////// change status modal ////////////// --}}
-    <div class="modal fade" id="changeStatusModal" tabindex="-1" style="display: none;" aria-hidden="true">
+    <div class="modal fade" id="changeStatusModal" tabindex="-1" style="display: none;" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
             <div class="modal-content">
                 <form id="updateStatusForm">
@@ -493,6 +493,8 @@
                         progressBar.setAttribute('aria-valuenow', 100);
                     } else if (xhr.status === 422) {
                         let errorMessages = response.errors;
+                        console.log(errorMessages);
+
                         Object.keys(errorMessages).forEach(function(key) {
                             let inputField = $(`.${key}-error`);
                             inputField.attr('hidden', false);

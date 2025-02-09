@@ -87,7 +87,7 @@
     </div>
 
     {{-- ////////////// create folder modal ////////////// --}}
-    <div class="modal fade" id="CreateFolderModal" tabindex="-1" style="display: none;" aria-hidden="true">
+    <div class="modal fade" id="CreateFolderModal" tabindex="-1" style="display: none;" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <form id="createFolder">
@@ -157,7 +157,7 @@
     </div>
 
     {{-- ////////////// update folder modal ////////////// --}}
-    <div class="modal fade" id="UpdateFolderModal" tabindex="-1" style="display: none;" aria-hidden="true">
+    <div class="modal fade" id="UpdateFolderModal" tabindex="-1" style="display: none;" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <form id="updateFolderForm">

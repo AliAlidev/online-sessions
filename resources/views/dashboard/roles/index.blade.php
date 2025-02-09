@@ -78,7 +78,7 @@
     </div>
 
     {{-- ////////////// create role modal ////////////// --}}
-    <div class="modal fade" id="CreateRoleModal" tabindex="-1" style="display: none;" aria-hidden="true">
+    <div class="modal fade" id="CreateRoleModal" tabindex="-1" style="display: none;" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <form id="createRole">
@@ -110,7 +110,7 @@
     </div>
 
     {{-- ////////////// update role modal ////////////// --}}
-    <div class="modal fade" id="UpdateRoleModal" tabindex="-1" style="display: none;" aria-hidden="true">
+    <div class="modal fade" id="UpdateRoleModal" tabindex="-1" style="display: none;" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <form id="updateRoleForm">

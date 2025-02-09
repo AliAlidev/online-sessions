@@ -38,8 +38,8 @@
                             <div class="row mb-4">
                                 <div class="col-md-8">
                                     <label for="api-key" class="form-label">Api Key</label>
-                                    <input type="text" id="api-key" class="form-control"
-                                        name="global[api_key]" placeholder="Enter Api Key"
+                                    <input type="text" id="api-key" class="form-control" name="global[api_key]"
+                                        placeholder="Enter Api Key"
                                         value="{{ isset($globalSetting['api_key']) ? $globalSetting['api_key'] : '' }}">
                                     <small class="text-body float-start error-message-div api_key-error"
                                         style="color: #ff0000 !important" hidden></small>
@@ -165,14 +165,17 @@
                 success: function(response) {
                     spinner.hide();
                     submitBtn.prop('disabled', false);
-                    window.location.href = response.url;
+                    if (response.success) {
+                        window.location.href = response.url;
+                    } else {
+                        showErrorMessage(response.message);
+                    }
+
                 },
                 error: function(xhr) {
                     if (xhr.status === 422) {
                         let errors = xhr.responseJSON.errors;
                         $.each(errors, function(field, messages) {
-                            console.log(field);
-
                             let inputField = $(`.${field}-error`);
                             inputField.attr('hidden', false);
                             inputField.text(messages[0]);
@@ -183,5 +186,30 @@
                 }
             });
         });
+
+        function showErrorMessage(message) {
+            var element = `<div class="d-flex justify-content-end global-alert-section" style="margin-right: 25px">
+            <div class="bs-toast toast fade show bg-danger" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header">
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+                ${message}
+            </div>
+            </div>
+            </div>`;
+            $('.content-wrapper').prepend(element);
+            setTimeout(() => {
+                $('.global-alert-section').remove();
+            }, 5000);
+        }
+    </script>
+
+    <script>
+        $(document).ready(function(){
+            setTimeout(() => {
+                $('.bg-success').hide();
+            }, 5000);
+        })
     </script>
 @endsection

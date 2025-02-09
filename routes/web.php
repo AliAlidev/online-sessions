@@ -7,7 +7,7 @@ use App\Http\Controllers\dashboard\FolderController;
 use App\Http\Controllers\dashboard\FolderFileController;
 use App\Http\Controllers\dashboard\RoleController;
 use App\Http\Controllers\Dashboard\SettingController;
-use App\Http\Controllers\InsightController;
+use App\Http\Controllers\dashboard\InsightController;
 use App\Http\Controllers\landing\LandingPageEventController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;

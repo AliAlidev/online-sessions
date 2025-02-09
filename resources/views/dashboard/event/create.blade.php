@@ -113,7 +113,7 @@
                                             <label class="form-label" for="basic-default-email">{{ __('Name') }}</label>
                                             <div class="input-group input-group-merge">
                                                 <input type="text" id="basic-default-email" class="form-control"
-                                                    name="event_name">
+                                                    name="event_name" placeholder="Enter Event Name">
                                             </div>
                                             <small class="text-body float-start error-message-div event_name-error"
                                                 style="color: #ff0000 !important"></small>
@@ -175,7 +175,7 @@
                                     <div class="row mb-6">
                                         <div class="col md-6">
                                             <label for="exampleFormControlSelect1" class="form-label">Customer</label>
-                                            <input class="form-control" type="text" value=""
+                                            <input class="form-control" type="text" value="" placeholder="Enter Customer Name"
                                                 id="event-customer-name" name="customer">
                                             <small class="text-body float-start error-message-div customer-error"
                                                 style="color: #ff0000 !important" hidden></small>
