@@ -1,6 +1,6 @@
 <!doctype html>
 
-<html lang="en" class="light-style layout-menu-fixed layout-compact" dir="ltr"  data-style="light">
+<html lang="en" class="light-style layout-menu-fixed layout-compact layout-menu-100vh layout-menu-expanded" dir="ltr"  data-style="light">
 
 <head>
     <meta charset="utf-8" />
