@@ -4,6 +4,7 @@ namespace App\Http\Controllers\dashboard;
 
 use App\Http\Controllers\Controller;
 use App\Models\Setting;
+use Carbon\Carbon;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request as Psr7Request;
 use Illuminate\Http\Request;
@@ -18,7 +19,7 @@ class InsightController extends Controller
 
         $sections = [];
         foreach ($results as $key => $result) {
-            if(isset($result['statistics'])){
+            if (isset($result['statistics'])) {
                 $sections[] = [
                     'name' => $result['pull_zone_name'],
                     'prefix' => $result['prefix'],
@@ -91,7 +92,9 @@ class InsightController extends Controller
             $headers = [
                 'AccessKey' => $setting['api_key']
             ];
-            $request = new Psr7Request('GET', 'https://api.bunny.net/statistics?pullZone=' . $storageZone . '&hourly=true', $headers);
+            $startDate = Carbon::now()->startOfDay()->subMonth()->format('m/d/Y');
+            $endDate = Carbon::now()->format('m/d/Y');
+            $request = new Psr7Request('GET', 'https://api.bunny.net/statistics?pullZone=' . $storageZone . '&hourly=false&dateFrom=' . $startDate . '&dateTo=' . $endDate, $headers);
             $res = $client->sendAsync($request)->wait();
             return json_decode($res->getBody(), true);
         } catch (\Throwable $th) {
