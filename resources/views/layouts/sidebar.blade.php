@@ -6,7 +6,11 @@
             </span>
             <span class="app-brand-text demo menu-text fw-bold ms-1">{{ strtoupper(Auth::user()->name) }}</span>
         </a>
+        <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto d-block">
+            <i class="bx bx-chevron-left bx-sm d-flex align-items-center justify-content-center"></i>
+        </a>
     </div>
+
 
     <div class="menu-inner-shadow"></div>
 
