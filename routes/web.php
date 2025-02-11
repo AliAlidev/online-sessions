@@ -25,12 +25,12 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/landing', 'App\Http\Controllers\GuestController@landing');
 
-Route::middleware('auth')->group(function(){
-    Route::controller(InsightController::class)->name('insights.')->group(function(){
+Route::middleware('auth')->group(function () {
+    Route::controller(InsightController::class)->name('insights.')->group(function () {
         Route::get('/', 'index')->name('index');
     });
 
-    Route::controller(EventTypeController::class)->prefix('events-types')->name('events.types.')->group(function(){
+    Route::controller(EventTypeController::class)->prefix('events-types')->name('events.types.')->group(function () {
         Route::get('/index', 'index')->name('index');
         Route::post('/store', 'store')->name('store');
         Route::post('/update/{id}', 'update')->name('update');
@@ -38,7 +38,7 @@ Route::middleware('auth')->group(function(){
         Route::get('/delete/{id}', 'delete')->name('delete');
     });
 
-    Route::controller(FolderController::class)->prefix('folders')->name('folders.')->group(function(){
+    Route::controller(FolderController::class)->prefix('folders')->name('folders.')->group(function () {
         Route::get('/{event_id}/index', 'index')->name('index');
         Route::post('/{event_id}/store', 'store')->name('store');
         Route::post('/update/{id}', 'update')->name('update');
@@ -46,16 +46,19 @@ Route::middleware('auth')->group(function(){
         Route::get('/delete/{id}', 'delete')->name('delete');
     });
 
-    Route::controller(FolderFileController::class)->prefix('files')->name('files.')->group(function(){
+    Route::controller(FolderFileController::class)->prefix('files')->name('files.')->group(function () {
         Route::get('/{folder_id}/index/{type}', 'index')->name('index');
         Route::post('/{folder_id}/store/{type}', 'store')->name('store');
         Route::post('/update/{id}', 'update')->name('update');
+        Route::post('/update-without-file/{id}', 'updateWithoutFile')->name('update.without.file');
         Route::get('/show/{id}', 'show')->name('show');
         Route::get('/delete/{id}', 'delete')->name('delete');
         Route::post('/change-status', 'changeStatus')->name('change.status');
+        Route::post('/upload-file', 'uploadFile');
+        Route::get('/uploaded-file-status/{uploadId}', 'uploadedFileStatus');
     });
 
-    Route::controller(EventController::class)->prefix('events')->name('events.')->group(function(){
+    Route::controller(EventController::class)->prefix('events')->name('events.')->group(function () {
         Route::get('/index', 'index')->name('index');
         Route::get('/create', 'create')->name('create');
         Route::post('/store', 'store')->name('store');
@@ -65,7 +68,7 @@ Route::middleware('auth')->group(function(){
         Route::get('/show/{id}', 'show');
     });
 
-    Route::controller(RoleController::class)->prefix('roles')->name('roles.')->group(function(){
+    Route::controller(RoleController::class)->prefix('roles')->name('roles.')->group(function () {
         Route::get('/index', 'index')->name('index');
         Route::get('/create', 'create')->name('create');
         Route::post('/store', 'store')->name('store');
@@ -75,7 +78,7 @@ Route::middleware('auth')->group(function(){
         Route::get('/show/{id}', 'show');
     });
 
-    Route::controller(ClientController::class)->prefix('clients')->name('clients.')->group(function(){
+    Route::controller(ClientController::class)->prefix('clients')->name('clients.')->group(function () {
         Route::get('/index', 'index')->name('index');
         Route::get('/create', 'create')->name('create');
         Route::post('/store', 'store')->name('store');
@@ -84,14 +87,13 @@ Route::middleware('auth')->group(function(){
         Route::get('/delete/{id}', 'delete')->name('delete');
     });
 
-    Route::controller(SettingController::class)->prefix('settings')->name('settings.')->group(function(){
-        Route::match(['get','post'],'/bunny', 'bunnySetting')->name('bunny');
+    Route::controller(SettingController::class)->prefix('settings')->name('settings.')->group(function () {
+        Route::match(['get', 'post'], '/bunny', 'bunnySetting')->name('bunny');
         // Route::get('/bunny-video', 'bunnyVideoSetting')->name('bunny.video');
     });
-
 });
 //////////////////////////// Landing Page ////////////////////////////
-Route::controller(LandingPageEventController::class)->prefix('events')->name('landing.events.')->group(function(){
+Route::controller(LandingPageEventController::class)->prefix('events')->name('landing.events.')->group(function () {
     Route::get('/{year}/{month}/{customer}', 'index')->name('index');
 });
 

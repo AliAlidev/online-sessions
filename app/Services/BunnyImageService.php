@@ -2,9 +2,10 @@
 
 namespace App\Services;
 
-use App\Models\FolderFile;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
+use GuzzleHttp\RequestOptions;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 
 class BunnyImageService
@@ -19,10 +20,10 @@ class BunnyImageService
     {
         $setting = getSetting();
         if ($setting) {
-            $this->storageZone = isset($setting['image']['storage_zone_name'])? $setting['image']['storage_zone_name']: null;
-            $this->storageAccessKey = isset($setting['image']['storage_access_token'])? $setting['image']['storage_access_token']:null;
-            $this->apiKey = isset($setting['global']['api_key'])? $setting['global']['api_key']: null;
-            $this->cdnPullZone = isset($setting['image']['image_pull_zone'])? $setting['image']['image_pull_zone']: null;
+            $this->storageZone = isset($setting['image']['storage_zone_name']) ? $setting['image']['storage_zone_name'] : null;
+            $this->storageAccessKey = isset($setting['image']['storage_access_token']) ? $setting['image']['storage_access_token'] : null;
+            $this->apiKey = isset($setting['global']['api_key']) ? $setting['global']['api_key'] : null;
+            $this->cdnPullZone = isset($setting['image']['image_pull_zone']) ? $setting['image']['image_pull_zone'] : null;
         }
         $this->client = new Client();
     }
@@ -89,43 +90,88 @@ class BunnyImageService
         }
     }
 
-    public function GuarantiedUploadFile($file, $uploadPath)
+    public function GuarantiedUploadImage($filePath, $folderPath, $uploadId, $fileSize)
     {
-        $finalFile = null;
-        if (!is_string($file) && $file->isValid()) {
-            $finalFile = $file->getPathname();;
-        } else {
-            $finalFile = $file;
+        $url = "https://storage.bunnycdn.com/{$this->storageZone}/{$folderPath}";
+
+        // Open file stream
+        // $fileStream = Utils::streamFor(Utils::tryFopen($filePath, 'r'));
+        $fileStream = fopen($filePath, 'r');
+        if (!$fileStream) {
+            return ['success' => false, 'message' => 'Failed to open file for reading.'];
         }
-        $url = "https://storage.bunnycdn.com/{$this->storageZone}/{$uploadPath}";
-        $maxRetries = 3;
-        $retryDelay = 2;
-        $attempts = 0;
-        while ($attempts < $maxRetries) {
-            try {
-                $response = $this->client->put($url, [
-                    'headers' => [
-                        'AccessKey' => $this->storageAccessKey,
-                    ],
-                    'body' => fopen($finalFile, 'r')
-                ]);
-                if ($response->getStatusCode() === 201) {
-                    return ['success' => true, 'path' => "https://{$this->cdnPullZone}.b-cdn.net/{$uploadPath}"];
-                }
-                if ($attempts < $maxRetries - 1) {
-                    sleep($retryDelay);
-                    $retryDelay *= 2;
-                }
-            } catch (GuzzleException $e) {
-                if ($attempts < $maxRetries - 1) {
-                    sleep($retryDelay);
-                    $retryDelay *= 2;
-                }
+        $headers = [
+            'AccessKey' => $this->storageAccessKey,
+            'content-type' => 'application/json'
+        ];
+        try {
+            $response = $this->client->put($url, [
+                'headers' => $headers,
+                RequestOptions::BODY => $fileStream,
+                RequestOptions::PROGRESS => function ($downloadTotal, $downloaded, $uploadTotal, $uploaded) use ($uploadId, $fileSize) {
+                    $progress = round(($uploaded / $fileSize) * 100, 2);
+                    if ($progress > 100)
+                        $progress = 100;
+                    Cache::put("upload_progress_" . $uploadId, $progress, 600);
+                },
+                'curl' => [
+                    CURLOPT_NOPROGRESS => false, // Enable progress tracking
+                ]
+            ]);
+        } finally {
+            if (is_resource($fileStream)) {
+                fclose($fileStream);
             }
-            $attempts++;
         }
-        return ['success' => false, 'path' => null];
+
+        if ($response->getStatusCode() === 201) {
+            return [
+                'success' => true,
+                'path' => "https://{$this->cdnPullZone}.b-cdn.net/{$folderPath}"
+            ];
+        }
+
+        return ['success' => false, 'message' => 'Upload failed'];
     }
+
+
+    // public function GuarantiedUploadFile($file, $uploadPath)
+    // {
+    //     $finalFile = null;
+    //     if (!is_string($file) && $file->isValid()) {
+    //         $finalFile = $file->getPathname();;
+    //     } else {
+    //         $finalFile = $file;
+    //     }
+    //     $url = "https://storage.bunnycdn.com/{$this->storageZone}/{$uploadPath}";
+    //     $maxRetries = 3;
+    //     $retryDelay = 2;
+    //     $attempts = 0;
+    //     while ($attempts < $maxRetries) {
+    //         try {
+    //             $response = $this->client->put($url, [
+    //                 'headers' => [
+    //                     'AccessKey' => $this->storageAccessKey,
+    //                 ],
+    //                 'body' => fopen($finalFile, 'r')
+    //             ]);
+    //             if ($response->getStatusCode() === 201) {
+    //                 return ['success' => true, 'path' => "https://{$this->cdnPullZone}.b-cdn.net/{$uploadPath}"];
+    //             }
+    //             if ($attempts < $maxRetries - 1) {
+    //                 sleep($retryDelay);
+    //                 $retryDelay *= 2;
+    //             }
+    //         } catch (GuzzleException $e) {
+    //             if ($attempts < $maxRetries - 1) {
+    //                 sleep($retryDelay);
+    //                 $retryDelay *= 2;
+    //             }
+    //         }
+    //         $attempts++;
+    //     }
+    //     return ['success' => false, 'path' => null];
+    // }
 
 
     /**
@@ -160,10 +206,10 @@ class BunnyImageService
      */
     public function deleteFile($file, $withModelData = true)
     {
-        if($withModelData ){
-            $path = $file->folder->event->bunny_main_folder_name .'/'. $file->folder->event->bunny_event_name  . '/'. $file->folder->bunny_folder_name . '/' . $file->file_name;
+        if ($withModelData) {
+            $path = $file->folder->event->bunny_main_folder_name . '/' . $file->folder->event->bunny_event_name  . '/' . $file->folder->bunny_folder_name . '/' . $file->file_name;
             $url = "https://storage.bunnycdn.com/{$this->storageZone}/{$path}";
-        }else{
+        } else {
             $url = "https://storage.bunnycdn.com/{$this->storageZone}/{$file}";
         }
         try {

@@ -24,12 +24,13 @@ class UpdateFileRequest extends FormRequest
         return [
             'file_id' => 'required|exists:folder_files,id',
             'user_name' => 'nullable',
-            'file' => 'nullable|file|mimes:jpeg,png,jpg,gif,svg,webp,mp4',
+            'file_path' => 'nullable',
             'file_type'=>'nullable',
             'file_size'=>'nullable',
             'description'=>'nullable',
             'file_status'=>'required',
-            'file_name' => 'nullable'
+            'file_name' => 'nullable',
+            'upload_id' => 'nullable'
         ];
     }
 }

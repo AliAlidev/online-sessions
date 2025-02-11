@@ -5,7 +5,6 @@ use App\Models\Event;
 use App\Models\Setting;
 use GuzzleHttp\Client as GuzzleHttpClient;
 use GuzzleHttp\Psr7\Request;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -126,7 +125,9 @@ if (!function_exists('getSetting')) {
         return [
             'global' => $settingGlobal?->data[0],
             'image' => $settingImage?->data[0],
-            'video' => $settingVideo?->data[0]
+            'image_setting_id' => $settingImage?->id,
+            'video' => $settingVideo?->data[0],
+            'video_setting_id' => $settingVideo?->id,
         ];
     }
 }
@@ -145,7 +146,7 @@ if (!function_exists('checkImageConfig')) {
             $response = $client->send($request, ['headers' => $headers]);
             $statusCode = $response->getStatusCode(); // Get the HTTP status code
             return $statusCode == 401 ? false : true;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             if ($e->getResponse()->getStatusCode() == 401)
                 return false;
             return true;
@@ -167,27 +168,13 @@ if (!function_exists('checkVideoConfig')) {
             $response = $client->send($request, ['headers' => $headers]);
             $statusCode = $response->getStatusCode(); // Get the HTTP status code
             return $statusCode == 200 ? true : false;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             if ($e->getResponse()->getStatusCode() == 200)
                 return true;
             return false;
         }
     }
 }
-
-// if (!function_exists('hasGlobalSetting')) {
-//     function hasGlobalSetting($global)
-//     {
-//         if ($global) {
-//             if (isset($global['api_key']) && checkApiKey($global['api_key'])) {
-//                 return true;
-//             }
-//             return false;
-//         } else
-//             return false;
-//         return true;
-//     }
-// }
 
 if (!function_exists('checkApiKey')) {
     function checkApiKey($apiKey)
