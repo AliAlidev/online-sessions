@@ -5,6 +5,7 @@ use App\Models\Event;
 use App\Models\Setting;
 use GuzzleHttp\Client as GuzzleHttpClient;
 use GuzzleHttp\Psr7\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -27,6 +28,18 @@ if (!function_exists('deleteFile')) {
             return Storage::disk('public')->delete($path);
         }
         return false;
+    }
+}
+
+if (!function_exists('createServerError')) {
+    function createServerError(Exception $validation, $source, $channel = 'bunny')
+    {
+        Log::channel($channel)->alert(json_encode([
+            'source' => $source,
+            'message' => $validation->getMessage(),
+            'file' => $validation->getFile(),
+            'line' => $validation->getLine()
+        ]));
     }
 }
 

@@ -28,30 +28,30 @@ class BunnyImageService
         $this->client = new Client();
     }
 
-    public function createFolder($folderPath)
-    {
-        // Ensure the folder path ends with a slash
-        if (substr($folderPath, -1) !== '/') {
-            $folderPath .= '/';
-        }
+    // public function createFolder($folderPath)
+    // {
+    //     // Ensure the folder path ends with a slash
+    //     if (substr($folderPath, -1) !== '/') {
+    //         $folderPath .= '/';
+    //     }
 
-        // Create a placeholder file (e.g., .keep)
-        $placeholderFileName = '.keep';
-        $placeholderFilePath = $folderPath . $placeholderFileName;
+    //     // Create a placeholder file (e.g., .keep)
+    //     $placeholderFileName = '.keep';
+    //     $placeholderFilePath = $folderPath . $placeholderFileName;
 
-        // Create a temporary empty file
-        $tempFile = tmpfile();
-        fwrite($tempFile, ''); // Write empty content
-        $tempFilePath = stream_get_meta_data($tempFile)['uri'];
+    //     // Create a temporary empty file
+    //     $tempFile = tmpfile();
+    //     fwrite($tempFile, ''); // Write empty content
+    //     $tempFilePath = stream_get_meta_data($tempFile)['uri'];
 
-        // Upload the placeholder file
-        $result = $this->uploadFile($tempFilePath, $placeholderFilePath);
+    //     // Upload the placeholder file
+    //     $result = $this->uploadFile($tempFilePath, $placeholderFilePath);
 
-        // Close the temporary file
-        fclose($tempFile);
+    //     // Close the temporary file
+    //     fclose($tempFile);
 
-        return $result;
-    }
+    //     return $result;
+    // }
 
     /**
      * Upload a file to Bunny.net storage.
@@ -60,42 +60,39 @@ class BunnyImageService
      * @param string $uploadPath
      * @return bool
      */
-    public function uploadFile($file, $uploadPath)
-    {
-        $url = "https://storage.bunnycdn.com/{$this->storageZone}/{$uploadPath}";
+    // public function uploadFile($file, $uploadPath)
+    // {
+    //     $url = "https://storage.bunnycdn.com/{$this->storageZone}/{$uploadPath}";
 
-        $finalFile = null;
-        if (!is_string($file) && $file->isValid()) {
-            $finalFile = $file->getPathname();
-        } else {
-            $finalFile = $file;
-        }
+    //     $finalFile = null;
+    //     if (!is_string($file) && $file->isValid()) {
+    //         $finalFile = $file->getPathname();
+    //     } else {
+    //         $finalFile = $file;
+    //     }
 
-        try {
-            $response = $this->client->put($url, [
-                'headers' => [
-                    'AccessKey' => $this->storageAccessKey,
-                ],
-                'body' => fopen($finalFile, 'r'),
-            ]);
+    //     try {
+    //         $response = $this->client->put($url, [
+    //             'headers' => [
+    //                 'AccessKey' => $this->storageAccessKey,
+    //             ],
+    //             'body' => fopen($finalFile, 'r'),
+    //         ]);
 
-            if ($response->getStatusCode() === 201) {
-                return "https://{$this->cdnPullZone}.b-cdn.net/{$uploadPath}";
-            } else {
-                return false;
-            }
-        } catch (GuzzleException $e) {
-            Log::error('Bunny.net Upload Error: ' . $e->getMessage());
-            return false;
-        }
-    }
+    //         if ($response->getStatusCode() === 201) {
+    //             return "https://{$this->cdnPullZone}.b-cdn.net/{$uploadPath}";
+    //         } else {
+    //             return false;
+    //         }
+    //     } catch (GuzzleException $e) {
+    //         Log::error('Bunny.net Upload Error: ' . $e->getMessage());
+    //         return false;
+    //     }
+    // }
 
     public function GuarantiedUploadImage($filePath, $folderPath, $uploadId, $fileSize)
     {
         $url = "https://storage.bunnycdn.com/{$this->storageZone}/{$folderPath}";
-
-        // Open file stream
-        // $fileStream = Utils::streamFor(Utils::tryFopen($filePath, 'r'));
         $fileStream = fopen($filePath, 'r');
         if (!$fileStream) {
             return ['success' => false, 'message' => 'Failed to open file for reading.'];
@@ -207,7 +204,8 @@ class BunnyImageService
     public function deleteFile($file, $withModelData = true)
     {
         if ($withModelData) {
-            $path = $file->folder->event->bunny_main_folder_name . '/' . $file->folder->event->bunny_event_name  . '/' . $file->folder->bunny_folder_name . '/' . $file->file_name;
+            $path = $file->folder->event->bunny_main_folder_name . '/' . $file->folder->event->bunny_event_name  . '/' . $file->folder->bunny_folder_name . '/' . $file->file_name_with_extension;
+            Log::alert($path);
             $url = "https://storage.bunnycdn.com/{$this->storageZone}/{$path}";
         } else {
             $url = "https://storage.bunnycdn.com/{$this->storageZone}/{$file}";
@@ -350,59 +348,59 @@ class BunnyImageService
         }
     }
 
-    public function renameFolder($oldFolderPath, $newFolderPath)
-    {
-        // Ensure the folder paths end with a slash
-        if (substr($oldFolderPath, -1) !== '/') {
-            $oldFolderPath .= '/';
-        }
-        if (substr($newFolderPath, -1) !== '/') {
-            $newFolderPath .= '/';
-        }
+    // public function renameFolder($oldFolderPath, $newFolderPath)
+    // {
+    //     // Ensure the folder paths end with a slash
+    //     if (substr($oldFolderPath, -1) !== '/') {
+    //         $oldFolderPath .= '/';
+    //     }
+    //     if (substr($newFolderPath, -1) !== '/') {
+    //         $newFolderPath .= '/';
+    //     }
 
-        // List all files in the old folder
-        $files = $this->listFiles($oldFolderPath);
+    //     // List all files in the old folder
+    //     $files = $this->listFiles($oldFolderPath);
 
-        if (empty($files)) {
-            Log::error('No files found in the folder: ' . $oldFolderPath);
-            return false;
-        }
+    //     if (empty($files)) {
+    //         Log::error('No files found in the folder: ' . $oldFolderPath);
+    //         return false;
+    //     }
 
-        // Move each file to the new folder
-        foreach ($files as $file) {
-            try {
-                $oldFilePath = $oldFolderPath . $file['ObjectName'];
-                $newFilePath = $newFolderPath . $file['ObjectName'];
+    //     // Move each file to the new folder
+    //     foreach ($files as $file) {
+    //         try {
+    //             $oldFilePath = $oldFolderPath . $file['ObjectName'];
+    //             $newFilePath = $newFolderPath . $file['ObjectName'];
 
-                // Download the file from the old path
-                $tempFilePath = tempnam(sys_get_temp_dir(), 'bunny');
-                if (!$this->downloadFile($oldFilePath, $tempFilePath)) {
-                    Log::error('Failed to download file: ' . $oldFilePath);
-                    return false;
-                }
+    //             // Download the file from the old path
+    //             $tempFilePath = tempnam(sys_get_temp_dir(), 'bunny');
+    //             if (!$this->downloadFile($oldFilePath, $tempFilePath)) {
+    //                 Log::error('Failed to download file: ' . $oldFilePath);
+    //                 return false;
+    //             }
 
-                // Upload the file to the new path
-                if (!$this->uploadFile($tempFilePath, $newFilePath)) {
-                    Log::error('Failed to upload file: ' . $newFilePath);
-                    return false;
-                }
+    //             // Upload the file to the new path
+    //             if (!$this->uploadFile($tempFilePath, $newFilePath)) {
+    //                 Log::error('Failed to upload file: ' . $newFilePath);
+    //                 return false;
+    //             }
 
-                // Delete the file from the old path
-                if (!$this->deleteFile($oldFilePath)) {
-                    Log::error('Failed to delete file: ' . $oldFilePath);
-                    return false;
-                }
+    //             // Delete the file from the old path
+    //             if (!$this->deleteFile($oldFilePath)) {
+    //                 Log::error('Failed to delete file: ' . $oldFilePath);
+    //                 return false;
+    //             }
 
-                // Clean up the temporary file
-                unlink($tempFilePath);
-            } catch (\Throwable $th) {
-                Log::error('Failed to copy file: ' . $th->getMessage());
-                //throw $th;
-            }
-        }
+    //             // Clean up the temporary file
+    //             unlink($tempFilePath);
+    //         } catch (\Throwable $th) {
+    //             Log::error('Failed to copy file: ' . $th->getMessage());
+    //             //throw $th;
+    //         }
+    //     }
 
-        return true;
-    }
+    //     return true;
+    // }
 
     public function deleteFolder($folderPath)
     {
@@ -429,6 +427,7 @@ class BunnyImageService
             }
         }
 
+        $this->deleteFolderItSelf($folderPath);
         return true;
     }
 
@@ -455,5 +454,18 @@ class BunnyImageService
             Log::error('Bunny.net Download Error: ' . $e->getMessage());
             return false;
         }
+    }
+
+    function deleteFolderItSelf($folderPath)
+    {
+        $client = new Client();
+
+        $headers = [
+            'AccessKey' => $this->storageAccessKey,
+            'Accept' => 'application/json'
+        ];
+        $url = "https://storage.bunnycdn.com/{$this->storageZone}/{$folderPath}";
+        $client->delete($url, ['headers' => $headers]);
+        return true;
     }
 }

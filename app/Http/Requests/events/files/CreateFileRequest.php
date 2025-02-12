@@ -30,6 +30,7 @@ class CreateFileRequest extends FormRequest
             'file_type'=>'nullable',
             'description'=>'nullable',
             'file_status'=>'nullable',
+            'file_name_with_extension'=>'nullable'
         ];
     }
 }

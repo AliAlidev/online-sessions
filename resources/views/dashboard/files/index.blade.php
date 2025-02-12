@@ -485,7 +485,8 @@
                     success: function(response) {
                         // Step 2: Upload to BunnyCDN
                         uploadToBunnyCreate(response.file_path, response.file_name, response
-                            .upload_id, submitBtn, progressBar, table, response.file_size);
+                            .upload_id, submitBtn, progressBar, table, response.file_size,
+                            response.file_name_with_extension);
                     },
                     error: function(response) {
                         let errorMessages = response.responseJSON.errors;
@@ -499,13 +500,15 @@
                 });
             });
 
-            function uploadToBunnyCreate(filePath, fileName, uploadId, submitBtn, progressBar, table, fileSize) {
+            function uploadToBunnyCreate(filePath, fileName, uploadId, submitBtn, progressBar, table, fileSize,
+                fileNameWithExtension) {
                 let csrfToken = $('meta[name="csrf-token"]').attr('content');
                 var data = JSON.stringify({
                     file_path: filePath,
                     file_name: fileName,
                     upload_id: uploadId,
                     file_size: fileSize,
+                    file_name_with_extension: fileNameWithExtension,
                     user_name: $('#UserName').val(),
                     description: $('#description').val()
                 });
@@ -586,7 +589,7 @@
                             // Step 2: Upload to BunnyCDN
                             uploadToBunnyUpdate(response.file_path, response.file_name, response
                                 .upload_id, submitBtn, progressBar, table, id, response
-                                .file_size);
+                                .file_size, response.file_name_with_extension);
                         },
                         error: function(response) {
                             let errorMessages = response.responseJSON.errors;
@@ -629,7 +632,7 @@
             });
 
             function uploadToBunnyUpdate(filePath, fileName, uploadId, submitBtn, progressBar, table, fileId,
-                fileSize) {
+                fileSize, fileNameWithExtension) {
                 let csrfToken = $('meta[name="csrf-token"]').attr('content');
                 var data = JSON.stringify({
                     file_path: filePath,
@@ -637,6 +640,7 @@
                     upload_id: uploadId,
                     file_id: fileId,
                     file_size: fileSize,
+                    file_name_with_extension: fileNameWithExtension,
                     file_status: $('#fileStatusInput').val(),
                     user_name: $('#userNameInput').val(),
                     description: $('#descriptionInput').val()

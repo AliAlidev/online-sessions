@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request as Psr7Request;
 use GuzzleHttp\Psr7\Utils;
@@ -26,27 +27,32 @@ class BunnyVideoService
 
     function guarantiedUploadVideo($filePath, $fileName, $uploadId, $fileSize)
     {
-        Cache::put("upload_progress_" . $uploadId, 0, 600); // Store initial progress (0%) for 30 minutes
-        $client = new Client();
-        $headers = [
-            'AccessKey' => $this->apiKey,
-            'content-type' => 'application/json'
-        ];
+        try {
+            Cache::put("upload_progress_" . $uploadId, 0, 600); // Store initial progress (0%) for 30 minutes
+            $client = new Client();
+            $headers = [
+                'AccessKey' => $this->apiKey,
+                'content-type' => 'application/json'
+            ];
 
-        // Step 1: Create video entry in BunnyCDN and get GUID
-        $body = json_encode(['title' => $fileName]);
-        $response = $client->post("https://video.bunnycdn.com/library/{$this->libraryId}/videos", [
-            'headers' => $headers,
-            'Content-Length' => $fileSize,
-            'body' => $body
-        ]);
+            // Step 1: Create video entry in BunnyCDN and get GUID
+            $body = json_encode(['title' => $fileName]);
+            $response = $client->post("https://video.bunnycdn.com/library/{$this->libraryId}/videos", [
+                'headers' => $headers,
+                'Content-Length' => $fileSize,
+                'body' => $body
+            ]);
 
-        $guid = json_decode($response->getBody(), true)['guid'];
+            $guid = json_decode($response->getBody(), true)['guid'];
 
-        // Step 2: Upload the file with progress tracking
-        $fileStream = Utils::streamFor(Utils::tryFopen($filePath, 'r'));
-        if (!$fileStream) {
-            return ['success' => false, 'message' => 'Failed to open file for reading.'];
+            // Step 2: Upload the file with progress tracking
+            $fileStream = Utils::streamFor(Utils::tryFopen($filePath, 'r'));
+            if (!$fileStream) {
+                return ['success' => false, 'message' => 'Failed to open file for reading.'];
+            }
+        } catch (Exception $th) {
+            createServerError($th, "guarantiedUploadVideo");
+            return false;
         }
 
         try {
@@ -63,6 +69,8 @@ class BunnyVideoService
                     CURLOPT_NOPROGRESS => false, // Enable progress tracking
                 ]
             ]);
+        } catch (Exception $th) {
+            createServerError($th, "guarantiedUploadVideo");
         } finally {
             if (is_resource($fileStream)) {
                 fclose($fileStream);
@@ -85,13 +93,18 @@ class BunnyVideoService
      */
     public function getVideo(string $videoId)
     {
-        $client = new Client();
-        $headers = [
-            'AccessKey' =>  $this->apiKey
-        ];
-        $request = new Psr7Request('GET', "https://video.bunnycdn.com/library/" . $this->libraryId . "/videos/" . $videoId, $headers);
-        $res = $client->sendAsync($request)->wait();
-        return json_decode($res->getBody(), true);
+        try {
+            $client = new Client();
+            $headers = [
+                'AccessKey' =>  $this->apiKey
+            ];
+            $request = new Psr7Request('GET', "https://video.bunnycdn.com/library/" . $this->libraryId . "/videos/" . $videoId, $headers);
+            $res = $client->sendAsync($request)->wait();
+            return json_decode($res->getBody(), true);
+        } catch (Exception $th) {
+            createServerError($th, "getVideo");
+            return false;
+        }
     }
 
     /**
@@ -110,22 +123,28 @@ class BunnyVideoService
                 return true;
             else
                 return false;
-        } catch (\Throwable $th) {
+        } catch (Exception $th) {
+            createServerError($th, "deleteVideo");
             return false;
         }
     }
 
     public function deleteMultipleVideos(array $videoIds)
     {
-        $client = new Client();
-        $headers = [
-            'AccessKey' => $this->apiKey
-        ];
-        foreach ($videoIds as $key => $videoId) {
-            $request = new Psr7Request('DELETE', "https://video.bunnycdn.com/library/" . $this->libraryId . "/videos/" . $videoId, $headers);
-            $res = $client->sendAsync($request)->wait();
+        try {
+            $client = new Client();
+            $headers = [
+                'AccessKey' => $this->apiKey
+            ];
+            foreach ($videoIds as $key => $videoId) {
+                $request = new Psr7Request('DELETE', "https://video.bunnycdn.com/library/" . $this->libraryId . "/videos/" . $videoId, $headers);
+                $res = $client->sendAsync($request)->wait();
+            }
+            return true;
+        } catch (Exception $th) {
+            createServerError($th, "deleteMultipleVideos");
+            return false;
         }
-        return true;
     }
 
     /**

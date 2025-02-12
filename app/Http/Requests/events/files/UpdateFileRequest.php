@@ -30,7 +30,8 @@ class UpdateFileRequest extends FormRequest
             'description'=>'nullable',
             'file_status'=>'required',
             'file_name' => 'nullable',
-            'upload_id' => 'nullable'
+            'upload_id' => 'nullable',
+            'file_name_with_extension' => 'nullable'
         ];
     }
 }

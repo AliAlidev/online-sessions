@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('description')->nullable();
             $table->string('file');
             $table->string('file_name')->nullable();
+            $table->string('file_name_with_extension')->nullable();
             $table->string('file_status')->nullable();
             $table->string('file_type')->nullable();
             $table->string('file_size')->nullable();
