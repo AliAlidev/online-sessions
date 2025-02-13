@@ -9,6 +9,9 @@ class EventFolder extends Model
 {
     use HasFactory;
     protected $guarded = [];
+    protected $appends = [
+        'can_update_folder_name'
+    ];
 
     function files()
     {
@@ -18,5 +21,10 @@ class EventFolder extends Model
     function event()
     {
         return $this->belongsTo(Event::class, 'event_id');
+    }
+
+    function getCanUpdateFolderNameAttribute()
+    {
+        return $this->files->count() > 0 ? false : true;
     }
 }

@@ -17,7 +17,7 @@ class RoleController extends Controller
     {
         try {
             if ($request->ajax()) {
-                $events = Role::get();
+                $events = Role::whereNotIn('name', ['super-admin'])->get();
                 return DataTables::of($events)
                     ->addIndexColumn()
                     ->addColumn('actions', function ($role) {

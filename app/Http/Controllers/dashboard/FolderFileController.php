@@ -106,11 +106,11 @@ class FolderFileController extends Controller
     // Upload video to server
     public function uploadFile(Request $request)
     {
+        $type = $request->get('folder_type', 'image');
+        $request->validate([
+            'file' => $type == 'image' ? 'required|mimes:jpeg,png,jpg,webp|max:10000' : 'required|mimes:mp4|max:50000'
+        ]);
         try {
-            $type = $request->get('folder_type', 'image');
-            $request->validate([
-                'file' => $type == 'image' ? 'required|mimes:jpeg,png,jpg,webp|max:10000' : 'required|mimes:mp4|max:50000'
-            ]);
 
             // Store the uploaded video temporarily
             $file = $request->file('file');
@@ -253,6 +253,7 @@ class FolderFileController extends Controller
             deleteFile($fileMainPath);
             return response()->json(['success' => true, 'message' => 'File has been updated successfully']);
         } catch (Exception $th) {
+            dd($th->getMessage());
             createServerError($th, "updateFile", "files");
             return false;
         }

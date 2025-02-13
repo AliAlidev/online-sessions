@@ -28,7 +28,7 @@ class ClientController extends Controller
                         return '<a target="_blank" class="btn btn-label-linkedin" href="' . $row->contact_button_link . '"> Link </a>';
                     })
                     ->editColumn('role', function ($row) {
-                        return $row->roleModel->name;
+                        return $row->roleModel?->name;
                     })
                     ->editColumn('logo', function ($row) {
                         return $row->logo ? '<img src="/' . $row->logo . '" alt="" width="100px" height="100px">' : null;
@@ -50,7 +50,7 @@ class ClientController extends Controller
     function create()
     {
         try {
-            $roles = Role::pluck('name', 'id');
+            $roles = Role::whereNotIn('name', ['super-admin'])->pluck('name', 'id');
             return view('dashboard.client.create', ['roles' => $roles]);
         } catch (Exception $th) {
             createServerError($th, "createClient", "clients");
@@ -62,7 +62,7 @@ class ClientController extends Controller
     {
         try {
             $client = Client::find($id);
-            $roles = Role::pluck('name', 'id');
+            $roles = Role::whereNotIn('name', ['super-admin'])->pluck('name', 'id');
             return view('dashboard.client.update', ['roles' => $roles, 'client' => $client]);
         } catch (Exception $th) {
             createServerError($th, "editClient", "clients");
@@ -74,8 +74,8 @@ class ClientController extends Controller
     {
         try {
             $data = $request->validated();
-            $data['logo'] = $request->hasFile('logo') ? 'storage/' . uploadFile($request->file('logo'), 'client_logo') : null;
-            $data['profile_picture'] = $request->hasFile('profile_picture') ? 'storage/' . uploadFile($request->file('profile_picture'), 'client_profile_picture') : null;
+            $data['logo'] = $request->hasFile('logo') ? 'storage/' . uploadFile($request->file('logo'), 'clients/client_logo') : null;
+            $data['profile_picture'] = $request->hasFile('profile_picture') ? 'storage/' . uploadFile($request->file('profile_picture'), 'clients/client_profile_picture') : null;
             Client::create($data);
             session()->flash('success', 'Client has been created successfully');
             return response()->json(['success' => true, 'url' => route('clients.index')]);
@@ -90,10 +90,20 @@ class ClientController extends Controller
         try {
             $data = $request->validated();
             $client = Client::find($data['client_id']);
-            $data['logo'] = $request->hasFile('logo') ? 'storage/' . uploadFile($request->file('logo'), 'client_logo') : $client->logo;
-            $data['profile_picture'] = $request->hasFile('profile_picture') ? 'storage/' . uploadFile($request->file('profile_picture'), 'client_profile_picture') : $client->profile_picture;
+            $oldClient = clone $client;
+            $data['logo'] = $request->hasFile('logo') ? 'storage/' . uploadFile($request->file('logo'), 'clients/client_logo') : $client->logo;
+            $data['profile_picture'] = $request->hasFile('profile_picture') ? 'storage/' . uploadFile($request->file('profile_picture'), 'clients/client_profile_picture') : $client->profile_picture;
             unset($data['client_id']);
             $client->update($data);
+            // remove old images
+            if($request->hasFile('logo')){
+                $logo = str_replace("storage/", "", $oldClient->logo);
+                deleteFile($logo);
+            }
+            if($request->hasFile('profile_picture')){
+                $profilePicture = str_replace("storage/", "", $oldClient->profile_picture);
+                deleteFile($profilePicture);
+            }
             session()->flash('success', 'Client has been updated successfully');
             return response()->json(['success' => true, 'url' => route('clients.index')]);
         } catch (Exception $th) {

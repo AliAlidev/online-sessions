@@ -61,7 +61,7 @@ class FolderController extends Controller
     function show($id)
     {
         try {
-            $folder = EventFolder::find($id);
+            $folder = EventFolder::find($id)->append(['can_update_folder_name']);
             return response()->json(['success' => true, 'data' => $folder]);
         } catch (Exception $th) {
             createServerError($th, "showFolder", "folders");
@@ -73,7 +73,7 @@ class FolderController extends Controller
     {
         try {
             $data = $request->validated();
-            $data['folder_thumbnail'] = isset($data['folder_thumbnail']) ? 'storage/' . uploadFile($data['folder_thumbnail'], 'folder_thumbnail') : null;
+            $data['folder_thumbnail'] = isset($data['folder_thumbnail']) ? 'storage/' . uploadFile($data['folder_thumbnail'], 'folders/folder_thumbnail') : null;
             $data['event_id'] = $eventId;
             $data['folder_name'] = Str::slug($data['folder_name']);
             $data['bunny_folder_name'] = $data['folder_name'];
@@ -90,9 +90,16 @@ class FolderController extends Controller
         try {
             $data = $request->validated();
             $folder = EventFolder::find($data['folder_id']);
-            $data['folder_thumbnail'] = isset($data['folder_thumbnail']) ? 'storage/' . uploadFile($data['folder_thumbnail'], 'folder_thumbnail') : $folder->folder_thumbnail;
+            $oldFolder = clone $folder;
+            $hasThumbnail = $data['folder_thumbnail']??null;
+            $data['folder_thumbnail'] = isset($data['folder_thumbnail']) ? 'storage/' . uploadFile($data['folder_thumbnail'], 'folders/folder_thumbnail') : $folder->folder_thumbnail;
             unset($data['folder_id']);
             $folder->update($data);
+            if (isset($hasThumbnail)) {
+                $folderThumbnail = str_replace("storage/", "", $oldFolder->folder_thumbnail);
+                deleteFile($folderThumbnail);
+            }
+
             return response()->json(['success' => true, 'message' => 'Folder has been updated successfully']);
         } catch (Exception $th) {
             createServerError($th, "updateFolder", "folders");

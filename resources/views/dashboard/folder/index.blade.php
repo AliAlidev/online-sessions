@@ -87,7 +87,8 @@
     </div>
 
     {{-- ////////////// create folder modal ////////////// --}}
-    <div class="modal fade" id="CreateFolderModal" tabindex="-1" style="display: none;" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal fade" id="CreateFolderModal" tabindex="-1" style="display: none;" aria-hidden="true"
+        data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <form id="createFolder">
@@ -157,7 +158,8 @@
     </div>
 
     {{-- ////////////// update folder modal ////////////// --}}
-    <div class="modal fade" id="UpdateFolderModal" tabindex="-1" style="display: none;" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal fade" id="UpdateFolderModal" tabindex="-1" style="display: none;" aria-hidden="true"
+        data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <form id="updateFolderForm">
@@ -186,7 +188,7 @@
                             </div>
                         </div>
                         <div class="row mb-6">
-                            <div class="col-md-6">
+                            <div class="col-md-6" id="folderTypeDiv">
                                 <label for="folderType" class="form-label">Folder Type</label>
                                 <select class="form-select" id="folderTypeInput" name="folder_type">
                                     <option selected disabled>Select Folder Type</option>
@@ -339,6 +341,11 @@
                                 $('#folderLinkInput').parent().attr('hidden', false);
                             $('#descriptionInput').text(response.data.description);
                             $('#folderIdInput').val(response.data.id);
+                            if (response.data.can_update_folder_name)
+                                $('#folderTypeDiv').show();
+                            else
+                                $('#folderTypeDiv').hide();
+
                             $('#UpdateFolderModal').modal('show');
                         }
                     }
@@ -395,7 +402,7 @@
                 let csrfToken = $('meta[name="csrf-token"]').attr('content');
                 var submitBtn = $("#updateButton");
                 var spinner = submitBtn.find('#spinner');
-                var id = $('#FolderId').val();
+                var id = $('#folderIdInput').val();
                 $.ajax({
                     url: "{{ url('folders/update') }}/" + id,
                     type: 'POST',

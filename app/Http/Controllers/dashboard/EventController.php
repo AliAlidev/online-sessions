@@ -34,10 +34,10 @@ class EventController extends Controller
                         return $row->cover_image ? '<img src="/' . $row->cover_image . '" alt="" width="100px" height="100px">' : '';
                     })
                     ->addColumn('event_type', function ($row) {
-                        return $row->type->name;
+                        return $row->type?->name;
                     })
                     ->addColumn('event_client', function ($row) {
-                        return $row->client->planner_name;
+                        return $row->client?->planner_name;
                     })
                     ->editColumn('event_link', function ($row) {
                         return '<a target="_blank" class="btn btn-label-linkedin" href="' . $row->event_link . '"> Link </a>';
@@ -62,7 +62,7 @@ class EventController extends Controller
     {
         try {
             $types = EventType::pluck('name', 'id');
-            $roles = Role::pluck('name', 'id');
+            $roles = Role::whereNotIn('name', ['super-admin'])->pluck('name', 'id');
             $clients = Client::pluck('planner_name', 'id');
             return view('dashboard.event.create', ['types' => $types, 'roles' => $roles, 'clients' => $clients]);
         } catch (Exception $th) {
@@ -75,9 +75,9 @@ class EventController extends Controller
     {
         try {
             $data = $request->validated();
-            $data['cover_image'] = $request->hasFile('cover_image') ? 'storage/' . uploadFile($request->file('cover_image'), 'event_cover_image') : null;
-            $data['profile_picture'] = $request->hasFile('profile_picture') ? 'storage/' . uploadFile($request->file('profile_picture'), 'profile_picture') : null;
-            $data['qr_code'] = 'storage/' . uploadBase64File($data['qr_code'], 'event_qr_code');
+            $data['cover_image'] = $request->hasFile('cover_image') ? 'storage/' . uploadFile($request->file('cover_image'), 'events/event_cover_image') : null;
+            $data['profile_picture'] = $request->hasFile('profile_picture') ? 'storage/' . uploadFile($request->file('profile_picture'), 'events/profile_picture') : null;
+            $data['qr_code'] = 'storage/' . uploadBase64File($data['qr_code'], 'events/event_qr_code');
             $event = Event::create([
                 'event_name' => $data['event_name'],
                 'bunny_event_name' => $data['event_name'],
@@ -122,7 +122,7 @@ class EventController extends Controller
         try {
             $event = Event::with(['type', 'setting', 'organizers'])->find($id);
             $types = EventType::pluck('name', 'id');
-            $roles = Role::pluck('name', 'id');
+            $roles = Role::whereNotIn('name', ['super-admin'])->pluck('name', 'id');
             $clients = Client::pluck('planner_name', 'id');
             return view('dashboard.event.update', ['event' => $event, 'types' => $types, 'roles' => $roles, 'clients' => $clients]);
         } catch (Exception $th) {
@@ -135,10 +135,11 @@ class EventController extends Controller
     {
         try {
             $event = Event::find($id);
+            $oldEvent = clone $event;
             $data = $request->validated();
-            $data['cover_image'] = $request->hasFile('cover_image') ? 'storage/' . uploadFile($request->file('cover_image'), 'event_cover_image') :  $event->event_cover_image;
-            $data['profile_picture'] = $request->hasFile('profile_picture') ? 'storage/' . uploadFile($request->file('profile_picture'), 'profile_picture') :  $event->profile_picture;
-            $data['qr_code'] = 'storage/' . uploadBase64File($data['qr_code'], 'event_qr_code');
+            $data['cover_image'] = $request->hasFile('cover_image') ? 'storage/' . uploadFile($request->file('cover_image'), 'events/event_cover_image') :  $event->event_cover_image;
+            $data['profile_picture'] = $request->hasFile('profile_picture') ? 'storage/' . uploadFile($request->file('profile_picture'), 'events/profile_picture') :  $event->profile_picture;
+            $data['qr_code'] = $oldEvent->event_link != $data['event_link'] ? 'storage/' . uploadBase64File($data['qr_code'], 'events/event_qr_code') : $event->qr_code;
             $event->setting()->update([
                 'image_share_guest_book' => isset($data['image_share_guest_book']) && $data['image_share_guest_book'] == 'on' ? 1 : 0,
                 'image_folders' => isset($data['image_folders']) && $data['image_folders'] == 'on' ? 1 : 0,
@@ -179,6 +180,19 @@ class EventController extends Controller
                     $event->organizers()->create($organizer);
                 }
             }, $data['organizers']);
+            if ($request->hasFile('cover_image')) {
+                $coverImage = str_replace("storage/", "", $oldEvent->cover_image);
+                deleteFile($coverImage);
+            }
+            if ($request->hasFile('profile_picture')) {
+                $profilePicture = str_replace("storage/", "", $oldEvent->profile_picture);
+                deleteFile($profilePicture);
+            }
+            if ($oldEvent->event_link != $data['event_link']) {
+                $qrCode = str_replace("storage/", "", $oldEvent->qr_code);
+                deleteFile($qrCode);
+            }
+
             session()->flash('success', 'Event has been updated successfully');
             return response()->json(['success' => true, 'url' => route('events.index')]);
         } catch (Exception $th) {
@@ -195,6 +209,8 @@ class EventController extends Controller
             deleteFile($coverImage);
             $profilePicture = str_replace("storage/", "", $event->profile_picture);
             deleteFile($profilePicture);
+            $qrCode = str_replace("storage/", "", $event->qr_code);
+            deleteFile($qrCode);
             $event->delete();
             $count = Event::count();
             return response()->json(['success' => true, 'count' => $count]);

@@ -568,6 +568,7 @@
                 var formData = new FormData(this);
                 let csrfToken = $('meta[name="csrf-token"]').attr('content');
                 var submitBtn = $("#updateButton");
+                formData.append("folder_type", "{{ request()->route('type') }}");
                 showButtonLoader(submitBtn);
                 var id = $('#updateFileId').val();
                 document.querySelectorAll('.uploadProgress').forEach(element => {
@@ -586,6 +587,8 @@
                             'X-CSRF-TOKEN': csrfToken
                         },
                         success: function(response) {
+                            console.log(response);
+
                             // Step 2: Upload to BunnyCDN
                             uploadToBunnyUpdate(response.file_path, response.file_name, response
                                 .upload_id, submitBtn, progressBar, table, id, response
