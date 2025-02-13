@@ -82,6 +82,16 @@
                                         style="color: #ff0000 !important" hidden></small>
                                 </div>
                             </div>
+                            <div class="row mb-4">
+                                <div class="col-md-8">
+                                    <label for="region" class="form-label">Region</label>
+                                    <input type="text" id="region" class="form-control"
+                                        name="image[region]" placeholder="Enter Region"
+                                        value="{{ isset($imageSetting['region']) ? $imageSetting['region'] : '' }}">
+                                    <small class="text-body float-start error-message-div region-error"
+                                        style="color: #ff0000 !important" hidden></small>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="card mb-6">

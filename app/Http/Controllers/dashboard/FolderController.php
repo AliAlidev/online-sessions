@@ -120,7 +120,6 @@ class FolderController extends Controller
                 $videos = $folder->files->pluck('file_bunny_id')->toArray();
                 $this->bunnyVideoService->deleteMultipleVideos($videos);
             }
-
             $folder->delete();
             return response()->json(['success' => true, 'message' => 'Folder has been deleted successfully']);
         } catch (Exception $th) {

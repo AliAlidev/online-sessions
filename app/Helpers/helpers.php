@@ -150,11 +150,12 @@ if (!function_exists('checkImageConfig')) {
     {
         $accessToken = isset($config) ? $config['storage_access_token'] : null;
         $storageName = isset($config) ? $config['storage_zone_name'] : null;
+        $region = isset($config) ? $config['region'] : null;
         $client = new GuzzleHttpClient();
         $headers = [
             'accessKey' => $accessToken
         ];
-        $request = new Request('GET', 'https://storage.bunnycdn.com/' . $storageName . '/*', $headers);
+        $request = new Request('GET', 'https://'.$region.'.bunnycdn.com/' . $storageName . '/*', $headers);
         try {
             $response = $client->send($request, ['headers' => $headers]);
             $statusCode = $response->getStatusCode(); // Get the HTTP status code
@@ -164,6 +165,19 @@ if (!function_exists('checkImageConfig')) {
                 return false;
             return true;
         }
+    }
+}
+
+if (!function_exists('formatBytes')) {
+    function formatBytes($bytes, $precision = 2)
+    {
+        $units = ['B', 'KB', 'MB', 'GB', 'TB'];
+
+        for ($i = 0; $bytes >= 1024 && $i < count($units) - 1; $i++) {
+            $bytes /= 1024;
+        }
+
+        return round($bytes, $precision) . ' ' . $units[$i];
     }
 }
 

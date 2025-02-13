@@ -128,63 +128,63 @@ return [
         ],
 
         'bunny' => [
-            'driver' => 'errorlog',
+            'driver' => 'single',
             'level' => env('LOG_LEVEL', 'debug'),
             'replace_placeholders' => true,
             'path' => storage_path('logs/bunny.log')
         ],
 
         'files' => [
-            'driver' => 'errorlog',
+            'driver' => 'single',
             'level' => env('LOG_LEVEL', 'debug'),
             'replace_placeholders' => true,
             'path' => storage_path('logs/files.log')
         ],
 
         'folders' => [
-            'driver' => 'errorlog',
+            'driver' => 'single',
             'level' => env('LOG_LEVEL', 'debug'),
             'replace_placeholders' => true,
             'path' => storage_path('logs/folders.log')
         ],
 
         'clients' => [
-            'driver' => 'errorlog',
+            'driver' => 'single',
             'level' => env('LOG_LEVEL', 'debug'),
             'replace_placeholders' => true,
             'path' => storage_path('logs/clients.log')
         ],
 
         'events' => [
-            'driver' => 'errorlog',
+            'driver' => 'single',
             'level' => env('LOG_LEVEL', 'debug'),
             'replace_placeholders' => true,
             'path' => storage_path('logs/events.log')
         ],
 
         'eventTypes' => [
-            'driver' => 'errorlog',
+            'driver' => 'single',
             'level' => env('LOG_LEVEL', 'debug'),
             'replace_placeholders' => true,
             'path' => storage_path('logs/eventTypes.log')
         ],
 
         'insights' => [
-            'driver' => 'errorlog',
+            'driver' => 'single',
             'level' => env('LOG_LEVEL', 'debug'),
             'replace_placeholders' => true,
             'path' => storage_path('logs/insights.log')
         ],
 
         'roles' => [
-            'driver' => 'errorlog',
+            'driver' => 'single',
             'level' => env('LOG_LEVEL', 'debug'),
             'replace_placeholders' => true,
             'path' => storage_path('logs/roles.log')
         ],
 
         'setting' => [
-            'driver' => 'errorlog',
+            'driver' => 'single',
             'level' => env('LOG_LEVEL', 'debug'),
             'replace_placeholders' => true,
             'path' => storage_path('logs/setting.log')

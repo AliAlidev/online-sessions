@@ -10,6 +10,7 @@ use App\Models\Client;
 use App\Models\Event;
 use App\Models\EventSetting;
 use App\Models\EventType;
+use App\Services\BunnyImageService;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
@@ -18,6 +19,11 @@ use Yajra\DataTables\DataTables;
 
 class EventController extends Controller
 {
+    public BunnyImageService $bunnyImageService;
+    public function __construct(BunnyImageService $bunnyImageService) {
+        $this->bunnyImageService = $bunnyImageService;
+    }
+
     function index(Request $request)
     {
         try {
@@ -211,6 +217,10 @@ class EventController extends Controller
             deleteFile($profilePicture);
             $qrCode = str_replace("storage/", "", $event->qr_code);
             deleteFile($qrCode);
+            $event->folders->map(function($folder){
+                app(FolderController::class)->delete($folder->id);
+            });
+            $this->bunnyImageService->deleteFolderItSelf($event->bunny_main_folder_name . '/' . $event->event_name . '/');
             $event->delete();
             $count = Event::count();
             return response()->json(['success' => true, 'count' => $count]);

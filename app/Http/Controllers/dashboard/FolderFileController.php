@@ -55,7 +55,7 @@ class FolderFileController extends Controller
                     })
                     ->addColumn('name_and_size', function ($row) {
                         $name = '<span style="display:block">' . $row->file_name . '</span>';
-                        $name .= '<span style="display:block">' . $row->file_size . ' MB' . '</span>';
+                        $name .= '<span style="display:block">' . formatBytes($row->file_size) . '</span>';
                         return $name;
                     })
                     ->addColumn('status', function ($row) {
@@ -179,7 +179,6 @@ class FolderFileController extends Controller
             }
             unset($data['file_path']);
             unset($data['upload_id']);
-            unset($data['file_size']);
             $data['setting_id'] = $settingId;
             FolderFile::create($data);
             $fileMainPath = str_replace(url('/') . '/storage/', "", $fileMainPath);

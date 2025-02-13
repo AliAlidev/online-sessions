@@ -28,11 +28,11 @@ class InsightController extends Controller
                         'charts' => [
                             [
                                 'name' => 'TotalBandwidthUsed',
-                                'value' => $this->formatBytes($result['statistics']['TotalBandwidthUsed'])
+                                'value' => formatBytes($result['statistics']['TotalBandwidthUsed'])
                             ],
                             [
                                 'name' => 'TotalOriginTraffic',
-                                'value' => $this->formatBytes($result['statistics']['TotalOriginTraffic'])
+                                'value' => formatBytes($result['statistics']['TotalOriginTraffic'])
                             ],
                             [
                                 'name' => 'AverageOriginResponseTime',
@@ -77,17 +77,6 @@ class InsightController extends Controller
             return round($milliseconds / 1000, 2) . ' seconds';
         }
         return $milliseconds . ' ms';
-    }
-
-    function formatBytes($bytes, $precision = 2)
-    {
-        $units = ['B', 'KB', 'MB', 'GB', 'TB'];
-
-        for ($i = 0; $bytes >= 1024 && $i < count($units) - 1; $i++) {
-            $bytes /= 1024;
-        }
-
-        return round($bytes, $precision) . ' ' . $units[$i];
     }
 
     function getBunnyStatistics($storageZone = -1)
