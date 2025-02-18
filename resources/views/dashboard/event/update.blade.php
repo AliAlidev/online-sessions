@@ -113,7 +113,7 @@
                                         <div class="col-md-6">
                                             <label class="form-label" for="event-name-id">{{ __('Name') }}</label>
                                             <div class="input-group input-group-merge">
-                                                <input type="text" id="event-name-id" class="form-control"
+                                                <input type="text" id="event-name-id" class="form-control" {{ $event->canUpdateEventNameAndStartDate() ? '' : 'disabled' }}
                                                     name="event_name" value="{{ $event->event_name }}"
                                                     placeholder="Enter Event Name">
                                             </div>
@@ -183,7 +183,7 @@
                                     <div class="row mb-6">
                                         <div class="col-md-6">
                                             <label for="html5-date-input" class="form-label">Start Date</label>
-                                            <input class="form-control start_date" type="date" id="start-date-id"
+                                            <input class="form-control start_date" type="date" id="start-date-id" {{ $event->canUpdateEventNameAndStartDate() ? '' : 'disabled' }}
                                                 value="{{ $event->start_date }}" name="start_date">
                                             <small class="text-body float-start error-message-div start_date-error"
                                                 style="color: #ff0000 !important" hidden></small>

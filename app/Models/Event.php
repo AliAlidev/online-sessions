@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -35,10 +36,8 @@ class Event extends Model
         return $this->hasMany(EventFolder::class, 'event_id');
     }
 
-    function canUpdateName()
+    function canUpdateEventNameAndStartDate()
     {
-        return array_reduce($this->folders()->withCount('files')->pluck('files_count')->toArray(), function ($carry, $count) {
-            return  $carry + $count;
-        }, 0) > 0 ? false : true;
+        return Carbon::parse($this->start_date)->gte(Carbon::now()) ? true : false;
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\events;
 
+use App\Models\Event;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateEventRequest extends FormRequest
@@ -22,15 +23,24 @@ class UpdateEventRequest extends FormRequest
     public function rules(): array
     {
         $id = request()->route('id');
+        $event = Event::find($id);
+        if ($event && $event->canUpdateEventNameAndStartDate()) {
+            $eventValidation = 'required|string|unique:events,event_name,' . $id;
+            $eventStartDateValidation = 'required|date';
+        } else {
+            $eventValidation = '';
+            $eventStartDateValidation = '';
+        }
+
         return [
             'event_id' => 'required|exists:events,id',
-            'event_name' => 'required|string|unique:events,event_name,' . $id,
+            'event_name' =>  $eventValidation,
             'event_alias_name' => 'nullable|string',
             'cover_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp',
             'event_type_id' => 'required|exists:event_types,id',
             'profile_picture' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp',
             'client_id' => 'required|exists:clients,id',
-            'start_date' => 'required|date',
+            'start_date' => $eventStartDateValidation,
             'end_date' => 'required|date|after_or_equal:start_date',
             'customer' => 'required|string',
             'venue' => 'nullable|string',

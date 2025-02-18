@@ -20,7 +20,8 @@ use Yajra\DataTables\DataTables;
 class EventController extends Controller
 {
     public BunnyImageService $bunnyImageService;
-    public function __construct(BunnyImageService $bunnyImageService) {
+    public function __construct(BunnyImageService $bunnyImageService)
+    {
         $this->bunnyImageService = $bunnyImageService;
     }
 
@@ -159,13 +160,11 @@ class EventController extends Controller
                 'font' => isset($data['font']) ? $data['font'] : ''
             ]);
             $eventData = [
-                'event_name' => $data['event_name'],
                 'event_alias_name' => $data['event_alias_name'],
                 'cover_image' => $data['cover_image'],
                 'event_type_id' => $data['event_type_id'],
                 'profile_picture' => $data['profile_picture'],
                 'client_id' => $data['client_id'],
-                'start_date' => $data['start_date'],
                 'end_date' => $data['end_date'],
                 'customer' => $data['customer'],
                 'venue' => $data['venue'],
@@ -176,6 +175,11 @@ class EventController extends Controller
                 'welcome_message' => $data['welcome_message'],
                 'qr_code' => $data['qr_code']
             ];
+            if ($event && $event->canUpdateEventNameAndStartDate()) {
+                $eventData['event_name'] = $data['event_name'];
+                $eventData['start_date'] = $data['start_date'];
+            }
+
             $event->update($eventData);
             $event->organizers()->whereNotIn('id', array_column($data['organizers'], 'organizer_model_id'))->delete();
             array_map(function ($organizer) use ($event) {
@@ -219,7 +223,7 @@ class EventController extends Controller
             deleteFile($profilePicture);
             $qrCode = str_replace("storage/", "", $event->qr_code);
             deleteFile($qrCode);
-            $event->folders->map(function($folder){
+            $event->folders->map(function ($folder) {
                 app(FolderController::class)->delete($folder->id);
             });
             $this->bunnyImageService->deleteFolderItSelf($event->bunny_main_folder_name . '/' . $event->event_name . '/');
