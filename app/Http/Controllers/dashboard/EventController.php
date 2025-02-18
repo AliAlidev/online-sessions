@@ -86,6 +86,7 @@ class EventController extends Controller
             $data['qr_code'] = 'storage/' . uploadBase64File($data['qr_code'], 'events/event_qr_code');
             $event = Event::create([
                 'event_name' => $data['event_name'],
+                'event_alias_name' => $data['event_alias_name'],
                 'bunny_event_name' => $data['event_name'],
                 'cover_image' => $data['cover_image'],
                 'event_type_id' => $data['event_type_id'],
@@ -159,6 +160,7 @@ class EventController extends Controller
             ]);
             $eventData = [
                 'event_name' => $data['event_name'],
+                'event_alias_name' => $data['event_alias_name'],
                 'cover_image' => $data['cover_image'],
                 'event_type_id' => $data['event_type_id'],
                 'profile_picture' => $data['profile_picture'],

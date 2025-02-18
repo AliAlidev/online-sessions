@@ -23,6 +23,7 @@ class CreateEventRequest extends FormRequest
     {
         return [
             'event_name' => 'required|string|unique:events,event_name',
+            'event_alias_name' => 'nullable|string',
             'cover_image' => 'required|image|mimes:jpeg,png,jpg,gif,svg,webp',
             'event_type_id' => 'required|exists:event_types,id',
             'profile_picture' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp',

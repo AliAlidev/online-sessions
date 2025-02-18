@@ -25,6 +25,7 @@ class UpdateEventRequest extends FormRequest
         return [
             'event_id' => 'required|exists:events,id',
             'event_name' => 'required|string|unique:events,event_name,' . $id,
+            'event_alias_name' => 'nullable|string',
             'cover_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp',
             'event_type_id' => 'required|exists:event_types,id',
             'profile_picture' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp',

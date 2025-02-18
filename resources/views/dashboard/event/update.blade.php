@@ -111,14 +111,28 @@
                                 <div class="col-md-8">
                                     <div class="row mb-6">
                                         <div class="col-md-6">
-                                            <label class="form-label" for="basic-default-email">{{ __('Name') }}</label>
+                                            <label class="form-label" for="event-name-id">{{ __('Name') }}</label>
                                             <div class="input-group input-group-merge">
-                                                <input type="text" id="basic-default-email" class="form-control"
-                                                    name="event_name" value="{{ $event->event_name }}" placeholder="Enter Event Name">
+                                                <input type="text" id="event-name-id" class="form-control"
+                                                    name="event_name" value="{{ $event->event_name }}"
+                                                    placeholder="Enter Event Name">
                                             </div>
                                             <small class="text-body float-start error-message-div event_name-error"
                                                 style="color: #ff0000 !important"></small>
                                         </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label"
+                                                for="event-alias-name-id">{{ __('Alias Name') }}</label>
+                                            <div class="input-group input-group-merge">
+                                                <input type="text" id="event-alias-name-id" class="form-control"
+                                                    name="event_alias_name" value="{{ $event->event_alias_name }}"
+                                                    placeholder="Enter Event Alias Name">
+                                            </div>
+                                            <small class="text-body float-start error-message-div event_alias_name-error"
+                                                style="color: #ff0000 !important"></small>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-6">
                                         <div class="col-md-6">
                                             <label for="cover-image-file" class="form-label">Cover Image</label>
                                             <input class="form-control" type="file" id="cover-image-file"
@@ -126,6 +140,15 @@
                                             <small class="text-body float-start uploaded-file-name"
                                                 style="color: #000; font-style: italic;"></small>
                                             <small class="text-body float-start error-message-div cover_image-error"
+                                                style="color: #ff0000 !important" hidden></small>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="formFile" class="form-label">Profile Picture</label>
+                                            <input class="form-control" type="file" id="formFile" name="profile_picture"
+                                                accept="image/jpeg,png,jpg,gif,svg,webp">
+                                            <small class="text-body float-start uploaded-file-name"
+                                                style="color: #000; font-style: italic;"></small>
+                                            <small class="text-body float-start profile_picture-error"
                                                 style="color: #ff0000 !important" hidden></small>
                                         </div>
                                     </div>
@@ -143,17 +166,6 @@
                                             <small class="text-body float-start error-message-div event_type_id-error"
                                                 style="color: #ff0000 !important" hidden></small>
                                         </div>
-                                        <div class="col-md-6">
-                                            <label for="formFile" class="form-label">Profile Picture</label>
-                                            <input class="form-control" type="file" id="formFile" name="profile_picture"
-                                                accept="image/jpeg,png,jpg,gif,svg,webp">
-                                            <small class="text-body float-start uploaded-file-name"
-                                                style="color: #000; font-style: italic;"></small>
-                                            <small class="text-body float-start profile_picture-error"
-                                                style="color: #ff0000 !important" hidden></small>
-                                        </div>
-                                    </div>
-                                    <div class="row mb-6">
                                         <div class="col md-6">
                                             <label for="exampleFormControlSelect1" class="form-label">Client</label>
                                             <select class="form-select" id="exampleFormControlSelect1" name="client_id"
@@ -167,20 +179,13 @@
                                             <small class="text-body float-start error-message-div client_id-error"
                                                 style="color: #ff0000 !important" hidden></small>
                                         </div>
-                                        <div class="col-md-6">
-                                            <label for="html5-date-input" class="form-label">Start Date</label>
-                                            <input class="form-control start_date" type="date"
-                                                value="{{ $event->start_date }}" name="start_date">
-                                            <small class="text-body float-start error-message-div start_date-error"
-                                                style="color: #ff0000 !important" hidden></small>
-                                        </div>
                                     </div>
                                     <div class="row mb-6">
-                                        <div class="col md-6">
-                                            <label for="exampleFormControlSelect1" class="form-label">Customer</label>
-                                            <input class="form-control" type="text" value="{{ $event->customer }}" placeholder="Enter Customer Name"
-                                                id="event-customer-name" name="customer">
-                                            <small class="text-body float-start error-message-div customer-error"
+                                        <div class="col-md-6">
+                                            <label for="html5-date-input" class="form-label">Start Date</label>
+                                            <input class="form-control start_date" type="date" id="start-date-id"
+                                                value="{{ $event->start_date }}" name="start_date">
+                                            <small class="text-body float-start error-message-div start_date-error"
                                                 style="color: #ff0000 !important" hidden></small>
                                         </div>
                                         <div class="col-md-6">
@@ -193,13 +198,6 @@
                                     </div>
                                     <div class="row mb-6">
                                         <div class="col md-6">
-                                            <label for="html5-number-input" class="form-label">Venue</label>
-                                            <input class="form-control" type="text" value="{{ $event->venue }}"
-                                                name="venue" placeholder="Enter Venue" id="html5-number-input">
-                                            <small class="text-body float-start error-message-div venue-error"
-                                                style="color: #ff0000 !important" hidden></small>
-                                        </div>
-                                        <div class="col md-6">
                                             <label for="active-duration" class="form-label">Active Duration</label>
                                             <input class="form-control" type="text"
                                                 value="{{ $event->active_duration }}" name="active_duration"
@@ -207,34 +205,21 @@
                                             <small class="text-body float-start error-message-div active_duration-error"
                                                 style="color: #ff0000 !important" hidden></small>
                                         </div>
-                                    </div>
-                                    <div class="row mb-6">
                                         <div class="col md-6">
-                                            <label for="exampleFormControlTextarea1"
-                                                class="form-label">Description</label>
-                                            <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="description">{{ $event->description }}</textarea>
-                                            <small class="text-body float-start error-message-div Description-error"
+                                            <label for="exampleFormControlSelect1" class="form-label">Customer</label>
+                                            <input class="form-control" type="text" value="{{ $event->customer }}"
+                                                placeholder="Enter Customer Name" id="event-customer-name"
+                                                name="customer">
+                                            <small class="text-body float-start error-message-div customer-error"
                                                 style="color: #ff0000 !important" hidden></small>
                                         </div>
-                                        <div class="col md-6">
-                                            <label for="exampleFormControlTextarea1" class="form-label">Link</label>
-                                            <div class="url-container mb-6">
-                                                <input type="text" id="urlInput" class="url-input"
-                                                    value="{{ $event->event_link }}" name="event_link">
-                                                <button onclick="copyUrl(event)" class="copy-button">Copy</button>
-                                                <small class="text-body float-start" style="color: #696cff !important"
-                                                    hidden>Copied</small>
-                                                <small class="text-body float-start error-message-div event_link-error"
-                                                    style="color: #ff0000 !important" hidden></small>
-                                            </div>
-                                        </div>
                                     </div>
                                     <div class="row mb-6">
-                                        <div class="col-md-6">
-                                            <label for="exampleFormControlTextarea1" class="form-label">Welcome
-                                                Message</label>
-                                            <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="welcome_message">{{ $event->welcome_message }}</textarea>
-                                            <small class="text-body float-start error-message-div welcome_message-error"
+                                        <div class="col md-6">
+                                            <label for="html5-number-input" class="form-label">Venue</label>
+                                            <input class="form-control" type="text" value="{{ $event->venue }}"
+                                                name="venue" placeholder="Enter Venue" id="html5-number-input">
+                                            <small class="text-body float-start error-message-div venue-error"
                                                 style="color: #ff0000 !important" hidden></small>
                                         </div>
                                         <div class="col-md-6">
@@ -252,6 +237,36 @@
                                             </div>
                                             <small class="text-body float-start error-message-div event_password-error"
                                                 style="color: #ff0000 !important" hidden></small>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-6">
+                                        <div class="col md-6">
+                                            <label for="exampleFormControlTextarea1"
+                                                class="form-label">Description</label>
+                                            <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="description">{{ $event->description }}</textarea>
+                                            <small class="text-body float-start error-message-div Description-error"
+                                                style="color: #ff0000 !important" hidden></small>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="exampleFormControlTextarea1" class="form-label">Welcome
+                                                Message</label>
+                                            <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="welcome_message">{{ $event->welcome_message }}</textarea>
+                                            <small class="text-body float-start error-message-div welcome_message-error"
+                                                style="color: #ff0000 !important" hidden></small>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-6">
+                                        <div class="col md-6">
+                                            <label for="exampleFormControlTextarea1" class="form-label">Link</label>
+                                            <div class="url-container mb-6">
+                                                <input type="text" id="urlInput" class="url-input" readonly
+                                                    value="{{ $event->event_link }}" name="event_link">
+                                                <button onclick="copyUrl(event)" class="copy-button">Copy</button>
+                                                <small class="text-body float-start" style="color: #696cff !important"
+                                                    hidden>Copied</small>
+                                                <small class="text-body float-start error-message-div event_link-error"
+                                                    style="color: #ff0000 !important" hidden></small>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -579,23 +594,16 @@
     </script>
 
     <script>
-        $('#event-customer-name').on('keyup', function(e) {
-            e.preventDefault();
-            $('#qr-code-section').empty();
+        function updateLinkValue() {
             $('#urlInput').val('');
-            var customer = $(this).val();
-            if (customer) {
-                generateQRCode(customer);
-            }
-        })
-
-        function generateQRCode(customer) {
-            var dateTimeValue = $("input[name='start_date']").val();
+            $('#qr-code-section').empty();
+            var eventName = $('#event-name-id').val();
+            var dateTimeValue = $("#start-date-id").val();
             if (dateTimeValue == '')
                 dateTimeValue = new Date();
             var year = new Date(dateTimeValue).getFullYear();
             var month = new Date(dateTimeValue).getMonth() + 1;
-            var url = "{{ url('/') }}/events/" + year + "/" + month + "/" + getSlug(customer);
+            var url = "{{ url('/') }}/events/" + year + "/" + month + "/" + getSlug(eventName);
             $('#urlInput').val(url);
             new QRCode(document.getElementById("qr-code-section"), {
                 text: url,
@@ -606,6 +614,16 @@
             const qrCodeBase64 = canvas.toDataURL("image/png");
             $('#event_qr_code').val(qrCodeBase64);
         }
+
+        $('#event-name-id').on('keyup', function(e) {
+            e.preventDefault();
+            updateLinkValue();
+        })
+
+        $('#start-date-id').on('change', function(e) {
+            e.preventDefault();
+            updateLinkValue();
+        })
 
         function getSlug(inputText) {
             return inputText
@@ -623,9 +641,11 @@
                 const newOrganizerRow = $('.organizer-row').first().clone();
                 $(newOrganizerRow).find('.organizer-model-id').remove();
                 $(newOrganizerRow).find('.error-message-div').attr('hidden', true);
-
                 newOrganizerRow.find('select').each(function() {
                     $(this).prop('selectedIndex', 0);
+                });
+                newOrganizerRow.find('small').each(function() {
+                    $(this).prop('hidden', 'hidden');
                 });
                 const removeButton = newOrganizerRow.find('.remove-row');
                 removeButton.removeAttr('hidden');
@@ -730,8 +750,8 @@
 
     <script>
         $(document).ready(function() {
-            var customer = $('#event-customer-name').val();
-            generateQRCode(customer);
+            // var eventName = $('#event-name-id').val();
+            updateLinkValue();
         })
     </script>
 

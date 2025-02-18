@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('events', function (Blueprint $table) {
             $table->id();
             $table->string('event_name');
+            $table->string('event_alias_name')->nullable();
             $table->string('bunny_event_name');
             $table->unsignedBigInteger('event_type_id')->nullable();
             $table->unsignedBigInteger('client_id')->nullable();
