@@ -42,10 +42,11 @@
     <div class="container-xxl flex-grow-1 container-p-y">
 
         <!-- DataTable with Buttons -->
+        <h5 class="mb-0">{{ Breadcrumbs::render('folder', request()->route('event_id')) }}</h5>
         <div class="card">
+
             <div class="row card-header flex-column flex-md-row pb-0">
                 <div class="d-md-flex justify-content-between align-items-center dt-layout-start col-md-auto me-auto mt-0">
-                    <h5 class="mb-0">{{ __('Event Folders List') }}</h5>
                 </div>
                 <div class="d-md-flex justify-content-between align-items-center dt-layout-end col-md-auto ms-auto mt-0"
                     style="gap: 10px">

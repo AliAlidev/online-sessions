@@ -28,11 +28,11 @@
 
 @section('content')
     <div class="container-xxl flex-grow-1 container-p-y">
+        <h5 class="mb-0">{{ Breadcrumbs::render('clients') }}</h5>
         <div class="card">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h5 class="mb-0">{{ __('Clients List') }}</h5>
+            {{-- <div class="card-header d-flex justify-content-between align-items-center">
                 <small class="text-body float-end"></small>
-            </div>
+            </div> --}}
             <div class="card-datatable">
                 <div class="justify-content-between dt-layout-table" style="padding: 20px">
                     <table id="clients-datatable" class="table table-responsive table-hover text-nowrap"

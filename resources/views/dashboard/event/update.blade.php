@@ -101,7 +101,7 @@
             <div class="col-xl">
                 <form id="updateEvent">
                     <input type="hidden" name="event_id" id="event_id" value="{{ $event->id }}">
-                    <h5 class="mb-0">{{ __('Update New Event') }}</h5>
+                    <h5 class="mb-0">{{ Breadcrumbs::render('update-event', $event->id) }}</h5>
                     <div class="card mb-6">
                         <div class="card-header d-flex justify-content-between align-items-center">
                             <h5 class="mb-0">{{ __('Event Information') }}</h5>

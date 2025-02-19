@@ -29,7 +29,7 @@
         <div class="row">
             <div class="col-xl">
                 <form id="createClientForm">
-                    <h5 class="mb-0">{{ __('Create New Client') }}</h5>
+                    <h5 class="mb-0">{{ Breadcrumbs::render('create-client') }}</h5>
                     <div class="card mb-6">
                         <div class="card-header">
                             <h5 class="mb-0">Client Information</h5>

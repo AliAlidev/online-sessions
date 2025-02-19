@@ -28,7 +28,7 @@
     <div class="container-xxl flex-grow-1 container-p-y">
         <div class="row">
             <div class="col-xl">
-                <h5 class="mb-0">{{ __('Bunny Profile Setting') }}</h5>
+                <h5>{{ Breadcrumbs::render('settings') }}</h5>
                 <form id="saveSettingForm">
                     <div class="card mb-6">
                         <div class="card-header">

@@ -29,11 +29,8 @@
     <div class="container-xxl flex-grow-1 container-p-y">
 
         <!-- DataTable with Buttons -->
+        <h5 class="mb-0">{{ Breadcrumbs::render('events') }}</h5>
         <div class="card">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h5 class="mb-0">{{ __('Events List') }}</h5>
-                <small class="text-body float-end"></small>
-            </div>
             <div class="card-datatable">
                 <div class="justify-content-between dt-layout-table" style="padding: 20px">
                     <table id="events-datatable" class="table table-responsive table-hover text-nowrap"

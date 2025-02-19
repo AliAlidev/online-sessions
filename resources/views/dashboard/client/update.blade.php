@@ -30,7 +30,7 @@
             <div class="col-xl">
                 <form id="updateClientForm">
                     <input type="hidden" name="client_id" value="{{ $client->id }}">
-                    <h5 class="mb-0">{{ __('Update New Client') }}</h5>
+                    <h5 class="mb-0">{{ Breadcrumbs::render('update-client', $client->id) }}</h5>
                     <div class="card mb-6">
                         <div class="card-header">
                             <h5 class="mb-0">Client Information</h5>
