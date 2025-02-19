@@ -63,50 +63,12 @@
             cursor: pointer;
         }
 
-        .retry-button {
-            background-color: #4CAF50;
-            /* Green background */
-            border: none;
-            color: white;
-            padding: 10px 20px;
-            text-align: center;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 16px;
-            font-weight: bold;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        .hidden-force {
+            display: none !important;
         }
 
-        .retry-button:hover {
-            background-color: #45a049;
-            /* Darker green on hover */
-            transform: translateY(-2px);
-            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
-        }
-
-        .retry-button:active {
-            background-color: #3e8e41;
-            /* Even darker green on click */
-            transform: translateY(0);
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        .retry-icon {
-            margin-right: 8px;
-            animation: spin 1s infinite linear;
-        }
-
-        @keyframes spin {
-            from {
-                transform: rotate(0deg);
-            }
-
-            to {
-                transform: rotate(360deg);
-            }
+        .show-force {
+            display: block !important;
         }
     </style>
 @endsection
@@ -499,79 +461,121 @@
                 }
             });
 
+            let allUploadsSuccessCount = 0; // Track if any upload fails
+            let filesCount = 0;
+            let formId = null;
             $('#createFileForm').submit(function(e) {
                 e.preventDefault(); // Prevent default form submission
-                var form = e.target.id;
-
+                formId = e.target.id;
                 var submitBtn = $("#storeButton");
+
                 showButtonLoader(submitBtn);
 
                 let files = $('input[type=file]')[0].files;
+                filesCount = files.length;
                 if (files.length == 0) {
                     $('.file_name-error').attr('hidden', false);
                     $('.file_name-error').text('Please select files');
                     hideButtonLoader(submitBtn);
-                    return false
+                    return false;
                 }
+
                 $('#progressContainer').empty(); // Clear previous progress bars
 
-                // Create an array of Promises for all file uploads
-                let uploadPromises = [];
+                let uploadQueue = []; // Queue for all files
+                const MAX_CONCURRENT_UPLOADS = 6;
+
+                // Initialize UI for all files (progress bar + Start button)
                 for (let i = 0; i < files.length; i++) {
-                    uploadPromises.push(uploadFile(files[i], i)); // Push the promise returned by uploadFile
+                    let fileContainer = $(`
+                            <div class="mb-4" id="file-container-${i}">
+                                <p class="mb-0">Stage1: File Upload ${files[i].name}</p>
+                                <button class="btn btn-sm btn-primary start-btn" data-index="${i}" style="height:15px;width:auto ;font-size: 10px;">Start Upload</button>
+                                <div class="progress mt-2">
+                                    <div class="progress-bar progress-bar-striped progress-bar-animated bg-success" style="font-size:8px"
+                                        role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"
+                                        style="width: 0%" id="progress-bar-${i}"></div>
+                                </div>
+                                <p id="status-${i}" class="text-danger d-inline-block"></p>
+                                <button class="btn btn-sm btn-warning retry-btn hidden-force" style="height:15px; width:auto; font-size:10px" data-index="${i}" style="font-size: 12px;">Retry</button>
+                            </div>
+                        `);
+                    $('#progressContainer').append(fileContainer);
+                    uploadQueue.push({
+                        file: files[i],
+                        index: i
+                    }); // Add to queue
                 }
 
-                // Wait for all files to finish uploading
-                Promise.all(uploadPromises).then(() => {
-                    hideButtonLoader(submitBtn); // Hide loader after all files are uploaded
-                    resetForm(form);
-                    $('#CreateFileModal').modal('hide');
-                }).catch(() => {
-                    hideButtonLoader(submitBtn); // Hide loader even if one of the uploads failed
-                });
+                // Start uploading files (up to 6 at a time)
+                processUploads(uploadQueue, MAX_CONCURRENT_UPLOADS)
+                    .then(() => {
+                        hideButtonLoader(submitBtn);
+                    })
+                    .catch(() => {
+                        hideButtonLoader(submitBtn);
+                    });
             });
+
+            // Function to process uploads with concurrency control
+            function processUploads(queue, maxUploads) {
+                const activeUploads = []; // Array to keep track of active promises
+
+                return new Promise((resolve, reject) => {
+                    function startNextUpload() {
+                        // Check if there are still files to process
+                        if (queue.length === 0 && activeUploads.length === 0) {
+                            resolve(); // Resolve when all files are processed
+                            return;
+                        }
+
+                        // Start new uploads if we're below the max limit
+                        while (queue.length > 0 && activeUploads.length < maxUploads) {
+                            const {
+                                file,
+                                index
+                            } = queue.shift(); // Get the next file from the queue
+
+                            // Start upload and add the promise to active uploads
+                            const uploadPromise = uploadFile(file, index)
+                                .then(() => {
+                                    // Remove this upload from the active list when completed
+                                    activeUploads.splice(activeUploads.indexOf(uploadPromise), 1);
+                                    startNextUpload(); // Check if we can start another upload
+                                })
+                                .catch(() => {
+                                    // Handle failed uploads by showing retry button
+                                    showRetryButton(index);
+                                    activeUploads.splice(activeUploads.indexOf(uploadPromise), 1);
+                                    startNextUpload(); // Check if we can start another upload
+                                });
+
+                            activeUploads.push(uploadPromise); // Track active upload
+                        }
+                    }
+
+                    startNextUpload(); // Start the first batch of uploads
+                });
+            }
 
             async function uploadFile(file, index) {
                 return new Promise((resolve, reject) => {
                     let formData = new FormData();
-                    formData.append('file', file); // Send one file at a time
+                    formData.append('file', file);
                     let csrfToken = $('meta[name="csrf-token"]').attr('content');
                     formData.append('_token', csrfToken);
                     formData.append('user_name', $('#UserName').val());
                     formData.append('description', $('#description').val());
                     formData.append('file_size', file.size);
+                    $(`#file-container-${index} .start-btn`).remove(); // Remove "Start Upload" button
 
-                    if (!$(`#progress-bar-${index}`).length) {
-                        let progressBar = $(`
-                                    <div class="mb-2">
-                                        <p class="mb-0">Stage1: Uploading to server - ${file.name}</p>
-                                        <div class="progress">
-                                            <div class="progress-bar progress-bar-striped progress-bar-animated bg-success" style="font-size:8px"
-                                                role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"
-                                                style="width: 0%" id="progress-bar-${index}"></div>
-                                        </div>
-                                        <p id="status-${index}" hidden></p>
-                                    </div>
-                                `);
-                        $('#progressContainer').append(progressBar);
-                    } else {
-                        // If retrying, reset the existing progress bar
-                        $("#progress-bar-" + index)
-                            .css("width", "0%")
-                            .removeClass("bg-danger bg-primary")
-                            .addClass("bg-success")
-                            .text("0%");
-                        $("#status-" + index).text("Retrying...");
-                    }
-
-                    // AJAX Upload
                     $.ajax({
                         url: "{{ route('files.store', [request()->route('folder_id'), request()->route('type')]) }}",
                         type: 'POST',
                         data: formData,
                         processData: false,
                         contentType: false,
-                        timeout: 20000, // set timeout to 20 second
+                        timeout: 20000, // Set timeout to 20 seconds
                         xhr: function() {
                             let xhr = new window.XMLHttpRequest();
                             xhr.upload.addEventListener("progress", function(event) {
@@ -579,24 +583,29 @@
                                     let percent = Math.round((event.loaded / event
                                         .total) * 100);
                                     $("#progress-bar-" + index).css("width",
-                                        percent +
-                                        "%").text(percent + "%");
+                                        percent + "%").text(percent + "%");
 
                                     if (percent === 100) {
-                                        showProcessingStatus(
-                                            index); // Start animated dots
+                                        showProcessingStatus(index);
                                     }
                                 }
                             }, false);
                             return xhr;
                         },
                         success: function(response) {
+                            allUploadsSuccessCount++;
                             clearInterval($("#status-" + index).data(
                                 "interval")); // Stop animated dots
                             $("#progress-bar-" + index).removeClass("bg-success").addClass(
-                                    "bg-primary")
-                                .text("Completed");
-                            $("#status-" + index).hide();
+                                "bg-primary").text("Completed");
+                            $("#status-" + index).addClass('hidden-force');
+                            console.log(filesCount);
+                            console.log(allUploadsSuccessCount);
+
+                            if (allUploadsSuccessCount == filesCount) {
+                                resetForm(formId);
+                                $('#CreateFileModal').modal('hide');
+                            }
                             resolve(); // Resolve the Promise after successful upload
                         },
                         error: function(jqXHR, textStatus) {
@@ -606,26 +615,31 @@
                                 "bg-danger").text("Failed");
 
                             let errorMessage = (textStatus === "timeout") ?
-                                "Upload timed out" : "Failed";
+                                "Stage2: Upload timed out" : "Stage2: Failed";
+                            $("#status-" + index).text(errorMessage).show();
 
-                            // Add retry button next to the failed message
-                            $("#status-" + index).html(`
-                                <span>${errorMessage}</span>
-                                <button class="btn btn-sm btn-warning retry-btn" style="width: 38px;height: 20px !important;font-size: 11px;" data-index="${index}">Retry</button>
-                            `);
-
+                            showRetryButton(index); // Show retry button only when failed
                             reject(); // Reject the Promise in case of error
-
                         }
                     });
                 });
             }
 
+            // Show Progress Bar and Hide Start Button
+            function startUpload(file, index) {
+                $(`#file-container-${index} .start-btn`).remove(); // Remove "Start Upload" button
+                $(`#file-container-${index} .progress`).show(); // Show progress bar
+                // This ensures progress bar is shown after DOM update
+                setTimeout(() => {
+                    $(`#file-container-${index} .progress`).css('display', 'block');
+                }, 0);
+            }
+
             function showProcessingStatus(index) {
                 let statusText = $("#status-" + index);
                 let dots = 0;
-                statusText.attr('hidden', false);
-                statusText.text("Processing");
+                statusText.removeClass('hidden-force');
+                statusText.text("Stage2: Processing");
 
                 let interval = setInterval(() => {
                     dots = (dots + 1) % 4;
@@ -635,23 +649,66 @@
                 statusText.data("interval", interval); // Save interval to clear later
             }
 
-            // Retry button event handler
+            function showRetryButton(index) {
+                $(`#file-container-${index} .retry-btn`).removeClass('hidden-force'); // Show Retry button
+            }
+
             $(document).on("click", ".retry-btn", function() {
+                $(this).addClass('hidden-force');
                 let index = $(this).data("index");
                 let file = $('input[type=file]')[0].files[index]; // Get the failed file
 
-                // Reset the progress bar and status text
+                // Reset progress bar and status text
                 $("#progress-bar-" + index)
                     .css("width", "0%")
                     .removeClass("bg-danger")
                     .addClass("bg-success")
                     .text("0%");
 
-                $("#status-" + index).text("Retrying...");
+                $("#status-" + index).text("Stage2: Retrying...");
 
                 // Retry uploading the file using the existing progress bar
                 uploadFile(file, index);
             });
+
+            $(document).on("click", ".start-btn", function() {
+                let index = $(this).data("index");
+                let file = $('input[type=file]')[0].files[index]; // Get the file
+
+                startUpload(file, index); // Hide button, show progress
+                uploadFile(file, index);
+            });
+
+            $('#event-file').on('change', function() {
+                clearErrors();
+                const fileInput = $(this)[0];
+                const fileNameDisplay = $(this).closest('.col-md-12').find('.uploaded-file-name');
+                fileNameDisplay.attr('hidden', false);
+                fileNameDisplay.empty();
+                filesCount = fileInput.files.length;
+                allUploadsSuccessCount = 0;
+                if (fileInput.files && fileInput.files.length > 0) {
+                    // Iterate over each file
+                    Array.from(fileInput.files).forEach((file, index) => {
+                        let fileName = file.name;
+                        const fileExtension = fileName.split('.').pop();
+                        if (fileName.length > 40) {
+                            const nameWithoutExtension = fileName.substring(0, fileName.lastIndexOf(
+                                '.'));
+                            fileName = nameWithoutExtension.substring(0, 20) + '...' + '.' +
+                                fileExtension;
+                        }
+                        fileNameDisplay.append(
+                            `<small>File Name: ${fileName}, Size: ${(file.size / (1024 * 1024)).toFixed(2)} MB</small><br/>`
+                        );
+                        $('.uploaded-file-name-input').val(fileName);
+                    });
+                } else {
+                    fileNameDisplay.text('');
+                }
+            });
+
+
 
 
 
@@ -947,32 +1004,5 @@
                 }
             });
         })
-    </script>
-
-    <script>
-        $('#event-file').on('change', function() {
-            clearErrors();
-            const fileInput = $(this)[0];
-            const fileNameDisplay = $(this).closest('.col-md-12').find('.uploaded-file-name');
-            fileNameDisplay.attr('hidden', false);
-            fileNameDisplay.empty();
-            if (fileInput.files && fileInput.files.length > 0) {
-                // Iterate over each file
-                Array.from(fileInput.files).forEach((file, index) => {
-                    let fileName = file.name;
-                    const fileExtension = fileName.split('.').pop();
-                    if (fileName.length > 40) {
-                        const nameWithoutExtension = fileName.substring(0, fileName.lastIndexOf('.'));
-                        fileName = nameWithoutExtension.substring(0, 20) + '...' + '.' + fileExtension;
-                    }
-                    fileNameDisplay.append(
-                        `<small>File Name: ${fileName}, Size: ${(file.size / (1024 * 1024)).toFixed(2)} MB</small><br/>`
-                    );
-                    $('.uploaded-file-name-input').val(fileName);
-                });
-            } else {
-                fileNameDisplay.text('');
-            }
-        });
     </script>
 @endsection
