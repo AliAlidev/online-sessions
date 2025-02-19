@@ -139,7 +139,6 @@ class FolderFileController extends Controller
     public function store(CreateFileRequest $request, $folderId, $folderType)
     {
         $data = $request->validated();
-        $fileMainPath = $data['file_path'];
         $settingId = null;
         if ($folderType == "image") {
             $setting = getSetting();
@@ -163,8 +162,9 @@ class FolderFileController extends Controller
             if ($folder->folder_type == 'image') {
                 $bunnyMainFolderName = $folder->event->bunny_main_folder_name;
                 $bunnyEventFolderName = $folder->event->bunny_event_name;
-                $path = $bunnyMainFolderName . '/' . $bunnyEventFolderName . '/' . $folder->bunny_folder_name . '/' . $data['file_name_with_extension'];
-                $path = $this->bunnyService->GuarantiedUploadImage($data['file_path'], $path, $data['upload_id'], $data['file_size']);
+                $fileNameWithExtension = $data['file']->getClientOriginalName();
+                $path = $bunnyMainFolderName . '/' . $bunnyEventFolderName . '/' . $folder->bunny_folder_name . '/' . $fileNameWithExtension;
+                $path = $this->bunnyService->GuarantiedUploadImage($data['file'], $path, $data['file_size']);
                 if (!$path['success']) {
                     return response()->json(['success' => false, 'message' => $path['message']], 400);
                 }
@@ -177,12 +177,12 @@ class FolderFileController extends Controller
                 $data['file'] = $path['path'];
                 $data['file_bunny_id'] = $path['guid'];
             }
-            unset($data['file_path']);
-            unset($data['upload_id']);
+            // unset($data['file_path']);
+            // unset($data['upload_id']);
             $data['setting_id'] = $settingId;
             FolderFile::create($data);
-            $fileMainPath = str_replace(url('/') . '/storage/', "", $fileMainPath);
-            deleteFile($fileMainPath);
+            // $fileMainPath = str_replace(url('/') . '/storage/', "", $fileMainPath);
+            // deleteFile($fileMainPath);
             return response()->json(['success' => true, 'message' => 'File has been uploaded successfully']);
         } catch (Exception $e) {
             createServerError($e, "updateFile", "files");

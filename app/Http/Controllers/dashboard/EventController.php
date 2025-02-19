@@ -16,6 +16,7 @@ use Exception;
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Role;
 use Yajra\DataTables\DataTables;
+use Illuminate\Support\Str;
 
 class EventController extends Controller
 {
@@ -88,7 +89,7 @@ class EventController extends Controller
             $event = Event::create([
                 'event_name' => $data['event_name'],
                 'event_alias_name' => $data['event_alias_name'],
-                'bunny_event_name' => $data['event_name'],
+                'bunny_event_name' => Str::slug($data['event_name']),
                 'cover_image' => $data['cover_image'],
                 'event_type_id' => $data['event_type_id'],
                 'profile_picture' => $data['profile_picture'],

@@ -62,6 +62,52 @@
         .file-status-modal {
             cursor: pointer;
         }
+
+        .retry-button {
+            background-color: #4CAF50;
+            /* Green background */
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .retry-button:hover {
+            background-color: #45a049;
+            /* Darker green on hover */
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .retry-button:active {
+            background-color: #3e8e41;
+            /* Even darker green on click */
+            transform: translateY(0);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .retry-icon {
+            margin-right: 8px;
+            animation: spin 1s infinite linear;
+        }
+
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
     </style>
 @endsection
 
@@ -116,7 +162,7 @@
         data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
-                <form id="createFileForm">
+                <form id="createFileForm" method="POST" enctype="multipart/form-data">
                     <input type="hidden" class="uploaded-file-name-input" name="file_name">
                     <div class="modal-header">
                         <h5 class="modal-title" id="modalCenterTitle">Upload New {{ ucfirst($folderType) }}</h5>
@@ -124,16 +170,17 @@
                     </div>
                     <div class="modal-body">
                         <div class="row mb-6">
-                            <input type="hidden" class="uploaded-file-size" name="file_size">
-                            <div class="col-md-6">
-                                <label for="file" class="form-label">{{ ucfirst($folderType) }}</label>
-                                <input type="file" id="file" class="form-control" name="file"
+                            <div class="col-md-12">
+                                <label for="event-file" class="form-label">{{ ucfirst($folderType) }}</label>
+                                <input type="file" id="event-file" class="form-control" name="file" multiple
                                     accept='{{ $folderType == 'image' ? 'image/jpeg,png,jpg,webp' : 'video/mp4' }}'>
                                 <small class="text-body float-start uploaded-file-name"
                                     style="color: #000; font-style: italic;"></small>
                                 <small class="text-body float-start error-message-div file-error file_name-error"
                                     style="color: #ff0000 !important" hidden></small>
                             </div>
+                        </div>
+                        <div class="row mb-6">
                             <div class="col-md-6">
                                 <label for="userName" class="form-label">User Name</label>
                                 <input type="text" id="UserName" class="form-control" name="user_name"
@@ -172,15 +219,8 @@
                             </span>
                         </button>
                     </div>
-
-                    <div class="progress uploadProgress" style="display: none; height: 10px;">
-                        <div class="progress-bar" role="progressbar" style="width: 0%; height:10px; font-size: 7px"
-                            aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
-                            0%
-                        </div>
-                    </div>
-
                 </form>
+                <div id="progressContainer"></div> <!-- Where progress bars will be added -->
             </div>
         </div>
     </div>
@@ -265,7 +305,6 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <input type="hidden" id="updateFileId" name="file_id">
-                <input type="hidden" class="uploaded-file-size" name="file_size">
                 <input type="hidden" class="uploaded-file-name-input" name="file_name">
                 <div class="modal-header">
                     <h5 class="modal-title" id="modalCenterTitle">{{ ucfirst($folderType) }} Preview</h5>
@@ -321,6 +360,7 @@
 @section('scripts')
     <script type="text/javascript" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.form/4.3.0/jquery.form.min.js"></script>
 
     <script>
         var table;
@@ -460,221 +500,339 @@
             });
 
             $('#createFileForm').submit(function(e) {
-                e.preventDefault();
-                clearErrors();
-                var formData = new FormData(this);
-                let csrfToken = $('meta[name="csrf-token"]').attr('content');
+                e.preventDefault(); // Prevent default form submission
+                var form = e.target.id;
+
                 var submitBtn = $("#storeButton");
-                formData.append("folder_type", "{{ request()->route('type') }}");
                 showButtonLoader(submitBtn);
-                document.querySelectorAll('.uploadProgress').forEach(element => {
-                    element.style.display = 'block';
-                });
-                var progressBar = document.querySelectorAll('.progress-bar');
-                var fileInput = document.getElementById('file');
-                // Step 1: Upload video to server
-                $.ajax({
-                    url: '/files/upload-file',
-                    type: 'POST',
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                    headers: {
-                        'X-CSRF-TOKEN': csrfToken
-                    },
-                    success: function(response) {
-                        // Step 2: Upload to BunnyCDN
-                        uploadToBunnyCreate(response.file_path, response.file_name, response
-                            .upload_id, submitBtn, progressBar, table, response.file_size,
-                            response.file_name_with_extension);
-                    },
-                    error: function(response) {
-                        let errorMessages = response.responseJSON.errors;
-                        Object.keys(errorMessages).forEach(function(key) {
-                            let inputField = $(`.${key}-error`);
-                            inputField.attr('hidden', false);
-                            inputField.text(errorMessages[key][0]);
-                        });
-                        hideButtonLoader(submitBtn);
-                    }
-                });
-            });
 
-            function uploadToBunnyCreate(filePath, fileName, uploadId, submitBtn, progressBar, table, fileSize,
-                fileNameWithExtension) {
-                let csrfToken = $('meta[name="csrf-token"]').attr('content');
-                var data = JSON.stringify({
-                    file_path: filePath,
-                    file_name: fileName,
-                    upload_id: uploadId,
-                    file_size: fileSize,
-                    file_name_with_extension: fileNameWithExtension,
-                    user_name: $('#UserName').val(),
-                    description: $('#description').val()
-                });
-                // Step 3: Track BunnyCDN upload progress
-                trackBunnyUploadProgress(uploadId, progressBar);
-
-                $.ajax({
-                    url: "{{ route('files.store', [request()->route('folder_id'), request()->route('type')]) }}",
-                    type: 'POST',
-                    data: data,
-                    contentType: 'application/json',
-                    headers: {
-                        'X-CSRF-TOKEN': csrfToken
-                    },
-                    success: function(response) {
-                        showAlertMessage(response.message);
-                        resetForm('createFileForm');
-                        progressBar.forEach(element => {
-                            element.style.width = 0 + '%';
-                            element.textContent = 0 + '%';
-                        });
-                        hideButtonLoader(submitBtn);
-                        $('#CreateFileModal').modal('hide');
-                        table.draw();
-                    },
-                    error: function(xhr) {
-                        hideButtonLoader(submitBtn);
-                        showErrorMessage('Error uploading file to BunnyCDN');
-                    }
-                });
-            }
-
-            function trackBunnyUploadProgress(uploadId, progressBars) {
-                var interval = setInterval(function() {
-                    fetch(`/files/uploaded-file-status/${uploadId}`)
-                        .then(response => response.json())
-                        .then(data => {
-                            let progress = data.progress;
-                            progressBars.forEach(progressBar => {
-                                progressBar.style.width = progress + '%';
-                                progressBar.textContent = progress + '%';
-                            });
-
-                            if (progress >= 100) {
-                                clearInterval(interval);
-                            }
-                        })
-                        .catch(error => {
-                            console.error('Error fetching progress:', error);
-                        });
-                }, 1000);
-            }
-
-            $('#updateFileForm').submit(function(e) {
-                e.preventDefault();
-                clearErrors();
-                var formData = new FormData(this);
-                let csrfToken = $('meta[name="csrf-token"]').attr('content');
-                var submitBtn = $("#updateButton");
-                formData.append("folder_type", "{{ request()->route('type') }}");
-                showButtonLoader(submitBtn);
-                var id = $('#updateFileId').val();
-                document.querySelectorAll('.uploadProgress').forEach(element => {
-                    element.style.display = 'block';
-                });
-                var progressBar = document.querySelectorAll('.progress-bar');
-                if ($('#fileInput')[0].files.length > 0) {
-                    // Step 1: Upload video to server
-                    $.ajax({
-                        url: '/files/upload-file',
-                        type: 'POST',
-                        data: formData,
-                        processData: false,
-                        contentType: false,
-                        headers: {
-                            'X-CSRF-TOKEN': csrfToken
-                        },
-                        success: function(response) {
-                            console.log(response);
-
-                            // Step 2: Upload to BunnyCDN
-                            uploadToBunnyUpdate(response.file_path, response.file_name, response
-                                .upload_id, submitBtn, progressBar, table, id, response
-                                .file_size, response.file_name_with_extension);
-                        },
-                        error: function(response) {
-                            let errorMessages = response.responseJSON.errors;
-                            Object.keys(errorMessages).forEach(function(key) {
-                                let inputField = $(`.${key}-error`);
-                                inputField.attr('hidden', false);
-                                inputField.text(errorMessages[key][0]);
-                            });
-                            hideButtonLoader(submitBtn);
-                        }
-                    });
-                } else {
-                    $.ajax({
-                        url: "{{ url('files/update-without-file') }}/" + id,
-                        type: 'POST',
-                        processData: false,
-                        contentType: false,
-                        data: formData,
-                        headers: {
-                            'X-CSRF-TOKEN': csrfToken
-                        },
-                        success: function(response) {
-                            showAlertMessage(response.message);
-                            resetForm('updateFileForm');
-                            hideButtonLoader(submitBtn);
-                            $('#UpdateFileModal').modal('hide');
-                            table.draw();
-                        },
-                        error: function(response) {
-                            let errorMessages = response.responseJSON.errors;
-                            Object.keys(errorMessages).forEach(function(key) {
-                                let inputField = $(`.${key}-error`);
-                                inputField.attr('hidden', false);
-                                inputField.text(errorMessages[key][0]);
-                            });
-                            hideButtonLoader(submitBtn);
-                        }
-                    });
+                let files = $('input[type=file]')[0].files;
+                if (files.length == 0) {
+                    $('.file_name-error').attr('hidden', false);
+                    $('.file_name-error').text('Please select files');
+                    hideButtonLoader(submitBtn);
+                    return false
                 }
+                $('#progressContainer').empty(); // Clear previous progress bars
+
+                // Create an array of Promises for all file uploads
+                let uploadPromises = [];
+                for (let i = 0; i < files.length; i++) {
+                    uploadPromises.push(uploadFile(files[i], i)); // Push the promise returned by uploadFile
+                }
+
+                // Wait for all files to finish uploading
+                Promise.all(uploadPromises).then(() => {
+                    hideButtonLoader(submitBtn); // Hide loader after all files are uploaded
+                    resetForm(form);
+                    $('#CreateFileModal').modal('hide');
+                }).catch(() => {
+                    hideButtonLoader(submitBtn); // Hide loader even if one of the uploads failed
+                });
             });
 
-            function uploadToBunnyUpdate(filePath, fileName, uploadId, submitBtn, progressBar, table, fileId,
-                fileSize, fileNameWithExtension) {
-                let csrfToken = $('meta[name="csrf-token"]').attr('content');
-                var data = JSON.stringify({
-                    file_path: filePath,
-                    file_name: fileName,
-                    upload_id: uploadId,
-                    file_id: fileId,
-                    file_size: fileSize,
-                    file_name_with_extension: fileNameWithExtension,
-                    file_status: $('#fileStatusInput').val(),
-                    user_name: $('#userNameInput').val(),
-                    description: $('#descriptionInput').val()
-                });
-                // Step 3: Track BunnyCDN upload progress
-                trackBunnyUploadProgress(uploadId, progressBar);
-                $.ajax({
-                    url: "{{ url('files/update') }}/" + fileId,
-                    type: 'POST',
-                    data: data,
-                    contentType: 'application/json',
-                    headers: {
-                        'X-CSRF-TOKEN': csrfToken
-                    },
-                    success: function(response) {
-                        showAlertMessage(response.message);
-                        resetForm('updateFileForm');
-                        progressBar.forEach(element => {
-                            element.style.width = 0 + '%';
-                            element.textContent = 0 + '%';
-                        });
-                        hideButtonLoader(submitBtn);
-                        $('#UpdateFileModal').modal('hide');
-                        table.draw();
-                    },
-                    error: function(xhr) {
-                        hideButtonLoader(submitBtn);
-                        showErrorMessage('Error uploading file to BunnyCDN');
+            async function uploadFile(file, index) {
+                return new Promise((resolve, reject) => {
+                    let formData = new FormData();
+                    formData.append('file', file); // Send one file at a time
+                    let csrfToken = $('meta[name="csrf-token"]').attr('content');
+                    formData.append('_token', csrfToken);
+                    formData.append('user_name', $('#UserName').val());
+                    formData.append('description', $('#description').val());
+                    formData.append('file_size', file.size);
+
+                    if (!$(`#progress-bar-${index}`).length) {
+                        let progressBar = $(`
+                                    <div class="mb-2">
+                                        <p class="mb-0">Stage1: Uploading to server - ${file.name}</p>
+                                        <div class="progress">
+                                            <div class="progress-bar progress-bar-striped progress-bar-animated bg-success" style="font-size:8px"
+                                                role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"
+                                                style="width: 0%" id="progress-bar-${index}"></div>
+                                        </div>
+                                        <p id="status-${index}" hidden></p>
+                                    </div>
+                                `);
+                        $('#progressContainer').append(progressBar);
+                    } else {
+                        // If retrying, reset the existing progress bar
+                        $("#progress-bar-" + index)
+                            .css("width", "0%")
+                            .removeClass("bg-danger bg-primary")
+                            .addClass("bg-success")
+                            .text("0%");
+                        $("#status-" + index).text("Retrying...");
                     }
+
+                    // AJAX Upload
+                    $.ajax({
+                        url: "{{ route('files.store', [request()->route('folder_id'), request()->route('type')]) }}",
+                        type: 'POST',
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        timeout: 20000, // set timeout to 20 second
+                        xhr: function() {
+                            let xhr = new window.XMLHttpRequest();
+                            xhr.upload.addEventListener("progress", function(event) {
+                                if (event.lengthComputable) {
+                                    let percent = Math.round((event.loaded / event
+                                        .total) * 100);
+                                    $("#progress-bar-" + index).css("width",
+                                        percent +
+                                        "%").text(percent + "%");
+
+                                    if (percent === 100) {
+                                        showProcessingStatus(
+                                            index); // Start animated dots
+                                    }
+                                }
+                            }, false);
+                            return xhr;
+                        },
+                        success: function(response) {
+                            clearInterval($("#status-" + index).data(
+                                "interval")); // Stop animated dots
+                            $("#progress-bar-" + index).removeClass("bg-success").addClass(
+                                    "bg-primary")
+                                .text("Completed");
+                            $("#status-" + index).hide();
+                            resolve(); // Resolve the Promise after successful upload
+                        },
+                        error: function(jqXHR, textStatus) {
+                            clearInterval($("#status-" + index).data(
+                                "interval")); // Stop animated dots
+                            $("#progress-bar-" + index).removeClass("bg-success").addClass(
+                                "bg-danger").text("Failed");
+
+                            let errorMessage = (textStatus === "timeout") ?
+                                "Upload timed out" : "Failed";
+
+                            // Add retry button next to the failed message
+                            $("#status-" + index).html(`
+                                <span>${errorMessage}</span>
+                                <button class="btn btn-sm btn-warning retry-btn" style="width: 38px;height: 20px !important;font-size: 11px;" data-index="${index}">Retry</button>
+                            `);
+
+                            reject(); // Reject the Promise in case of error
+
+                        }
+                    });
                 });
             }
+
+            function showProcessingStatus(index) {
+                let statusText = $("#status-" + index);
+                let dots = 0;
+                statusText.attr('hidden', false);
+                statusText.text("Processing");
+
+                let interval = setInterval(() => {
+                    dots = (dots + 1) % 4;
+                    statusText.text("Stage2: Processing" + ".".repeat(dots));
+                }, 500);
+
+                statusText.data("interval", interval); // Save interval to clear later
+            }
+
+            // Retry button event handler
+            $(document).on("click", ".retry-btn", function() {
+                let index = $(this).data("index");
+                let file = $('input[type=file]')[0].files[index]; // Get the failed file
+
+                // Reset the progress bar and status text
+                $("#progress-bar-" + index)
+                    .css("width", "0%")
+                    .removeClass("bg-danger")
+                    .addClass("bg-success")
+                    .text("0%");
+
+                $("#status-" + index).text("Retrying...");
+
+                // Retry uploading the file using the existing progress bar
+                uploadFile(file, index);
+            });
+
+
+
+
+
+
+            // function uploadToBunnyCreate(filePath, fileName, uploadId, submitBtn, progressBar, table, fileSize,
+            //     fileNameWithExtension) {
+            //     let csrfToken = $('meta[name="csrf-token"]').attr('content');
+            //     var data = JSON.stringify({
+            //         file_path: filePath,
+            //         file_name: fileName,
+            //         upload_id: uploadId,
+            //         file_size: fileSize,
+            //         file_name_with_extension: fileNameWithExtension,
+            //         user_name: $('#UserName').val(),
+            //         description: $('#description').val()
+            //     });
+            //     // Step 3: Track BunnyCDN upload progress
+            //     trackBunnyUploadProgress(uploadId, progressBar);
+
+            //     $.ajax({
+            //         url: "{{ route('files.store', [request()->route('folder_id'), request()->route('type')]) }}",
+            //         type: 'POST',
+            //         data: data,
+            //         contentType: 'application/json',
+            //         headers: {
+            //             'X-CSRF-TOKEN': csrfToken
+            //         },
+            //         success: function(response) {
+            //             showAlertMessage(response.message);
+            //             resetForm('createFileForm');
+            //             progressBar.forEach(element => {
+            //                 element.style.width = 0 + '%';
+            //                 element.textContent = 0 + '%';
+            //             });
+            //             hideButtonLoader(submitBtn);
+            //             $('#CreateFileModal').modal('hide');
+            //             table.draw();
+            //         },
+            //         error: function(xhr) {
+            //             hideButtonLoader(submitBtn);
+            //             showErrorMessage('Error uploading file to BunnyCDN');
+            //         }
+            //     });
+            // }
+
+            // function trackBunnyUploadProgress(uploadId, progressBars) {
+            //     var interval = setInterval(function() {
+            //         fetch(`/files/uploaded-file-status/${uploadId}`)
+            //             .then(response => response.json())
+            //             .then(data => {
+            //                 let progress = data.progress;
+            //                 progressBars.forEach(progressBar => {
+            //                     progressBar.style.width = progress + '%';
+            //                     progressBar.textContent = progress + '%';
+            //                 });
+
+            //                 if (progress >= 100) {
+            //                     clearInterval(interval);
+            //                 }
+            //             })
+            //             .catch(error => {
+            //                 console.error('Error fetching progress:', error);
+            //             });
+            //     }, 1000);
+            // }
+
+            // $('#updateFileForm').submit(function(e) {
+            //     e.preventDefault();
+            //     clearErrors();
+            //     var formData = new FormData(this);
+            //     let csrfToken = $('meta[name="csrf-token"]').attr('content');
+            //     var submitBtn = $("#updateButton");
+            //     formData.append("folder_type", "{{ request()->route('type') }}");
+            //     showButtonLoader(submitBtn);
+            //     var id = $('#updateFileId').val();
+            //     document.querySelectorAll('.uploadProgress').forEach(element => {
+            //         element.style.display = 'block';
+            //     });
+            //     var progressBar = document.querySelectorAll('.progress-bar');
+            //     if ($('#fileInput')[0].files.length > 0) {
+            //         // Step 1: Upload video to server
+            //         $.ajax({
+            //             url: '/files/upload-file',
+            //             type: 'POST',
+            //             data: formData,
+            //             processData: false,
+            //             contentType: false,
+            //             headers: {
+            //                 'X-CSRF-TOKEN': csrfToken
+            //             },
+            //             success: function(response) {
+            //                 console.log(response);
+
+            //                 // Step 2: Upload to BunnyCDN
+            //                 uploadToBunnyUpdate(response.file_path, response.file_name, response
+            //                     .upload_id, submitBtn, progressBar, table, id, response
+            //                     .file_size, response.file_name_with_extension);
+            //             },
+            //             error: function(response) {
+            //                 let errorMessages = response.responseJSON.errors;
+            //                 Object.keys(errorMessages).forEach(function(key) {
+            //                     let inputField = $(`.${key}-error`);
+            //                     inputField.attr('hidden', false);
+            //                     inputField.text(errorMessages[key][0]);
+            //                 });
+            //                 hideButtonLoader(submitBtn);
+            //             }
+            //         });
+            //     } else {
+            //         $.ajax({
+            //             url: "{{ url('files/update-without-file') }}/" + id,
+            //             type: 'POST',
+            //             processData: false,
+            //             contentType: false,
+            //             data: formData,
+            //             headers: {
+            //                 'X-CSRF-TOKEN': csrfToken
+            //             },
+            //             success: function(response) {
+            //                 showAlertMessage(response.message);
+            //                 resetForm('updateFileForm');
+            //                 hideButtonLoader(submitBtn);
+            //                 $('#UpdateFileModal').modal('hide');
+            //                 table.draw();
+            //             },
+            //             error: function(response) {
+            //                 let errorMessages = response.responseJSON.errors;
+            //                 Object.keys(errorMessages).forEach(function(key) {
+            //                     let inputField = $(`.${key}-error`);
+            //                     inputField.attr('hidden', false);
+            //                     inputField.text(errorMessages[key][0]);
+            //                 });
+            //                 hideButtonLoader(submitBtn);
+            //             }
+            //         });
+            //     }
+            // });
+
+            // function uploadToBunnyUpdate(filePath, fileName, uploadId, submitBtn, progressBar, table, fileId,
+            //     fileSize, fileNameWithExtension) {
+            //     let csrfToken = $('meta[name="csrf-token"]').attr('content');
+            //     var data = JSON.stringify({
+            //         file_path: filePath,
+            //         file_name: fileName,
+            //         upload_id: uploadId,
+            //         file_id: fileId,
+            //         file_size: fileSize,
+            //         file_name_with_extension: fileNameWithExtension,
+            //         file_status: $('#fileStatusInput').val(),
+            //         user_name: $('#userNameInput').val(),
+            //         description: $('#descriptionInput').val()
+            //     });
+            //     // Step 3: Track BunnyCDN upload progress
+            //     trackBunnyUploadProgress(uploadId, progressBar);
+            //     $.ajax({
+            //         url: "{{ url('files/update') }}/" + fileId,
+            //         type: 'POST',
+            //         data: data,
+            //         contentType: 'application/json',
+            //         headers: {
+            //             'X-CSRF-TOKEN': csrfToken
+            //         },
+            //         success: function(response) {
+            //             showAlertMessage(response.message);
+            //             resetForm('updateFileForm');
+            //             progressBar.forEach(element => {
+            //                 element.style.width = 0 + '%';
+            //                 element.textContent = 0 + '%';
+            //             });
+            //             hideButtonLoader(submitBtn);
+            //             $('#UpdateFileModal').modal('hide');
+            //             table.draw();
+            //         },
+            //         error: function(xhr) {
+            //             hideButtonLoader(submitBtn);
+            //             showErrorMessage('Error uploading file to BunnyCDN');
+            //         }
+            //     });
+            // }
 
             function showButtonLoader(submitBtn) {
                 submitBtn.find('#spinner').show();
@@ -689,6 +847,7 @@
             $('#UpdateFileModal,#CreateFileModal').on('hidden.bs.modal', function() {
                 var form = $(this).find('form').attr('id');
                 resetForm(form);
+                table.draw();
             });
 
             $('#updateStatusForm').submit(function(e) {
@@ -737,15 +896,7 @@
 
             $('#filesLink,#filesLinkInput').parent().attr('hidden', true);
 
-            document.querySelectorAll('.progress-bar').forEach(progressBar => {
-                progressBar.style.width = '0%';
-                progressBar.textContent = '0%';
-                progressBar.setAttribute('aria-valuenow', 0);
-            });
-
-            document.querySelectorAll('.uploadProgress').forEach(element => {
-                element.style.display = 'none';
-            });
+            $('#progressContainer').empty();
         }
     </script>
 
@@ -799,23 +950,26 @@
     </script>
 
     <script>
-        $('input[type="file"]').on('change', function() {
+        $('#event-file').on('change', function() {
+            clearErrors();
             const fileInput = $(this)[0];
-            const fileNameDisplay = $(this).closest('.col-md-6').find('.uploaded-file-name');
-            if (fileInput.files && fileInput.files[0]) {
-                let fileName = fileInput.files[0].name;
-                const fileExtension = fileName.split('.').pop();
-                if (fileName.length > 40) {
-                    const nameWithoutExtension = fileName.substring(0, fileName.lastIndexOf('.'));
-                    fileName = nameWithoutExtension.substring(0, 20) + '...' + '.' +
-                        fileExtension;
-                }
-                fileNameDisplay.attr('hidden', false);
-                fileNameDisplay.text(`Uploaded {{ ucfirst($folderType) }}: ${fileName}`);
-                var fileSize = fileInput.files[0].size;
-                var fileSizeInKB = (fileSize / (1024 * 1024)).toFixed(2);
-                $('.uploaded-file-size').val(fileSizeInKB);
-                $('.uploaded-file-name-input').val(fileName);
+            const fileNameDisplay = $(this).closest('.col-md-12').find('.uploaded-file-name');
+            fileNameDisplay.attr('hidden', false);
+            fileNameDisplay.empty();
+            if (fileInput.files && fileInput.files.length > 0) {
+                // Iterate over each file
+                Array.from(fileInput.files).forEach((file, index) => {
+                    let fileName = file.name;
+                    const fileExtension = fileName.split('.').pop();
+                    if (fileName.length > 40) {
+                        const nameWithoutExtension = fileName.substring(0, fileName.lastIndexOf('.'));
+                        fileName = nameWithoutExtension.substring(0, 20) + '...' + '.' + fileExtension;
+                    }
+                    fileNameDisplay.append(
+                        `<small>File Name: ${fileName}, Size: ${(file.size / (1024 * 1024)).toFixed(2)} MB</small><br/>`
+                    );
+                    $('.uploaded-file-name-input').val(fileName);
+                });
             } else {
                 fileNameDisplay.text('');
             }

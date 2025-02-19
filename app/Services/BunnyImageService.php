@@ -30,13 +30,10 @@ class BunnyImageService
         $this->client = new Client();
     }
 
-    public function GuarantiedUploadImage($filePath, $folderPath, $uploadId, $fileSize)
+    public function GuarantiedUploadImage($file, $folderPath, $fileSize)
     {
         $url = "https://{$this->region}.bunnycdn.com/{$this->storageZone}/{$folderPath}";
-        $fileStream = fopen($filePath, 'r');
-        if (!$fileStream) {
-            return ['success' => false, 'message' => 'Failed to open file for reading.'];
-        }
+        $fileStream = fopen($file->getPathname(), 'r');
         $headers = [
             'AccessKey' => $this->storageAccessKey,
             'content-type' => 'application/json'
@@ -44,16 +41,7 @@ class BunnyImageService
         try {
             $response = $this->client->put($url, [
                 'headers' => $headers,
-                RequestOptions::BODY => $fileStream,
-                RequestOptions::PROGRESS => function ($downloadTotal, $downloaded, $uploadTotal, $uploaded) use ($uploadId, $fileSize) {
-                    $progress = round(($uploaded / $fileSize) * 100, 2);
-                    if ($progress > 100)
-                        $progress = 100;
-                    Cache::put("upload_progress_" . $uploadId, $progress, 600);
-                },
-                'curl' => [
-                    CURLOPT_NOPROGRESS => false, // Enable progress tracking
-                ]
+                RequestOptions::BODY => $fileStream
             ]);
         } finally {
             if (is_resource($fileStream)) {
