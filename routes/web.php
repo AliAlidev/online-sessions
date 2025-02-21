@@ -8,6 +8,7 @@ use App\Http\Controllers\dashboard\FolderFileController;
 use App\Http\Controllers\dashboard\RoleController;
 use App\Http\Controllers\Dashboard\SettingController;
 use App\Http\Controllers\dashboard\InsightController;
+use App\Http\Controllers\dashboard\UserController;
 use App\Http\Controllers\landing\LandingPageEventController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -87,9 +88,17 @@ Route::middleware('auth')->group(function () {
         Route::get('/delete/{id}', 'delete')->name('delete');
     });
 
+    Route::controller(UserController::class)->prefix('users')->name('users.')->group(function () {
+        Route::get('/index', 'index')->name('index');
+        Route::get('/create', 'create')->name('create');
+        Route::post('/store', 'store')->name('store');
+        Route::get('/edit/{id}', 'edit')->name('edit');
+        Route::post('/update/{id}', 'update')->name('update');
+        Route::get('/delete/{id}', 'delete')->name('delete');
+    });
+
     Route::controller(SettingController::class)->prefix('settings')->name('settings.')->group(function () {
         Route::match(['get', 'post'], '/bunny', 'bunnySetting')->name('bunny');
-        // Route::get('/bunny-video', 'bunnyVideoSetting')->name('bunny.video');
     });
 });
 //////////////////////////// Landing Page ////////////////////////////

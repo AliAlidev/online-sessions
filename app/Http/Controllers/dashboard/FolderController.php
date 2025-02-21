@@ -13,6 +13,7 @@ use App\Services\BunnyImageService;
 use App\Services\bunnyVideoService;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\DataTables;
 
 class FolderController extends Controller
@@ -32,11 +33,11 @@ class FolderController extends Controller
                 $folders = Event::find($eventId)->folders;
                 return DataTables::of($folders)
                     ->addColumn('actions', function ($folder) {
-                        $row = '<a data-id="' . $folder->id . '" href="' . route('folders.update', $folder->id) . '" class="update-folder btn btn-icon btn-outline-primary"><i class="bx bx-edit-alt" style="color:#696cff"></i></a>
-                                <a href="#" data-url="' . route('folders.delete', $folder->id) . '" class="delete-folder btn btn-icon btn-outline-primary"><i class="bx bx-trash" style="color:red"></i></a>';
-                        if ($folder->folder_type != "link")
-                            $row .= ('<a title="Files" href="' . route('files.index', [$folder->id, $folder->folder_type]) . '" class="btn rounded-pill btn-icon btn-primary" style="margin-left:3px"><i class="bx bx-file" style="color:white"></i> </a>');
-                        return $row;
+                        $actions = '';
+                        Auth::user()->hasPermissionTo('update_folder') ? $actions .= '<a data-id="' . $folder->id . '" href="' . route('folders.update', $folder->id) . '" class="update-folder btn btn-icon btn-outline-primary m-1"><i class="bx bx-edit-alt" style="color:#696cff"></i></a>' : '';
+                        Auth::user()->hasPermissionTo('delete_folder') ? $actions .= '<a href="#" data-url="' . route('folders.delete', $folder->id) . '" class="delete-folder btn btn-icon btn-outline-primary m-1"><i class="bx bx-trash" style="color:red"></i></a>' : '';
+                        ($folder->folder_type == "image" && Auth::user()->hasPermissionTo('upload_image')) || ($folder->folder_type == "video" && Auth::user()->hasPermissionTo('upload_video')) ? $actions .= '<a title="Files" href="' . route('files.index', [$folder->id, $folder->folder_type]) . '" class="btn rounded-pill btn-icon btn-primary" style="margin-left:3px"><i class="bx bx-file" style="color:white"></i> </a>' : '';
+                        return $actions;
                     })
                     ->addIndexColumn()
                     ->editColumn('event_id', function ($row) {
@@ -91,7 +92,7 @@ class FolderController extends Controller
             $data = $request->validated();
             $folder = EventFolder::find($data['folder_id']);
             $oldFolder = clone $folder;
-            $hasThumbnail = $data['folder_thumbnail']??null;
+            $hasThumbnail = $data['folder_thumbnail'] ?? null;
             $data['folder_thumbnail'] = isset($data['folder_thumbnail']) ? 'storage/' . uploadFile($data['folder_thumbnail'], 'folders/folder_thumbnail') : $folder->folder_thumbnail;
             unset($data['folder_id']);
             $folder->update($data);

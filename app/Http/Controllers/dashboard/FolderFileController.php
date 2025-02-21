@@ -12,6 +12,7 @@ use App\Services\BunnyVideoService;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 use Throwable;
 use Yajra\DataTables\DataTables;
@@ -31,18 +32,20 @@ class FolderFileController extends Controller
     {
         try {
             if ($request->ajax()) {
-                $folders = EventFolder::find($folderId)->files;
-                return DataTables::of($folders)
-                    ->addColumn('actions', function ($folder) {
-                        return '<a data-id="' . $folder->id . '" href="' . route('files.update', $folder->id) . '" class="update-file btn btn-icon btn-outline-primary"><i class="bx bx-edit-alt" style="color:#696cff"></i></a>
-                                <a href="#" data-url="' . route('files.delete', $folder->id) . '" class="delete-file btn btn-icon btn-outline-primary"><i class="bx bx-trash" style="color:red"></i> </a>';
+                $files = EventFolder::find($folderId)->files;
+                return DataTables::of($files)
+                    ->addColumn('actions', function ($file) {
+                        $action = '';
+                        ($file->file_type == 'image' && Auth::user()->hasPermissionTo('delete_image')) || ($file->file_type == 'video' && Auth::user()->hasPermissionTo('delete_video')) ? $action .= '<a href="#" data-url="' . route('files.delete', $file->id) . '" class="delete-file btn btn-icon btn-outline-primary m-1"><i class="bx bx-trash" style="color:red"></i> </a>' : '';
+                        ($file->file_type == 'image' && Auth::user()->hasPermissionTo('update_image')) || ($file->file_type == 'video' && Auth::user()->hasPermissionTo('update_video')) ? $action .= '<a data-id="' . $file->id . '" href="' . route('files.update', $file->id) . '" class="update-file btn btn-icon btn-outline-primary"><i class="bx bx-edit-alt" style="color:#696cff"></i></a>' : '';
+                        return $action;
                     })
                     ->addIndexColumn()
                     ->editColumn('file', function ($row) {
                         if ($row->file_type == 'image')
                             return '<img src="' . asset($row->file) . '" data-type="' . $row->file_type . '" alt="" width="100px" height="100px" class="file-previewer">';
                         elseif ($row->file_type == 'video') {
-                            return '<a href="'.$this->bunnyVideoService->getEmbedUrl($row->file_bunny_id).'" target="_blank" class="link"><i class="bx bx-video 2xl" style="font-size: 30px;"></i> </a>';
+                            return '<a href="' . $this->bunnyVideoService->getEmbedUrl($row->file_bunny_id) . '" target="_blank" class="link"><i class="bx bx-video 2xl" style="font-size: 30px;"></i> </a>';
                         } else
                             return '';
                     })
@@ -51,16 +54,20 @@ class FolderFileController extends Controller
                         $name .= '<span style="display:block">' . formatBytes($row->file_size) . '</span>';
                         return $name;
                     })
-                    ->addColumn('status', function ($row) {
-                        if ($row->file_status == "pending")
-                            return '<span class="badge bg-label-info file-status-modal" data-status="pending" data-id="' . $row->id . '">Pending</span>';
-                        else if ($row->file_status == "approved")
-                            return '<span class="badge bg-label-success file-status-modal" data-status="approved" data-id="' . $row->id . '">Approved</span>';
-                        else if ($row->file_status == "rejected")
-                            return '<span class="badge bg-label-danger file-status-modal" data-status="rejected" data-id="' . $row->id . '">Rejected</span>';
+                    ->addColumn('status', function ($file) {
+                        $acceptanceWord = '';
+                        if (($file->file_type == 'image' && Auth::user()->hasPermissionTo('approve_decline_image'))|| ($file->file_type == 'video' && Auth::user()->hasPermissionTo('approve_decline_video'))) {
+                            $acceptanceWord= 'file-status-modal';
+                        }
+                        if ($file->file_status == "pending")
+                            return '<span class="badge bg-label-info ' . $acceptanceWord . '" data-status="pending" data-id="' . $file->id . '">Pending</span>';
+                        else if ($file->file_status == "approved")
+                            return '<span class="badge bg-label-success '.$acceptanceWord.'" data-status="approved" data-id="' . $file->id . '">Approved</span>';
+                        else if ($file->file_status == "rejected")
+                            return '<span class="badge bg-label-danger '.$acceptanceWord.'" data-status="rejected" data-id="' . $file->id . '">Rejected</span>';
                     })
-                    ->addColumn('date', function ($row) {
-                        return Carbon::parse($row->date)->format('d/m/Y');
+                    ->addColumn('date', function ($file) {
+                        return Carbon::parse($file->date)->format('d/m/Y');
                     })
                     ->rawColumns(['file', 'status', 'name_and_size', 'actions'])
                     ->make(true);
@@ -173,7 +180,7 @@ class FolderFileController extends Controller
             $data['folder_id'] = $folder->folder_id;
             $data['file_type'] = $folder->folder_type;
             $data['setting_id'] = $settingId;
-            if(isset($data['file'])){
+            if (isset($data['file'])) {
                 $fileNameWithExtension = $data['file']->getClientOriginalName();
                 $fileName = pathinfo($data['file']->getClientOriginalName(), PATHINFO_FILENAME);
                 $data['file_name'] = $fileName;

@@ -125,7 +125,7 @@
                                                 <input type="text" id="basic-default-alias" class="form-control"
                                                     name="event_alias_name" placeholder="Enter Event Alias Name">
                                             </div>
-                                            <small class="text-body float-start error-message-div event_name-error"
+                                            <small class="text-body float-start error-message-div event_alias_name-error"
                                                 style="color: #ff0000 !important"></small>
                                         </div>
                                     </div>

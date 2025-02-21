@@ -47,13 +47,15 @@
             <div class="row card-header flex-column flex-md-row pb-0">
                 <div class="d-md-flex justify-content-between align-items-center dt-layout-end col-md-auto ms-auto mt-0">
                     <div class="dt-buttons btn-group flex-wrap mb-0">
-                        <button class="btn btn-sm btn-primary" data-bs-target="#CreateRoleModal" data-bs-toggle="modal"
-                            type="button"><span><span class="d-flex align-items-center gap-2">
-                                    <span class="d-none d-sm-inline-block">Add</span>
-                                    <i class="icon-base bx bx-plus icon-sm"></i>
+                        @can('create_role')
+                            <button class="btn btn-sm btn-primary" data-bs-target="#CreateRoleModal" data-bs-toggle="modal"
+                                type="button"><span><span class="d-flex align-items-center gap-2">
+                                        <span class="d-none d-sm-inline-block">Add</span>
+                                        <i class="icon-base bx bx-plus icon-sm"></i>
+                                    </span>
                                 </span>
-                            </span>
-                        </button>
+                            </button>
+                        @endcan
                     </div>
                 </div>
             </div>
@@ -76,7 +78,8 @@
     </div>
 
     {{-- ////////////// create role modal ////////////// --}}
-    <div class="modal fade" id="CreateRoleModal" tabindex="-1" style="display: none;" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal fade" id="CreateRoleModal" tabindex="-1" style="display: none;" aria-hidden="true"
+        data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <form id="createRole">
@@ -108,7 +111,8 @@
     </div>
 
     {{-- ////////////// update role modal ////////////// --}}
-    <div class="modal fade" id="UpdateRoleModal" tabindex="-1" style="display: none;" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal fade" id="UpdateRoleModal" tabindex="-1" style="display: none;" aria-hidden="true"
+        data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <form id="updateRoleForm">

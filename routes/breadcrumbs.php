@@ -5,6 +5,7 @@
 use App\Models\Client;
 use App\Models\Event;
 use App\Models\EventFolder;
+use App\Models\User;
 use Diglactic\Breadcrumbs\Breadcrumbs;
 
 Breadcrumbs::for('insights', function ($trail) {
@@ -82,3 +83,17 @@ Breadcrumbs::for('settings', function ($trail) {
     $trail->push('Bunny Setting', '');
 });
 
+Breadcrumbs::for('users', function ($trail) {
+    $trail->parent('insights');
+    $trail->push('Users List', route('users.index'));
+});
+
+Breadcrumbs::for('create-user', function ($trail) {
+    $trail->parent('users');
+    $trail->push('Create User', '');
+});
+
+Breadcrumbs::for('update-user', function ($trail, $user) {
+    $trail->parent('users');
+    $trail->push('Update User - ' . $user->name, '');
+});

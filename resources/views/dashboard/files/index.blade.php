@@ -86,13 +86,17 @@
                     style="gap: 10px">
                     <a href="javascript:history.back()" class="btn btn-label-primary btn-sm">Back</a>
                     <div class="dt-buttons btn-group flex-wrap mb-0">
-                        <button class="btn btn-sm btn-primary" data-bs-target="#CreateFileModal" data-bs-toggle="modal"
-                            type="button"><span><span class="d-flex align-items-center gap-2">
-                                    <span class="d-none d-sm-inline-block">Upload {{ ucfirst($folderType) }}</span>
-                                    <i class="icon-base bx bx-plus icon-sm"></i>
+                        @if (
+                            ($folderType == 'video' && Auth::user()->hasPermissionTo('upload_video')) ||
+                                ($folderType == 'image' && Auth::user()->hasPermissionTo('upload_image')))
+                            <button class="btn btn-sm btn-primary" data-bs-target="#CreateFileModal" data-bs-toggle="modal"
+                                type="button"><span><span class="d-flex align-items-center gap-2">
+                                        <span class="d-none d-sm-inline-block">Upload {{ ucfirst($folderType) }}</span>
+                                        <i class="icon-base bx bx-plus icon-sm"></i>
+                                    </span>
                                 </span>
-                            </span>
-                        </button>
+                            </button>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -134,7 +138,8 @@
                         <div class="row mb-6">
                             <div class="col-md-12">
                                 <label for="event-file" class="form-label">{{ ucfirst($folderType) }}</label>
-                                <input type="file" id="event-file" class="form-control event-file" name="file" multiple
+                                <input type="file" id="event-file" class="form-control event-file" name="file"
+                                    multiple
                                     accept='{{ $folderType == 'image' ? 'image/jpeg,png,jpg,webp' : 'video/mp4' }}'>
                                 <small class="text-body float-start uploaded-file-name"
                                     style="color: #000; font-style: italic;"></small>
@@ -219,9 +224,13 @@
                                     placeholder="Enter User Name">
                                 <small class="text-body float-start error-message-div user_name-error"
                                     style="color: #ff0000 !important" hidden></small>
-                                </div>
+                            </div>
+                            @if (
+                                ($folderType == 'image' && Auth::user()->hasPermissionTo('approve_decline_image')) ||
+                                    ($folderType == 'video' && Auth::user()->hasPermissionTo('approve_decline_video')))
                                 <div class="col-md-6">
-                                    <label for="fileStatusInput" class="form-label">{{ ucfirst($folderType) }} Status</label>
+                                    <label for="fileStatusInput" class="form-label">{{ ucfirst($folderType) }}
+                                        Status</label>
                                     <select class="form-select" name="file_status" id="fileStatusInput">
                                         <option selected disabled>Select {{ ucfirst($folderType) }} Status</option>
                                         <option value="pending">Pending</option>
@@ -231,6 +240,13 @@
                                     <small class="text-body float-start error-message-div file_status-error"
                                         style="color: #ff0000 !important" hidden></small>
                                 </div>
+                            @else
+                                <div class="col-md-6">
+                                    <label for="fileStatusInput" class="form-label">{{ ucfirst($folderType) }}
+                                        Status</label>
+                                    <input type="text" class="form-control" name="" id="fileStatusInput" readonly>
+                                </div>
+                            @endif
                         </div>
                         <div class="row mb-6">
                             <div class="row mb-6">
@@ -732,7 +748,7 @@
                 let file = $('#' + formId + ' input[type=file]')[0].files[0];
                 var progressBar = $('#' + formId).parent().find('#progressContainer');
                 progressBar.empty();
-                if(file){
+                if (file) {
                     let fileContainer = $(`
                             <div class="mb-4" id="file-container-0">
                                 <p class="mb-0">Stage1: File Upload ${file.name}</p>
@@ -752,7 +768,7 @@
 
             async function uploadUpdatedFile(file, index) {
                 let formData = new FormData();
-                if (file){
+                if (file) {
                     formData.append('file', file);
                     formData.append('file_size', file.size);
                 }

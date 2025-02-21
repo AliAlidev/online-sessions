@@ -7,6 +7,7 @@ use App\Http\Requests\event_types\UpdateEventTypeRequest;
 use App\Http\Requests\events\CreateEventRequest;
 use App\Http\Requests\events\UpdateEventRequest;
 use App\Models\Client;
+use App\Models\ClientRole;
 use App\Models\Event;
 use App\Models\EventSetting;
 use App\Models\EventType;
@@ -14,6 +15,7 @@ use App\Services\BunnyImageService;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Spatie\Permission\Models\Role;
 use Yajra\DataTables\DataTables;
 use Illuminate\Support\Str;
@@ -51,9 +53,11 @@ class EventController extends Controller
                         return '<a target="_blank" class="btn btn-label-linkedin" href="' . $row->event_link . '"> Link </a>';
                     })
                     ->addColumn('actions', function ($event) {
-                        return '<a href="' . route('events.edit', $event->id) . '" class="update-event btn btn-icon btn-outline-primary"><i class="bx bx-edit-alt" style="color:#696cff"></i></a>
-                                <a href="#" data-url="' . route('events.delete', $event->id) . '" class="delete-event btn btn-icon btn-outline-primary"><i class="bx bx-trash" style="color:red"></i> </a>
-                                <a title="Folders" href="' . route('folders.index', $event->id) . '" class="btn rounded-pill btn-icon btn-primary"><i class="bx bx-folder" style="color:white"></i> </a>';
+                        $actions = '';
+                        Auth::user()->hasPermissionTo('update_event') ? $actions .= '<a href="' . route('events.edit', $event->id) . '" class="update-event btn btn-icon btn-outline-primary m-1"><i class="bx bx-edit-alt" style="color:#696cff"></i></a>' : '';
+                        Auth::user()->hasPermissionTo('delete_event') ? $actions .= '<a href="#" data-url="' . route('events.delete', $event->id) . '" class="delete-event btn btn-icon btn-outline-primary m-1"><i class="bx bx-trash" style="color:red"></i> </a>' : '';
+                        Auth::user()->hasAnyPermission(['create_folder', 'update_folder', 'delete_folder']) ? $actions .= '<a title="Folders" href="' . route('folders.index', $event->id) . '" class="btn rounded-pill btn-icon btn-primary"><i class="bx bx-folder" style="color:white"></i> </a>' : '';
+                        return $actions;
                     })
                     ->addIndexColumn()
                     ->rawColumns(['qr_code', 'profile_picture', 'event_link', 'cover_image', 'actions'])
@@ -70,7 +74,7 @@ class EventController extends Controller
     {
         try {
             $types = EventType::pluck('name', 'id');
-            $roles = Role::whereNotIn('name', ['super-admin'])->pluck('name', 'id');
+            $roles = ClientRole::whereNotIn('name', ['super-admin'])->pluck('name', 'id');
             $clients = Client::pluck('planner_name', 'id');
             return view('dashboard.event.create', ['types' => $types, 'roles' => $roles, 'clients' => $clients]);
         } catch (Exception $th) {
@@ -131,7 +135,7 @@ class EventController extends Controller
         try {
             $event = Event::with(['type', 'setting', 'organizers'])->find($id);
             $types = EventType::pluck('name', 'id');
-            $roles = Role::whereNotIn('name', ['super-admin'])->pluck('name', 'id');
+            $roles = ClientRole::whereNotIn('name', ['super-admin'])->pluck('name', 'id');
             $clients = Client::pluck('planner_name', 'id');
             return view('dashboard.event.update', ['event' => $event, 'types' => $types, 'roles' => $roles, 'clients' => $clients]);
         } catch (Exception $th) {

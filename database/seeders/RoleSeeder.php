@@ -18,15 +18,5 @@ class RoleSeeder extends Seeder
         ],[
             'name' => 'super-admin'
         ]);
-        Role::firstOrCreate([
-            'name' => 'client'
-        ],[
-            'name' => 'client'
-        ]);
-        Role::firstOrCreate([
-            'name' => 'customer'
-        ],[
-            'name' => 'customer'
-        ]);
     }
 }

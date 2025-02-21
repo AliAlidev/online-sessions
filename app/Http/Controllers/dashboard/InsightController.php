@@ -3,12 +3,10 @@
 namespace App\Http\Controllers\dashboard;
 
 use App\Http\Controllers\Controller;
-use App\Models\Setting;
 use Carbon\Carbon;
 use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request as Psr7Request;
-use Illuminate\Http\Request;
 
 class InsightController extends Controller
 {

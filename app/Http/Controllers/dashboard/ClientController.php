@@ -6,10 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\clients\CreateClientRequest;
 use App\Http\Requests\clients\UpdateClientRequest;
 use App\Models\Client;
+use App\Models\ClientRole;
 use Exception;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
-use Spatie\Permission\Models\Role;
+use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\DataTables;
 
 class ClientController extends Controller
@@ -21,8 +21,10 @@ class ClientController extends Controller
                 $clients = Client::get();
                 return DataTables::of($clients)
                     ->addColumn('actions', function ($client) {
-                        return '<a data-id="' . $client->id . '" href="' . route('clients.edit', $client->id) . '" class="update-client btn btn-icon btn-outline-primary"><i class="bx bx-edit-alt" style="color:#696cff"></i></a>
-                                <a href="#" data-url="' . route('clients.delete', $client->id) . '" class="delete-client btn btn-icon btn-outline-primary"><i class="bx bx-trash" style="color:red"></i> </a>';
+                        $actions = '';
+                        Auth::user()->hasPermissionTo('update_client') ? $actions .= '<a data-id="' . $client->id . '" href="' . route('clients.edit', $client->id) . '" class="update-client btn btn-icon btn-outline-primary m-1"><i class="bx bx-edit-alt" style="color:#696cff"></i></a>' : '';
+                        Auth::user()->hasPermissionTo('delete_client') ? $actions .= '<a href="#" data-url="' . route('clients.delete', $client->id) . '" class="delete-client btn btn-icon btn-outline-primary"><i class="bx bx-trash" style="color:red"></i> </a>' : '';
+                        return $actions;
                     })
                     ->editColumn('contact_button_link', function ($row) {
                         return '<a target="_blank" class="btn btn-label-linkedin" href="' . $row->contact_button_link . '"> Link </a>';
@@ -50,7 +52,7 @@ class ClientController extends Controller
     function create()
     {
         try {
-            $roles = Role::whereNotIn('name', ['super-admin'])->pluck('name', 'id');
+            $roles = ClientRole::whereNotIn('name', ['super-admin'])->pluck('name', 'id');
             return view('dashboard.client.create', ['roles' => $roles]);
         } catch (Exception $th) {
             createServerError($th, "createClient", "clients");
@@ -62,7 +64,7 @@ class ClientController extends Controller
     {
         try {
             $client = Client::find($id);
-            $roles = Role::whereNotIn('name', ['super-admin'])->pluck('name', 'id');
+            $roles = ClientRole::whereNotIn('name', ['super-admin'])->pluck('name', 'id');
             return view('dashboard.client.update', ['roles' => $roles, 'client' => $client]);
         } catch (Exception $th) {
             createServerError($th, "editClient", "clients");

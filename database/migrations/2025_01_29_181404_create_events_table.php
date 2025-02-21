@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('bunny_event_name');
             $table->unsignedBigInteger('event_type_id')->nullable();
             $table->unsignedBigInteger('client_id')->nullable();
-            $table->string('customer');
+            $table->string('customer')->nullable();
             $table->string('venue')->nullable();
             $table->text('description')->nullable();
             $table->text('welcome_message')->nullable();

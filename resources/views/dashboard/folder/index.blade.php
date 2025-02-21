@@ -52,13 +52,15 @@
                     style="gap: 10px">
                     <a href="javascript:history.back()" class="btn btn-label-primary btn-sm">Back</a>
                     <div class="dt-buttons btn-group flex-wrap mb-0">
-                        <button class="btn btn-sm btn-primary" data-bs-target="#CreateFolderModal" data-bs-toggle="modal"
-                            type="button"><span><span class="d-flex align-items-center gap-2">
-                                    <span class="d-none d-sm-inline-block">Add</span>
-                                    <i class="icon-base bx bx-plus icon-sm"></i>
+                        @can('create_folder')
+                            <button class="btn btn-sm btn-primary" data-bs-target="#CreateFolderModal" data-bs-toggle="modal"
+                                type="button"><span><span class="d-flex align-items-center gap-2">
+                                        <span class="d-none d-sm-inline-block">Add</span>
+                                        <i class="icon-base bx bx-plus icon-sm"></i>
+                                    </span>
                                 </span>
-                            </span>
-                        </button>
+                            </button>
+                        @endcan
                     </div>
                 </div>
             </div>

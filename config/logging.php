@@ -183,6 +183,13 @@ return [
             'path' => storage_path('logs/roles.log')
         ],
 
+        'users' => [
+            'driver' => 'single',
+            'level' => env('LOG_LEVEL', 'debug'),
+            'replace_placeholders' => true,
+            'path' => storage_path('logs/users.log')
+        ],
+
         'setting' => [
             'driver' => 'single',
             'level' => env('LOG_LEVEL', 'debug'),

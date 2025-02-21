@@ -27,7 +27,6 @@
                                 </div>
                                 <div class="flex-grow-1">
                                     <h6 class="mb-0">{{ Auth::user()->name }}</h6>
-                                    <small class="text-muted">{{ Auth::user()->roles->first()->name }}</small>
                                 </div>
                             </div>
                         </a>
