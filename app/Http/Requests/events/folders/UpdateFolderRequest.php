@@ -22,13 +22,16 @@ class UpdateFolderRequest extends FormRequest
     public function rules(): array
     {
         $id = request()->get('folder_id') ?? null;
+        $link = 'required|url';
+        if ($this->folder_type != 'link')
+            $link = 'nullable';
         return [
             'folder_id' => 'required|exists:event_folders,id',
             'folder_name' => 'required|string|unique:event_folders,folder_name,' . $id,
             'folder_type' => 'required|in:image,video,link',
             'description' => 'nullable|string',
             'folder_thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
-            'folder_link' => 'nullable|url'
+            'folder_link' => $link
         ];
     }
 }

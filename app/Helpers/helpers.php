@@ -196,7 +196,7 @@ if (!function_exists('checkVideoConfig')) {
             $statusCode = $response->getStatusCode(); // Get the HTTP status code
             return $statusCode == 200 ? true : false;
         } catch (Exception $e) {
-            if ($e->getResponse()->getStatusCode() == 200)
+            if (method_exists($e, 'getResponse') && $e->getResponse() && $e->getResponse()->getStatusCode() == 200)
                 return true;
             return false;
         }

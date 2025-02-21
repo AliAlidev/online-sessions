@@ -2,18 +2,18 @@
 
 namespace App\Services;
 
-use Exception;
+use App\Models\BunnyVideoGuid;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request as Psr7Request;
-use GuzzleHttp\Psr7\Utils;
 use GuzzleHttp\RequestOptions;
-use Illuminate\Support\Facades\Cache;
+use Throwable;
 
 class BunnyVideoService
 {
     protected $apiKey;
     protected $libraryId;
     protected $streamPullZone;
+    protected $client;
 
     public function __construct()
     {
@@ -23,13 +23,33 @@ class BunnyVideoService
             $this->libraryId = isset($setting['video']['video_library_id']) ? $setting['video']['video_library_id'] : null;
             $this->streamPullZone = isset($setting['video']['stream_pull_zone']) ? $setting['video']['stream_pull_zone'] : null;
         }
+        $this->client = new Client();
     }
 
-    function guarantiedUploadVideo($filePath, $fileName, $uploadId, $fileSize)
+    function removeEmptyVideos()
     {
+        BunnyVideoGuid::where('status', 0)->get()->map(function ($video) {
+            $this->deleteVideo($video->guid);
+            BunnyVideoGuid::where('guid', $video->guid)->delete();
+        });
+    }
+
+    function addEmptyVideo($guid)
+    {
+        BunnyVideoGuid::create(['guid' => $guid]);
+    }
+
+    function updateEmptyVideoStatus($guid)
+    {
+        BunnyVideoGuid::where('guid', $guid)->update(['status' => 1]);
+    }
+
+    function guarantiedUploadVideo($file, $fileName)
+    {
+        $guid = null;
         try {
-            Cache::put("upload_progress_" . $uploadId, 0, 600); // Store initial progress (0%) for 30 minutes
-            $client = new Client();
+            $this->removeEmptyVideos();
+            $fileStream = fopen($file->getPathname(), 'r');
             $headers = [
                 'AccessKey' => $this->apiKey,
                 'content-type' => 'application/json'
@@ -37,40 +57,27 @@ class BunnyVideoService
 
             // Step 1: Create video entry in BunnyCDN and get GUID
             $body = json_encode(['title' => $fileName]);
-            $response = $client->post("https://video.bunnycdn.com/library/{$this->libraryId}/videos", [
+            $response = $this->client->post("https://video.bunnycdn.com/library/{$this->libraryId}/videos", [
                 'headers' => $headers,
-                'Content-Length' => $fileSize,
                 'body' => $body
             ]);
 
             $guid = json_decode($response->getBody(), true)['guid'];
-
-            // Step 2: Upload the file with progress tracking
-            $fileStream = Utils::streamFor(Utils::tryFopen($filePath, 'r'));
-            if (!$fileStream) {
-                return ['success' => false, 'message' => 'Failed to open file for reading.'];
-            }
-        } catch (Exception $th) {
+            $this->addEmptyVideo($guid);
+        } catch (Throwable $th) {
             createServerError($th, "guarantiedUploadVideo");
-            return false;
+            return ['success' => false, 'message' => 'Upload failed'];
         }
 
         try {
-            $response = $client->put("https://video.bunnycdn.com/library/{$this->libraryId}/videos/{$guid}", [
+            $response = $this->client->put("https://video.bunnycdn.com/library/{$this->libraryId}/videos/{$guid}", [
                 'headers' => $headers,
-                RequestOptions::BODY => $fileStream,
-                RequestOptions::PROGRESS => function ($downloadTotal, $downloaded, $uploadTotal, $uploaded) use ($uploadId, $fileSize) {
-                    $progress = round(($uploaded / $fileSize) * 100, 2);
-                    if ($progress > 100)
-                        $progress = 100;
-                    Cache::put("upload_progress_" . $uploadId, $progress, 600);
-                },
-                'curl' => [
-                    CURLOPT_NOPROGRESS => false, // Enable progress tracking
-                ]
+                RequestOptions::BODY => $fileStream
             ]);
-        } catch (Exception $th) {
+        } catch (Throwable $th) {
+            $this->deleteVideo($guid);
             createServerError($th, "guarantiedUploadVideo");
+            return ['success' => false, 'message' => 'Upload failed'];
         } finally {
             if (is_resource($fileStream)) {
                 fclose($fileStream);
@@ -78,6 +85,7 @@ class BunnyVideoService
         }
 
         if ($response->getStatusCode() == 200) {
+            $this->updateEmptyVideoStatus($guid);
             return [
                 'success' => true,
                 'path' => "https://video.bunnycdn.com/play/{$this->libraryId}/{$guid}",
@@ -101,7 +109,7 @@ class BunnyVideoService
             $request = new Psr7Request('GET', "https://video.bunnycdn.com/library/" . $this->libraryId . "/videos/" . $videoId, $headers);
             $res = $client->sendAsync($request)->wait();
             return json_decode($res->getBody(), true);
-        } catch (Exception $th) {
+        } catch (Throwable $th) {
             createServerError($th, "getVideo");
             return false;
         }
@@ -113,17 +121,16 @@ class BunnyVideoService
     public function deleteVideo(string $videoId)
     {
         try {
-            $client = new Client();
             $headers = [
                 'AccessKey' => $this->apiKey
             ];
             $request = new Psr7Request('DELETE', "https://video.bunnycdn.com/library/" . $this->libraryId . "/videos/" . $videoId, $headers);
-            $res = $client->sendAsync($request)->wait();
+            $res = $this->client->sendAsync($request)->wait();
             if ($res->getStatusCode() == 200)
                 return true;
             else
                 return false;
-        } catch (Exception $th) {
+        } catch (Throwable $th) {
             createServerError($th, "deleteVideo");
             return false;
         }
@@ -141,7 +148,7 @@ class BunnyVideoService
                 $res = $client->sendAsync($request)->wait();
             }
             return true;
-        } catch (Exception $th) {
+        } catch (Throwable $th) {
             createServerError($th, "deleteMultipleVideos");
             return false;
         }

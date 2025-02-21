@@ -23,15 +23,12 @@ class UpdateFileRequest extends FormRequest
     {
         return [
             'file_id' => 'required|exists:folder_files,id',
+            'file' => 'nullable|file',
             'user_name' => 'nullable',
-            'file_path' => 'nullable',
             'file_type'=>'nullable',
             'file_size'=>'nullable',
             'description'=>'nullable',
-            'file_status'=>'required',
-            'file_name' => 'nullable',
-            'upload_id' => 'nullable',
-            'file_name_with_extension' => 'nullable'
+            'file_status'=>'required'
         ];
     }
 }

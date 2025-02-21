@@ -24,13 +24,10 @@ class CreateFileRequest extends FormRequest
         return [
             'user_name' => 'nullable',
             'file' => 'required|file',
-            'file_name' => 'nullable',
-            'file_size'=>'nullable',
-            // 'upload_id' => 'nullable',
-            'file_type'=>'nullable',
-            'description'=>'nullable',
-            'file_status'=>'nullable',
-            // 'file_name_with_extension'=>'nullable'
+            'file_size' => 'nullable',
+            'file_type' => 'nullable',
+            'description' => 'nullable',
+            'file_status' => 'nullable'
         ];
     }
 }

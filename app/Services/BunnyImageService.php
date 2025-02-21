@@ -2,11 +2,10 @@
 
 namespace App\Services;
 
+use Exception;
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\RequestOptions;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Log;
+use Throwable;
 
 class BunnyImageService
 {
@@ -30,35 +29,39 @@ class BunnyImageService
         $this->client = new Client();
     }
 
-    public function GuarantiedUploadImage($file, $folderPath, $fileSize)
+    public function GuarantiedUploadImage($file, $folderPath)
     {
-        $url = "https://{$this->region}.bunnycdn.com/{$this->storageZone}/{$folderPath}";
-        $fileStream = fopen($file->getPathname(), 'r');
-        $headers = [
-            'AccessKey' => $this->storageAccessKey,
-            'content-type' => 'application/json'
-        ];
         try {
-            $response = $this->client->put($url, [
-                'headers' => $headers,
-                RequestOptions::BODY => $fileStream
-            ]);
-        } finally {
-            if (is_resource($fileStream)) {
-                fclose($fileStream);
-            }
-        }
-
-        if ($response->getStatusCode() === 201) {
-            return [
-                'success' => true,
-                'path' => "https://{$this->cdnPullZone}.b-cdn.net/{$folderPath}"
+            $url = "https://{$this->region}.bunnycdn.com/{$this->storageZone}/{$folderPath}";
+            $fileStream = fopen($file->getPathname(), 'r');
+            $headers = [
+                'AccessKey' => $this->storageAccessKey,
+                'content-type' => 'application/json'
             ];
+            try {
+                $response = $this->client->put($url, [
+                    'headers' => $headers,
+                    RequestOptions::BODY => $fileStream
+                ]);
+            } finally {
+                if (is_resource($fileStream)) {
+                    fclose($fileStream);
+                }
+            }
+
+            if ($response->getStatusCode() === 201) {
+                return [
+                    'success' => true,
+                    'path' => "https://{$this->cdnPullZone}.b-cdn.net/{$folderPath}"
+                ];
+            }
+
+            return ['success' => false, 'message' => 'Upload failed'];
+        } catch (\Throwable $e) {
+            createServerError($e, "GuarantiedUploadImage");
+            return ['success' => false, 'message' => 'Upload failed'];
         }
-
-        return ['success' => false, 'message' => 'Upload failed'];
     }
-
 
     /**
      * List files in a directory.
@@ -78,8 +81,8 @@ class BunnyImageService
             ]);
 
             return json_decode($response->getBody(), true);
-        } catch (GuzzleException $e) {
-            Log::error('Bunny.net List Files Error: ' . $e->getMessage());
+        } catch (Throwable $e) {
+            createServerError($e, "listFiles");
             return [];
         }
     }
@@ -94,7 +97,6 @@ class BunnyImageService
     {
         if ($withModelData) {
             $path = $file->folder->event->bunny_main_folder_name . '/' . $file->folder->event->bunny_event_name  . '/' . $file->folder->bunny_folder_name . '/' . $file->file_name_with_extension;
-            Log::alert($path);
             $url = "https://{$this->region}.bunnycdn.com/{$this->storageZone}/{$path}";
         } else {
             $url = "https://{$this->region}.bunnycdn.com/{$this->storageZone}/{$file}";
@@ -105,110 +107,9 @@ class BunnyImageService
                     'AccessKey' => $this->storageAccessKey,
                 ],
             ]);
-
             return $response->getStatusCode() === 200;
-        } catch (GuzzleException $e) {
-            Log::error('Bunny.net Delete File Error: ' . $e->getMessage());
-            return false;
-        }
-    }
-
-    /**
-     * Create a pull zone.
-     *
-     * @param string $name
-     * @param string $originUrl
-     * @return array|false
-     */
-    public function createPullZone($name, $originUrl)
-    {
-        $url = 'https://api.bunny.net/pullzone';
-
-        try {
-            $response = $this->client->post($url, [
-                'headers' => [
-                    'AccessKey' => $this->apiKey,
-                ],
-                'json' => [
-                    'Name' => $name,
-                    'OriginUrl' => $originUrl,
-                ],
-            ]);
-
-            return json_decode($response->getBody(), true);
-        } catch (GuzzleException $e) {
-            Log::error('Bunny.net Create Pull Zone Error: ' . $e->getMessage());
-            return false;
-        }
-    }
-
-    /**
-     * List all pull zones.
-     *
-     * @return array
-     */
-    public function listPullZones()
-    {
-        $url = 'https://api.bunny.net/pullzone';
-
-        try {
-            $response = $this->client->get($url, [
-                'headers' => [
-                    'AccessKey' => $this->apiKey,
-                ],
-            ]);
-
-            return json_decode($response->getBody(), true);
-        } catch (GuzzleException $e) {
-            Log::error('Bunny.net List Pull Zones Error: ' . $e->getMessage());
-            return [];
-        }
-    }
-
-    /**
-     * Delete a pull zone.
-     *
-     * @param int $pullZoneId
-     * @return bool
-     */
-    public function deletePullZone($pullZoneId)
-    {
-        $url = "https://api.bunny.net/pullzone/{$pullZoneId}";
-
-        try {
-            $response = $this->client->delete($url, [
-                'headers' => [
-                    'AccessKey' => $this->apiKey,
-                ],
-            ]);
-
-            return $response->getStatusCode() === 204;
-        } catch (GuzzleException $e) {
-            Log::error('Bunny.net Delete Pull Zone Error: ' . $e->getMessage());
-            return false;
-        }
-    }
-
-    /**
-     * Purge cache for a pull zone.
-     *
-     * @param int $pullZoneId
-     * @return bool
-     */
-    public function purgePullZoneCache($pullZoneId)
-    {
-        $url = "https://api.bunny.net/pullzone/{$pullZoneId}/purgeCache";
-
-        try {
-            $response = $this->client->post($url, [
-                'headers' => [
-                    'AccessKey' => $this->apiKey,
-                ],
-            ]);
-
-            return $response->getStatusCode() === 204;
-        } catch (GuzzleException $e) {
-            Log::error('Bunny.net Purge Cache Error: ' . $e->getMessage());
+        } catch (Throwable $e) {
+            createServerError($e, "deleteFile");
             return false;
         }
     }
@@ -231,65 +132,11 @@ class BunnyImageService
             ]);
 
             return json_decode($response->getBody(), true);
-        } catch (GuzzleException $e) {
-            Log::error('Bunny.net Storage Zone Statistics Error: ' . $e->getMessage());
+        } catch (Throwable $e) {
+            createServerError($e, "getStorageZoneStatistics");
             return false;
         }
     }
-
-    // public function renameFolder($oldFolderPath, $newFolderPath)
-    // {
-    //     // Ensure the folder paths end with a slash
-    //     if (substr($oldFolderPath, -1) !== '/') {
-    //         $oldFolderPath .= '/';
-    //     }
-    //     if (substr($newFolderPath, -1) !== '/') {
-    //         $newFolderPath .= '/';
-    //     }
-
-    //     // List all files in the old folder
-    //     $files = $this->listFiles($oldFolderPath);
-
-    //     if (empty($files)) {
-    //         Log::error('No files found in the folder: ' . $oldFolderPath);
-    //         return false;
-    //     }
-
-    //     // Move each file to the new folder
-    //     foreach ($files as $file) {
-    //         try {
-    //             $oldFilePath = $oldFolderPath . $file['ObjectName'];
-    //             $newFilePath = $newFolderPath . $file['ObjectName'];
-
-    //             // Download the file from the old path
-    //             $tempFilePath = tempnam(sys_get_temp_dir(), 'bunny');
-    //             if (!$this->downloadFile($oldFilePath, $tempFilePath)) {
-    //                 Log::error('Failed to download file: ' . $oldFilePath);
-    //                 return false;
-    //             }
-
-    //             // Upload the file to the new path
-    //             if (!$this->uploadFile($tempFilePath, $newFilePath)) {
-    //                 Log::error('Failed to upload file: ' . $newFilePath);
-    //                 return false;
-    //             }
-
-    //             // Delete the file from the old path
-    //             if (!$this->deleteFile($oldFilePath)) {
-    //                 Log::error('Failed to delete file: ' . $oldFilePath);
-    //                 return false;
-    //             }
-
-    //             // Clean up the temporary file
-    //             unlink($tempFilePath);
-    //         } catch (\Throwable $th) {
-    //             Log::error('Failed to copy file: ' . $th->getMessage());
-    //             //throw $th;
-    //         }
-    //     }
-
-    //     return true;
-    // }
 
     public function deleteFolder($folderPath)
     {
@@ -302,7 +149,7 @@ class BunnyImageService
         $files = $this->listFiles($folderPath);
 
         if (empty($files)) {
-            Log::error('No files found in the folder: ' . $folderPath);
+            createServerError(new Exception('No files found in the folder: ' . $folderPath), "deleteFolder");
             return false;
         }
 
@@ -311,38 +158,13 @@ class BunnyImageService
             $filePath = $folderPath . $file['ObjectName'];
 
             if (!$this->deleteFile($filePath, false)) {
-                Log::error('Failed to delete file: ' . $filePath);
+                createServerError(new Exception('Failed to delete file: ' . $filePath), "deleteFolder");
                 return false;
             }
         }
 
         $this->deleteFolderItSelf($folderPath);
         return true;
-    }
-
-    /**
-     * Download a file from Bunny.net storage.
-     *
-     * @param string $filePath
-     * @param string $destination
-     * @return bool
-     */
-    public function downloadFile($filePath, $destination)
-    {
-        $url = "https://{$this->region}.bunnycdn.com/{$this->storageZone}/{$filePath}";
-        try {
-            $response = $this->client->get($url, [
-                'headers' => [
-                    'AccessKey' => $this->storageAccessKey,
-                ],
-            ]);
-
-            file_put_contents($destination, $response->getBody());
-            return true;
-        } catch (GuzzleException $e) {
-            Log::error('Bunny.net Download Error: ' . $e->getMessage());
-            return false;
-        }
     }
 
     function deleteFolderItSelf($folderPath)
