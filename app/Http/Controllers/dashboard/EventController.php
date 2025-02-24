@@ -153,7 +153,8 @@ class EventController extends Controller
             $data['cover_image'] = $request->hasFile('cover_image') ? 'storage/' . uploadFile($request->file('cover_image'), 'events/event_cover_image') :  $event->event_cover_image;
             $data['profile_picture'] = $request->hasFile('profile_picture') ? 'storage/' . uploadFile($request->file('profile_picture'), 'events/profile_picture') :  $event->profile_picture;
             $data['qr_code'] = $oldEvent->event_link != $data['event_link'] ? 'storage/' . uploadBase64File($data['qr_code'], 'events/event_qr_code') : $event->qr_code;
-            $event->setting()->update([
+            $setting =  $event->setting;
+            $setting->update([
                 'image_share_guest_book' => isset($data['image_share_guest_book']) && $data['image_share_guest_book'] == 'on' ? 1 : 0,
                 'image_folders' => isset($data['image_folders']) && $data['image_folders'] == 'on' ? 1 : 0,
                 'video_playlist' => isset($data['video_playlist']) && $data['video_playlist'] == 'on' ? 1 : 0,

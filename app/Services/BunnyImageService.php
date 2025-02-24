@@ -169,14 +169,18 @@ class BunnyImageService
 
     function deleteFolderItSelf($folderPath)
     {
-        $client = new Client();
+        try {
+            $client = new Client();
 
-        $headers = [
-            'AccessKey' => $this->storageAccessKey,
-            'Accept' => 'application/json'
-        ];
-        $url = "https://{$this->region}.bunnycdn.com/{$this->storageZone}/{$folderPath}";
-        $client->delete($url, ['headers' => $headers]);
-        return true;
+            $headers = [
+                'AccessKey' => $this->storageAccessKey,
+                'Accept' => 'application/json'
+            ];
+            $url = "https://{$this->region}.bunnycdn.com/{$this->storageZone}/{$folderPath}";
+            $client->delete($url, ['headers' => $headers]);
+            return true;
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
     }
 }
