@@ -23,6 +23,8 @@ return new class extends Migration
             $table->string('theme')->nullable();
             $table->string('accent_color')->nullable();
             $table->string('font')->nullable();
+            $table->foreignId('created_by')->nullable();
+            $table->foreign('created_by')->references('id')->on('users')->onDelete('set null');
             $table->timestamps();
         });
     }

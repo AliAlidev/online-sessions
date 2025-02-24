@@ -29,8 +29,8 @@ class ClientController extends Controller
                     ->editColumn('contact_button_link', function ($row) {
                         return '<a target="_blank" class="btn btn-label-linkedin" href="' . $row->contact_button_link . '"> Link </a>';
                     })
-                    ->editColumn('role', function ($row) {
-                        return $row->roleModel?->name;
+                    ->editColumn('client_role', function ($row) {
+                        return $row->clientRole?->name;
                     })
                     ->editColumn('logo', function ($row) {
                         return $row->logo ? '<img src="/' . $row->logo . '" alt="" width="100px" height="100px">' : null;

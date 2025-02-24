@@ -28,7 +28,7 @@ class UpdateClientRequest extends FormRequest
             'planner_business_name' => 'nullable|string',
             'phone_number' => 'required|string|max:20|unique:clients,phone_number,' . $id,
             'email' => 'required|email|unique:clients,email,' . $id,
-            'role' => 'required|string|exists:client_roles,id',
+            'client_role' => 'required|string|exists:client_roles,id',
             'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp',
             'profile_picture' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp',
             'contact_button_text' => 'required|string',

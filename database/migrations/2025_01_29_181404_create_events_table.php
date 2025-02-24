@@ -31,6 +31,8 @@ return new class extends Migration
             $table->string('event_password')->nullable();
             $table->string('qr_code');
             $table->string('bunny_main_folder_name')->nullable();
+            $table->foreignId('created_by')->nullable();
+            $table->foreign('created_by')->references('id')->on('users')->onDelete('set null');
             $table->timestamps();
 
             // Foreign key constraint for client_id

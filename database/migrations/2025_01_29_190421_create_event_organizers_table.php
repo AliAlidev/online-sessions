@@ -19,6 +19,8 @@ return new class extends Migration
             $table->timestamps();
 
             // Foreign key constraints
+            $table->foreignId('created_by')->nullable();
+            $table->foreign('created_by')->references('id')->on('users')->onDelete('set null');
             $table->foreign('event_id')->references('id')->on('events')->onDelete('cascade');
             $table->foreign('organizer_id')->references('id')->on('clients')->onDelete('cascade');
         });

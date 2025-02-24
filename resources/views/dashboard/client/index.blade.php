@@ -100,8 +100,8 @@
                         name: 'email'
                     },
                     {
-                        data: 'role',
-                        name: 'role'
+                        data: 'client_role',
+                        name: 'client_role'
                     },
                     {
                         data: 'contact_button_text',

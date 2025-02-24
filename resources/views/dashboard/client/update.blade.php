@@ -110,15 +110,15 @@
                             <div class="row mb-6">
                                 <div class="col-md-6">
                                     <label for="exampleFormControlSelect1" class="form-label">Role</label>
-                                    <select class="form-select" id="exampleFormControlSelect1" name="role"
+                                    <select class="form-select" id="exampleFormControlSelect1" name="client_role"
                                         aria-label="Default select example">
                                         <option selected disabled>Select Type</option>
                                         @foreach ($roles as $key => $role)
-                                            <option {{ $client->role == $key ? 'selected' : '' }}
+                                            <option {{ $client->client_role == $key ? 'selected' : '' }}
                                                 value="{{ $key }}"> {{ $role }} </option>
                                         @endforeach
                                     </select>
-                                    <small class="text-body float-start error-message-div role-error"
+                                    <small class="text-body float-start error-message-div client_role-error"
                                         style="color: #ff0000 !important" hidden></small>
                                 </div>
                                 <div class="col-md-6">

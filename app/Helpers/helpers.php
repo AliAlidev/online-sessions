@@ -155,13 +155,13 @@ if (!function_exists('checkImageConfig')) {
         $headers = [
             'accessKey' => $accessToken
         ];
-        $request = new Request('GET', 'https://'.$region.'.bunnycdn.com/' . $storageName . '/*', $headers);
+        $request = new Request('GET', 'https://' . $region . '.bunnycdn.com/' . $storageName . '/*', $headers);
         try {
             $response = $client->send($request, ['headers' => $headers]);
             $statusCode = $response->getStatusCode(); // Get the HTTP status code
             return $statusCode == 401 ? false : true;
         } catch (Exception $e) {
-            if ($e->getResponse()->getStatusCode() == 401)
+            if (method_exists($e, 'getResponse') && $e->getResponse() && $e->getResponse()->getStatusCode() == 401)
                 return false;
             return true;
         }
