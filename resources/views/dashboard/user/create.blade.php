@@ -21,6 +21,11 @@
                 transform: rotate(360deg);
             }
         }
+
+        #basic-default-password2 {
+            pointer-events: auto;
+            z-index: 1;
+        }
     </style>
 @endsection
 
@@ -37,16 +42,16 @@
                         <div class="card-body">
                             <div class="row mb-3">
                                 <div class="col mb-6">
-                                    <label for="nameWithTitle" class="form-label">Name</label>
-                                    <input type="text" name="name" class="form-control" placeholder="Enter Name">
-                                    <small class="text-body float-start error-message-div name-error"
-                                        style="color: #ff0000 !important" hidden></small>
-                                </div>
-                                <div class="col mb-6">
                                     <label for="nameWithTitle" class="form-label">Full Name</label>
                                     <input type="text" name="full_name" class="form-control"
                                         placeholder="Enter Full Name">
                                     <small class="text-body float-start error-message-div full_name-error"
+                                        style="color: #ff0000 !important" hidden></small>
+                                </div>
+                                <div class="col mb-6">
+                                    <label for="nameWithTitle" class="form-label">User Name</label>
+                                    <input type="text" name="name" class="form-control" placeholder="Enter Name">
+                                    <small class="text-body float-start error-message-div name-error"
                                         style="color: #ff0000 !important" hidden></small>
                                 </div>
                             </div>
@@ -57,14 +62,6 @@
                                     <small class="text-body float-start error-message-div email-error"
                                         style="color: #ff0000 !important" hidden></small>
                                 </div>
-                                <div class="col mb-6">
-                                    <label for="nameWithTitle" class="form-label">Phone</label>
-                                    <input type="text" name="phone" class="form-control" placeholder="Enter Phone">
-                                    <small class="text-body float-start error-message-div phone-error"
-                                        style="color: #ff0000 !important" hidden></small>
-                                </div>
-                            </div>
-                            <div class="row mb-3">
                                 <div class="col-md-6">
                                     <div class="form-password-toggle">
                                         <label class="form-label" for="password_id">Password</label>
@@ -79,6 +76,15 @@
                                     <small class="text-body float-start error-message-div password-error"
                                         style="color: #ff0000 !important" hidden></small>
                                 </div>
+                            </div>
+                            <div class="row mb-3">
+                                 <div class="col mb-6">
+                                    <label for="nameWithTitle" class="form-label">Phone</label>
+                                    <input type="text" name="phone" class="form-control" placeholder="Enter Phone">
+                                    <small class="text-body float-start error-message-div phone-error"
+                                        style="color: #ff0000 !important" hidden></small>
+                                </div>
+
                                 <div class="col-md-6">
                                     <div class="form-password-toggle">
                                         <label class="form-label" for="password_confirmation_id">Password
