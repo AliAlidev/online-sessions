@@ -144,7 +144,7 @@
                                     </div>
                                 </div>
                                 <div class="col-md-3">
-                                    <h5>Users Permissions</h5>
+                                    <h5>Client Permissions</h5>
                                     <div class="row mb-6" style="margin: 3px">
                                         <div class="form-check form-switch mb-2">
                                             <input class="form-check-input" type="checkbox"
