@@ -245,6 +245,11 @@
                                             id="approve_decline_video" name="permissions[]" value="approve_decline_video">
                                         <label class="form-check-label" for="approve_decline_video">Approve/Decline Videos</label>
                                     </div>
+                                    <div class="form-check form-switch mb-2">
+                                        <input class="form-check-input" type="checkbox"
+                                            id="insights" name="permissions[]" value="insights">
+                                        <label class="form-check-label" for="insights">Insights</label>
+                                    </div>
                                 </div>
                             </div>
                         </div>

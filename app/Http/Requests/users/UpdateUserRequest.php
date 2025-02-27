@@ -27,8 +27,8 @@ class UpdateUserRequest extends FormRequest
             'full_name' => 'nullable|string',
             'phone' => 'nullable|string|max:20|unique:users,email,' . $id,
             'email' => 'nullable|email|unique:users,email,' . $id,
-            'permissions' => 'required|array',
-            'password' => 'nullable|confirmed',
+            'permissions' => 'nullable|array',
+            'password' => 'nullable|confirmed|regex:/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/',
             'password_confirmation' => 'nullable'
         ];
     }

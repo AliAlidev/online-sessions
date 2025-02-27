@@ -3,6 +3,7 @@
 use App\Models\Client;
 use App\Models\Event;
 use App\Models\Setting;
+use Carbon\Carbon;
 use GuzzleHttp\Client as GuzzleHttpClient;
 use GuzzleHttp\Psr7\Request;
 use Illuminate\Support\Facades\Log;
@@ -58,26 +59,40 @@ if (!function_exists('uploadBase64File')) {
 }
 
 if (!function_exists('getEventsCount')) {
-    function getEventsCount()
+    function getEventsCount($request = null)
     {
+        if ($request && $request->start && $request->end) {
+            return Event::whereBetween('created_at', [$request->start, $request->end])->count();
+        }
         return Event::count();
     }
 }
 
 if (!function_exists('getClientsCount')) {
-    function getClientsCount()
+    function getClientsCount($request = null)
     {
+        if ($request && $request->start && $request->end) {
+            return Client::whereBetween('created_at', [$request->start, $request->end])->count();
+        }
         return Client::count();
     }
 }
 
 if (!function_exists('getEventsIncreasingCount')) {
-    function getEventsIncreasingCount()
+    function getEventsIncreasingCount($request)
     {
-        $compare_start_date = now()->subMonths(2)->subDay()->startOfDay()->toDateTimeString();
-        $compare_end_date = now()->subMonth()->subDay()->endOfDay()->toDateTimeString();;
-        $start_date = now()->subMonth()->startOfDay()->toDateTimeString();
-        $end_date = now()->toDateTimeString();
+        if ($request && $request->start && $request->end) {
+            $start_date = Carbon::parse($request->start);
+            $end_date = Carbon::parse($request->end);
+            $date_diff = $end_date->diffInDays($start_date);
+            $compare_start_date = $start_date->subDays($date_diff + 1)->toDateTimeString();
+            $compare_end_date = Carbon::parse($start_date)->subDays(1)->toDateTimeString();
+        } else {
+            $compare_start_date = now()->subMonths(2)->subDay()->startOfDay()->toDateTimeString();
+            $compare_end_date = now()->subMonth()->subDay()->endOfDay()->toDateTimeString();;
+            $start_date = now()->subMonth()->startOfDay()->toDateTimeString();
+            $end_date = now()->toDateTimeString();
+        }
 
         $previous = Event::whereBetween('created_at', [$compare_start_date, $compare_end_date])->count();
         $current = Event::whereBetween('created_at', [$start_date, $end_date])->count();
@@ -101,12 +116,20 @@ if (!function_exists('getEventsIncreasingCount')) {
 }
 
 if (!function_exists('getClientsIncreasingCount')) {
-    function getClientsIncreasingCount()
+    function getClientsIncreasingCount($request = null)
     {
-        $compare_start_date = now()->subMonths(2)->subDay()->startOfDay()->toDateTimeString();
-        $compare_end_date = now()->subMonth()->subDay()->endOfDay()->toDateTimeString();;
-        $start_date = now()->subMonth()->startOfDay()->toDateTimeString();
-        $end_date = now()->toDateTimeString();
+        if ($request && $request->start && $request->end) {
+            $start_date = Carbon::parse($request->start);
+            $end_date = Carbon::parse($request->end);
+            $date_diff = $end_date->diffInDays($start_date);
+            $compare_start_date = $start_date->subDays($date_diff + 1)->toDateTimeString();
+            $compare_end_date = Carbon::parse($start_date)->subDays(1)->toDateTimeString();
+        } else {
+            $compare_start_date = now()->subMonths(2)->subDay()->startOfDay()->toDateTimeString();
+            $compare_end_date = now()->subMonth()->subDay()->endOfDay()->toDateTimeString();;
+            $start_date = now()->subMonth()->startOfDay()->toDateTimeString();
+            $end_date = now()->toDateTimeString();
+        }
 
         $previous = client::whereBetween('created_at', [$compare_start_date, $compare_end_date])->count();
         $current = client::whereBetween('created_at', [$start_date, $end_date])->count();

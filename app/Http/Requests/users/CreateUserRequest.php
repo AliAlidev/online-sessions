@@ -26,9 +26,16 @@ class CreateUserRequest extends FormRequest
             'full_name' => 'nullable|string',
             'phone' => 'required|string|max:20|unique:users,phone',
             'email' => 'required|email|unique:users,email',
-            'permissions' => 'required|array',
-            'password' => 'required|confirmed',
+            'permissions' => 'nullable|array',
+            'password' => 'required|confirmed|regex:/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/',
             'password_confirmation' => 'required'
+        ];
+    }
+
+    function messages()
+    {
+        return [
+            'password.regex' => "The password must be at least 8 characters long and include at least one uppercase letter, one lowercase letter, one number, and one special character."
         ];
     }
 }

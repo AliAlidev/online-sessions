@@ -46,15 +46,7 @@
         <div class="card">
             <div class="row card-header flex-column flex-md-row pb-0">
                 <div class="d-md-flex justify-content-between align-items-center dt-layout-end col-md-auto ms-auto mt-0">
-                    <div class="dt-buttons btn-group flex-wrap mb-0">
-                        <button class="btn btn-sm btn-primary" data-bs-target="#CreateEventTypeModal" data-bs-toggle="modal"
-                            type="button"><span><span class="d-flex align-items-center gap-2">
-                                    <span class="d-none d-sm-inline-block">Add</span>
-                                    <i class="icon-base bx bx-plus icon-sm"></i>
-                                </span>
-                            </span>
-                        </button>
-                    </div>
+
                 </div>
             </div>
             <div class="card-datatable">

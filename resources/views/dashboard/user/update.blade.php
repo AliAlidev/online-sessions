@@ -37,16 +37,16 @@
                         <div class="card-body">
                             <div class="row mb-3">
                                 <div class="col mb-6">
-                                    <label for="nameWithTitle" class="form-label">Name</label>
-                                    <input type="text" name="name" class="form-control" placeholder="Enter Name" value="{{ $user->name }}">
-                                    <small class="text-body float-start error-message-div name-error"
-                                        style="color: #ff0000 !important" hidden></small>
-                                </div>
-                                <div class="col mb-6">
                                     <label for="nameWithTitle" class="form-label">Full Name</label>
                                     <input type="text" name="full_name" class="form-control" value="{{ $user->full_name }}"
                                         placeholder="Enter Full Name">
                                     <small class="text-body float-start error-message-div full_name-error"
+                                        style="color: #ff0000 !important" hidden></small>
+                                </div>
+                                <div class="col mb-6">
+                                    <label for="nameWithTitle" class="form-label">User Name</label>
+                                    <input type="text" name="name" class="form-control" placeholder="Enter Name" value="{{ $user->name }}">
+                                    <small class="text-body float-start error-message-div name-error"
                                         style="color: #ff0000 !important" hidden></small>
                                 </div>
                             </div>
@@ -57,14 +57,6 @@
                                     <small class="text-body float-start error-message-div email-error"
                                         style="color: #ff0000 !important" hidden></small>
                                 </div>
-                                <div class="col mb-6">
-                                    <label for="nameWithTitle" class="form-label">Phone</label>
-                                    <input type="text" name="phone" class="form-control" placeholder="Enter Phone" value="{{ $user->phone }}">
-                                    <small class="text-body float-start error-message-div phone-error"
-                                        style="color: #ff0000 !important" hidden></small>
-                                </div>
-                            </div>
-                            <div class="row mb-3">
                                 <div class="col-md-6">
                                     <div class="form-password-toggle">
                                         <label class="form-label" for="password_id">Password</label>
@@ -77,6 +69,14 @@
                                         </div>
                                     </div>
                                     <small class="text-body float-start error-message-div password-error"
+                                        style="color: #ff0000 !important" hidden></small>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col mb-6">
+                                    <label for="nameWithTitle" class="form-label">Phone</label>
+                                    <input type="text" name="phone" class="form-control" placeholder="Enter Phone" value="{{ $user->phone }}">
+                                    <small class="text-body float-start error-message-div phone-error"
                                         style="color: #ff0000 !important" hidden></small>
                                 </div>
                                 <div class="col-md-6">
@@ -236,6 +236,11 @@
                                         <input class="form-check-input" type="checkbox" {{ in_array('approve_decline_video', $permissions) ? 'checked' : '' }}
                                             id="approve_decline_video" name="permissions[]" value="approve_decline_video">
                                         <label class="form-check-label" for="approve_decline_video">Approve/Decline Videos</label>
+                                    </div>
+                                    <div class="form-check form-switch mb-2">
+                                        <input class="form-check-input" type="checkbox" {{ in_array('insights', $permissions) ? 'checked' : '' }}
+                                            id="insights" name="permissions[]" value="insights">
+                                        <label class="form-check-label" for="insights">Insights</label>
                                     </div>
                                 </div>
                             </div>

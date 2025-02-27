@@ -68,11 +68,12 @@ class UserController extends Controller
     {
         try {
             $data = $request->validated();
-            $permissions = $data['permissions'];
+            $permissions = $data['permissions'] ?? null;
             unset($data['permissions']);
             unset($data['password_confirmation']);
             $user = User::create($data);
-            $user->givePermissionTo($permissions);
+            if (isset($permissions))
+                $user->givePermissionTo($permissions);
             session()->flash('success', 'User has been created successfully');
             return response()->json(['success' => true, 'url' => route('users.index')]);
         } catch (Exception $th) {
@@ -85,13 +86,15 @@ class UserController extends Controller
     {
         try {
             $data = $request->validated();
+            $data = array_filter($data, fn($value) => !is_null($value));
             $user = User::find($id);
-            $permissions = $data['permissions'];
+            $permissions = $data['permissions'] ?? null;
             unset($data['permissions']);
             unset($data['password_confirmation']);
             unset($data['user_id']);
             $user->update($data);
-            $user->syncPermissions($permissions);
+            if (isset($permissions))
+                $user->syncPermissions($permissions);
             session()->flash('success', 'User has been updated successfully');
             return response()->json(['success' => true, 'url' => route('users.index')]);
         } catch (Exception $th) {

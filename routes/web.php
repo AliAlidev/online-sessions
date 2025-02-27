@@ -28,7 +28,7 @@ Route::get('/landing', 'App\Http\Controllers\GuestController@landing');
 
 Route::middleware('auth')->group(function () {
     Route::controller(InsightController::class)->name('insights.')->group(function () {
-        Route::get('/', 'index')->name('index');
+        Route::match(['get', 'post'],'/', 'index')->name('index');
     });
 
     Route::controller(EventTypeController::class)->prefix('events-types')->name('events.types.')->group(function () {

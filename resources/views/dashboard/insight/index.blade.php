@@ -1,5 +1,29 @@
 @extends('layouts.base')
 
+@section('styles')
+    <style>
+        #spinner {
+            display: none;
+            margin-left: 10px;
+        }
+
+        .fa-spinner {
+            font-size: 16px;
+            animation: spin 1s infinite linear;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+@endsection
+
 
 @section('content')
     <div class="container-xxl flex-grow-1 container-p-y">
@@ -8,88 +32,88 @@
                 <h5 class="mb-0">{{ __('Insights') }}</h5>
             </div>
             <div class="card-body">
-                <div class="row mb-10">
+                <div class="row mb-6">
                     <div class="col-md-3">
-                        <div style="width: 100%; margin-top: 10px ">
-                            <div class="card h-100">
-                                <div class="card-body" style="padding: 10px">
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <small style="color: #b8c3d0">Total Events</small>
-                                            <div style="display: flex; flex-direction: row; gap:55px">
-                                                <small style="color: black; font-weight: bolder; font-size: 15px"
-                                                    id="sidebar-events-count">{{ getEventsCount() }}</small>
-                                                <small
-                                                    style="color: {{ $events_percentage_color }}; margin: 5px 0 0 0">{{ $events_percentage_sign . $events_percentage_value . '%' }}</small>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6 d-flex justify-content-end" style="align-items: center">
-                                            <span style="justify-items: flex-end; color: #ffffff;"><i class="fa fa-folder"
-                                                    style="background-color: #4fd1c5c9;padding: 10px 10px;border-radius: 10px;font-size: 17px;"></i></span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        <input class="form-control start_date" type="date" value="" name="start_date"
+                            id="start-date-id">
+                        <small class="text-body float-start error-message-div start_date-error"
+                            style="color: #ff0000 !important; display: none"></small>
                     </div>
                     <div class="col-md-3">
-                        <div style="width: 100%; margin-top: 10px ">
-                            <div class="card h-100">
-                                <div class="card-body" style="padding: 10px">
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <small style="color: #b8c3d0">Total Clients</small>
-                                            <div style="display: flex; flex-direction: row; gap:55px">
-                                                <small style="color: black; font-weight: bolder; font-size: 15px"
-                                                    id="sidebar-clients-count">{{ getClientsCount() }}</small>
-                                                <small
-                                                    style="color: {{ $clients_percentage_color }}; margin: 5px 0 0 0">{{ $clients_percentage_sign . $clients_percentage_value . '%' }}</small>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6 d-flex justify-content-end" style="align-items: center">
-                                            <span style="justify-items: flex-end; color: #ffffff;"><i class="fa fa-folder"
-                                                    style="background-color: #4fd1c5c9;padding: 10px 10px;border-radius: 10px;font-size: 17px;"></i></span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        <input class="form-control end_date" type="date" value="" name="end_date">
+                        <small class="text-body float-start error-message-div end_date-error"
+                            style="color: #ff0000 !important;display: none"></small>
+                    </div>
+                    <div class="col-md-3">
+                        <button class="btn btn-primary search-btn"><span class="fa fa-search"></span>
+                            <span id="spinner" style="display:none;">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </span>
+                        </button>
                     </div>
                 </div>
-                @foreach ($sections as $section)
-                <div class="row mb-10">
-                    <label for=""><span style="font-weight: bolder">{{ strtoupper($section['name']) }}</span> {{ $section['prefix'] }} </label>
-                    @foreach ($section['charts'] as $chart)
-                        <div class="col-md-4">
-                            <div style="width: 100%; margin-top: 10px">
-                                <div class="card h-100">
-                                    <div class="card-body" style="padding: 10px">
-                                        <div class="row">
-                                            <div class="col-md-8">
-                                                <small style="color: #b8c3d0">{{ ucwords($chart['name']) }}</small>
-                                                <div style="display: flex; flex-direction: row; gap:55px">
-                                                    <small
-                                                        style="color: black; font-weight: bolder; font-size: 15px">{{ $chart['value'] }}</small>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-4 d-flex justify-content-end"
-                                                style="align-items: center">
-                                                <span style="justify-items: flex-end; color: #ffffff;"><i
-                                                        class="fa fa-folder"
-                                                        style="background-color: #4fd1c5c9;padding: 10px 10px;border-radius: 10px;font-size: 17px;"></i></span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    @endforeach
-                </div>
-            @endforeach
+                <div id="insightsDiv"></div>
             </div>
         </div>
     </div>
 @endsection
 
 @section('scripts')
+    <script>
+        $(document).ready(function() {
+            let today = new Date();
+            let firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), +2);
+            let formattedDate = firstDayOfMonth.toISOString().split("T")[0];
+            $('.start_date').val(formattedDate);
+
+            let lastDay = new Date(today.getFullYear(), today.getMonth()+1, +1);
+            let lastDayFormatted = lastDay.toISOString().split("T")[0];
+            $('.end_date').val(lastDayFormatted);
+
+            $('.search-btn').on('click', function() {
+                var startDate = $('.start_date').val();
+                var endDate = $('.end_date').val();
+
+                if (startDate == '') {
+                    $('.start_date-error').html('Please select start date.');
+                    $('.start_date-error').show();
+                    return false;
+                } else {
+                    $('.start_date-error').hide();
+                }
+                if (endDate == '') {
+                    $('.end_date-error').html('Please select end date.');
+                    $('.end_date-error').show();
+                    return false;
+                } else {
+                    $('.end_date-error').hide();
+                }
+
+                var searchBtn = $(this);
+                var spinner = $(searchBtn).find("#spinner");
+                searchBtn.prop('disabled', true);
+                spinner.show();
+                $('#insightsDiv').html('');
+
+                $.ajax({
+                    url: "{{ route('insights.index') }}",
+                    type: "POST",
+                    data: {
+                        start: startDate,
+                        end: endDate,
+                        _token: '{{ csrf_token() }}'
+                    },
+                    success: function(response) {
+                        spinner.hide();
+                        searchBtn.prop('disabled', false);
+                        $('#insightsDiv').html(response);
+                    },
+                    error: function(xhr) {
+                        spinner.hide();
+                        searchBtn.prop('disabled', false);
+                    }
+                })
+            });
+        });
+    </script>
 @endsection

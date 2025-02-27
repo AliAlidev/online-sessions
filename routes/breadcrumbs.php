@@ -8,12 +8,12 @@ use App\Models\EventFolder;
 use App\Models\User;
 use Diglactic\Breadcrumbs\Breadcrumbs;
 
-Breadcrumbs::for('insights', function ($trail) {
-    $trail->push('Insights', route('insights.index'));
-});
+// Breadcrumbs::for('insights', function ($trail) {
+//     $trail->push('Insights', route('insights.index'));
+// });
 
 Breadcrumbs::for('events', function ($trail) {
-    $trail->parent('insights');
+    // $trail->parent('insights');
     $trail->push('Events List', route('events.index'));
 });
 
@@ -42,12 +42,12 @@ Breadcrumbs::for('files', function ($trail, $folderId) {
 });
 
 Breadcrumbs::for('roles', function ($trail) {
-    $trail->parent('insights');
+    // $trail->parent('insights');
     $trail->push('Roles List', route('roles.index'));
 });
 
 Breadcrumbs::for('clients', function ($trail) {
-    $trail->parent('insights');
+    // $trail->parent('insights');
     $trail->push('Clients List', route('clients.index'));
 });
 
@@ -63,7 +63,7 @@ Breadcrumbs::for('update-client', function ($trail, $clientId) {
 });
 
 Breadcrumbs::for('event-types', function ($trail) {
-    $trail->parent('insights');
+    // $trail->parent('insights');
     $trail->push('Event Types List', route('events.types.index'));
 });
 
@@ -79,12 +79,12 @@ Breadcrumbs::for('update-event', function ($trail, $eventId) {
 });
 
 Breadcrumbs::for('settings', function ($trail) {
-    $trail->parent('insights');
+    // $trail->parent('insights');
     $trail->push('Bunny Setting', '');
 });
 
 Breadcrumbs::for('users', function ($trail) {
-    $trail->parent('insights');
+    // $trail->parent('insights');
     $trail->push('Users List', route('users.index'));
 });
 

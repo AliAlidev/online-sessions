@@ -30,6 +30,7 @@ class PermissionSeeder extends Seeder
             'update_video',
             'approve_decline_image',
             'approve_decline_video',
+            'insights'
         ];
 
         foreach ($permissions as $permission) {
