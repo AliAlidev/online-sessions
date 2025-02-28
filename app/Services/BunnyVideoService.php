@@ -44,7 +44,7 @@ class BunnyVideoService
         BunnyVideoGuid::where('guid', $guid)->update(['status' => 1]);
     }
 
-    function guarantiedUploadVideo($file, $fileName)
+    function guarantiedUploadVideo($file, $fileName, $collectionId = null, $resolution = null)
     {
         $guid = null;
         try {
@@ -56,7 +56,7 @@ class BunnyVideoService
             ];
 
             // Step 1: Create video entry in BunnyCDN and get GUID
-            $body = json_encode(['title' => $fileName]);
+            $body = json_encode(['title' => $fileName, 'collectionId' => $collectionId]);
             $response = $this->client->post("https://video.bunnycdn.com/library/{$this->libraryId}/videos", [
                 'headers' => $headers,
                 'body' => $body
@@ -70,7 +70,8 @@ class BunnyVideoService
         }
 
         try {
-            $response = $this->client->put("https://video.bunnycdn.com/library/{$this->libraryId}/videos/{$guid}", [
+            $resolution = $resolution ? "?enabledResolutions={$resolution}" : null;
+            $response = $this->client->put("https://video.bunnycdn.com/library/{$this->libraryId}/videos/{$guid}". $resolution, [
                 'headers' => $headers,
                 RequestOptions::BODY => $fileStream
             ]);
@@ -160,5 +161,42 @@ class BunnyVideoService
     public function getEmbedUrl(string $videoId)
     {
         return "https://iframe.mediadelivery.net/embed/{$this->libraryId}/{$videoId}";
+    }
+
+    function createCollection($name)
+    {
+        try {
+            $client = new Client();
+            $headers = [
+                'accessKey' => $this->apiKey,
+                'content-Type' => 'application/json',
+                'Accept' => 'application/json'
+            ];
+            $json = json_encode([
+                'name' => $name
+            ]);
+            $request = new Psr7Request('POST', 'https://video.bunnycdn.com/library/' . $this->libraryId . '/collections', $headers, $json);
+            $res = $client->sendAsync($request)->wait();
+            return ['success' => true, 'data' => json_decode($res->getBody(), true)];
+        } catch (\Throwable $th) {
+            createServerError($th, "createCollection");
+            return ['success' => false, 'message' => $th->getMessage()];
+        }
+    }
+
+    function deleteCollection($collectionId)
+    {
+        try {
+            $client = new Client();
+            $headers = [
+                'accessKey' => $this->apiKey
+            ];
+            $request = new Psr7Request('DELETE', 'https://video.bunnycdn.com/library/' . $this->libraryId . '/collections/' . $collectionId, $headers);
+            $res = $client->sendAsync($request)->wait();
+            return ['success' => true, 'data' => json_decode($res->getBody(), true)];
+        } catch (\Throwable $th) {
+            createServerError($th, "deleteCollection");
+            return ['success' => false, 'message' => $th->getMessage()];
+        }
     }
 }

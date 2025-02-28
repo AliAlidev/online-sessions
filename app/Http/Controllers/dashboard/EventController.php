@@ -12,6 +12,7 @@ use App\Models\Event;
 use App\Models\EventSetting;
 use App\Models\EventType;
 use App\Services\BunnyImageService;
+use App\Services\BunnyVideoService;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
@@ -23,9 +24,11 @@ use Illuminate\Support\Str;
 class EventController extends Controller
 {
     public BunnyImageService $bunnyImageService;
-    public function __construct(BunnyImageService $bunnyImageService)
+    protected BunnyVideoService $bunnyVideoService;
+    public function __construct(BunnyImageService $bunnyImageService, BunnyVideoService $bunnyVideoService)
     {
         $this->bunnyImageService = $bunnyImageService;
+        $this->bunnyVideoService = $bunnyVideoService;
     }
 
     function index(Request $request)
@@ -232,9 +235,10 @@ class EventController extends Controller
             $event->folders->map(function ($folder) {
                 app(FolderController::class)->delete($folder->id);
             });
-            $this->bunnyImageService->deleteFolderItSelf($event->bunny_main_folder_name . '/' . $event->event_name . '/');
+            $this->bunnyImageService->deleteFolderItSelf($event->bunny_main_folder_name . '/' . $event->bunny_event_name . '/');
             $event->delete();
             $count = Event::count();
+            $this->bunnyVideoService->deleteCollection($event->video_collection_id);
             return response()->json(['success' => true, 'count' => $count]);
         } catch (Exception $th) {
             createServerError($th, "deleteEvent", "events");

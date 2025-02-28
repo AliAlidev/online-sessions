@@ -27,7 +27,8 @@ class CreateFileRequest extends FormRequest
             'file_size' => 'nullable',
             'file_type' => 'nullable',
             'description' => 'nullable',
-            'file_status' => 'nullable'
+            'file_status' => 'nullable',
+            'video_resolution' => 'nullable'
         ];
     }
 }

@@ -7,7 +7,6 @@ use App\Http\Requests\events\folders\CreateFolderRequest;
 use App\Http\Requests\events\folders\UpdateFolderRequest;
 use App\Models\Event;
 use App\Models\EventFolder;
-use App\Models\FolderFile;
 use Illuminate\Support\Str;
 use App\Services\BunnyImageService;
 use App\Services\bunnyVideoService;
@@ -78,7 +77,12 @@ class FolderController extends Controller
             $data['event_id'] = $eventId;
             $data['folder_name'] = Str::slug($data['folder_name']);
             $data['bunny_folder_name'] = $data['folder_name'];
-            EventFolder::create($data);
+            $folder = EventFolder::create($data);
+            if ($folder->event->video_collection_id == null) {
+                $collection = $this->bunnyVideoService->createCollection($folder->event->bunny_event_name);
+                if ($collection['success'])
+                    $folder->event->update(['video_collection_id' => $collection['data']['guid']]);
+            }
             return response()->json(['success' => true, 'message' => 'Folder has been created successfully']);
         } catch (Exception $th) {
             createServerError($th, "storeFolder", "folders");
@@ -115,7 +119,7 @@ class FolderController extends Controller
             $folderThumbnail = str_replace("storage/", "", $folder->folder_thumbnail);
             deleteFile($folderThumbnail);
             if ($folder->folder_type == "image") {
-                $this->bunnyService->deleteFolder($folder->event->bunny_main_folder_name . '/' . $folder->event->event_name . '/' . $folder->bunny_folder_name);
+                $this->bunnyService->deleteFolder($folder->event->bunny_main_folder_name . '/' . $folder->event->bunny_event_name . '/' . $folder->bunny_folder_name);
             } else if ($folder->folder_type == "video") {
                 $folder = EventFolder::find($id);
                 $videos = $folder->files->pluck('file_bunny_id')->toArray();

@@ -141,7 +141,7 @@ class FolderFileController extends Controller
                 }
                 $data['file'] = $path['path'];
             } else if ($folder->folder_type == 'video') {
-                $path = $this->bunnyVideoService->guarantiedUploadVideo($data['file'], $fileName);
+                $path = $this->bunnyVideoService->guarantiedUploadVideo($data['file'], $fileName, $folder->event->video_collection_id, $data['video_resolution']);
                 if (!$path['success']) {
                     return response()->json(['success' => false, 'message' => $path['message']], 400);
                 }
@@ -200,7 +200,7 @@ class FolderFileController extends Controller
                 }
             } else if ($folder->folder_type == 'video') {
                 if (isset($data['file'])) {
-                    $path = $this->bunnyVideoService->guarantiedUploadVideo($data['file'], $fileName);
+                    $path = $this->bunnyVideoService->guarantiedUploadVideo($data['file'], $fileName, $folder->event->video_collection_id, $data['video_resolution']);
                     if (!$path['success']) {
                         return response()->json(['success' => false, 'message' => $path['message']], 400);
                     }

@@ -2,6 +2,7 @@
 
 @section('styles')
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <style>
         table>thead>tr>th {
             text-align: center !important;
@@ -70,6 +71,28 @@
         .show-force {
             display: block !important;
         }
+
+        .select2-container--open .select2-dropdown {
+            z-index: 9999 !important;
+        }
+
+        .select2-container--default .select2-selection--multiple .select2-selection__rendered {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1px;
+            margin-left: 4px;
+            margin-top: 0px;
+        }
+
+        .select2-container--default .select2-selection--multiple {
+            height: auto !important;
+            min-height: 38px;
+        }
+
+        .select2-container--default .select2-selection--multiple .select2-selection__choice {
+            margin-left: 1px;
+            margin-top: 5px;
+        }
     </style>
 @endsection
 
@@ -137,6 +160,7 @@
                     <div class="modal-body">
                         <div class="row mb-6">
                             <div class="col-md-12">
+                                <input type="file" id="event-file-hidden" hidden multiple>
                                 <label for="event-file" class="form-label">{{ ucfirst($folderType) }}</label>
                                 <input type="file" id="event-file" class="form-control event-file" name="file"
                                     multiple
@@ -146,6 +170,15 @@
                                 <small class="text-body float-start error-message-div file-error file_name-error"
                                     style="color: #ff0000 !important" hidden></small>
                             </div>
+                            @if ($folderType == 'image')
+                                <div class="col-md-12 mt-2">
+                                    <div class="form-check form-switch mb-2">
+                                        <input class="form-check-input compress_images" type="checkbox" id="compress_images"
+                                            name="compress_images" value="compress_images">
+                                        <label class="form-check-label" for="compress_images">Compress Images</label>
+                                    </div>
+                                </div>
+                            @endif
                         </div>
                         <div class="row mb-6">
                             <div class="col-md-6">
@@ -155,6 +188,23 @@
                                 <small class="text-body float-start error-message-div user_name-error"
                                     style="color: #ff0000 !important" hidden></small>
                             </div>
+                            @if ($folderType == 'video')
+                                <div class="col-md-6">
+                                    <label for="userName" class="form-label">Video Resolution</label>
+                                    <select name="video_resolution" class="video_resolution" id="video_resolution"
+                                        multiple="multiple">
+                                        <option value="240p">240p</option>
+                                        <option value="360p">360p</option>
+                                        <option value="480p">480p</option>
+                                        <option value="720p">720p</option>
+                                        <option value="1080p">1080p</option>
+                                        <option value="1440p">1440p</option>
+                                        <option value="2160p">2160p</option>
+                                    </select>
+                                    <small class="text-body float-start error-message-div user_name-error"
+                                        style="color: #ff0000 !important" hidden></small>
+                                </div>
+                            @endif
                         </div>
                         <div class="row mb-6">
                             <div class="col-md-12">
@@ -164,19 +214,11 @@
                                     style="color: #ff0000 !important" hidden></small>
                             </div>
                         </div>
-                        {{-- <div class="row mb-6">
-                            <div class="col-md-6">
-                                <label for="fileStatus" class="form-label">{{ ucfirst($folderType) }} Status</label>
-                                <select class="form-select" id="fileStatus" name="file_status">
-                                    <option selected disabled>Select {{ ucfirst($folderType) }} Status</option>
-                                    <option value="pending">Pending</option>
-                                    <option value="approved">Approved</option>
-                                    <option value="rejected">Rejected</option>
-                                </select>
-                                <small class="text-body float-start error-message-div file_status-error"
-                                    style="color: #ff0000 !important" hidden></small>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div id="progressContainer"></div>
                             </div>
-                        </div> --}}
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal"> Close </button>
@@ -187,7 +229,6 @@
                         </button>
                     </div>
                 </form>
-                <div id="progressContainer"></div>
             </div>
         </div>
     </div>
@@ -198,6 +239,7 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <form id="updateFileForm">
+                    <input type="file" id="event-file-hidden" hidden multiple>
                     <input type="hidden" id="updateFileId" name="file_id">
                     <input type="hidden" class="uploaded-file-size" name="file_size">
                     <input type="hidden" class="uploaded-file-name-input" name="file_name">
@@ -209,13 +251,22 @@
                         <div class="row mb-6">
                             <div class="col-md-12">
                                 <label for="fileInput" class="form-label">{{ ucfirst($folderType) }}</label>
-                                <input type="file" class="form-control event-file" name="file" id="fileInput"
+                                <input type="file" class="form-control event-file" name="file" id="event-file"
                                     accept='{{ $folderType == 'image' ? 'image/jpeg,png,jpg,gif,svg,webp' : 'video/mp4' }}'>
                                 <small class="text-body float-start uploaded-file-name"
                                     style="color: #000; font-style: italic;"></small>
                                 <small class="text-body float-start error-message-div file_name-error"
                                     style="color: #ff0000 !important" hidden></small>
                             </div>
+                            @if ($folderType == 'image')
+                                <div class="col-md-12 mt-2">
+                                    <div class="form-check form-switch mb-2">
+                                        <input class="form-check-input compress_images" type="checkbox"
+                                            id="compress_images" name="compress_images" value="compress_images">
+                                        <label class="form-check-label" for="compress_images">Compress Images</label>
+                                    </div>
+                                </div>
+                            @endif
                         </div>
                         <div class="row mb-6">
                             <div class="col-md-6">
@@ -244,20 +295,41 @@
                                 <div class="col-md-6">
                                     <label for="fileStatusInput" class="form-label">{{ ucfirst($folderType) }}
                                         Status</label>
-                                    <input type="text" class="form-control" name="" id="fileStatusInput" readonly>
+                                    <input type="text" class="form-control" name="" id="fileStatusInput"
+                                        readonly>
                                 </div>
                             @endif
                         </div>
-                        <div class="row mb-6">
-                            <div class="row mb-6">
-                                <div class="col-md-12">
-                                    <label for="descriptionInput" class="form-label">Description</label>
-                                    <textarea id="descriptionInput" class="form-control" name="description" rows="4"
-                                        placeholder="Enter Description"></textarea>
-                                    <small class="text-body float-start error-message-div description-error"
+                        @if ($folderType == 'video')
+                            <div class="row mb-6" id="video_resolution_div" style="display: none">
+                                <div class="col-md-6">
+                                    <label for="userName" class="form-label">Video Resolution</label>
+                                    <select name="video_resolution" class="video_resolution" id="video_resolution_update"
+                                        multiple="multiple">
+                                        <option value="240p">240p</option>
+                                        <option value="360p">360p</option>
+                                        <option value="480p">480p</option>
+                                        <option value="720p">720p</option>
+                                        <option value="1080p">1080p</option>
+                                        <option value="1440p">1440p</option>
+                                        <option value="2160p">2160p</option>
+                                    </select>
+                                    <small class="text-body float-start error-message-div user_name-error"
                                         style="color: #ff0000 !important" hidden></small>
                                 </div>
                             </div>
+                        @endif
+                        <div class="row mb-6">
+                            <div class="col-md-12">
+                                <label for="descriptionInput" class="form-label">Description</label>
+                                <textarea id="descriptionInput" class="form-control" name="description" rows="4"
+                                    placeholder="Enter Description"></textarea>
+                                <small class="text-body float-start error-message-div description-error"
+                                    style="color: #ff0000 !important" hidden></small>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div id="progressContainer"></div>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -269,7 +341,6 @@
                         </button>
                     </div>
                 </form>
-                <div id="progressContainer"></div>
             </div>
         </div>
     </div>
@@ -336,10 +407,17 @@
     <script type="text/javascript" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.form/4.3.0/jquery.form.min.js"></script>
+    <script src="{{ asset('assets/js/compressor.min.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
     <script>
         var table;
         $(document).ready(function() {
+            $('.video_resolution').select2({
+                placeholder: "Select video resolutions", // Placeholder text
+                allowClear: true // Allow clearing selections
+            });
+
             table = $('#files-datatable').DataTable({
                 processing: true,
                 serverSide: true,
@@ -480,9 +558,14 @@
             $('#createFileForm').submit(function(e) {
                 e.preventDefault(); // Prevent default form submission
                 formId = e.target.id;
+                $('.alert').remove();
                 var submitBtn = $("#storeButton");
                 showButtonLoader(submitBtn);
-                let files = $('#' + formId + ' input[type=file]')[0].files;
+
+                if ($('#' + formId + ' #compress_images').is(':checked'))
+                    var files = $('#' + formId + ' #event-file-hidden')[0].files;
+                else
+                    var files = $('#' + formId + ' .event-file')[0].files;
                 filesCount = files.length;
                 if (files.length == 0) {
                     $('.file_name-error').attr('hidden', false);
@@ -504,11 +587,11 @@
                                 <p class="mb-0">Stage1: File Upload ${files[i].name}</p>
                                 <button class="btn btn-sm btn-primary start-btn" data-index="${i}" style="height:15px;width:auto ;font-size: 10px;">Start Upload</button>
                                 <div class="progress mt-2">
-                                    <div class="progress-bar progress-bar-striped progress-bar-animated bg-success" style="font-size:8px"
+                                    <div class="progress-bar progress-bar-striped progress-bar-animated bg-success" style="font-size:12px;height:10px"
                                         role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"
                                         style="width: 0%" id="progress-bar-${i}"></div>
                                 </div>
-                                <p id="status-${i}" class="text-danger d-inline-block"></p>
+                                <p id="status-${i}" class="text-danger d-inline-block mt-1"></p>
                                 <button class="btn btn-sm btn-warning retry-btn hidden-force" style="height:15px; width:auto; font-size:10px" data-index="${i}" style="font-size: 12px;">Retry</button>
                             </div>
                         `);
@@ -579,6 +662,7 @@
                     formData.append('user_name', $('#UserName').val());
                     formData.append('description', $('#description').val());
                     formData.append('file_size', file.size);
+                    formData.append('video_resolution', $('#video_resolution').val());
                     $(`#file-container-${index} .start-btn`).remove(); // Remove "Start Upload" button
 
                     $.ajax({
@@ -612,8 +696,10 @@
                             $("#status-" + index).addClass('hidden-force');
                             if (allUploadsSuccessCount == filesCount) {
                                 resetForm(formId);
-                                $('#CreateFileModal').modal('hide');
-                                showAlertMessage(response.message);
+                                var element =
+                                    `<div class="alert alert-success"> ${response.message}</div>`;
+                                $('#' + formId).find('.modal-body').prepend(element);
+                                $('#files-datatable').DataTable().draw();
                             }
                             resolve(); // Resolve the Promise after successful upload
                         },
@@ -734,6 +820,10 @@
                         );
                         $('.uploaded-file-name-input').val(fileName);
                     });
+
+                    if ("{{ $folderType }}" == 'video') {
+                        $('#video_resolution_div').show();
+                    }
                 } else {
                     fileNameDisplay.text('');
                 }
@@ -743,9 +833,13 @@
             $('#updateFileForm').submit(function(e) {
                 e.preventDefault(); // Prevent default form submission
                 formId = e.target.id;
+                $('.alert').remove();
                 var submitBtn = $("#updateButton");
                 showButtonLoader(submitBtn);
-                let file = $('#' + formId + ' input[type=file]')[0].files[0];
+                if ($('#' + formId + ' #compress_images').is(':checked'))
+                    var file = $('#' + formId + ' #event-file-hidden')[0].files[0];
+                else
+                    var file = $('#' + formId + ' .event-file')[0].files[0];
                 var progressBar = $('#' + formId).parent().find('#progressContainer');
                 progressBar.empty();
                 if (file) {
@@ -753,11 +847,11 @@
                             <div class="mb-4" id="file-container-0">
                                 <p class="mb-0">Stage1: File Upload ${file.name}</p>
                                 <div class="progress mt-2">
-                                    <div class="progress-bar progress-bar-striped progress-bar-animated bg-success" style="font-size:8px"
+                                    <div class="progress-bar progress-bar-striped progress-bar-animated bg-success" style="font-size:12px; height:10px"
                                         role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"
                                         style="width: 0%" id="progress-bar-0"></div>
                                 </div>
-                                <p id="status-0" class="text-danger d-inline-block"></p>
+                                <p id="status-0" class="text-danger d-inline-block mt-1"></p>
                                 <button class="btn btn-sm btn-warning retry-update-btn hidden-force" style="height:15px; width:auto; font-size:10px" data-index="0" style="font-size: 12px;">Retry</button>
                             </div>
                         `);
@@ -779,6 +873,7 @@
                 var fileId = $('#updateFileId').val();
                 formData.append('file_id', fileId);
                 formData.append('file_status', $('#fileStatusInput').val());
+                formData.append('video_resolution', $('#video_resolution_update').val());
                 var submitBtn = $("#updateButton");
                 $.ajax({
                     url: "{{ url('files/update') }}/" + fileId,
@@ -810,8 +905,9 @@
                             "bg-primary").text("Completed");
                         $("#status-" + index).addClass('hidden-force');
                         resetForm(formId);
-                        $('#UpdateFileModal').modal('hide');
-                        showAlertMessage(response.message);
+                        var element = `<div class="alert alert-success"> ${response.message}</div>`;
+                        $('#' + formId).find('.modal-body').prepend(element);
+                        $('#files-datatable').DataTable().draw();
                     },
                     error: function(jqXHR, textStatus) {
                         hideButtonLoader(submitBtn);
@@ -840,6 +936,8 @@
             $('#UpdateFileModal,#CreateFileModal').on('hidden.bs.modal', function() {
                 var form = $(this).find('form').attr('id');
                 resetForm(form);
+                var progressBar = $('#' + form).parent().find('#progressContainer');
+                progressBar.empty();
                 table.draw();
             });
 
@@ -870,6 +968,15 @@
                     }
                 })
             });
+
+            $('.compress_images').on('change', function(e) {
+                var formId = $(this).closest('form').attr('id');
+                if (this.checked) {
+                    compressImages(formId);
+                } else {
+                    $("#" + formId + " #event-file-hidden").val("");
+                }
+            });
         });
 
         function clearErrors() {
@@ -887,10 +994,54 @@
                 $(this).attr('hidden', true);
             });
 
+            $('.video_resolution').val(null).trigger('change');
+
+            $('.alert').remove();
+
             $('#filesLink,#filesLinkInput').parent().attr('hidden', true);
 
-            var progressBar = $('#' + form).parent().find('#progressContainer');
-            progressBar.empty();
+            $('#video_resolution_div').hide();
+
+            // var progressBar = $('#' + form).parent().find('#progressContainer');
+            // progressBar.empty();
+        }
+
+        function compressImages(formId) {
+            const input = document.getElementById(formId).querySelector('#event-file');
+            const files = input.files;
+            if (!files.length) return;
+            const targetSizeKB = 500; // Target size in KB
+            const dataTransfer = new DataTransfer(); // Holds all compressed files
+            Array.from(files).forEach((file) => {
+                const fileSizeMB = file.size / (1024 * 1024);
+                const fileSizeKB = file.size / 1024; // Convert bytes to KB
+                let quality;
+                if (fileSizeKB <= targetSizeKB) {
+                    quality = 1.0;
+                } else {
+                    quality = Math.max(0.98, targetSizeKB / fileSizeKB);
+                }
+                new Compressor(file, {
+                    quality: quality,
+                    maxWidth: 1024, // Resize if needed
+                    maxHeight: 1024,
+                    success(result) {
+                        // Convert Blob to File
+                        const compressedFile = new File([result], file.name, {
+                            type: file.type,
+                            lastModified: Date.now(),
+                        });
+                        dataTransfer.items.add(compressedFile);
+                        if (dataTransfer.files.length === files.length) {
+                            document.getElementById(formId).querySelector("#event-file-hidden").files =
+                                dataTransfer.files;
+                        }
+                    },
+                    error(err) {
+                        console.error("Compression error:", err);
+                    }
+                });
+            });
         }
     </script>
 
