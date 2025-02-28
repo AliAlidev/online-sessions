@@ -21,6 +21,11 @@
                 transform: rotate(360deg);
             }
         }
+
+        #basic-default-password2 {
+            pointer-events: auto;
+            z-index: 1;
+        }
     </style>
 @endsection
 

@@ -106,9 +106,9 @@
                         <form id="formAuthentication" class="mb-6" action="{{ route('login') }}" method="POST">
                             @csrf
                             <div class="mb-6">
-                                <label for="email" class="form-label">Email</label>
+                                <label for="email" class="form-label">Email Or User Name</label>
                                 <input type="text" class="form-control" id="email" name="email"
-                                    placeholder="Enter your email" autofocus="">
+                                    placeholder="Enter your email or user name" autofocus="">
                                 @error('email')
                                     <span style="color: red">{{ $message }}</span>
                                 @enderror

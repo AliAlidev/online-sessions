@@ -53,4 +53,20 @@ class LoginController extends Controller
         else
             abort(403);
     }
+
+    public function login(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|string',
+            'password' => 'required|string',
+        ]);
+
+        $fieldType = filter_var($request->email, FILTER_VALIDATE_EMAIL) ? 'email' : 'name';
+
+        if (Auth::attempt([$fieldType => $request->email, 'password' => $request->password], $request->filled('remember'))) {
+            return redirect()->intended(route('insights.index'));
+        }
+
+        return back()->withErrors(['email' => 'Invalid credentials.'])->withInput();
+    }
 }

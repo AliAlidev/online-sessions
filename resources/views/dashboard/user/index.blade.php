@@ -57,7 +57,7 @@
                             <tr>
                                 <th class="control dt-orderable-none">ID</th>
                                 <th class="control dt-orderable-none">Full Name</th>
-                                <th class="control dt-orderable-none">Name</th>
+                                <th class="control dt-orderable-none">User Name</th>
                                 <th class="control dt-orderable-none">Email</th>
                                 <th class="control dt-orderable-none">Phone</th>
                                 <th class="control dt-orderable-none">Permissions</th>
