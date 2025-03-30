@@ -43,6 +43,8 @@ return [
         'api_key' => env('BUNNY_VIDEO_API_KEY'),
         'library_id' => env('BUNNY_VIDEO_LIBRARY_ID'),
         'base_url' => env('BUNNY_VIDEO_BASE_URL')
-    ]
+    ],
+
+    'demo_mode' => env('DEMO_MODE', false)
 
 ];

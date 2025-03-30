@@ -4,6 +4,7 @@ namespace App\Http\Controllers\website;
 
 use App\Http\Controllers\Controller;
 use App\Models\Event;
+use App\Models\EventFolder;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -26,7 +27,7 @@ class WebsiteController extends Controller
         $customer = $request->route('customer');
         $event = Event::where('bunny_event_name', $customer)->first();
         $event->start_date = Carbon::parse($event->start_date)->format('d/m/Y');
-        return view('website.pages.gallery.gallery_layout', ['year' => $year, 'month' => $month, 'customer' => $customer, 'event' => $event]);
+        return view('website.pages.gallery.gallery', ['year' => $year, 'month' => $month, 'customer' => $customer, 'event' => $event]);
     }
 
     function image(Request $request)
@@ -34,9 +35,12 @@ class WebsiteController extends Controller
         $year = $request->get('year');
         $month = $request->get('month');
         $customer = $request->get('customer');
+        $folderId = $request->get('folderId');
         $event = Event::where('bunny_event_name', $customer)->first();
         $event->start_date = Carbon::parse($event->start_date)->format('d/m/Y');
-        return view('website.pages.gallery.gallery_image', ['year' => $year, 'month' => $month, 'customer' => $customer, 'event' => $event]);
+        $folder = EventFolder::find($folderId);
+        $images = $folder->files;
+        return view('website.pages.gallery.image', ['year' => $year, 'month' => $month, 'customer' => $customer, 'event' => $event, 'images' => $images]);
     }
 
     function share(Request $request)
@@ -54,8 +58,11 @@ class WebsiteController extends Controller
         $year = $request->get('year');
         $month = $request->get('month');
         $customer = $request->get('customer');
+        $folderId = $request->get('folderId');
         $event = Event::where('bunny_event_name', $customer)->first();
         $event->start_date = Carbon::parse($event->start_date)->format('d/m/Y');
-        return view('website.pages.gallery.gallery_video', ['year' => $year, 'month' => $month, 'customer' => $customer, 'event' => $event]);
+        $folder = EventFolder::find($folderId);
+        $videos = $folder->files;
+        return view('website.pages.gallery.video', ['year' => $year, 'month' => $month, 'customer' => $customer, 'event' => $event, 'videos' => $videos]);
     }
 }

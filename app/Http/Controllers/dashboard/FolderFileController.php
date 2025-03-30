@@ -10,7 +10,7 @@ use App\Models\FolderFile;
 use App\Services\BunnyImageService;
 use App\Services\BunnyVideoService;
 use Carbon\Carbon;
-use Exception;
+use getID3;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
@@ -56,15 +56,15 @@ class FolderFileController extends Controller
                     })
                     ->addColumn('status', function ($file) {
                         $acceptanceWord = '';
-                        if (($file->file_type == 'image' && Auth::user()->hasPermissionTo('approve_decline_image'))|| ($file->file_type == 'video' && Auth::user()->hasPermissionTo('approve_decline_video'))) {
-                            $acceptanceWord= 'file-status-modal';
+                        if (($file->file_type == 'image' && Auth::user()->hasPermissionTo('approve_decline_image')) || ($file->file_type == 'video' && Auth::user()->hasPermissionTo('approve_decline_video'))) {
+                            $acceptanceWord = 'file-status-modal';
                         }
                         if ($file->file_status == "pending")
                             return '<span class="badge bg-label-info ' . $acceptanceWord . '" data-status="pending" data-id="' . $file->id . '">Pending</span>';
                         else if ($file->file_status == "approved")
-                            return '<span class="badge bg-label-success '.$acceptanceWord.'" data-status="approved" data-id="' . $file->id . '">Approved</span>';
+                            return '<span class="badge bg-label-success ' . $acceptanceWord . '" data-status="approved" data-id="' . $file->id . '">Approved</span>';
                         else if ($file->file_status == "rejected")
-                            return '<span class="badge bg-label-danger '.$acceptanceWord.'" data-status="rejected" data-id="' . $file->id . '">Rejected</span>';
+                            return '<span class="badge bg-label-danger ' . $acceptanceWord . '" data-status="rejected" data-id="' . $file->id . '">Rejected</span>';
                     })
                     ->addColumn('date', function ($file) {
                         return Carbon::parse($file->date)->format('d/m/Y');
@@ -145,6 +145,7 @@ class FolderFileController extends Controller
                 if (!$path['success']) {
                     return response()->json(['success' => false, 'message' => $path['message']], 400);
                 }
+                $data['video_duration'] = $this->getVideoDuration($data['file']);
                 $data['file'] = $path['path'];
                 $data['file_bunny_id'] = $path['guid'];
             }
@@ -154,6 +155,18 @@ class FolderFileController extends Controller
             createServerError($e, "updateFile", "files");
             return response()->json(['success' => false, 'message' => $e->getMessage()], 400);
         }
+    }
+
+    function getVideoDuration($video)
+    {
+        $filePath = $video->getPathname();
+        $getID3 = new getID3();
+        $fileInfo = $getID3->analyze($filePath);
+        $durationInSeconds = $fileInfo['playtime_seconds'] ?? 0;
+        $minutes = floor($durationInSeconds / 60);
+        $seconds = $durationInSeconds % 60;
+        $formattedDuration = "Duration: {$minutes} Min {$seconds} Sec";
+        return $formattedDuration;
     }
 
     function update(UpdateFileRequest $request)
@@ -205,6 +218,7 @@ class FolderFileController extends Controller
                         return response()->json(['success' => false, 'message' => $path['message']], 400);
                     }
                     $this->bunnyVideoService->deleteVideo($oldFile->file_bunny_id);
+                    $data['video_duration'] = $this->getVideoDuration($data['file']);
                     $data['file'] = $path['path'];
                     $data['file_bunny_id'] = $path['guid'];
                 }

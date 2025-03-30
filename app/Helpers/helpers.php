@@ -268,3 +268,16 @@ if (!function_exists('checkPullZoneAvailability')) {
         }
     }
 }
+
+if (!function_exists('checkFileExistence')) {
+    function checkFileExistence($url)
+    {
+        $headers = @get_headers($url);
+        // Check if the file exists by analyzing the HTTP response status code
+        if ($headers && strpos($headers[0], '200') !== false) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+}

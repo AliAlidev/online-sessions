@@ -46,6 +46,8 @@ class BunnyVideoService
 
     function guarantiedUploadVideo($file, $fileName, $collectionId = null, $resolution = null)
     {
+        if (config('services.demo_mode'))
+            return $this->uploadVideoInDemoMode($file);
         $guid = null;
         try {
             $this->removeEmptyVideos();
@@ -71,7 +73,7 @@ class BunnyVideoService
 
         try {
             $resolution = $resolution ? "?enabledResolutions={$resolution}" : null;
-            $response = $this->client->put("https://video.bunnycdn.com/library/{$this->libraryId}/videos/{$guid}". $resolution, [
+            $response = $this->client->put("https://video.bunnycdn.com/library/{$this->libraryId}/videos/{$guid}" . $resolution, [
                 'headers' => $headers,
                 RequestOptions::BODY => $fileStream
             ]);
@@ -95,6 +97,16 @@ class BunnyVideoService
         }
 
         return ['success' => false, 'message' => 'Upload failed'];
+    }
+
+    function uploadVideoInDemoMode($file)
+    {
+        $link = config('app.url') . '/storage/' . uploadFile($file, 'demo_videos');
+        return [
+            'success' => true,
+            'path' => $link,
+            'guid' => rand(10000000, 99999999)
+        ];
     }
 
     /**

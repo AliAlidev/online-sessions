@@ -238,6 +238,7 @@ h1.event-title{
     display: block;
     border-radius: 4px;
     animation: placeholderMove 1.5s linear infinite;
+    min-width: 100px;
 }
 @keyframes placeholderMove {
     0% {
