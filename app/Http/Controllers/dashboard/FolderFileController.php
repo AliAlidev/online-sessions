@@ -107,14 +107,14 @@ class FolderFileController extends Controller
     {
         $data = $request->validated();
         $settingId = null;
-        if ($folderType == "image") {
+        if ($folderType == "image" && !config('services.demo_mode')) {
             $setting = getSetting();
             $settingId = $setting['image_setting_id'];
             if (!checkImageConfig($setting['image']))
                 throw ValidationException::withMessages(['success' => false, 'message' => "Image uploading is not allowed, please check bunny setting"]);
         }
 
-        if ($folderType == "video") {
+        if ($folderType == "video" && !config('services.demo_mode')) {
             $setting = getSetting();
             $settingId = $setting['video_setting_id'];
             if (!checkVideoConfig($setting['video']))
@@ -176,14 +176,14 @@ class FolderFileController extends Controller
         $file = FolderFile::find($data['file_id']);
         $oldFile = clone $file;
         $folder = EventFolder::find($file->folder_id);
-        if ($folder->folder_type == "image") {
+        if ($folder->folder_type == "image" && !config('services.demo_mode')) {
             $setting = getSetting();
             $settingId = $setting['image_setting_id'];
             if (!checkImageConfig($setting['image']))
                 throw ValidationException::withMessages(['success' => false, 'message' => "Image uploading is not allowed, please check bunny setting"]);
         }
 
-        if ($folder->folder_type == "video") {
+        if ($folder->folder_type == "video" && !config('services.demo_mode')) {
             $setting = getSetting();
             $settingId = $setting['video_setting_id'];
             if (!checkVideoConfig($setting['video']))

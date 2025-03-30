@@ -31,6 +31,8 @@ class BunnyImageService
 
     public function GuarantiedUploadImage($file, $folderPath)
     {
+        if (config('services.demo_mode'))
+            return $this->uploadImageInDemoMode($file);
         try {
             $url = "https://{$this->region}.bunnycdn.com/{$this->storageZone}/{$folderPath}";
             $fileStream = fopen($file->getPathname(), 'r');
@@ -61,6 +63,15 @@ class BunnyImageService
             createServerError($e, "GuarantiedUploadImage");
             return ['success' => false, 'message' => 'Upload failed'];
         }
+    }
+
+    function uploadImageInDemoMode($file)
+    {
+        $link = config('app.url') . '/storage/' . uploadFile($file, 'demo_images');
+        return [
+            'success' => true,
+            'path' => $link
+        ];
     }
 
     /**
