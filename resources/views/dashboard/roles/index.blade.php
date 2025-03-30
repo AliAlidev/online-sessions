@@ -200,7 +200,7 @@
             $(document).on('click', '.update-role', function() {
                 var id = $(this).data('id')
                 $.ajax({
-                    url: "{{ url('roles/show') }}/" + id,
+                    url: "{{ url('admin/roles/show') }}/" + id,
                     type: 'GET',
                     success: function(response) {
                         if (response.success) {
@@ -266,7 +266,7 @@
             var spinner = submitBtn.find('#spinner');
             var id = $('#RoleId').val();
             $.ajax({
-                url: "{{ url('roles/update') }}/" + id,
+                url: "{{ url('admin/roles/update') }}/" + id,
                 type: 'POST',
                 processData: false,
                 contentType: false,

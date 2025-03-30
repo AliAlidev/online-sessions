@@ -506,7 +506,7 @@
                 e.preventDefault();
                 var id = $(this).data('id')
                 $.ajax({
-                    url: "{{ url('files/show') }}/" + id,
+                    url: "{{ url('admin/files/show') }}/" + id,
                     type: 'GET',
                     success: function(response) {
                         if (response.success) {
@@ -876,7 +876,7 @@
                 formData.append('video_resolution', $('#video_resolution_update').val());
                 var submitBtn = $("#updateButton");
                 $.ajax({
-                    url: "{{ url('files/update') }}/" + fileId,
+                    url: "{{ url('admin/files/update') }}/" + fileId,
                     type: 'POST',
                     data: formData,
                     processData: false,

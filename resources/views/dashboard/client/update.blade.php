@@ -160,7 +160,7 @@
             console.log(id);
 
             $.ajax({
-                url: "{{ url('clients/update') }}/" + id,
+                url: "{{ url('admin/clients/update') }}/" + id,
                 type: 'POST',
                 processData: false,
                 contentType: false,

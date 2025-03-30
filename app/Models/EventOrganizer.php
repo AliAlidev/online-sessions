@@ -19,4 +19,12 @@ class EventOrganizer extends Model
             $model->created_by = Auth::id();
         });
     }
+
+    function role() {
+        return $this->belongsTo(ClientRole::class, 'role_in_event');
+    }
+
+    function client() {
+        return $this->belongsTo(Client::class, 'organizer_id');
+    }
 }

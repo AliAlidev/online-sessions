@@ -527,7 +527,7 @@
             });
             var id = $('#event_id').val();
             $.ajax({
-                url: "{{ url('events/update') }}/" + id,
+                url: "{{ url('admin/events/update') }}/" + id,
                 type: 'POST',
                 processData: false,
                 contentType: false,

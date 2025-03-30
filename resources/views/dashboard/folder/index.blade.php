@@ -333,7 +333,7 @@
                 e.preventDefault();
                 var id = $(this).data('id')
                 $.ajax({
-                    url: "{{ url('folders/show') }}/" + id,
+                    url: "{{ url('admin/folders/show') }}/" + id,
                     type: 'GET',
                     success: function(response) {
                         if (response.success) {
@@ -407,7 +407,7 @@
                 var spinner = submitBtn.find('#spinner');
                 var id = $('#folderIdInput').val();
                 $.ajax({
-                    url: "{{ url('folders/update') }}/" + id,
+                    url: "{{ url('admin/folders/update') }}/" + id,
                     type: 'POST',
                     processData: false,
                     contentType: false,

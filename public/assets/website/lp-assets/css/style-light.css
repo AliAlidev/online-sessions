@@ -1,0 +1,579 @@
+/**************************** Font Definitions **********************************/
+@font-face {
+    font-family: 'Taviraj-Regular';
+    src: url('../../fonts/taviraj_regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Taviraj-Medium';
+    src: url('../../fonts/taviraj_medium.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Roboto-Regular';
+    src: url('../../fonts/roboto_regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+/**************************** Primary Styles **********************************/
+:root {
+    --primary-01: #FFFFFF; /** White **/
+    --primary-02: #1E1E1E; /** Nero **/
+    --primary-03: #292929; /** Chromaphobic Black **/
+    --primary-04: #E7E7E7; /** White Smoke **/
+    --font-event-title-01: 'Taviraj-Regular';
+    --font-body-01: 'Roboto-Regular';
+}
+/******* Fonts *******/
+body {
+    font-family:var(--font-body-01);
+}
+h1.event-title{
+  font-family:var(--font-event-title-01);
+}
+/******* --primary-01 *******/
+body {
+    background-color: var(--primary-01);
+}
+.event-details-section {
+    background-color: var(--primary-01);
+}
+.event-title-date.event-title-date-mobile{
+  color: var(--primary-01);
+}
+.menu a {
+  color: var(--primary-01);
+}
+/******* --primary-02 *******/
+.event-planner-title{
+  color: var(--primary-02);
+}
+.event-planner-name{
+  color: var(--primary-02);
+}
+.nav-btn::after, .nav-btn::before {
+    color: var(--primary-02);
+}
+.footer .footer-copywrite{
+  color: var(--primary-02);
+}
+/******* --primary-03 *******/
+.social-media-button {
+    color: var(--primary-03);
+    font-family:var(--font-body-01);
+}
+/* Gallery Icon */
+.button-text.gallery{
+    color: var(--primary-03);
+}
+.event-title-date.event-title-date-desktop{
+  color: var(--primary-03);
+}
+/******* --primary-04 *******/
+.gallery-button {
+    background-color: var(--primary-04);
+}
+.social-media-button {
+    background-color: var(--primary-04);
+}
+.nav-btn::after, .nav-btn::before {
+    background-color: var(--primary-04);
+}
+/******* --accent-01 *******/
+.share-button {
+    background-color: var(--accent-01);
+}
+
+/**************************** Main Styles **********************************/
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body {
+    color: #fff;
+    height: 100%;
+    margin: 0;
+}
+.container {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: center;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+}
+/**************************** Menu **********************************/
+.menu-button {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-size: 24px;
+    cursor: pointer;
+    z-index: 8889;
+}
+.menu {
+    position: fixed;
+    top: 0;
+    left: -100%;
+    width: 50%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transition: 0.3s;
+    z-index: 8888;
+}
+.menu a {
+    text-decoration: none;
+    font-size: 20px;
+    margin: 15px 0;
+}
+.menu.active {
+    left: 0;
+}
+.menu-icon {
+    fill: #fff;
+  }
+/**************************** Left Section **********************************/
+
+.event-title-date.event-title-date-mobile h1, .event-title-date.event-title-date-mobile p
+{
+  visibility: hidden;
+}
+.event-title-date.event-title-date-mobile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    height: 50%;
+    width: 100%;
+    color: white;
+    text-shadow: 0 2px 5px rgba(0, 0, 0, 0.7);
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0) 100%);
+    position: absolute;
+    bottom: 0;
+    transform-origin: bottom;
+    padding-bottom: 20px;
+}
+.event-title-date.event-title-date-desktop {
+    background: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    transform-origin: bottom;
+    padding-bottom: 0;
+    padding-top: 20px;
+}
+h1.event-title{
+  margin: 0;
+  text-align: center;
+  transform-origin: bottom;
+  font-size: 36px;
+  line-height: 34px;font-weight:normal;
+}
+.event-date {
+    font-size: 16px;
+    font-weight: normal;
+    text-align: center;
+    margin-top: 5px;
+}
+/**************************** Right Section **********************************/
+/** Planner Swiper Section **/
+.event-details-section {
+    width: 50vw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+.event-details-container{
+  display: flex;
+  flex-direction: column;
+  justify-content:center;
+  align-items: center;
+  gap:44px;
+  max-width: 380px;
+}
+.planner-details {
+    text-align: center;
+}
+.social-media-button {
+    padding: 7px 22px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 12px;
+}
+.event-planner-name{
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+/* Navigation Arrows */
+.navigation {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 20px;
+}
+.arrow {
+    background: none;
+    border: 1px solid #fff;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #fff;
+    transition: background 0.3s ease;
+}
+.arrow:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+.event-planner-title{
+  font-size: 12px;
+  text-align: center;
+  margin-bottom:10px;
+}
+.nav-btn {
+    outline: none;                /* Remove focus outline */
+    box-shadow: none;             /* Remove box shadow effects */
+    transition: none;             /* No transition effects */
+    user-select: none;            /* Prevent text selection */
+    -webkit-tap-highlight-color: transparent; /* Remove touch highlight on mobile */
+}
+.nav-btn:focus,
+.nav-btn:active,
+.nav-btn:hover {
+    background-color: inherit;    /* No background change */
+    color: inherit;               /* Text color remains unchanged */
+}
+.testimonial {
+  position: relative;
+  max-width: 380px;
+  width: 100%;
+  padding: 0 0 50px 0;
+  overflow: hidden;
+}
+.testimonial .slide {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  /*row-gap: 30px;*/
+  height: 100%;
+  width: 100%;
+}
+.details .name {
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+}
+.details .job {
+  font-size: 12px;
+  font-weight: 400;
+  color: #333;
+}
+.nav-btn {
+  height: 26px;
+  width: 26px;
+  border-radius: 50%;
+  transform: translateY(-10px) !important;
+  transition: 0.2s;
+}
+.nav-btn.swiper-button-prev{
+  transform: translateX(10px);
+}
+.nav-btn.swiper-button-next{
+  transform: translateX(-10px);
+}
+.nav-btn::after, .nav-btn::before{
+  border-radius: 50%;
+}
+.nav-btn.swiper-button-next::after{
+  padding: 12px 16px 12px 15px !important;
+}
+.nav-btn.swiper-button-prev::after{
+  padding: 12px 16px 12px 15px !important;
+}
+.nav-btn,
+.gallery-btn {
+    outline: none;                /* Remove focus outline */
+    box-shadow: none;             /* Remove box shadow effects */
+    transition: none;             /* No transition effects */
+    user-select: none;            /* Prevent text selection */
+    -webkit-tap-highlight-color: transparent; /* Remove touch highlight on mobile */
+}
+.nav-btn:focus,
+.nav-btn:active,
+.nav-btn:hover,
+.gallery-btn:focus,
+.gallery-btn:active,
+.gallery-btn:hover {
+    background-color: inherit;    /* No background change */
+    color: inherit;               /* Text color remains unchanged */
+}
+.nav-btn::after,
+.nav-btn::before {
+  font-size: 14px;
+}
+.swiper-pagination-bullet {
+  background-color: rgba(0, 0, 0, 0.8);
+}
+.swiper-pagination-bullet-active {
+  background-color: #4F4F4F;
+}
+.swiper-horizontal>.swiper-pagination-bullets,
+.swiper-pagination-bullets.swiper-pagination-horizontal,
+.swiper-pagination-custom, .swiper-pagination-fraction {
+    bottom: 20px !important;
+  }
+.swiper-pagination-bullet {
+    width: 6px;
+    height: 6px;
+    /*background: #000;*/
+    /*opacity: .2;*/
+}
+.swiper-horizontal>.swiper-pagination-bullets .swiper-pagination-bullet, .swiper-pagination-horizontal.swiper-pagination-bullets .swiper-pagination-bullet {
+    margin: 3px;
+}
+/** Buttons Section **/
+.buttons-section {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 6px;
+    width: 100%;
+}
+button {
+    padding: 15px 20px;
+    border: none;
+    border-radius: 50px;
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: transform 0.3s ease;
+}
+.gallery-button {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    width: 178px;
+    height: 140px;
+    margin: 0;
+    text-decoration: none;
+    border-radius: 8px;
+    /*padding: 8dvh 0;*/
+}
+.share-button {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    width: 178px;
+    height: 140px;
+    margin: 0;
+    text-decoration: none;
+    border-radius: 8px;
+    /*padding: 8dvh 0;*/
+}
+.gallery-button .button-image{
+  width: 44px;
+  height: 44px;
+}
+.share-button .button-image{
+  width: 44px;
+  height: 44px;
+}
+.button-text.gallery{
+  font-size: 20px;
+}
+.button-text.share{
+  font-size: 20px;
+  color: #fff;
+}
+/**************************** Footer **********************************/
+.footer{
+  height: 60px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  padding-bottom: 16px;
+  position: absolute;
+  bottom: 0;
+}
+.footer .footer-copywrite{
+  font-size: 12px;
+}
+/**************************** Media Queries **********************************/
+@media screen and (max-width: 991px) {
+  .event-title-date.event-title-date-mobile h1, .event-title-date.event-title-date-mobile p
+  {
+    visibility: visible;
+    max-width: 400px;
+  }
+  .event-title-date.event-title-date-mobile
+  {
+    visibility: visible;
+  }
+  .event-title-date.event-title-date-desktop
+  {
+    display: none;
+  }
+  .event-details-container{
+    gap:0;
+    margin-top: -20px;
+  }
+  .menu {
+      width: 100%;
+  }
+  .menu-icon {
+      fill: #fff;
+    }
+  .container {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      width: 100%;
+      height: 100dvh;
+      overflow: hidden;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+  }
+  .event-hero-section{
+      position: relative;
+      background-image: url('../images/bride-and-groom.jpg');
+      background-position: center;
+      background-size: cover;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      height: 60dvh !important;
+      width: 100vw;
+  }
+  .event-date {
+      font-size: 16px;
+  }
+  .event-planner-title{
+    margin-bottom: 0.5vh;
+  }
+  .event-details-section{
+    height: 40dvh !important;
+    width: 100vw;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .planner-section {
+    margin-top: 4dvh;
+    }
+  .swiper-horizontal>.swiper-pagination-bullets,
+  .swiper-pagination-bullets.swiper-pagination-horizontal,
+  .swiper-pagination-custom, .swiper-pagination-fraction {
+      bottom: 0px !important;
+    }
+  .testimonial.mySwiper{
+    margin-top: -2dvh;
+  }
+  .event-title-date {
+      padding-bottom: 20px;
+  }
+  .nav-btn {
+    transform: translateY(-10px);
+  }
+  .buttons-section{
+    justify-content: center;
+    gap: 14px;
+  }
+  .gallery-button {
+    width: 174px;
+    height: 114px;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .share-button {
+    width: 174px;
+    height: 114px;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .gallery-button .button-image{
+    width: 5dvh;
+    height: 5dvh;
+  }
+  .share-button .button-image{
+    width: 5dvh;
+    height: 5dvh;
+  }
+  .button-text.gallery{
+    font-size: 14px;
+  }
+  .button-text.share{
+    font-size: 14px;
+    color: #fff;
+  }
+  .footer{
+    height: 40px;
+    padding-bottom: 8px;
+  }
+  .footer .footer-copywrite{
+    font-size: 10px;
+  }
+  .event-planner-title{
+    margin-bottom: 0.2vh;
+  }
+  .event-planner-name{
+    margin-bottom: 0.5vh;
+  }
+  .testimonial{
+    padding: 0 0 4dvh 0;
+    width: 96vw;
+    max-width: 380px;
+  }
+
+}
+@media screen and (max-width: 768px) {
+
+}
+@media screen and (max-width: 360px) {
+  .gallery-button {
+    width: 44vw;
+    margin-right: 5px;
+  }
+  .share-button {
+    width: 44vw;
+    margin-left: 5px;
+  }
+  h1.event-title {
+      font-size: 30px;
+    }
+    .buttons-section {
+          gap: 6px;
+      }
+}
+@media (hover: none) {
+    .nav-btn:hover {
+        pointer-events: none;
+        background-color: transparent; /* Removes hover styles */
+        box-shadow: none;
+    }
+}

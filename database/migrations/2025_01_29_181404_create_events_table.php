@@ -33,12 +33,12 @@ return new class extends Migration
             $table->string('bunny_main_folder_name')->nullable();
             $table->foreignId('created_by')->nullable();
             $table->string('video_collection_id')->nullable();
-            $table->foreign('created_by')->references('id')->on('users')->onDelete('set null');
             $table->timestamps();
 
             // Foreign key constraint for client_id
             $table->foreign('client_id')->references('id')->on('clients')->onDelete('set null');
             $table->foreign('event_type_id')->references('id')->on('event_types')->onDelete('set null');
+            $table->foreign('created_by')->references('id')->on('users')->onDelete('set null');
         });
     }
 

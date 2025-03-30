@@ -197,7 +197,7 @@
             $(document).on('click', '.update-event-type', function() {
                 var id = $(this).data('id')
                 $.ajax({
-                    url: "{{ url('events-types/show') }}/" + id,
+                    url: "{{ url('admin/events-types/show') }}/" + id,
                     type: 'GET',
                     success: function(response) {
                         if (response.success) {
@@ -263,7 +263,7 @@
             var spinner = submitBtn.find('#spinner');
             var id = $('#eventTypeId').val();
             $.ajax({
-                url: "{{ url('events-types/update') }}/" + id,
+                url: "{{ url('admin/events-types/update') }}/" + id,
                 type: 'POST',
                 processData: false,
                 contentType: false,
