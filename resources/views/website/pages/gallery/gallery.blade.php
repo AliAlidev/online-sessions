@@ -6,19 +6,8 @@
     <link rel="stylesheet" href="{{ asset('assets/website/gallery-assets/css/style-light.css') }}" />
     {{-- <link rel="stylesheet" href="{{ asset('assets/website/gallery-assets/css/style-dark.css') }}" /> --}}
     <script src="{{ asset('assets/website/gallery-assets/js/grid-script.js') }}"></script>
+    <link href="https://vjs.zencdn.net/7.15.4/video-js.css" rel="stylesheet" />
     <style>
-        /* Style for the gallery container to enable centering */
-        #gallery-div {
-            position: relative;
-            min-height: 300px;
-            /* Set a minimum height to ensure there's space for the loader */
-            display: flex;
-            align-items: center;
-            /* Vertically center */
-            justify-content: center;
-            /* Horizontally center */
-        }
-
         #loader-div {
             /* display: flex; */
             align-items: center;
@@ -91,7 +80,8 @@
                 <div class="horizontal-scroll" id="tabs">
                     @foreach ($event->folders as $folder)
                         <div class="folder folder-thumbnail" data-type= "{{ $folder->folder_type }}"
-                            onclick="selectFolder({{ $folder }})">
+                            onclick="selectFolder({{ $folder }})"
+                            data-url="{{ $folder->folder_type == 'image' ? route('landing.image', ['year' => $year, 'month' => $month, 'customer' => $customer]) : route('landing.video', ['year' => $year, 'month' => $month, 'customer' => $customer]) }}">
                             <svg style="" width="100%" height="100%" viewBox="0 0 120 100" fill="none"
                                 xmlns="http://www.w3.org/2000/svg">
                                 <path
@@ -131,7 +121,6 @@
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
         integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <script src="{{ asset('assets/website/gallery-assets/js/grid-script.js') }}"></script>
-
     <script>
         function scrollTabs(distance) {
             const tabs = document.getElementById("tabs");
@@ -154,10 +143,29 @@
                     clientWidth) >= (scrollWidth - 50) ?
                 "none" : "block";
         }
-    </script>
 
-    <script>
+        function loadVideo(videoUrl) {
+            const playerIframe = document.getElementById('videoIframe');
+            const videoSrc = `${videoUrl}?autoplay=true`;
+            // Update the iframe source with the selected video
+            playerIframe.src = videoSrc;
+            // Initialize player.js on the iframe
+            const player = new playerjs.Player(playerIframe);
+            // Event listeners using player.js
+            player.on('ready', () => {
+                player.play(); // Play the video once loaded
+            });
+            player.on('error', (error) => {
+                console.log('Error occurred:', error);
+            });
+        }
+
         function selectFolder($folder) {
+            if ($folder.folder_type == 'link') {
+                window.open($folder.folder_link, '_blank', 'noopener,noreferrer');
+                return false;
+            }
+
             $('#gallery-div').hide();
             $('#loader-div').attr('hidden', false);
             var url = "{{ route('landing.image', ['year' => $year, 'month' => $month, 'customer' => $customer]) }}";
@@ -177,7 +185,37 @@
                 success: function(response) {
                     $('#gallery-div').html(response);
                     if ($folder.folder_type == 'video') {
-                        //////////////
+                        $.getScript("//assets.mediadelivery.net/playerjs/player-0.1.0.min.js", function() {
+                            const playerIframe = document.getElementById('videoIframe');
+                            // Ensure the iframe has a valid `src` attribute
+                            if (!playerIframe.src || playerIframe.src === "about:blank") {
+                                var fileUrl = $folder.files ? $folder.files[0]['file'] : null;
+                                playerIframe.src = fileUrl;
+                            }
+
+                            // Ensure that the iframe has a valid `src` before initializing the player
+                            const player = new playerjs.Player(playerIframe, {
+                                autoplay: false,
+                                mute: true,
+                                loop: true,
+                                volume: 0.1,
+                                controls: true,
+                                fullscreen: true,
+                                showTitle: false,
+                                startTime: 0,
+                                enableVideoInfo: true
+                            });
+
+                            // Make sure to trigger play once the player is ready
+                            playerIframe.onload = function() {
+                                player.pause(); // Explicitly pause the video
+                                player.mute(); // Mute the video using the correct method
+                            };
+
+                            player.on('error', (error) => {
+                                console.error('Error occurred:', error);
+                            });
+                        });
                     } else if ($folder.folder_type == 'image') {
                         $.getScript(
                             "https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js",

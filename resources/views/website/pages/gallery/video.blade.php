@@ -2,22 +2,22 @@
     <!-- Video Section-->
     <div class="video-container">
         <!-- Video Player -->
-        <div class="sticky-section">
+        <div class="sticky-section" >
             <div class="video-player">
-                <img src="{{ asset('assets/website/gallery-assets/images/video-player.jpg') }}">
+                <iframe id="videoIframe" width="640" height="450" frameborder="0" allow="autoplay" allowfullscreen
+                    webkitallowfullscreen mozallowfullscreen></iframe>
             </div>
         </div>
         <!-- Video List -->
         <div class="sticky-section">
             <div class="video-list">
                 @foreach ($videos as $video)
-                    <div class="video-item" onclick="">
-                        <img src="{{ asset('assets/website/gallery-assets/images/samples/photo01.jpg') }}"
-                            alt="Video Title">
+                    <div class="video-item" onclick="loadVideo('{{ $video->file }}')">
+                        <img src="{{ $video->thumbnail_url }}" alt="{{ $video->file_name }}">
                         <div>
-                            <h4 class="video-item-title">{{ $video->file_name }}</h4>
-                            <p class="video-item-duration">{{ $video->video_duration }}</p>
-                            <p class="video-item-views">Views: 21</p>
+                            <h4>{{ $video->file_name }}</h4>
+                            <p>Duration: {{ $video->video_duration }}</p>
+                            <p>Views: {{ $video->view_count }}</p>
                         </div>
                     </div>
                 @endforeach

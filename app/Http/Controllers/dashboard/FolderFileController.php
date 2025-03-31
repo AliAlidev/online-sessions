@@ -148,6 +148,7 @@ class FolderFileController extends Controller
                 $data['video_duration'] = $this->getVideoDuration($data['file']);
                 $data['file'] = $path['path'];
                 $data['file_bunny_id'] = $path['guid'];
+                $data['thumbnail_url'] = "https://" . $setting['video']['stream_pull_zone'] . ".b-cdn.net/".$path['guid']."/preview.webp";
             }
             FolderFile::create($data);
             return response()->json(['success' => true, 'message' => 'File has been uploaded successfully']);
@@ -165,7 +166,7 @@ class FolderFileController extends Controller
         $durationInSeconds = $fileInfo['playtime_seconds'] ?? 0;
         $minutes = floor($durationInSeconds / 60);
         $seconds = $durationInSeconds % 60;
-        $formattedDuration = "Duration: {$minutes} Min {$seconds} Sec";
+        $formattedDuration = "{$minutes} Min {$seconds} Sec";
         return $formattedDuration;
     }
 
@@ -221,6 +222,7 @@ class FolderFileController extends Controller
                     $data['video_duration'] = $this->getVideoDuration($data['file']);
                     $data['file'] = $path['path'];
                     $data['file_bunny_id'] = $path['guid'];
+                    $data['thumbnail_url'] = "https://" . $setting['video']['stream_pull_zone'] . ".b-cdn.net/".$path['guid']."/preview.webp";
                 }
             }
             unset($data['file_id']);
