@@ -5,6 +5,7 @@ namespace App\Http\Controllers\dashboard;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\event_types\UpdateEventTypeRequest;
 use App\Http\Requests\events\CreateEventRequest;
+use App\Http\Requests\events\folders\CreateFolderRequest;
 use App\Http\Requests\events\UpdateEventRequest;
 use App\Models\Client;
 use App\Models\ClientRole;
@@ -120,11 +121,12 @@ class EventController extends Controller
                 'allow_upload' => isset($data['allow_upload']) && $data['allow_upload'] == 'on' ? 1 : 0,
                 'auto_image_approve' => isset($data['auto_image_approve']) && $data['auto_image_approve'] == 'on' ? 1 : 0,
                 'allow_image_download' => isset($data['allow_image_download']) && $data['allow_image_download'] == 'on' ? 1 : 0,
-                'theme' => isset($data['theme']) ? $data['theme'] : '',
+                'theme' => isset($data['theme']) ? $data['theme'] : 'light',
                 'accent_color' => isset($data['accent_color']) ? $data['accent_color'] : '',
                 'font' => isset($data['font']) ? $data['font'] : ''
             ]);
             $event->organizers()->createMany($data['organizers']);
+            app(FolderController::class)->store(new CreateFolderRequest(['folder_type' => 'image', 'folder_name' => 'Guest Upload']), $event->id);
             session()->flash('success', 'Event has been created successfully');
             return response()->json(['success' => true, 'url' => route('events.index')]);
         } catch (Exception $th) {

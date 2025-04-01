@@ -3,7 +3,7 @@
     <div class="video-container">
         <!-- Video Player -->
         <div class="sticky-section" >
-            <div class="video-player">
+            <div class="video-player" style="{{ count($videos) == 0 ? 'display:none' : '' }}">
                 <iframe id="videoIframe" width="640" height="450" frameborder="0" allow="autoplay" allowfullscreen
                     webkitallowfullscreen mozallowfullscreen></iframe>
             </div>
@@ -24,18 +24,4 @@
             </div>
         </div>
     </div><!-- End Video Container -->
-
-    <!-- Footer -->
-    <div class="footer">
-        <p class="footer-copywrite">Powered by UP EVENTS</p>
-        <!-- Share Button -->
-        <a href="{{ route('landing.share', ['year' => $year, 'month' => $month, 'customer' => $customer]) }}">
-            <div class="share-button">
-                <img class="share-button-image"
-                    src="{{ asset('assets/website/gallery-assets/images/upload-icon.svg') }}" alt=""
-                    width="26px" height="26px">
-            </div>
-        </a>
-    </div>
-
 </div>

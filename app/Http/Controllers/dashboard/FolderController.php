@@ -72,11 +72,11 @@ class FolderController extends Controller
     function store(CreateFolderRequest $request, $eventId)
     {
         try {
-            $data = $request->validated();
+            $data =  $request->all();
             $data['folder_thumbnail'] = isset($data['folder_thumbnail']) ? 'storage/' . uploadFile($data['folder_thumbnail'], 'folders/folder_thumbnail') : null;
             $data['event_id'] = $eventId;
-            $data['folder_name'] = Str::slug($data['folder_name']);
-            $data['bunny_folder_name'] = $data['folder_name'];
+            $data['folder_name'] = $data['folder_name'];
+            $data['bunny_folder_name'] = Str::slug($data['folder_name']);
             $folder = EventFolder::create($data);
             if ($folder->event->video_collection_id == null) {
                 $collection = $this->bunnyVideoService->createCollection($folder->event->bunny_event_name);

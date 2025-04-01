@@ -3,8 +3,11 @@
 @push('styles')
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" />
     <link href="https://fonts.googleapis.com/css2?family=Parisienne&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{{ asset('assets/website/gallery-assets/css/style-light.css') }}" />
-    {{-- <link rel="stylesheet" href="{{ asset('assets/website/gallery-assets/css/style-dark.css') }}" /> --}}
+    @if ($event->setting->theme == 'dark')
+        <link rel="stylesheet" href="{{ asset('assets/website/gallery-assets/css/style-dark.css') }}" />
+    @else
+        <link rel="stylesheet" href="{{ asset('assets/website/gallery-assets/css/style-light.css') }}" />
+    @endif
     <script src="{{ asset('assets/website/gallery-assets/js/grid-script.js') }}"></script>
     <link href="https://vjs.zencdn.net/7.15.4/video-js.css" rel="stylesheet" />
     <style>
@@ -78,7 +81,7 @@
                     </svg>
                 </button>
                 <div class="horizontal-scroll" id="tabs">
-                    @foreach ($event->folders as $folder)
+                    @foreach ($folders as $folder)
                         <div class="folder folder-thumbnail" data-type= "{{ $folder->folder_type }}"
                             onclick="selectFolder({{ $folder }})"
                             data-url="{{ $folder->folder_type == 'image' ? route('landing.image', ['year' => $year, 'month' => $month, 'customer' => $customer]) : route('landing.video', ['year' => $year, 'month' => $month, 'customer' => $customer]) }}">
@@ -114,6 +117,19 @@
         </div>
         <div id="gallery-div"></div>
         @yield('gallery_content')
+        <!-- Footer -->
+        <div class="footer">
+            <p class="footer-copywrite">Powered by UP EVENTS</p>
+            <!-- Share Button -->
+            <a href="{{ $event->supportImageUpload() ? route('landing.share', ['year' => $year, 'month' => $month, 'customer' => $customer]) : '#' }}"
+                style="cursor: {{ $event->supportImageUpload() ? 'pointer' : 'not-allowed' }}">
+                <div class="share-button">
+                    <img class="share-button-image"
+                        src="{{ asset('assets/website/gallery-assets/images/upload-icon.svg') }}" alt=""
+                        width="26px" height="26px">
+                </div>
+            </a>
+        </div>
     </div>
 @endsection
 
@@ -185,11 +201,18 @@
                 success: function(response) {
                     $('#gallery-div').html(response);
                     if ($folder.folder_type == 'video') {
+                        console.log($folder.files);
+
                         $.getScript("//assets.mediadelivery.net/playerjs/player-0.1.0.min.js", function() {
                             const playerIframe = document.getElementById('videoIframe');
                             // Ensure the iframe has a valid `src` attribute
                             if (!playerIframe.src || playerIframe.src === "about:blank") {
-                                var fileUrl = $folder.files ? $folder.files[0]['file'] : null;
+                                var fileUrl= null;
+                                $folder.files.forEach(file => {
+                                    if(fileUrl == null && file.file_status == "approved"){
+                                        fileUrl = file.file;
+                                    }
+                                });
                                 playerIframe.src = fileUrl;
                             }
 
@@ -225,7 +248,7 @@
                                         "zoom",
                                         "slideShow",
                                         "fullScreen",
-                                        "download", // Ensure the download button is enabled
+                                        "{{ $event->supportImageDownload() ? 'download' : '' }}",
                                         "close"
                                     ]
                                 });

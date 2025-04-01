@@ -50,4 +50,34 @@ class Event extends Model
     {
         return Carbon::parse($this->start_date)->gte(Carbon::now()) ? true : false;
     }
+
+    function supportAutoApprove()
+    {
+        return  $this->setting->auto_image_approve == 1 ? true : false;
+    }
+
+    function supportShowImageFolders()
+    {
+        return  $this->setting->image_folders == 1 ? true : false;
+    }
+
+    function supportShowVideoFolders()
+    {
+        return  $this->setting->video_playlist == 1 ? true : false;
+    }
+
+    function supportShowGuestImageFolder()
+    {
+        return  $this->setting->image_share_guest_book == 1 ? true : false;
+    }
+
+    function supportImageUpload()
+    {
+        return  $this->setting->allow_upload == 1 ? true : false;
+    }
+
+    function supportImageDownload()
+    {
+        return  $this->setting->allow_image_download == 1 ? true : false;
+    }
 }

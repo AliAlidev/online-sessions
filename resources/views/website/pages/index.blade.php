@@ -73,7 +73,7 @@
                         </svg>
                         <span class="button-text gallery">GALLERY</span>
                     </a>
-                    <a href="{{ route('landing.share', ['year' => $year, 'month' => $month, 'customer' => $customer]) }}"
+                    <a href="{{ $event->supportImageUpload() ? route('landing.share', ['year' => $year, 'month' => $month, 'customer' => $customer]) : '#' }}" style="cursor: {{ $event->supportImageUpload() ? 'pointer' : 'not-allowed' }}"
                         class="share-button">
                         <svg class="button-image" width="45" height="38" viewBox="0 0 45 38" fill="none"
                             xmlns="http://www.w3.org/2000/svg">

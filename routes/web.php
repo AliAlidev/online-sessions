@@ -117,6 +117,7 @@ Route::controller(WebsiteController::class)->name('landing.')->group(function ()
     Route::post('events/{year}/{month}/{customer}/image', 'image')->name('image');
     Route::get('events/{year}/{month}/{customer}/share', 'share')->name('share');
     Route::post('events/{year}/{month}/{customer}/video', 'video')->name('video');
+    Route::post('events/share-event-image', 'shareEventImage')->name('share-event-image');
 });
 
 // Route::fallback(function () {
