@@ -1,17 +1,28 @@
-const dbName = "OnlineSessionsDB";
+const dbName = "OnlineEventSharingDB";
 const dbVersion = 1;
 let db;
 const fingerprint = getFingerPrint();
-document.addEventListener("DOMContentLoaded", async () => {
+
+export async function initialization() {
     db = await initializeDB();
-    let dataObject = {
-        fingerprint: fingerprint,
-        token: ''
+
+    const transaction = db.transaction("authentications", "readonly");
+    const store = transaction.objectStore("authentications");
+    const getRequest = store.get(fingerprint);
+    getRequest.onsuccess = async function () {
+        if (getRequest.result !== undefined) {
+        } else {
+            var token = await fetchAuthTokenFromServer();
+            let dataObject = {
+                fingerprint: fingerprint,
+                token: token
+            };
+            saveData(dataObject);
+        }
     };
-    saveData(dataObject);
-    var token = await fetchAuthTokenFromServer();
-    updateData(fingerprint, token);
-});
+
+
+}
 
 // Initialize the IndexedDB
 async function initializeDB() {
@@ -62,31 +73,33 @@ function saveData(data) {
 }
 
 async function fetchAuthTokenFromServer() {
-    return new Promise((resolve, reject) => {
-        var url = document.getElementById("auth-token-url").value;
-        fetch(url, {
-            method: "POST",
-            headers: {
-                "Accept": "application/json",
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                'fingerprint': fingerprint
+    if (!await getUserToken()) {
+        return new Promise((resolve, reject) => {
+            var url = document.getElementById("auth-token-url").value;
+            fetch(url, {
+                method: "POST",
+                headers: {
+                    "Accept": "application/json",
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    'fingerprint': fingerprint
+                })
             })
-        })
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error("Network response was not ok");
-                }
-                return response.json();
-            })
-            .then((data) => {
-                resolve(data.token);
-            })
-            .catch((error) => {
-                reject(event.target.error); // Reject if there's an error
-            });
-    });
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error("Network response was not ok");
+                    }
+                    return response.json();
+                })
+                .then((data) => {
+                    resolve(data.token);
+                })
+                .catch((error) => {
+                    reject(event.target.error); // Reject if there's an error
+                });
+        });
+    }
 }
 
 export async function getUserToken() {
@@ -134,17 +147,3 @@ function getFingerPrint() {
         `${navigator.userAgent}|${window.screen.width}x${window.screen.height}|${Intl.DateTimeFormat().resolvedOptions().timeZone}|${navigator.hardwareConcurrency}`;
     return sha256(fingerprintData);
 }
-
-async function callAPI() {
-    var token = await getUserToken();
-    axios.post('/api/user', {})
-        .then(response => {
-            console.log(JSON.stringify(response.data));
-        })
-        .catch(error => {
-            console.error('Error:', error);
-        });
-
-}
-
-document.getElementById('call-api-button').addEventListener('click', callAPI);

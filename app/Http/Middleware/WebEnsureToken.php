@@ -2,14 +2,9 @@
 
 namespace App\Http\Middleware;
 
-use App\Models\User;
+use Carbon\Carbon;
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Crypt;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Str;
-use Laravel\Passport\PersonalAccessTokenResult;
 use Symfony\Component\HttpFoundation\Response;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Exceptions\TokenExpiredException;
@@ -25,17 +20,9 @@ class WebEnsureToken
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $token = $request->cookie('encrypted_token');
-
+        $token = $request->header('pageToken');
         if (empty($token)) {
-            $guest_id = strtolower(Str::random(10));
-            $user = User::create([
-                'name' => 'Guest_' . $guest_id,
-                'email' => $guest_id . '@guest.com',
-                'password' => bcrypt('guest')
-            ]);
-            $token = JWTAuth::customClaims([])->fromUser($user);
-            return redirect()->to($request->path())->withHeaders(['token' => $token]);
+            return response()->json(['message' => 'Token is invalid'], 400);
         } else {
             try {
                 $user = JWTAuth::setToken($token)->authenticate();

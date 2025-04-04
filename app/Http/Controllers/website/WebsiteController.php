@@ -9,6 +9,7 @@ use App\Models\FolderFile;
 use App\Services\BunnyImageService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 use Throwable;
 
@@ -28,6 +29,28 @@ class WebsiteController extends Controller
         $event = Event::where('bunny_event_name', $customer)->first();
         $event->start_date = Carbon::parse($event->start_date)->format('d/m/Y');
         return view('website.pages.index', ['year' => $year, 'month' => $month, 'customer' => $customer, 'event' => $event]);
+    }
+
+    function galleryRedirectUrl(Request $request)
+    {
+        return response()->json([
+            'success' => true,
+            'url' => route('landing.gallery', ['year' => $request->year, 'month' => $request->month, 'customer' => $request->customer]),
+            'year' => $request->year,
+            'month' => $request->month,
+            'customer' => $request->customer
+        ]);
+    }
+
+    function shareRedirectUrl(Request $request)
+    {
+        return response()->json([
+            'success' => true,
+            'url' => route('landing.share', ['year' => $request->year, 'month' => $request->month, 'customer' => $request->customer]),
+            'year' => $request->year,
+            'month' => $request->month,
+            'customer' => $request->customer
+        ]);
     }
 
     function gallery(Request $request)
@@ -57,15 +80,15 @@ class WebsiteController extends Controller
 
     function image(Request $request)
     {
-        $year = $request->get('year');
-        $month = $request->get('month');
-        $customer = $request->get('customer');
-        $folderId = $request->get('folderId');
-        $event = Event::where('bunny_event_name', $customer)->first();
-        $event->start_date = Carbon::parse($event->start_date)->format('d/m/Y');
+        $folderId = $request->folder_id;
         $folder = EventFolder::find($folderId);
-        $images = $folder->files->where('file_status','approved');
-        return view('website.pages.gallery.image', ['year' => $year, 'month' => $month, 'customer' => $customer, 'event' => $event, 'images' => $images]);
+        $images = $folder->files->where('file_status', 'approved');
+        $eventSupportDownload = $folder->event->supportImageDownload();
+        return response()->json([
+            'success' => true,
+            'html' => view('website.pages.gallery.image', ['images' => $images])->render(),
+            'eventSupportDownload' => $eventSupportDownload
+        ]);
     }
 
     function share(Request $request)
@@ -80,15 +103,14 @@ class WebsiteController extends Controller
 
     function video(Request $request)
     {
-        $year = $request->get('year');
-        $month = $request->get('month');
-        $customer = $request->get('customer');
-        $folderId = $request->get('folderId');
-        $event = Event::where('bunny_event_name', $customer)->first();
-        $event->start_date = Carbon::parse($event->start_date)->format('d/m/Y');
+        $folderId = $request->folder_id;
         $folder = EventFolder::find($folderId);
-        $videos = $folder->files->where('file_status','approved');
-        return view('website.pages.gallery.video', ['year' => $year, 'month' => $month, 'customer' => $customer, 'event' => $event, 'videos' => $videos]);
+        $videos = $folder->files->where('file_status', 'approved');
+        return response()->json([
+            'success' => true,
+            'html' => view('website.pages.gallery.video', ['videos' => $videos])->render(),
+            'files' => $videos
+        ]);
     }
 
     function shareEventImage(Request $request)

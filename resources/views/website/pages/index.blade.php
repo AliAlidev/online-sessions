@@ -25,6 +25,7 @@
             overflow: hidden;
         }
     </style>
+    @vite(['resources/js/pages/index.js'])
 @endpush
 
 @section('partial_header')
@@ -58,7 +59,8 @@
                 </div>
                 <!-- Buttons Section -->
                 <div class="buttons-section">
-                    <a href="{{ route('landing.gallery', ['year' => $year, 'month' => $month, 'customer' => $customer]) }}"
+                    <a href=""
+                        data-url="{{ route('landing.gallery_redirect_url', ['year' => $year, 'month' => $month, 'customer' => $customer]) }}"
                         class="gallery-button">
                         <svg class="button-image" width="46" height="38" viewBox="0 0 46 38" fill="none"
                             xmlns="http://www.w3.org/2000/svg">
@@ -73,8 +75,9 @@
                         </svg>
                         <span class="button-text gallery">GALLERY</span>
                     </a>
-                    <a href="{{ $event->supportImageUpload() ? route('landing.share', ['year' => $year, 'month' => $month, 'customer' => $customer]) : '#' }}" style="cursor: {{ $event->supportImageUpload() ? 'pointer' : 'not-allowed' }}"
-                        class="share-button">
+                    <a href="" style="cursor: {{ $event->supportImageUpload() ? 'pointer' : 'not-allowed' }}"
+                        data-url="{{ $event->supportImageUpload() ? route('landing.share_redirect_url', ['year' => $year, 'month' => $month, 'customer' => $customer]) : '' }}"
+                        data-support-image-upload="{{ $event->supportImageUpload() }}" class="share-button">
                         <svg class="button-image" width="45" height="38" viewBox="0 0 45 38" fill="none"
                             xmlns="http://www.w3.org/2000/svg">
                             <path

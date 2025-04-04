@@ -58,6 +58,7 @@
             /* Vertically center the text next to the spinner */
         }
     </style>
+    @vite(['resources/js/app.js', 'resources/js/pages/gallery.js'])
 @endpush
 
 @section('content')
@@ -73,7 +74,7 @@
             </div>
             <!-- Horizontal Scroll -->
             <div class="scroll-container">
-                <button id="scroll-left" class="scroll-arrow" onclick="scrollTabs(-200)">
+                <button id="scroll-left" class="scroll-arrow" data-distance="-200">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
                         xmlns="http://www.w3.org/2000/svg">
                         <path d="M15 18L9 12L15 6" stroke="var(--accent-01)" stroke-width="2" stroke-linecap="round"
@@ -83,7 +84,8 @@
                 <div class="horizontal-scroll" id="tabs">
                     @foreach ($folders as $folder)
                         <div class="folder folder-thumbnail" data-type= "{{ $folder->folder_type }}"
-                            onclick="selectFolder({{ $folder }})"
+                            data-id="{{ $folder->id }}" data-folder-link="{{ $folder->folder_link }}"
+                            {{-- data-object= "{{ $folder }}" --}} {{-- onclick="selectFolder({{ $folder }})" --}}
                             data-url="{{ $folder->folder_type == 'image' ? route('landing.image', ['year' => $year, 'month' => $month, 'customer' => $customer]) : route('landing.video', ['year' => $year, 'month' => $month, 'customer' => $customer]) }}">
                             <svg style="" width="100%" height="100%" viewBox="0 0 120 100" fill="none"
                                 xmlns="http://www.w3.org/2000/svg">
@@ -99,7 +101,7 @@
                         </div>
                     @endforeach
                 </div><!-- End Horizontal Scroll -->
-                <button id="scroll-right" class="scroll-arrow" onclick="scrollTabs(200)">
+                <button id="scroll-right" class="scroll-arrow" data-distance="200">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
                         xmlns="http://www.w3.org/2000/svg">
                         <path d="M9 18L15 12L9 6" stroke="var(--accent-01)" stroke-width="2" stroke-linecap="round"
@@ -121,8 +123,10 @@
         <div class="footer">
             <p class="footer-copywrite">Powered by UP EVENTS</p>
             <!-- Share Button -->
-            <a href="{{ $event->supportImageUpload() ? route('landing.share', ['year' => $year, 'month' => $month, 'customer' => $customer]) : '#' }}"
-                style="cursor: {{ $event->supportImageUpload() ? 'pointer' : 'not-allowed' }}">
+            <a href="" style="cursor: {{ $event->supportImageUpload() ? 'pointer' : 'not-allowed' }}"
+                data-url="{{ $event->supportImageUpload() ? route('landing.share_redirect_url', ['year' => $year, 'month' => $month, 'customer' => $customer]): '' }}"
+                data-support-image-upload="{{ $event->supportImageUpload() }}"
+                class="share-btn-div">
                 <div class="share-button">
                     <img class="share-button-image"
                         src="{{ asset('assets/website/gallery-assets/images/upload-icon.svg') }}" alt=""
@@ -134,157 +138,6 @@
 @endsection
 
 @push('scripts')
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
-        integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="{{ asset('assets/website/gallery-assets/js/grid-script.js') }}"></script>
-    <script>
-        function scrollTabs(distance) {
-            const tabs = document.getElementById("tabs");
-            tabs.scrollBy({
-                left: distance,
-                behavior: 'smooth'
-            });
-            checkScroll();
-        }
-
-        function checkScroll() {
-            const tabs = document.getElementById("tabs");
-            const scrollLeft = tabs.scrollLeft;
-            const scrollWidth = tabs.scrollWidth;
-            const clientWidth = tabs.clientWidth;
-
-            document.getElementById("scroll-left").style.display = scrollLeft > 0 ? "block" :
-                "none";
-            document.getElementById("scroll-right").style.display = (scrollLeft +
-                    clientWidth) >= (scrollWidth - 50) ?
-                "none" : "block";
-        }
-
-        function loadVideo(videoUrl) {
-            const playerIframe = document.getElementById('videoIframe');
-            const videoSrc = `${videoUrl}?autoplay=true`;
-            // Update the iframe source with the selected video
-            playerIframe.src = videoSrc;
-            // Initialize player.js on the iframe
-            const player = new playerjs.Player(playerIframe);
-            // Event listeners using player.js
-            player.on('ready', () => {
-                player.play(); // Play the video once loaded
-            });
-            player.on('error', (error) => {
-                console.log('Error occurred:', error);
-            });
-        }
-
-        function selectFolder($folder) {
-            if ($folder.folder_type == 'link') {
-                window.open($folder.folder_link, '_blank', 'noopener,noreferrer');
-                return false;
-            }
-
-            $('#gallery-div').hide();
-            $('#loader-div').attr('hidden', false);
-            var url = "{{ route('landing.image', ['year' => $year, 'month' => $month, 'customer' => $customer]) }}";
-            if ($folder.folder_type == 'video')
-                url = "{{ route('landing.video', ['year' => $year, 'month' => $month, 'customer' => $customer]) }}";
-
-            $.ajax({
-                url: url,
-                type: 'POST',
-                data: {
-                    _token: '{{ csrf_token() }}',
-                    year: "{{ $year }}",
-                    month: "{{ $month }}",
-                    customer: "{{ $customer }}",
-                    folderId: $folder.id
-                },
-                success: function(response) {
-                    $('#gallery-div').html(response);
-                    if ($folder.folder_type == 'video') {
-                        console.log($folder.files);
-
-                        $.getScript("//assets.mediadelivery.net/playerjs/player-0.1.0.min.js", function() {
-                            const playerIframe = document.getElementById('videoIframe');
-                            // Ensure the iframe has a valid `src` attribute
-                            if (!playerIframe.src || playerIframe.src === "about:blank") {
-                                var fileUrl= null;
-                                $folder.files.forEach(file => {
-                                    if(fileUrl == null && file.file_status == "approved"){
-                                        fileUrl = file.file;
-                                    }
-                                });
-                                playerIframe.src = fileUrl;
-                            }
-
-                            // Ensure that the iframe has a valid `src` before initializing the player
-                            const player = new playerjs.Player(playerIframe, {
-                                autoplay: false,
-                                mute: true,
-                                loop: true,
-                                volume: 0.1,
-                                controls: true,
-                                fullscreen: true,
-                                showTitle: false,
-                                startTime: 0,
-                                enableVideoInfo: true
-                            });
-
-                            // Make sure to trigger play once the player is ready
-                            playerIframe.onload = function() {
-                                player.pause(); // Explicitly pause the video
-                                player.mute(); // Mute the video using the correct method
-                            };
-
-                            player.on('error', (error) => {
-                                console.error('Error occurred:', error);
-                            });
-                        });
-                    } else if ($folder.folder_type == 'image') {
-                        $.getScript(
-                            "https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js",
-                            function() {
-                                $('[data-fancybox="gallery"]').fancybox({
-                                    buttons: [
-                                        "zoom",
-                                        "slideShow",
-                                        "fullScreen",
-                                        "{{ $event->supportImageDownload() ? 'download' : '' }}",
-                                        "close"
-                                    ]
-                                });
-                                // Initialize lazy loading using IntersectionObserver
-                                const lazyLoad = (entries, observer) => {
-                                    entries.forEach(entry => {
-                                        if (entry.isIntersecting) {
-                                            const img = entry.target;
-                                            img.src = img.getAttribute(
-                                                'data-src'
-                                            ); // Set the src to data-src
-                                            img.removeAttribute(
-                                                'data-src'
-                                            ); // Remove the data-src attribute
-                                            observer.unobserve(
-                                                img); // Stop observing this image
-                                        }
-                                    });
-                                };
-                                const observer = new IntersectionObserver(lazyLoad, {
-                                    root: null,
-                                    rootMargin: '0px',
-                                    threshold: 0.1
-                                });
-                                // Observe each lazy image
-                                const imagesToLoad = document.querySelectorAll(
-                                    '.gallery img[data-src]');
-                                imagesToLoad.forEach(img => observer.observe(img));
-                            });
-                    }
-                    document.getElementById("tabs").addEventListener("scroll", checkScroll);
-                    window.addEventListener("load", checkScroll);
-                    $('#gallery-div').fadeIn(500);
-                    $('#loader-div').attr('hidden', true);
-                }
-            })
-        }
-    </script>
 @endpush

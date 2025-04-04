@@ -114,10 +114,12 @@ Route::middleware('auth')->group(function () {
 Route::controller(WebsiteController::class)->name('landing.')->group(function () {
     Route::get('events/{year}/{month}/{customer}', 'index')->name('index');
     Route::get('events/{year}/{month}/{customer}/gallery', 'gallery')->name('gallery');
-    Route::post('events/{year}/{month}/{customer}/image', 'image')->name('image');
     Route::get('events/{year}/{month}/{customer}/share', 'share')->name('share');
-    Route::post('events/{year}/{month}/{customer}/video', 'video')->name('video');
-    Route::post('events/share-event-image', 'shareEventImage')->name('share-event-image');
+    Route::middleware('ensure.token')->get('events/gallery-redirect-url', 'galleryRedirectUrl')->name('gallery_redirect_url');
+    Route::middleware('ensure.token')->post('events/{year}/{month}/{customer}/image', 'image')->name('image');
+    Route::middleware('ensure.token')->post('events/{year}/{month}/{customer}/video', 'video')->name('video');
+    Route::middleware('ensure.token')->get('events/share-redirect-url', 'shareRedirectUrl')->name('share_redirect_url');
+    Route::middleware('ensure.token')->post('events/share-event-image', 'shareEventImage')->name('share-event-image');
 });
 
 // Route::fallback(function () {
