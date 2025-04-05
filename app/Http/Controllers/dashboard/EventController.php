@@ -3,14 +3,12 @@
 namespace App\Http\Controllers\dashboard;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\event_types\UpdateEventTypeRequest;
 use App\Http\Requests\events\CreateEventRequest;
 use App\Http\Requests\events\folders\CreateFolderRequest;
 use App\Http\Requests\events\UpdateEventRequest;
 use App\Models\Client;
 use App\Models\ClientRole;
 use App\Models\Event;
-use App\Models\EventSetting;
 use App\Models\EventType;
 use App\Services\BunnyImageService;
 use App\Services\BunnyVideoService;
@@ -18,7 +16,6 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Spatie\Permission\Models\Role;
 use Yajra\DataTables\DataTables;
 use Illuminate\Support\Str;
 

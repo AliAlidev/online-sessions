@@ -1,12 +1,10 @@
 <?php
 
-namespace App\Http\Controllers\Dashboard;
+namespace App\Http\Controllers\dashboard;
 
 use App\Http\Controllers\Controller;
 use App\Models\Setting;
 use Exception;
-use GuzzleHttp\Client;
-use GuzzleHttp\Psr7\Request as Psr7Request;
 use Illuminate\Http\Request;
 
 class SettingController extends Controller
