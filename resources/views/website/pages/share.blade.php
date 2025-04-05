@@ -85,6 +85,7 @@
             white-space: nowrap;
             background-color: var(--bs-progress-bar-bg);
             transition: var(--bs-progress-bar-transition);
+            color: white;
         }
 
         .retry-btn {

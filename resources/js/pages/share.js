@@ -41,10 +41,10 @@ function updateThumbnails() {
     }
 }
 
-
 $('#uploadForm').submit(function (e) {
     e.preventDefault(); // Prevent default form submission
     $('.alert').remove();
+    $('.image-error').attr('hidden', true);
     var submitBtn = $("#storeButton");
     showButtonLoader(submitBtn);
     var file = $('#image-compressed')[0].files[0];
@@ -81,9 +81,9 @@ $('#uploadForm').submit(function (e) {
             const message = response.data?.message || 'Upload completed successfully';
             const $alert = $(`<div class="alert alert-success">${message}</div>`);
             $('#uploadForm').closest('.upload-container').prepend($alert);
-            // setTimeout(() => {
-            //     $alert.fadeOut(500, () => $alert.remove());
-            // }, 5000);
+            setTimeout(() => {
+                $alert.fadeOut(500, () => $alert.remove());
+            }, 5000);
         })
         .catch((error) => {
             hideButtonLoader(submitBtn);
@@ -126,6 +126,10 @@ async function uploadFile(file, index, submitBtn) {
         return response; // This will resolve the outer promise
 
     } catch (error) {
+        let statusText = $("#status-" + index);
+        statusText.text("Stage2: Failed");
+        clearInterval(statusText.data("interval"));
+        showRetryButton(0);
         throw error; // This will reject the outer promise
     }
 }

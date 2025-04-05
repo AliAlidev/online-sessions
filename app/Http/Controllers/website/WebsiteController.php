@@ -82,7 +82,9 @@ class WebsiteController extends Controller
     {
         $folderId = $request->folder_id;
         $folder = EventFolder::find($folderId);
-        $images = $folder->files->where('file_status', 'approved');
+        $images = $folder->files()->where('file_status', 'approved')->when($folder->folder_name == 'Guest Upload', function ($qrt) {
+            $qrt->where('created_by', Auth::user()->id);
+        })->get();
         $eventSupportDownload = $folder->event->supportImageDownload();
         return response()->json([
             'success' => true,
