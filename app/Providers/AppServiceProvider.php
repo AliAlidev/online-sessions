@@ -18,6 +18,7 @@ use App\Observers\EventOrganizerObserver;
 use App\Observers\EventSettingObserver;
 use App\Observers\EventTypeObserver;
 use App\Observers\FolderFileObserver;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -35,6 +36,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        Schema::defaultStringLength(250);
         Event::observe(EventObserver::class);
         EventOrganizer::observe(EventOrganizerObserver::class);
         EventSetting::observe(EventSettingObserver::class);
