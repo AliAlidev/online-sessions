@@ -3,6 +3,7 @@
 namespace App\Http\Requests\events\folders;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class CreateFolderRequest extends FormRequest
 {
@@ -26,7 +27,13 @@ class CreateFolderRequest extends FormRequest
             $link = 'nullable';
 
         return [
-            'folder_name' => 'required|string',
+            'folder_name' => [
+                'required',
+                'string',
+                Rule::unique('event_folders', 'folder_name')->where(function ($query) {
+                    return $query->where('event_id', $this->route('event_id'));
+                }),
+            ],
             'folder_type' => 'required|in:image,video,link',
             'description' => 'nullable|string',
             'folder_thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
