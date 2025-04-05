@@ -9,7 +9,6 @@ use App\Http\Controllers\dashboard\RoleController;
 use App\Http\Controllers\dashboard\SettingController;
 use App\Http\Controllers\dashboard\InsightController;
 use App\Http\Controllers\dashboard\UserController;
-use App\Http\Controllers\landing\LandingPageEventController;
 use App\Http\Controllers\website\WebsiteController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -25,7 +24,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-// Route::get('/landing', 'App\Http\Controllers\GuestController@landing');
 
 Auth::routes();
 
@@ -105,11 +103,6 @@ Route::middleware('auth')->group(function () {
     });
 });
 
-//////////////////////////// Landing Page ////////////////////////////
-// Route::controller(LandingPageEventController::class)->prefix('events')->name('landing.events.')->group(function () {
-//     Route::get('/{year}/{month}/{customer}', 'index')->name('index');
-// });
-
 //////////////////////////// website ////////////////////////////
 Route::controller(WebsiteController::class)->name('landing.')->group(function () {
     Route::get('events/{year}/{month}/{customer}', 'index')->name('index');
@@ -122,8 +115,6 @@ Route::controller(WebsiteController::class)->name('landing.')->group(function ()
     Route::middleware('ensure.token')->post('events/share-event-image', 'shareEventImage')->name('share-event-image');
 });
 
-// Route::fallback(function () {
-//     return redirect()->route('login');
-// });
-
-// Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::fallback(function () {
+    return redirect()->route('login');
+});
