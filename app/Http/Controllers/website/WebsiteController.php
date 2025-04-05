@@ -74,6 +74,8 @@ class WebsiteController extends Controller
                 if ($folder->folder_type == 'video')
                     $foldersList[] = $folder;
             }
+            if ($folder->folder_type == 'link')
+                $foldersList[] = $folder;
         });
         return view('website.pages.gallery.gallery', ['year' => $year, 'month' => $month, 'customer' => $customer, 'event' => $event, 'folders' => $foldersList]);
     }
