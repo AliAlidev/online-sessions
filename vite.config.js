@@ -7,7 +7,10 @@ export default defineConfig({
             input: [
                 'resources/sass/app.scss',
                 'resources/js/app.js',
-                'resources/js/pages/index.js'
+                'resources/css/app.css',
+                'resources/js/pages/index.js',
+                'resources/js/pages/gallery.js',
+                'resources/js/pages/share.js'
             ],
             refresh: true,
         }),
