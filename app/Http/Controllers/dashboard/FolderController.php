@@ -9,7 +9,7 @@ use App\Models\Event;
 use App\Models\EventFolder;
 use Illuminate\Support\Str;
 use App\Services\BunnyImageService;
-use App\Services\bunnyVideoService;
+use App\Services\BunnyVideoService;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
