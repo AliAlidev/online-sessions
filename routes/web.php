@@ -6,7 +6,7 @@ use App\Http\Controllers\dashboard\EventTypeController;
 use App\Http\Controllers\dashboard\FolderController;
 use App\Http\Controllers\dashboard\FolderFileController;
 use App\Http\Controllers\dashboard\RoleController;
-use App\Http\Controllers\Dashboard\SettingController;
+use App\Http\Controllers\dashboard\SettingController;
 use App\Http\Controllers\dashboard\InsightController;
 use App\Http\Controllers\dashboard\UserController;
 use App\Http\Controllers\landing\LandingPageEventController;
