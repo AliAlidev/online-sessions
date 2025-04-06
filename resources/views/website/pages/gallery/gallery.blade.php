@@ -10,6 +10,9 @@
     @endif
     <script src="{{ asset('assets/website/gallery-assets/js/grid-script.js') }}"></script>
     <link href="https://vjs.zencdn.net/7.15.4/video-js.css" rel="stylesheet" />
+    <!-- Add these to your head -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         #loader-div {
             /* display: flex; */
@@ -124,9 +127,8 @@
             <p class="footer-copywrite">Powered by UP EVENTS</p>
             <!-- Share Button -->
             <a href="" style="cursor: {{ $event->supportImageUpload() ? 'pointer' : 'not-allowed' }}"
-                data-url="{{ $event->supportImageUpload() ? route('landing.share_redirect_url', ['year' => $year, 'month' => $month, 'customer' => $customer]): '' }}"
-                data-support-image-upload="{{ $event->supportImageUpload() }}"
-                class="share-btn-div">
+                data-url="{{ $event->supportImageUpload() ? route('landing.share_redirect_url', ['year' => $year, 'month' => $month, 'customer' => $customer]) : '' }}"
+                data-support-image-upload="{{ $event->supportImageUpload() }}" class="share-btn-div">
                 <div class="share-button">
                     <img class="share-button-image"
                         src="{{ asset('assets/website/gallery-assets/images/upload-icon.svg') }}" alt=""

@@ -7,6 +7,7 @@ use App\Models\Event;
 use App\Models\EventFolder;
 use App\Models\FolderFile;
 use App\Services\BunnyImageService;
+use App\Services\BunnyVideoService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -16,9 +17,11 @@ use Throwable;
 class WebsiteController extends Controller
 {
     protected BunnyImageService $bunnyService;
-    function __construct(BunnyImageService $bunnyService)
+    protected BunnyVideoService $bunnyVideoService;
+    function __construct(BunnyImageService $bunnyService, BunnyVideoService $bunnyVideoService)
     {
         $this->bunnyService = $bunnyService;
+        $this->bunnyVideoService = $bunnyVideoService;
     }
 
     function index(Request $request)
@@ -84,9 +87,7 @@ class WebsiteController extends Controller
     {
         $folderId = $request->folder_id;
         $folder = EventFolder::find($folderId);
-        $images = $folder->files()->where('file_status', 'approved')->when($folder->folder_name == 'Guest Upload', function ($qrt) {
-            $qrt->where('created_by', Auth::user()->id);
-        })->get();
+        $images = $folder->files()->where('file_status', 'approved')->get();
         $eventSupportDownload = $folder->event->supportImageDownload();
         return response()->json([
             'success' => true,
@@ -162,5 +163,23 @@ class WebsiteController extends Controller
         $bunnyEventFolderName = $folder->event->bunny_event_name;
         $path = $bunnyMainFolderName . '/' . $bunnyEventFolderName . '/' . $folder->bunny_folder_name . '/' . $data['file_name_with_extension'];
         return $this->bunnyService->GuarantiedUploadImage($data['file'], $path);
+    }
+
+    function deleteImage($id)
+    {
+        try {
+            $file = FolderFile::find($id);
+            if (Auth::user()->id == $file->created_by)
+                return response()->json(['success' => false, 'message' => "You don't have permission to delete this image"]);
+            if ($file->file_type == 'video')
+                $file->file_bunny_id ? $this->bunnyVideoService->deleteVideo($file->file_bunny_id) : null;
+            else if ($file->file_type == 'image')
+                $this->bunnyService->deleteFile($file);
+            $file->delete();
+            return response()->json(['success' => true, 'message' => 'Image has been deleted successfully']);
+        } catch (Throwable $th) {
+            createServerError($th, "deleteFile", "files");
+            return response()->json(['success' => true, 'message' => 'Error happen during image deletion']);
+        }
     }
 }

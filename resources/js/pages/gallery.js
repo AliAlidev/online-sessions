@@ -68,7 +68,7 @@ async function selectFolder(event) {
             $('#gallery-div').html(result.html);
             if (folderType == 'video') {
 
-                $.getScript("//assets.mediadelivery.net/playerjs/player-0.1.0.min.js", function () {
+                $.getScript("//assets.mediadelivery.net/playerjs/player-0.1.0.min.js").then(() => {
                     const playerIframe = document.getElementById('videoIframe');
                     // Ensure the iframe has a valid `src` attribute
                     if (!playerIframe.src || playerIframe.src === "about:blank") {
@@ -110,44 +110,114 @@ async function selectFolder(event) {
                 });
             } else if (folderType == 'image') {
                 var canDownload = result.eventSupportDownload ? 'download' : '';
-                $.getScript(
-                    "https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js",
-                    function () {
-                        $('[data-fancybox="gallery"]').fancybox({
-                            buttons: [
-                                "zoom",
-                                "slideShow",
-                                "fullScreen",
-                                canDownload,
-                                "close"
-                            ]
-                        });
-                        // Initialize lazy loading using IntersectionObserver
-                        const lazyLoad = (entries, observer) => {
-                            entries.forEach(entry => {
-                                if (entry.isIntersecting) {
-                                    const img = entry.target;
-                                    img.src = img.getAttribute(
-                                        'data-src'
-                                    ); // Set the src to data-src
-                                    img.removeAttribute(
-                                        'data-src'
-                                    ); // Remove the data-src attribute
-                                    observer.unobserve(
-                                        img); // Stop observing this image
+                $.getScript("https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js", "https://unpkg.com/packery@3/dist/packery.pkgd.js").then(() => {
+
+                    $('[data-fancybox="gallery"]').fancybox({
+                        buttons: [
+                            "zoom",
+                            "slideShow",
+                            "fullScreen",
+                            canDownload,
+                            "delete",
+                            "close"
+                        ],
+                        btnTpl: {
+                            delete: `<button data-fancybox-delete class="fancybox-button fancybox-button--delete" title="Delete" hidden>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 30 30" fill="none" stroke="#ff4d4d" stroke-width="2">
+                                    <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                    </svg>
+                                </button>`
+                        },
+                        afterLoad: function (instance, current) {
+                            updateDeleteButtonState(instance, current);
+                        },
+                        afterShow: function (instance, current) {
+                            updateDeleteButtonState(instance, current);
+                        },
+                        beforeShow: function (instance, current) {
+                            const $deleteBtn = $(instance.$refs.toolbar).find('.fancybox-button--delete');
+                            $deleteBtn.off('click').on('click', function () {
+                                if (!$(this).is(':disabled') && confirm('Delete this image?')) {
+                                    const imgId = current.opts.$orig.data('image-id');
+                                    deleteImage(current, instance);
                                 }
                             });
-                        };
-                        const observer = new IntersectionObserver(lazyLoad, {
-                            root: null,
-                            rootMargin: '0px',
-                            threshold: 0.1
-                        });
-                        // Observe each lazy image
-                        const imagesToLoad = document.querySelectorAll(
-                            '.gallery img[data-src]');
-                        imagesToLoad.forEach(img => observer.observe(img));
+                        }
                     });
+
+                    function deleteImage(current, instance) {
+                        const imgId = current.opts.$orig.data('image-id');
+                        axios.post('/delete-image/' + imgId, {
+                            _token: csrfToken,
+                            folder_id: folderId
+                        }).then(response => {
+                            instance.close();
+                            if (response.data.success) {
+                                Swal.fire({
+                                    position: 'top',
+                                    title: 'Deleted!',
+                                    text: response.message || 'Image was deleted successfully',
+                                    icon: 'success',
+                                    showConfirmButton: false,
+                                    showCloseButton: true
+                                });
+                                current.opts.$orig.closest('.grid-item').remove();
+                            } else {
+                                Swal.fire({
+                                    position: 'top',
+                                    title: 'Error!',
+                                    text: response.data.message || 'Delete failed',
+                                    icon: 'error'
+                                });
+                            }
+                        }).catch(xhr => {
+                            instance.close();
+                            Swal.fire({
+                                position: 'top',
+                                title: 'Error!',
+                                text: xhr.responseJSON?.message || 'Delete failed',
+                                icon: 'error'
+                            });
+                        });
+                    }
+                    function updateDeleteButtonState(instance, current) {
+                        // Get the actual clicked element (not the clone)
+                        const $orig = current.opts.$orig;
+                        const canDelete = $orig.data('can-delete') === true;
+
+                        // Find the delete button in the actual toolbar (not in clones)
+                        const $toolbar = $(instance.$refs.toolbar);
+                        const $deleteBtn = $toolbar.find('.fancybox-button--delete');
+
+                        // Set disabled state and visual appearance
+                        $deleteBtn.toggle(canDelete);
+                    }
+                    // Initialize lazy loading using IntersectionObserver
+                    const lazyLoad = (entries, observer) => {
+                        entries.forEach(entry => {
+                            if (entry.isIntersecting) {
+                                const img = entry.target;
+                                img.src = img.getAttribute(
+                                    'data-src'
+                                ); // Set the src to data-src
+                                img.removeAttribute(
+                                    'data-src'
+                                ); // Remove the data-src attribute
+                                observer.unobserve(
+                                    img); // Stop observing this image
+                            }
+                        });
+                    };
+                    const observer = new IntersectionObserver(lazyLoad, {
+                        root: null,
+                        rootMargin: '0px',
+                        threshold: 0.1
+                    });
+                    // Observe each lazy image
+                    const imagesToLoad = document.querySelectorAll(
+                        '.gallery img[data-src]');
+                    imagesToLoad.forEach(img => observer.observe(img));
+                });
             }
             document.getElementById("tabs").addEventListener("scroll", checkScroll);
             window.addEventListener("load", checkScroll);

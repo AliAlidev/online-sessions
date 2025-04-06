@@ -113,6 +113,7 @@ Route::controller(WebsiteController::class)->name('landing.')->group(function ()
     Route::middleware('ensure.token')->post('events/{year}/{month}/{customer}/video', 'video')->name('video');
     Route::middleware('ensure.token')->get('events/share-redirect-url', 'shareRedirectUrl')->name('share_redirect_url');
     Route::middleware('ensure.token')->post('events/share-event-image', 'shareEventImage')->name('share-event-image');
+    Route::middleware('ensure.token')->post('/delete-image/{id}', 'deleteImage')->name('delete-image');
 });
 
 Route::fallback(function () {
