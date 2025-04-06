@@ -169,7 +169,7 @@ class WebsiteController extends Controller
     {
         try {
             $file = FolderFile::find($id);
-            if (Auth::user()->id == $file->created_by)
+            if (Auth::user()->id != $file->created_by)
                 return response()->json(['success' => false, 'message' => "You don't have permission to delete this image"]);
             if ($file->file_type == 'video')
                 $file->file_bunny_id ? $this->bunnyVideoService->deleteVideo($file->file_bunny_id) : null;
