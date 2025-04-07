@@ -461,18 +461,6 @@ button {
       overflow: hidden;
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
   }
-  .event-hero-section{
-      position: relative;
-      background-image: url('../images/bride-and-groom.jpg');
-      background-position: center;
-      background-size: cover;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: flex-end;
-      height: 60dvh !important;
-      width: 100vw;
-  }
   .event-date {
       font-size: 16px;
   }

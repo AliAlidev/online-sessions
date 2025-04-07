@@ -24,7 +24,23 @@
             position: relative;
             overflow: hidden;
         }
+
+        @media screen and (max-width: 991px) {
+            .event-hero-section {
+                position: relative;
+                background-image: url('{{ asset($event->cover_image) }}');
+                background-position: center;
+                background-size: cover;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: flex-end;
+                height: 60dvh !important;
+                width: 100vw;
+            }
+        }
     </style>
+
     @vite(['resources/js/pages/index.js'])
 @endpush
 

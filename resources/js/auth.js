@@ -20,8 +20,6 @@ export async function initialization() {
             saveData(dataObject);
         }
     };
-
-
 }
 
 // Initialize the IndexedDB
@@ -33,8 +31,7 @@ async function initializeDB() {
             const db = event.target.result;
             if (!db.objectStoreNames.contains("authentications")) {
                 const objectStore = db.createObjectStore("authentications", {
-                    keyPath: "fingerprint",
-                    primaryKey: "fingerprint"
+                    keyPath: "fingerprint"
                 });
                 objectStore.createIndex("token", "token", {
                     unique: true
