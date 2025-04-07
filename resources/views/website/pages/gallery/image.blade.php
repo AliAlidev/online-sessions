@@ -1,13 +1,8 @@
-<div class="main-body gallery-section">
-    <div class="gallery" id="gallery">
-        @foreach ($images as $key => $image)
-            <div class="grid-item" style="grid-row-end: span 20;">
-                <a href="{{ asset($image->file) }}" data-fancybox="gallery" data-can-delete="{{ $image->created_by == auth()->user()->id ? "true": "false" }}" data-image-id={{ $image->id }}
-                    data-caption="{{ $image->description }}">
-                    <img class="lazy" alt="" data-src="{{ asset($image->file) }}">
-                </a>
-            </div>
-        @endforeach
-    </div><!-- End Gallery -->
-</div><!-- End Main Body -->
-
+@foreach ($images as $key => $image)
+    <div class="grid-item">
+        <a href="{{ asset($image->file) }}" data-fancybox="gallery" data-can-delete="{{ $image->created_by == auth()->user()->id ? "true": "false" }}" data-image-id={{ $image->id }}
+            data-caption="{{ $image->description }}">
+            <img class="lazy" alt="" data-src="{{ asset($image->file) }}">
+        </a>
+    </div>
+@endforeach

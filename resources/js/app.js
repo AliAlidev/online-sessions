@@ -1,10 +1,16 @@
 import './bootstrap';
-import {getUserToken, initialization} from './auth';
+import { getUserToken, initialization } from './auth';
 
 async function init() {
     await initialization();
-    window.axios.defaults.headers.common['pageToken'] = await getUserToken();
-  }
+    const token = await getUserToken();
+    window.pageToken = token;  // Store token globally
 
-  init();
+    // Set default Axios header
+    window.axios.defaults.headers.common['pageToken'] = token;
 
+    // Notify that initialization is done
+    window.tokenInitialized = true;
+}
+
+init();

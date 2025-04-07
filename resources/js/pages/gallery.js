@@ -55,17 +55,28 @@ async function selectFolder(event) {
         window.open(folderLink, '_blank', 'noopener,noreferrer');
         return false;
     }
-    $('#gallery-div').hide();
+    $('#gallery-div').empty();
     $('#loader-div').attr('hidden', false);
-    const axios = window.axios;
     axios.post(url, {
         _token: csrfToken,
-        folder_id: folderId
-    })
+        folder_id: folderId,
+    }, { 'pageToken': window.axios.defaults.headers.common['pageToken'] })
         .then(response => {
             var result = response.data;
-
             $('#gallery-div').html(result.html);
+            var macy = new Macy({
+                container: '#gallery-div',
+                trueOrder: true,
+                waitForImages: false,
+                margin: 5,
+                columns: 4,
+                breakAt: {
+                    1200: 3,
+                    768: 2,
+                    480: 1
+                }
+            });
+
             if (folderType == 'video') {
 
                 $.getScript("//assets.mediadelivery.net/playerjs/player-0.1.0.min.js").then(() => {
@@ -108,10 +119,11 @@ async function selectFolder(event) {
                 document.querySelectorAll('.video-item').forEach(video => {
                     video.addEventListener('click', loadVideo);
                 });
+                $('#gallery-div').show();
+                $('#loader-div').attr('hidden', true);
             } else if (folderType == 'image') {
                 var canDownload = result.eventSupportDownload ? 'download' : '';
-                $.getScript("https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js", "https://unpkg.com/packery@3/dist/packery.pkgd.js").then(() => {
-
+                $.getScript("https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js").done(function () {
                     $('[data-fancybox="gallery"]').fancybox({
                         buttons: [
                             "zoom",
@@ -180,6 +192,7 @@ async function selectFolder(event) {
                             });
                         });
                     }
+
                     function updateDeleteButtonState(instance, current) {
                         // Get the actual clicked element (not the clone)
                         const $orig = current.opts.$orig;
@@ -192,37 +205,37 @@ async function selectFolder(event) {
                         // Set disabled state and visual appearance
                         $deleteBtn.toggle(canDelete);
                     }
-                    // Initialize lazy loading using IntersectionObserver
+
                     const lazyLoad = (entries, observer) => {
                         entries.forEach(entry => {
                             if (entry.isIntersecting) {
                                 const img = entry.target;
-                                img.src = img.getAttribute(
-                                    'data-src'
-                                ); // Set the src to data-src
-                                img.removeAttribute(
-                                    'data-src'
-                                ); // Remove the data-src attribute
-                                observer.unobserve(
-                                    img); // Stop observing this image
+                                img.src = img.getAttribute('data-src');
+                                img.removeAttribute('data-src');
+                                observer.unobserve(img);
+                                macy.recalculate(true, true);
                             }
                         });
                     };
+
                     const observer = new IntersectionObserver(lazyLoad, {
                         root: null,
                         rootMargin: '0px',
                         threshold: 0.1
                     });
-                    // Observe each lazy image
-                    const imagesToLoad = document.querySelectorAll(
-                        '.gallery img[data-src]');
+
+                    const imagesToLoad = document.querySelectorAll('#gallery-div img[data-src]');
                     imagesToLoad.forEach(img => observer.observe(img));
+
+                    $('#gallery-div').show();
+                    $('#loader-div').attr('hidden', true);
+
+                }).fail(error => {
+                    console.log(error);
                 });
+                document.getElementById("tabs").addEventListener("scroll", checkScroll);
+                window.addEventListener("load", checkScroll);
             }
-            document.getElementById("tabs").addEventListener("scroll", checkScroll);
-            window.addEventListener("load", checkScroll);
-            $('#gallery-div').fadeIn(500);
-            $('#loader-div').attr('hidden', true);
         })
         .catch(error => {
             $('#loader-div').attr('hidden', true);
@@ -260,3 +273,21 @@ async function goToShare(event) {
 }
 
 document.querySelector('.share-btn-div').addEventListener('click', goToShare);
+
+async function selectGuestFolder() {
+}
+
+function makeRequestWhenReady() {
+    if (window.tokenInitialized) {
+        var element = $('.horizontal-scroll').children('[data-folder-name="Guest Upload"]').first();
+        element.click();
+    } else {
+        setTimeout(makeRequestWhenReady, 100);
+    }
+}
+
+$(window).on('load', function () {
+    makeRequestWhenReady();
+});
+
+

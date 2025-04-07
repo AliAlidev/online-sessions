@@ -8,11 +8,12 @@
     @else
         <link rel="stylesheet" href="{{ asset('assets/website/gallery-assets/css/style-light.css') }}" />
     @endif
-    <script src="{{ asset('assets/website/gallery-assets/js/grid-script.js') }}"></script>
     <link href="https://vjs.zencdn.net/7.15.4/video-js.css" rel="stylesheet" />
     <!-- Add these to your head -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/macy@2.5.1/dist/macy.min.js"></script>
+
     <style>
         #loader-div {
             /* display: flex; */
@@ -87,8 +88,8 @@
                 <div class="horizontal-scroll" id="tabs">
                     @foreach ($folders as $folder)
                         <div class="folder folder-thumbnail" data-type= "{{ $folder->folder_type }}"
-                            data-id="{{ $folder->id }}" data-folder-link="{{ $folder->folder_link }}"
-                            {{-- data-object= "{{ $folder }}" --}} {{-- onclick="selectFolder({{ $folder }})" --}}
+                            data-folder-name="{{ $folder->folder_name }}" data-id="{{ $folder->id }}"
+                            data-folder-link="{{ $folder->folder_link }}"
                             data-url="{{ $folder->folder_type == 'image' ? route('landing.image', ['year' => $year, 'month' => $month, 'customer' => $customer]) : route('landing.video', ['year' => $year, 'month' => $month, 'customer' => $customer]) }}">
                             <svg style="" width="100%" height="100%" viewBox="0 0 120 100" fill="none"
                                 xmlns="http://www.w3.org/2000/svg">
@@ -141,5 +142,4 @@
 
 @push('scripts')
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script src="{{ asset('assets/website/gallery-assets/js/grid-script.js') }}"></script>
 @endpush

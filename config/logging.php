@@ -176,6 +176,13 @@ return [
             'path' => storage_path('logs/insights.log')
         ],
 
+        'helpers' => [
+            'driver' => 'single',
+            'level' => env('LOG_LEVEL', 'debug'),
+            'replace_placeholders' => true,
+            'path' => storage_path('logs/helpers.log')
+        ],
+
         'roles' => [
             'driver' => 'single',
             'level' => env('LOG_LEVEL', 'debug'),
