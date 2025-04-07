@@ -213,7 +213,7 @@ async function selectFolder(event) {
                                 img.src = img.getAttribute('data-src');
                                 img.removeAttribute('data-src');
                                 observer.unobserve(img);
-                                macy.recalculate(true, true);
+                                macy.recalculate(true);
                             }
                         });
                     };
