@@ -55,7 +55,7 @@ async function selectFolder(event) {
         window.open(folderLink, '_blank', 'noopener,noreferrer');
         return false;
     }
-    $('#gallery-div').empty();
+    $('#gallery-div').hide();
     $('#loader-div').attr('hidden', false);
     axios.post(url, {
         _token: csrfToken,
@@ -64,18 +64,6 @@ async function selectFolder(event) {
         .then(response => {
             var result = response.data;
             $('#gallery-div').html(result.html);
-            var macy = new Macy({
-                container: '#gallery-div',
-                trueOrder: true,
-                waitForImages: false,
-                margin: 5,
-                columns: 4,
-                breakAt: {
-                    1200: 3,
-                    768: 2,
-                    480: 1
-                }
-            });
 
             if (folderType == 'video') {
 
@@ -213,7 +201,7 @@ async function selectFolder(event) {
                                 img.src = img.getAttribute('data-src');
                                 img.removeAttribute('data-src');
                                 observer.unobserve(img);
-                                macy.recalculate(true);
+                                handleGridItemLayout();
                             }
                         });
                     };
@@ -224,7 +212,7 @@ async function selectFolder(event) {
                         threshold: 0.1
                     });
 
-                    const imagesToLoad = document.querySelectorAll('#gallery-div img[data-src]');
+                    const imagesToLoad = document.querySelectorAll('#gallery img[data-src]');
                     imagesToLoad.forEach(img => observer.observe(img));
 
                     $('#gallery-div').show();
@@ -290,4 +278,46 @@ $(window).on('load', function () {
     makeRequestWhenReady();
 });
 
+function handleGridItemLayout() {
+    const gridItems = document.querySelectorAll(".grid-item");
+
+    gridItems.forEach(item => {
+        const img = item.querySelector('img');
+
+        if (!img.hasAttribute('src'))
+            return;
+        // Function to handle the layout
+        const adjustLayout = () => {
+            const rowHeight = 10; // Match the grid-auto-rows value in CSS
+            const imageHeight = img.naturalHeight;
+            const imageWidth = img.naturalWidth;
+            const screenWidth = window.innerWidth;
+
+            // Check if screen width is less than 600px
+            if (screenWidth < 560) {
+                // On small screens, portrait images span 1.5 rows (15), landscape span 1 row (10)
+                if (imageHeight > imageWidth) {
+                    item.style.gridRowEnd = "span 16"; // Portrait images on small screens
+                } else {
+                    item.style.gridRowEnd = "span 8"; // Landscape images on small screens
+                }
+            } else {
+                // On larger screens, portrait images span 2 rows (20), landscape span 1 row (10)
+                if (imageHeight > imageWidth) {
+                    item.style.gridRowEnd = "span 20"; // Portrait images on large screens
+                } else {
+                    item.style.gridRowEnd = "span 10"; // Landscape images on large screens
+                }
+            }
+        };
+
+        // Set the onload handler
+        img.onload = adjustLayout;
+
+        // Check if image is already loaded
+        if (img.complete) {
+            adjustLayout();
+        }
+    });
+}
 

@@ -12,7 +12,6 @@
     <!-- Add these to your head -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="https://cdn.jsdelivr.net/npm/macy@2.5.1/dist/macy.min.js"></script>
 
     <style>
         #loader-div {
@@ -61,6 +60,7 @@
             line-height: 50px;
             /* Vertically center the text next to the spinner */
         }
+
     </style>
     @vite(['resources/js/app.js', 'resources/js/pages/gallery.js'])
 @endpush
