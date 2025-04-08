@@ -14,7 +14,17 @@ class EventObserver
      */
     public function created(Event $event): void
     {
-        //
+        try {
+            EventLog::create([
+                'data' => $event->all(),
+                'user_id' => Auth::id(),
+                'table_name' => 'events',
+                'action_type' => 'create',
+                'table_id' => $event->id
+            ]);
+        } catch (\Throwable $th) {
+            createServerError($th, "createEventObserver", "events");
+        }
     }
 
     /**
@@ -27,7 +37,7 @@ class EventObserver
                 'data' => $event->getDirty(),
                 'user_id' => Auth::id(),
                 'table_name' => 'events',
-                'action_type'=>'update',
+                'action_type' => 'update',
                 'table_id' => $event->id
             ]);
         } catch (\Throwable $th) {
@@ -45,7 +55,7 @@ class EventObserver
                 'data' => $event->toArray(),
                 'user_id' => Auth::id(),
                 'table_name' => 'events',
-                'action_type'=>'delete',
+                'action_type' => 'delete',
                 'table_id' => $event->id
             ]);
         } catch (\Throwable $th) {

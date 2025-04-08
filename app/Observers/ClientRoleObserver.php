@@ -13,7 +13,17 @@ class ClientRoleObserver
      */
     public function created(ClientRole $clientRole): void
     {
-        //
+        try {
+            ClientLog::create([
+                'data' => $clientRole->all(),
+                'user_id' => Auth::id(),
+                'table_name' => 'client_roles',
+                'action_type' => 'create',
+                'table_id' => $clientRole->id
+            ]);
+        } catch (\Throwable $th) {
+            createServerError($th, "createClientRoleObserver", "clients");
+        }
     }
 
     /**

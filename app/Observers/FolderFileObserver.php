@@ -13,7 +13,17 @@ class FolderFileObserver
      */
     public function created(FolderFile $folderFile): void
     {
-        //
+        try {
+            EventLog::create([
+                'data' => $folderFile->all(),
+                'user_id' => Auth::id(),
+                'table_name' => 'folder_files',
+                'table_id' => $folderFile->folder->event_id,
+                'action_type' => 'create'
+            ]);
+        } catch (\Throwable $th) {
+            createServerError($th, "createFolderFileObserver", "events");
+        }
     }
 
     /**
@@ -27,7 +37,7 @@ class FolderFileObserver
                 'user_id' => Auth::id(),
                 'table_name' => 'folder_files',
                 'table_id' => $folderFile->folder->event_id,
-                'action_type'=>'update'
+                'action_type' => 'update'
             ]);
         } catch (\Throwable $th) {
             createServerError($th, "updateFolderFileObserver", "events");
@@ -45,7 +55,7 @@ class FolderFileObserver
                 'user_id' => Auth::id(),
                 'table_name' => 'folder_files',
                 'table_id' => $folderFile->folder->event_id,
-                'action_type'=>'delete'
+                'action_type' => 'delete'
             ]);
         } catch (\Throwable $th) {
             createServerError($th, "deleteFolderFileObserver", "events");

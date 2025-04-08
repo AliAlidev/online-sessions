@@ -13,7 +13,17 @@ class ClientObserver
      */
     public function created(Client $client): void
     {
-        //
+        try {
+            ClientLog::create([
+                'data' => $client->all(),
+                'user_id' => Auth::id(),
+                'table_name' => 'clients',
+                'action_type' => 'create',
+                'table_id' => $client->id
+            ]);
+        } catch (\Throwable $th) {
+            createServerError($th, "createClientObserver", "clients");
+        }
     }
 
     /**

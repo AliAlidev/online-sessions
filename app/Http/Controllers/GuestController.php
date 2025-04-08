@@ -38,7 +38,8 @@ class GuestController extends Controller
         $user = User::firstOrCreate(['email' => $guest_id . '@guest.com'],[
             'name' => 'Guest_' . $guest_id,
             'email' => $guest_id . '@guest.com',
-            'password' => bcrypt('guest')
+            'password' => bcrypt('guest'),
+            'fingerprint' => $guest_id
         ]);
         $token = JWTAuth::customClaims([])->fromUser($user);
         return response()->json(['status' => 'success', 'token' => $token]);

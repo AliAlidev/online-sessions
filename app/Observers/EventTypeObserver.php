@@ -13,7 +13,17 @@ class EventTypeObserver
      */
     public function created(EventType $eventType): void
     {
-        //
+        try {
+            EventLog::create([
+                'data' => $eventType->all(),
+                'user_id' => Auth::id(),
+                'table_name' => 'event_types',
+                'table_id' => $eventType->id,
+                'action_type'=>'create'
+            ]);
+        } catch (\Throwable $th) {
+            createServerError($th, "createEventTypeObserver", "events");
+        }
     }
 
     /**

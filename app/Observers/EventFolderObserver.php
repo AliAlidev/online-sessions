@@ -13,7 +13,17 @@ class EventFolderObserver
      */
     public function created(EventFolder $eventFolder): void
     {
-        //
+        try {
+            EventLog::create([
+                'data' => $eventFolder->all(),
+                'user_id' => Auth::id(),
+                'table_name' => 'event_folders',
+                'action_type' => 'create',
+                'table_id' => $eventFolder->event_id
+            ]);
+        } catch (\Throwable $th) {
+            createServerError($th, "createEventFolderObserver", "events");
+        }
     }
 
     /**
@@ -26,7 +36,7 @@ class EventFolderObserver
                 'data' => $eventFolder->getDirty(),
                 'user_id' => Auth::id(),
                 'table_name' => 'event_folders',
-                'action_type'=>'update',
+                'action_type' => 'update',
                 'table_id' => $eventFolder->event_id
             ]);
         } catch (\Throwable $th) {
@@ -44,7 +54,7 @@ class EventFolderObserver
                 'data' => $eventFolder->toArray(),
                 'user_id' => Auth::id(),
                 'table_name' => 'event_folders',
-                'action_type'=>'update',
+                'action_type' => 'update',
                 'table_id' => $eventFolder->event_id
             ]);
         } catch (\Throwable $th) {
