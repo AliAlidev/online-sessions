@@ -16,7 +16,7 @@ class UserController extends Controller
     {
         try {
             if ($request->ajax()) {
-                $clients = User::get();
+                $clients = User::where('dashboard_user', 1)->get();
                 return DataTables::of($clients)
                     ->addColumn('actions', function ($client) {
                         return '<a data-id="' . $client->id . '" href="' . route('users.edit', $client->id) . '" class="update-client btn btn-icon btn-outline-primary"><i class="bx bx-edit-alt" style="color:#696cff"></i></a>

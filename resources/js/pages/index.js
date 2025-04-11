@@ -1,5 +1,34 @@
 async function goToGallery(event) {
     event.preventDefault();
+    if (localStorage.getItem('event_password')) {
+        var url = event.target.closest('a').dataset.galleryUrl;
+
+        const element = document.getElementById('global-error-message');
+        element.style.display = 'none';
+        window.axios.post(url, {
+            _token: document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+            password: localStorage.getItem('event_password'),
+            event_slug: localStorage.getItem('event_slug'),
+            year: localStorage.getItem('event_year'),
+            month: localStorage.getItem('event_month')
+        })
+            .then(response => {
+                if (response.data.success) {
+                    window.location.href = response.data.url;
+                } else {
+                    gotoPasswordVerification(event);
+                }
+            }).catch(error => {
+                gotoPasswordVerification(event);
+            });
+    } else {
+        gotoPasswordVerification(event);
+    }
+}
+
+document.querySelector('.gallery-button').addEventListener('click', goToGallery);
+
+function gotoPasswordVerification(event) {
     var url = event.target.closest('a').dataset.url;
     axios.get(url)
         .then(response => {
@@ -11,8 +40,6 @@ async function goToGallery(event) {
             element.style.display = 'block';
         });
 }
-
-document.querySelector('.gallery-button').addEventListener('click', goToGallery);
 
 async function goToShare(event) {
     event.preventDefault();

@@ -471,7 +471,7 @@
         <div class="main-header">
             <div class="top-bar">
                 <a href="{{ route('landing.index', ['year' => $year, 'month' => $month, 'customer' => $customer]) }}"><img
-                        class="top-bar-iamge" src="{{ asset($event->cover_image) }}" alt=""></a>
+                        class="top-bar-iamge" src="{{ asset($event->profile_picture) }}" alt=""></a>
                 <div class="event-title-date">
                     <h1 class="event-title">{{ $event->event_name }}</h1>
                     <p class="event-date">{{ $event->start_date }}</p>

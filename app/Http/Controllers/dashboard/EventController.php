@@ -16,6 +16,7 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Yajra\DataTables\DataTables;
 use Illuminate\Support\Str;
 
@@ -38,6 +39,9 @@ class EventController extends Controller
                     ->editColumn('qr_code', function ($row) {
                         return '<a href="/' . $row->qr_code . '" download><img src="/' . $row->qr_code . '" alt="" width="100px" height="100px"></a>';
                     })
+                    ->editColumn('event_name', function ($row) {
+                        return Auth::user()->hasAnyPermission(['create_folder', 'update_folder', 'delete_folder']) ? '<a href="' . route('folders.index', $row->bunny_event_name) . '">' . $row->event_name . '</a>' : $row->event_name;
+                    })
                     ->editColumn('profile_picture', function ($row) {
                         return $row->profile_picture ? '<img src="/' . $row->profile_picture . '" alt="" width="100px" height="100px">' : '';
                     })
@@ -46,6 +50,32 @@ class EventController extends Controller
                     })
                     ->addColumn('event_type', function ($row) {
                         return $row->type?->name;
+                    })
+                    ->addColumn('time_reminder', function ($row) {
+                        $eventEndDate = Carbon::parse($row->end_date)->endOfDay();
+                        $now = Carbon::now()->endOfDay();
+                        if ($eventEndDate->gt($now)) {
+                            return $eventEndDate->diffInDays($now) . ' days';
+                        }
+                        return '-';
+                    })
+                    ->addColumn('event_status', function ($row) {
+                        $eventStartDate = Carbon::parse($row->start_date)->startOfDay();
+                        $eventEndDate = Carbon::parse($row->end_date)->endOfDay();
+                        $now = Carbon::now()->endOfDay();
+                        if ($eventEndDate->lte($now)) {
+                            return 'Expired';
+                        }
+                        if ($eventStartDate->gt($now)) {
+                            return 'Not Started';
+                        }
+                        if ($eventEndDate->floatDiffInMonths($now, true) > 1) {
+                            return 'Month +';
+                        }
+                        if ($eventEndDate->floatDiffInMonths($now, true) == 1) {
+                            return 'Month';
+                        }
+                        return 'Month -';
                     })
                     ->addColumn('event_client', function ($row) {
                         return $row->client?->planner_name;
@@ -57,11 +87,11 @@ class EventController extends Controller
                         $actions = '';
                         Auth::user()->hasPermissionTo('update_event') ? $actions .= '<a href="' . route('events.edit', $event->id) . '" class="update-event btn btn-icon btn-outline-primary m-1"><i class="bx bx-edit-alt" style="color:#696cff"></i></a>' : '';
                         Auth::user()->hasPermissionTo('delete_event') ? $actions .= '<a href="#" data-url="' . route('events.delete', $event->id) . '" class="delete-event btn btn-icon btn-outline-primary m-1"><i class="bx bx-trash" style="color:red"></i> </a>' : '';
-                        Auth::user()->hasAnyPermission(['create_folder', 'update_folder', 'delete_folder']) ? $actions .= '<a title="Folders" href="' . route('folders.index', $event->id) . '" class="btn rounded-pill btn-icon btn-primary"><i class="bx bx-folder" style="color:white"></i> </a>' : '';
+                        Auth::user()->hasAnyPermission(['create_folder', 'update_folder', 'delete_folder']) ? $actions .= '<a title="Folders" href="' . route('folders.index', $event->bunny_event_name) . '" class="btn rounded-pill btn-icon btn-primary"><i class="bx bx-folder" style="color:white"></i> </a>' : '';
                         return $actions;
                     })
                     ->addIndexColumn()
-                    ->rawColumns(['qr_code', 'profile_picture', 'event_link', 'cover_image', 'actions'])
+                    ->rawColumns(['qr_code', 'event_name', 'profile_picture', 'event_link', 'cover_image', 'actions'])
                     ->make(true);
             }
             return view('dashboard.event.index');
@@ -106,7 +136,7 @@ class EventController extends Controller
                 'active_duration' => $data['active_duration'],
                 'description' => $data['description'],
                 'event_link' => $data['event_link'],
-                'event_password' => $data['event_password'],
+                'event_password' => Hash::make($data['event_password']),
                 'welcome_message' => $data['welcome_message'],
                 'qr_code' => $data['qr_code'],
                 'bunny_main_folder_name' => Carbon::parse($data['start_date'])->year
@@ -179,7 +209,7 @@ class EventController extends Controller
                 'active_duration' => $data['active_duration'],
                 'description' => $data['description'],
                 'event_link' => $data['event_link'],
-                'event_password' => $data['event_password'],
+                'event_password' => Hash::make($data['event_password']),
                 'welcome_message' => $data['welcome_message'],
                 'qr_code' => $data['qr_code']
             ];

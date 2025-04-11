@@ -17,28 +17,27 @@ Breadcrumbs::for('events', function ($trail) {
     $trail->push('Events List', route('events.index'));
 });
 
-Breadcrumbs::for('event', function ($trail, $eventId) {
+Breadcrumbs::for('event', function ($trail, $eventSlug) {
     $trail->parent('events');
-    $eventName = Event::find($eventId)->event_name;
-    $trail->push(ucfirst($eventName), '');
+    $event = Event::where('bunny_event_name', $eventSlug)->first();
+    $trail->push(ucfirst($event?->event_name), route('folders.index', $event?->bunny_event_name));
 });
 
-Breadcrumbs::for('folder', function ($trail, $eventId) {
-    $trail->parent('event', $eventId);
-    $trail->push('Folders List', '');
+Breadcrumbs::for('folder', function ($trail, $eventSlug) {
+    $trail->parent('event', $eventSlug);
+    // $trail->push('Folders List', '');
 });
 
-Breadcrumbs::for('folders', function ($trail, $folderId) {
-    $folder = EventFolder::find($folderId);
-    $trail->parent('event', $folder->event_id);
-    $folder = EventFolder::find($folderId);
-    $trail->push(ucfirst($folder->folder_name), route('folders.index', $folder->event_id));
+Breadcrumbs::for('folders', function ($trail, $eventSlug, $folderSlug) {
+    $folder = Event::where('bunny_event_name', $eventSlug)->first()->folders->where('bunny_folder_name', $folderSlug)->first();
+    $trail->parent('event', $folder->event->bunny_event_name);
+    $trail->push(ucfirst($folder->folder_name), route('folders.index', $folder->event->bunny_event_name));
 });
 
-Breadcrumbs::for('files', function ($trail, $folderId) {
-    $trail->parent('folders', $folderId);
-    $folder = EventFolder::find($folderId);
-    $trail->push(ucfirst($folder->folder_type).'s List', '');
+Breadcrumbs::for('files', function ($trail, $eventSlug, $folderSlug) {
+    $trail->parent('folders', $eventSlug, $folderSlug);
+    // $folder = EventFolder::where('bunny_folder_name', $folderSlug)->first();
+    // $trail->push(ucfirst($folder->folder_type).'s List', '');
 });
 
 Breadcrumbs::for('roles', function ($trail) {
@@ -58,8 +57,8 @@ Breadcrumbs::for('create-client', function ($trail) {
 
 Breadcrumbs::for('update-client', function ($trail, $clientId) {
     $trail->parent('clients');
-    $clientName= Client::find($clientId)->planner_name;
-    $trail->push('Update Client - '. $clientName, '');
+    $clientName = Client::find($clientId)->planner_name;
+    $trail->push('Update Client - ' . $clientName, '');
 });
 
 Breadcrumbs::for('event-types', function ($trail) {
@@ -75,7 +74,7 @@ Breadcrumbs::for('create-event', function ($trail) {
 Breadcrumbs::for('update-event', function ($trail, $eventId) {
     $trail->parent('events');
     $eventName = Event::find($eventId)->event_name;
-    $trail->push('Update Event - '. $eventName, '');
+    $trail->push('Update Event - ' . $eventName, '');
 });
 
 Breadcrumbs::for('settings', function ($trail) {

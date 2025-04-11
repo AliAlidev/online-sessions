@@ -35,7 +35,7 @@ class CreateEventRequest extends FormRequest
             'active_duration' => 'nullable|string',
             'description' => 'nullable|string',
             'event_link' => 'required|url',
-            'event_password' => 'nullable|string|min:6',
+            'event_password' => 'nullable',
             'welcome_message' => 'nullable|string',
             'qr_code' => 'required|string',
             'accent_color' => 'nullable|string',

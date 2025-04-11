@@ -19,8 +19,24 @@
             float: right;
         }
 
-        .update-event:hover i, .delete-event:hover i {
+        .update-event:hover i,
+        .delete-event:hover i {
             color: white !important;
+        }
+
+        .bg-warning {
+            --bs-bg-opacity: 1;
+            background-color: rgb(244, 244, 53) !important;
+        }
+
+        .table-warning {
+            --bs-table-bg: rgb(245, 245, 147) !important;
+            --bs-table-hover-bg:
+                color-mix(in sRGB, var(--bs-body-bg) 46%, var(--bs-table-bg));
+            --bs-table-border-color:
+                color-mix(in sRGB, var(--bs-table-bg) 98%, var(--bs-table-color));
+            --bs-table-active-bg:
+                color-mix(in sRGB, var(--bs-body-bg) 32.5%, var(--bs-table-bg));
         }
     </style>
 @endsection
@@ -31,6 +47,13 @@
         <!-- DataTable with Buttons -->
         <h5 class="mb-0">{{ Breadcrumbs::render('events') }}</h5>
         <div class="card">
+            @can('create_event')
+                <div class="row card-header flex-column flex-md-row pb-0">
+                    <div class="d-md-flex justify-content-between align-items-center dt-layout-end col-md-auto ms-auto mt-0">
+                        <a href="{{ route('events.create') }}" class="btn btn-primary">Create</a>
+                    </div>
+                </div>
+            @endcan
             <div class="card-datatable">
                 <div class="justify-content-between dt-layout-table" style="padding: 20px">
                     <table id="events-datatable" class="table table-responsive table-hover text-nowrap"
@@ -47,6 +70,8 @@
                                 <th class="control dt-orderable-none">Start Date</th>
                                 <th class="control dt-orderable-none">End Date</th>
                                 <th class="control dt-orderable-none">Active Duration</th>
+                                <th class="control dt-orderable-none">Time Remained</th>
+                                <th class="control dt-orderable-none">Status</th>
                                 <th class="control dt-orderable-none">Event Link</th>
                                 <th class="control dt-orderable-none">QR Code</th>
                                 <th class="control dt-orderable-none">Description</th>
@@ -94,7 +119,8 @@
                     },
                     {
                         data: 'bunny_event_name',
-                        name: 'bunny_event_name'
+                        name: 'bunny_event_name',
+                        visible: false
                     },
                     {
                         data: 'event_type',
@@ -106,11 +132,13 @@
                     },
                     {
                         data: 'customer',
-                        name: 'customer'
+                        name: 'customer',
+                        visible: false
                     },
                     {
                         data: 'venue',
-                        name: 'venue'
+                        name: 'venue',
+                        visible: false
                     },
                     {
                         data: 'start_date',
@@ -125,28 +153,51 @@
                         name: 'active_duration'
                     },
                     {
+                        data: 'time_reminder',
+                        name: 'time_reminder'
+                    },
+                    {
+                        data: 'event_status',
+                        name: 'event_status',
+                        render: function(data, type, row) {
+                            if (data == "Not Started") {
+                                return '<span class="badge bg-warning">Not Started</span>';
+                            } else if (data == "Month +") {
+                                return '<span class="badge bg-success">Month +</span>';
+                            } else if (data == "Month -" || data == "Month" || data == "Expired") {
+                                return '<span class="badge bg-danger">' + data + '</span>';
+                            }
+                            return '-';
+                        }
+                    },
+                    {
                         data: 'event_link',
                         name: 'event_link'
                     },
                     {
                         data: 'qr_code',
-                        name: 'qr_code'
+                        name: 'qr_code',
+                        visible: false
                     },
                     {
                         data: 'description',
-                        name: 'description'
+                        name: 'description',
+                        visible: false
                     },
                     {
                         data: 'welcome_message',
-                        name: 'welcome_message'
+                        name: 'welcome_message',
+                        visible: false
                     },
                     {
                         data: 'cover_image',
-                        name: 'cover_image'
+                        name: 'cover_image',
+                        visible: false
                     },
                     {
                         data: 'profile_picture',
-                        name: 'profile_picture'
+                        name: 'profile_picture',
+                        visible: false
                     },
                     {
                         data: 'actions',
@@ -162,23 +213,19 @@
                     text: 'Columns',
                     className: 'btn btn-primary'
                 }],
-                columnDefs: [{
-                        targets: 11,
-                        visible: false
-                    },
-                    {
-                        targets: 12,
-                        visible: false
-                    },
-                    {
-                        targets: 13,
-                        visible: false
-                    },
-                    {
-                        targets: 14,
-                        visible: false
+                rowCallback: function(row, data, index) {
+                    // Remove previously applied classes
+                    $(row).removeClass('table-warning table-success table-danger');
+
+                    // Apply class based on event_status
+                    if (data.event_status === "Not Started") {
+                        $(row).addClass('table-warning'); // yellowish
+                    } else if (data.event_status === "Month +") {
+                        $(row).addClass('table-success'); // greenish
+                    } else if (data.event_status === "Month -" || data.event_status === "Month" || data.event_status === "Expired") {
+                        $(row).addClass('table-danger'); // reddish
                     }
-                ]
+                }
             });
 
             $(document).on('click', '.delete-event', function(e) {

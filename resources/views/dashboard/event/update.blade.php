@@ -482,7 +482,7 @@
                         </div>
                     </div>
                     <div style="display: flex; gap: 10px; justify-content: flex-end">
-                        <a href="javascript:history.back()" class="btn btn-label-primary">Back</a>
+                        <a href="javascript:history.back()" class="btn btn-label-primary">Close</a>
                         <button type="submit" class="btn btn-primary" style="float: right" id="updateButton">Update Event
                             <span id="spinner" style="display:none;">
                                 <i class="fa fa-spinner fa-spin"></i>
@@ -530,7 +530,7 @@
             });
             var id = $('#event_id').val();
             $.ajax({
-                url: "{{ url('admin/events/update') }}/" + id,
+                url: "{{ route('events.update') }}/" + id,
                 type: 'POST',
                 processData: false,
                 contentType: false,

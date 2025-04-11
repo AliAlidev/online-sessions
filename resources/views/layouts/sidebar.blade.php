@@ -25,11 +25,11 @@
         @endcan
         @if (Auth::user()->hasRole('super-admin'))
             <li class="menu-item {{ Route::is('users.*') || Route::is('users.*') ? 'active' : '' }}">
-                <a href="#" class="menu-link menu-toggle">
+                <a href="{{ route('users.index') }}" class="menu-link">
                     <i class="fa-solid fa-users" style="font-size: 20px; margin: 0 10px 0 0"></i>
                     <div class="text-truncate" data-i18n="Dashboards">Users</div>
                 </a>
-                <ul class="menu-sub">
+                {{-- <ul class="menu-sub">
                     <li class="menu-item {{ Route::is('users.create') ? 'active' : '' }}">
                         <a href="{{ route('users.create') }}" target="" class="menu-link">
                             <div class="text-truncate" data-i18n="CRM">Create User</div>
@@ -40,7 +40,7 @@
                             <div class="text-truncate" data-i18n="CRM">List Users</div>
                         </a>
                     </li>
-                </ul>
+                </ul> --}}
             </li>
         @endif
         @canany(['create_role', 'update_role', 'delete_role', 'create_client', 'update_client', 'delete_client'])
@@ -50,6 +50,13 @@
                     <div class="text-truncate" data-i18n="Dashboards">Clients</div>
                 </a>
                 <ul class="menu-sub">
+                    @canany(['create_client', 'update_client', 'delete_client'])
+                        <li class="menu-item {{ Route::is('clients.index') ? 'active' : '' }}">
+                            <a href="{{ route('clients.index') }}" target="" class="menu-link">
+                                <div class="text-truncate" data-i18n="CRM">All Clients</div>
+                            </a>
+                        </li>
+                    @endcanany
                     @canany(['create_role', 'update_role', 'delete_role'])
                         <li class="menu-item {{ Route::is('roles.index') ? 'active' : '' }}">
                             <a href="{{ route('roles.index') }}" target="" class="menu-link">
@@ -57,20 +64,13 @@
                             </a>
                         </li>
                     @endcanany
-                    @can('create_client')
+                    {{-- @can('create_client')
                         <li class="menu-item {{ Route::is('clients.create') ? 'active' : '' }}">
                             <a href="{{ route('clients.create') }}" target="" class="menu-link">
                                 <div class="text-truncate" data-i18n="CRM">Create Client</div>
                             </a>
                         </li>
-                    @endcan
-                    @canany(['create_client', 'update_client', 'delete_client'])
-                        <li class="menu-item {{ Route::is('clients.index') ? 'active' : '' }}">
-                            <a href="{{ route('clients.index') }}" target="" class="menu-link">
-                                <div class="text-truncate" data-i18n="CRM">List Clients</div>
-                            </a>
-                        </li>
-                    @endcanany
+                    @endcan --}}
                 </ul>
             </li>
         @endcanany
@@ -82,6 +82,13 @@
                     <div class="text-truncate" data-i18n="Dashboards">Events</div>
                 </a>
                 <ul class="menu-sub">
+                    @canany(['create_event', 'update_event', 'delete_event'])
+                        <li class="menu-item {{ Route::is('events.index') ? 'active' : '' }}">
+                            <a href="{{ route('events.index') }}" target="" class="menu-link">
+                                <div class="text-truncate" data-i18n="CRM">All Events</div>
+                            </a>
+                        </li>
+                    @endcanany
                     @if (Auth::user()->hasRole('super-admin'))
                         <li class="menu-item {{ Route::is('events.types.index') ? 'active' : '' }}">
                             <a href="{{ route('events.types.index') }}" target="" class="menu-link">
@@ -89,20 +96,13 @@
                             </a>
                         </li>
                     @endif
-                    @can('create_event')
+                    {{-- @can('create_event')
                         <li class="menu-item {{ Route::is('events.create') ? 'active' : '' }}">
                             <a href="{{ route('events.create') }}" target="" class="menu-link">
                                 <div class="text-truncate" data-i18n="CRM">Create Event</div>
                             </a>
                         </li>
-                    @endcan
-                    @canany(['create_event', 'update_event', 'delete_event'])
-                        <li class="menu-item {{ Route::is('events.index') ? 'active' : '' }}">
-                            <a href="{{ route('events.index') }}" target="" class="menu-link">
-                                <div class="text-truncate" data-i18n="CRM">List Events</div>
-                            </a>
-                        </li>
-                    @endcanany
+                    @endcan --}}
                 </ul>
             </li>
         @endcanany

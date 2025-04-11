@@ -252,7 +252,7 @@
                         </div>
                     </div>
                     <div style="display: flex; gap: 10px; justify-content: flex-end">
-                        <a href="javascript:history.back()" class="btn btn-label-primary">Back</a>
+                        <a href="javascript:history.back()" class="btn btn-label-primary">Close</a>
                         <button type="submit" class="btn btn-primary" style="float: right" id="storeButton">Update User
                             <span id="spinner" style="display:none;">
                                 <i class="fa fa-spinner fa-spin"></i>

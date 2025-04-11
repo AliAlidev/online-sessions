@@ -10,7 +10,8 @@ export default defineConfig({
                 'resources/css/app.css',
                 'resources/js/pages/index.js',
                 'resources/js/pages/gallery.js',
-                'resources/js/pages/share.js'
+                'resources/js/pages/share.js',
+                'resources/js/pages/event_password.js'
             ],
             refresh: true,
         }),

@@ -28,16 +28,17 @@ class FolderFileController extends Controller
         $this->bunnyVideoService = $bunnyVideoService;
     }
 
-    function index(Request $request, $folderId, $folderType)
+    function index(Request $request, $eventSlug, $folderSlug)
     {
         try {
+            $folder = EventFolder::where('bunny_folder_name', $folderSlug)->first();
             if ($request->ajax()) {
-                $files = EventFolder::find($folderId)->files;
+                $files = $folder->files;
                 return DataTables::of($files)
-                    ->addColumn('actions', function ($file) {
+                    ->addColumn('actions', function ($file) use ($folder, $folderSlug) {
                         $action = '';
-                        ($file->file_type == 'image' && Auth::user()->hasPermissionTo('delete_image')) || ($file->file_type == 'video' && Auth::user()->hasPermissionTo('delete_video')) ? $action .= '<a href="#" data-url="' . route('files.delete', $file->id) . '" class="delete-file btn btn-icon btn-outline-primary m-1"><i class="bx bx-trash" style="color:red"></i> </a>' : '';
-                        ($file->file_type == 'image' && Auth::user()->hasPermissionTo('update_image')) || ($file->file_type == 'video' && Auth::user()->hasPermissionTo('update_video')) ? $action .= '<a data-id="' . $file->id . '" href="' . route('files.update', $file->id) . '" class="update-file btn btn-icon btn-outline-primary"><i class="bx bx-edit-alt" style="color:#696cff"></i></a>' : '';
+                        ($file->file_type == 'image' && Auth::user()->hasPermissionTo('delete_image')) || ($file->file_type == 'video' && Auth::user()->hasPermissionTo('delete_video')) ? $action .= '<a href="#" data-url="' . route('files.delete', [$folder->event->bunny_event_name, $folderSlug, $file->id]) . '" class="delete-file btn btn-icon btn-outline-primary m-1"><i class="bx bx-trash" style="color:red"></i> </a>' : '';
+                        ($file->file_type == 'image' && Auth::user()->hasPermissionTo('update_image')) || ($file->file_type == 'video' && Auth::user()->hasPermissionTo('update_video')) ? $action .= '<a data-id="' . $file->id . '" href="' . route('files.update', [$folder->event->bunny_event_name, $folderSlug, $file->id]) . '" class="update-file btn btn-icon btn-outline-primary"><i class="bx bx-edit-alt" style="color:#696cff"></i></a>' : '';
                         return $action;
                     })
                     ->addIndexColumn()
@@ -72,14 +73,14 @@ class FolderFileController extends Controller
                     ->rawColumns(['file', 'status', 'name_and_size', 'actions'])
                     ->make(true);
             }
-            return view('dashboard.files.index', ['folderType' => $folderType]);
+            return view('dashboard.files.index', ['folderType' => $folder->folder_type]);
         } catch (Throwable $th) {
             createServerError($th, "indexFile", "files");
             return false;
         }
     }
 
-    function show($id)
+    function show($eventSlug, $folderSlug, $id)
     {
         try {
             $file = FolderFile::find($id);
@@ -103,18 +104,19 @@ class FolderFileController extends Controller
         }
     }
 
-    public function store(CreateFileRequest $request, $folderId, $folderType)
+    public function store(CreateFileRequest $request, $eventSlug, $folderSlug)
     {
         $data = $request->validated();
+        $folder = EventFolder::where('bunny_folder_name', $folderSlug)->first();
         $settingId = null;
-        if ($folderType == "image" && !config('services.demo_mode')) {
+        if ($folder->folder_type == "image" && !config('services.demo_mode')) {
             $setting = getSetting();
             $settingId = $setting['image_setting_id'];
             if (!checkImageConfig($setting['image']))
                 throw ValidationException::withMessages(['success' => false, 'message' => "Image uploading is not allowed, please check bunny setting"]);
         }
 
-        if ($folderType == "video" && !config('services.demo_mode')) {
+        if ($folder->folder_type == "video" && !config('services.demo_mode')) {
             $setting = getSetting();
             $settingId = $setting['video_setting_id'];
             if (!checkVideoConfig($setting['video']))
@@ -122,15 +124,14 @@ class FolderFileController extends Controller
         }
 
         try {
-            $data['folder_id'] = $folderId;
-            $data['file_type'] = $folderType;
+            $data['folder_id'] = $folder->id;
+            $data['file_type'] = $folder->folder_type;
             $data['setting_id'] = $settingId;
             $data['file_status'] = "approved";
             $fileNameWithExtension = $data['file']->getClientOriginalName();
             $fileName = pathinfo($data['file']->getClientOriginalName(), PATHINFO_FILENAME);
             $data['file_name'] = $fileName;
             $data['file_name_with_extension'] = $fileNameWithExtension;
-            $folder = EventFolder::find($folderId);
             if ($folder->folder_type == 'image') {
                 $bunnyMainFolderName = $folder->event->bunny_main_folder_name;
                 $bunnyEventFolderName = $folder->event->bunny_event_name;
@@ -148,7 +149,7 @@ class FolderFileController extends Controller
                 $data['video_duration'] = $this->getVideoDuration($data['file']);
                 $data['file'] = $path['path'];
                 $data['file_bunny_id'] = $path['guid'];
-                $data['thumbnail_url'] = "https://" . $setting['video']['stream_pull_zone'] . ".b-cdn.net/".$path['guid']."/preview.webp";
+                $data['thumbnail_url'] = "https://" . $setting['video']['stream_pull_zone'] . ".b-cdn.net/" . $path['guid'] . "/preview.webp";
             }
             FolderFile::create($data);
             return response()->json(['success' => true, 'message' => 'File has been uploaded successfully']);
@@ -170,61 +171,16 @@ class FolderFileController extends Controller
         return $formattedDuration;
     }
 
-    function update(UpdateFileRequest $request)
+    function update(UpdateFileRequest $request, $eventSlug, $folderSlug)
     {
         $data = $request->validated();
-        $settingId = null;
         $file = FolderFile::find($data['file_id']);
-        $oldFile = clone $file;
         $folder = EventFolder::find($file->folder_id);
-        if ($folder->folder_type == "image" && !config('services.demo_mode')) {
-            $setting = getSetting();
-            $settingId = $setting['image_setting_id'];
-            if (!checkImageConfig($setting['image']))
-                throw ValidationException::withMessages(['success' => false, 'message' => "Image uploading is not allowed, please check bunny setting"]);
-        }
-
-        if ($folder->folder_type == "video" && !config('services.demo_mode')) {
-            $setting = getSetting();
-            $settingId = $setting['video_setting_id'];
-            if (!checkVideoConfig($setting['video']))
-                throw ValidationException::withMessages(['success' => false, 'message' => "Video uploading is not allowed, please check bunny setting"]);
-        }
         try {
             $data['folder_id'] = $folder->folder_id;
             $data['file_type'] = $folder->folder_type;
-            $data['setting_id'] = $settingId;
-            if (isset($data['file'])) {
-                $fileNameWithExtension = $data['file']->getClientOriginalName();
-                $fileName = pathinfo($data['file']->getClientOriginalName(), PATHINFO_FILENAME);
-                $data['file_name'] = $fileName;
-                $data['file_name_with_extension'] = $fileNameWithExtension;
-            }
-            if ($folder->folder_type == 'image') {
-                if (isset($data['file'])) {
-                    $bunnyMainFolderName = $folder->event->bunny_main_folder_name;
-                    $bunnyEventFolderName = $folder->event->bunny_event_name;
-                    $path = $bunnyMainFolderName . '/' . $bunnyEventFolderName . '/' . $folder->bunny_folder_name . '/' . $fileNameWithExtension;
-                    $path = $this->bunnyService->GuarantiedUploadImage($data['file'], $path);
-                    if (!$path['success']) {
-                        return response()->json(['success' => false, 'message' => $path['message']], 400);
-                    }
-                    $this->bunnyService->deleteFile($oldFile);
-                    $data['file'] = $path['path'];
-                }
-            } else if ($folder->folder_type == 'video') {
-                if (isset($data['file'])) {
-                    $path = $this->bunnyVideoService->guarantiedUploadVideo($data['file'], $fileName, $folder->event->video_collection_id, $data['video_resolution']);
-                    if (!$path['success']) {
-                        return response()->json(['success' => false, 'message' => $path['message']], 400);
-                    }
-                    $this->bunnyVideoService->deleteVideo($oldFile->file_bunny_id);
-                    $data['video_duration'] = $this->getVideoDuration($data['file']);
-                    $data['file'] = $path['path'];
-                    $data['file_bunny_id'] = $path['guid'];
-                    $data['thumbnail_url'] = "https://" . $setting['video']['stream_pull_zone'] . ".b-cdn.net/".$path['guid']."/preview.webp";
-                }
-            }
+            $data['setting_id'] = $file->setting_id;
+            $data['file'] = $file->file;
             unset($data['file_id']);
             unset($data['folder_id']);
             $file->update($data);
@@ -235,7 +191,7 @@ class FolderFileController extends Controller
         }
     }
 
-    function delete($id)
+    function delete($eventSlug, $folderSlug, $id)
     {
         try {
             $file = FolderFile::find($id);

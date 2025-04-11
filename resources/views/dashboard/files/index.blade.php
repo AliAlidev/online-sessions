@@ -100,14 +100,14 @@
     <div class="container-xxl flex-grow-1 container-p-y">
 
         <!-- DataTable with Buttons -->
-        <h5>{{ Breadcrumbs::render('files', request()->route('folder_id')) }}</h5>
+        <h5>{{ Breadcrumbs::render('files', request()->route('event_slug'), request()->route('folder_slug')) }}</h5>
         <div class="card">
             <div class="row card-header flex-column flex-md-row pb-0">
                 <div class="d-md-flex justify-content-between align-items-center dt-layout-start col-md-auto me-auto mt-0">
                 </div>
                 <div class="d-md-flex justify-content-between align-items-center dt-layout-end col-md-auto ms-auto mt-0"
                     style="gap: 10px">
-                    <a href="javascript:history.back()" class="btn btn-label-primary btn-sm">Back</a>
+                    {{-- <a href="javascript:history.back()" class="btn btn-label-primary btn-sm">Back</a> --}}
                     <div class="dt-buttons btn-group flex-wrap mb-0">
                         @if (
                             ($folderType == 'video' && Auth::user()->hasPermissionTo('upload_video')) ||
@@ -239,16 +239,16 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <form id="updateFileForm">
-                    <input type="file" id="event-file-hidden" hidden multiple>
+                    {{-- <input type="file" id="event-file-hidden" hidden multiple> --}}
                     <input type="hidden" id="updateFileId" name="file_id">
-                    <input type="hidden" class="uploaded-file-size" name="file_size">
-                    <input type="hidden" class="uploaded-file-name-input" name="file_name">
+                    {{-- <input type="hidden" class="uploaded-file-size" name="file_size">
+                    <input type="hidden" class="uploaded-file-name-input" name="file_name"> --}}
                     <div class="modal-header">
                         <h5 class="modal-title" id="modalCenterTitle">Update Uploaded {{ ucfirst($folderType) }}</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <div class="row mb-6">
+                        {{-- <div class="row mb-6">
                             <div class="col-md-12">
                                 <label for="fileInput" class="form-label">{{ ucfirst($folderType) }}</label>
                                 <input type="file" class="form-control event-file" name="file" id="event-file"
@@ -267,7 +267,7 @@
                                     </div>
                                 </div>
                             @endif
-                        </div>
+                        </div> --}}
                         <div class="row mb-6">
                             <div class="col-md-6">
                                 <label for="UserNameInput" class="form-label">User Name</label>
@@ -421,7 +421,7 @@
             table = $('#files-datatable').DataTable({
                 processing: true,
                 serverSide: true,
-                ajax: "{{ route('files.index', [request()->route('folder_id'), request()->route('type')]) }}",
+                ajax: "{{ route('files.index', [request()->route('event_slug'), request()->route('folder_slug'), request()->route('type')]) }}",
                 scrollX: true,
                 scrollY: '400px',
                 scrollCollapse: true,
@@ -504,9 +504,10 @@
 
             $(document).on('click', '.update-file', function(e) {
                 e.preventDefault();
-                var id = $(this).data('id')
+                var id = $(this).data('id');
+
                 $.ajax({
-                    url: "{{ url('admin/files/show') }}/" + id,
+                    url: "{{ route('files.show', [request()->route('event_slug'), request()->route('folder_slug')]) }}/" + id,
                     type: 'GET',
                     success: function(response) {
                         if (response.success) {
@@ -666,7 +667,7 @@
                     $(`#file-container-${index} .start-btn`).remove(); // Remove "Start Upload" button
 
                     $.ajax({
-                        url: "{{ route('files.store', [request()->route('folder_id'), request()->route('type')]) }}",
+                        url: "{{ route('files.store', [request()->route('event_slug'), request()->route('folder_slug')]) }}",
                         type: 'POST',
                         data: formData,
                         processData: false,
@@ -836,92 +837,36 @@
                 $('.alert').remove();
                 var submitBtn = $("#updateButton");
                 showButtonLoader(submitBtn);
-                if ($('#' + formId + ' #compress_images').is(':checked'))
-                    var file = $('#' + formId + ' #event-file-hidden')[0].files[0];
-                else
-                    var file = $('#' + formId + ' .event-file')[0].files[0];
-                var progressBar = $('#' + formId).parent().find('#progressContainer');
-                progressBar.empty();
-                if (file) {
-                    let fileContainer = $(`
-                            <div class="mb-4" id="file-container-0">
-                                <p class="mb-0">Stage1: File Upload ${file.name}</p>
-                                <div class="progress mt-2">
-                                    <div class="progress-bar progress-bar-striped progress-bar-animated bg-success" style="font-size:12px; height:10px"
-                                        role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"
-                                        style="width: 0%" id="progress-bar-0"></div>
-                                </div>
-                                <p id="status-0" class="text-danger d-inline-block mt-1"></p>
-                                <button class="btn btn-sm btn-warning retry-update-btn hidden-force" style="height:15px; width:auto; font-size:10px" data-index="0" style="font-size: 12px;">Retry</button>
-                            </div>
-                        `);
-                    progressBar.append(fileContainer);
-                }
-                uploadUpdatedFile(file, 0);
-            });
-
-            async function uploadUpdatedFile(file, index) {
-                let formData = new FormData();
-                if (file) {
-                    formData.append('file', file);
-                    formData.append('file_size', file.size);
-                }
                 let csrfToken = $('meta[name="csrf-token"]').attr('content');
+                var formData = new FormData();
                 formData.append('_token', csrfToken);
                 formData.append('user_name', $('#userNameInput').val());
                 formData.append('description', $('#descriptionInput').val());
                 var fileId = $('#updateFileId').val();
                 formData.append('file_id', fileId);
                 formData.append('file_status', $('#fileStatusInput').val());
-                formData.append('video_resolution', $('#video_resolution_update').val());
                 var submitBtn = $("#updateButton");
                 $.ajax({
-                    url: "{{ url('admin/files/update') }}/" + fileId,
+                    url: "{{ route('files.update', [request()->route('event_slug'), request()->route('folder_slug')]) }}/" + fileId,
                     type: 'POST',
                     data: formData,
                     processData: false,
                     contentType: false,
-                    xhr: function() {
-                        let xhr = new window.XMLHttpRequest();
-                        xhr.upload.addEventListener("progress", function(event) {
-                            if (event.lengthComputable) {
-                                let percent = Math.round((event.loaded / event
-                                    .total) * 100);
-                                $("#progress-bar-" + index).css("width",
-                                    percent + "%").text(percent + "%");
-
-                                if (percent === 100) {
-                                    showProcessingStatus(index);
-                                }
-                            }
-                        }, false);
-                        return xhr;
-                    },
                     success: function(response) {
                         hideButtonLoader(submitBtn);
-                        clearInterval($("#status-" + index).data(
-                            "interval"));
-                        $("#progress-bar-" + index).removeClass("bg-success").addClass(
-                            "bg-primary").text("Completed");
-                        $("#status-" + index).addClass('hidden-force');
-                        resetForm(formId);
                         var element = `<div class="alert alert-success"> ${response.message}</div>`;
                         $('#' + formId).find('.modal-body').prepend(element);
                         $('#files-datatable').DataTable().draw();
                     },
                     error: function(jqXHR, textStatus) {
                         hideButtonLoader(submitBtn);
-                        clearInterval($("#status-" + index).data(
-                            "interval")); // Stop animated dots
-                        $("#progress-bar-" + index).removeClass("bg-success").addClass(
-                            "bg-danger").text("Failed");
                         let errorMessage = (textStatus === "timeout") ?
                             "Stage2: Upload timed out" : "Stage2: Failed";
-                        $("#status-" + index).text(errorMessage).show();
                         showUpdateRetryButton(index); // Show retry button only when failed
                     }
                 });
-            }
+            });
+
 
             function showButtonLoader(submitBtn) {
                 submitBtn.find('#spinner').show();
@@ -947,7 +892,7 @@
                 let csrfToken = $('meta[name="csrf-token"]').attr('content');
                 var submitBtn = $("#updateStatusButton");
                 $.ajax({
-                    url: "{{ route('files.change.status') }}",
+                    url: "{{ route('files.change.status', [request()->route('event_slug'), request()->route('folder_slug')]) }}",
                     type: 'POST',
                     headers: {
                         "X-CSRF-TOKEN": csrfToken

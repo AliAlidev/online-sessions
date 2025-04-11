@@ -30,9 +30,13 @@
     <div class="container-xxl flex-grow-1 container-p-y">
         <h5 class="mb-0">{{ Breadcrumbs::render('clients') }}</h5>
         <div class="card">
-            {{-- <div class="card-header d-flex justify-content-between align-items-center">
-                <small class="text-body float-end"></small>
-            </div> --}}
+            @can('create_client')
+                <div class="row card-header flex-column flex-md-row pb-0">
+                    <div class="d-md-flex justify-content-between align-items-center dt-layout-end col-md-auto ms-auto mt-0">
+                        <a href="{{ route('clients.create') }}" class="btn btn-primary">Create</a>
+                    </div>
+                </div>
+            @endcan
             <div class="card-datatable">
                 <div class="justify-content-between dt-layout-table" style="padding: 20px">
                     <table id="clients-datatable" class="table table-responsive table-hover text-nowrap"

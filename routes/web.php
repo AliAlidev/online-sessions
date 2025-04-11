@@ -33,41 +33,40 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::controller(EventTypeController::class)->prefix('admin/events-types')->name('events.types.')->group(function () {
-        Route::get('/index', 'index')->name('index');
+        Route::get('/', 'index')->name('index');
         Route::post('/store', 'store')->name('store');
         Route::post('/update/{id}', 'update')->name('update');
         Route::get('/show/{id}', 'show')->name('show');
         Route::get('/delete/{id}', 'delete')->name('delete');
     });
 
-    Route::controller(FolderController::class)->prefix('admin/folders')->name('folders.')->group(function () {
-        Route::get('/{event_id}/index', 'index')->name('index');
-        Route::post('/{event_id}/store', 'store')->name('store');
-        Route::post('/update/{id}', 'update')->name('update');
-        Route::get('/show/{id}', 'show')->name('show');
-        Route::get('/delete/{id}', 'delete')->name('delete');
+    Route::controller(FolderController::class)->prefix('admin/{event_slug}/folders')->name('folders.')->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::post('/store', 'store')->name('store');
+        Route::post('/update/{id?}', 'update')->name('update');
+        Route::get('/show/{id?}', 'show')->name('show');
+        Route::get('/delete/{id?}', 'delete')->name('delete');
     });
 
-    Route::controller(FolderFileController::class)->prefix('admin/files')->name('files.')->group(function () {
-        Route::get('/{folder_id}/index/{type}', 'index')->name('index');
-        Route::post('/{folder_id}/store/{type}', 'store')->name('store');
-        Route::post('/update/{id}', 'update')->name('update');
-        Route::post('/update-without-file/{id}', 'updateWithoutFile')->name('update.without.file');
-        Route::get('/show/{id}', 'show')->name('show');
-        Route::get('/delete/{id}', 'delete')->name('delete');
+    Route::controller(FolderFileController::class)->prefix('admin/{event_slug}/{folder_slug}/files')->name('files.')->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::post('/store', 'store')->name('store');
+        Route::post('/update/{id?}', 'update')->name('update');
+        Route::get('/show/{id?}', 'show')->name('show');
+        Route::get('/delete/{id?}', 'delete')->name('delete');
         Route::post('/change-status', 'changeStatus')->name('change.status');
         Route::post('/upload-file', 'uploadFile');
         Route::get('/uploaded-file-status/{uploadId}', 'uploadedFileStatus');
     });
 
-    Route::controller(EventController::class)->prefix('admin/events')->name('events.')->group(function () {
-        Route::get('/index', 'index')->name('index');
+    Route::controller(EventController::class)->prefix('admin')->name('events.')->group(function () {
+        Route::get('events', 'index')->name('index');
         Route::get('/create', 'create')->name('create');
         Route::post('/store', 'store')->name('store');
-        Route::get('/edit/{id}', 'edit')->name('edit');
-        Route::post('/update/{id}', 'update')->name('update');
-        Route::get('/delete/{id}', 'delete')->name('delete');
-        Route::get('/show/{id}', 'show');
+        Route::get('/edit/{id?}', 'edit')->name('edit');
+        Route::post('/update/{id?}', 'update')->name('update');
+        Route::get('/delete/{id?}', 'delete')->name('delete');
+        Route::get('/show/{id?}', 'show');
     });
 
     Route::controller(RoleController::class)->prefix('admin/roles')->name('roles.')->group(function () {
@@ -105,15 +104,17 @@ Route::middleware('auth')->group(function () {
 
 //////////////////////////// website ////////////////////////////
 Route::controller(WebsiteController::class)->name('landing.')->group(function () {
-    Route::get('events/{year}/{month}/{customer}', 'index')->name('index');
-    Route::get('events/{year}/{month}/{customer}/gallery', 'gallery')->name('gallery');
-    Route::get('events/{year}/{month}/{customer}/share', 'share')->name('share');
+    Route::get('events/{year}/{month}/{event_slug}', 'index')->name('index');
+    Route::get('events/{year}/{month}/{event_slug}/gallery', 'gallery')->name('gallery');
+    Route::get('events/{year}/{month}/{event_slug}/share', 'share')->name('share');
     Route::middleware('ensure.token')->get('events/gallery-redirect-url', 'galleryRedirectUrl')->name('gallery_redirect_url');
-    Route::middleware('ensure.token')->post('events/{year}/{month}/{customer}/image', 'image')->name('image');
-    Route::middleware('ensure.token')->post('events/{year}/{month}/{customer}/video', 'video')->name('video');
+    Route::middleware('ensure.token')->post('events/{year}/{month}/{event_slug}/image', 'image')->name('image');
+    Route::middleware('ensure.token')->post('events/{year}/{month}/{event_slug}/video', 'video')->name('video');
     Route::middleware('ensure.token')->get('events/share-redirect-url', 'shareRedirectUrl')->name('share_redirect_url');
     Route::middleware('ensure.token')->post('events/share-event-image', 'shareEventImage')->name('share-event-image');
     Route::middleware('ensure.token')->post('/delete-image/{id}', 'deleteImage')->name('delete-image');
+    Route::get('events/event-password', 'eventPassword')->name('event_password');
+    Route::middleware('ensure.token')->post('/apply-event-password', 'applyEventPassword')->name('apply_event_password');
 });
 
 Route::fallback(function () {

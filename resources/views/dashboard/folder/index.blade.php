@@ -42,7 +42,7 @@
     <div class="container-xxl flex-grow-1 container-p-y">
 
         <!-- DataTable with Buttons -->
-        <h5 class="mb-0">{{ Breadcrumbs::render('folder', request()->route('event_id')) }}</h5>
+        <h5 class="mb-0">{{ Breadcrumbs::render('folder', request()->route('event_slug')) }}</h5>
         <div class="card">
 
             <div class="row card-header flex-column flex-md-row pb-0">
@@ -50,7 +50,7 @@
                 </div>
                 <div class="d-md-flex justify-content-between align-items-center dt-layout-end col-md-auto ms-auto mt-0"
                     style="gap: 10px">
-                    <a href="javascript:history.back()" class="btn btn-label-primary btn-sm">Back</a>
+                    {{-- <a href="javascript:history.back()" class="btn btn-label-primary btn-sm">Back</a> --}}
                     <div class="dt-buttons btn-group flex-wrap mb-0">
                         @can('create_folder')
                             <button class="btn btn-sm btn-primary" data-bs-target="#CreateFolderModal" data-bs-toggle="modal"
@@ -244,7 +244,7 @@
             table = $('#folders-datatable').DataTable({
                 processing: true,
                 serverSide: true,
-                ajax: "{{ route('folders.index', request()->route('event_id')) }}",
+                ajax: "{{ route('folders.index', request()->route('event_slug')) }}",
                 scrollX: true,
                 scrollY: '400px',
                 scrollCollapse: true,
@@ -333,7 +333,7 @@
                 e.preventDefault();
                 var id = $(this).data('id')
                 $.ajax({
-                    url: "{{ url('admin/folders/show') }}/" + id,
+                    url: "{{ route('folders.show', request()->route('event_slug')) }}/" + id,
                     type: 'GET',
                     success: function(response) {
                         if (response.success) {
@@ -363,7 +363,7 @@
                 var spinner = submitBtn.find('#spinner');
 
                 $.ajax({
-                    url: "{{ route('folders.store', request()->route('event_id')) }}",
+                    url: "{{ route('folders.store', request()->route('event_slug')) }}",
                     type: 'POST',
                     processData: false,
                     contentType: false,
@@ -407,7 +407,7 @@
                 var spinner = submitBtn.find('#spinner');
                 var id = $('#folderIdInput').val();
                 $.ajax({
-                    url: "{{ url('admin/folders/update') }}/" + id,
+                    url: "{{ route('folders.update', request()->route('event_slug')) }}/" + id,
                     type: 'POST',
                     processData: false,
                     contentType: false,
