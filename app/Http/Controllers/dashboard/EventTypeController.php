@@ -16,7 +16,7 @@ class EventTypeController extends Controller
     {
         try {
             if ($request->ajax()) {
-                $events = EventType::get();
+                $events = EventType::orderBy('created_at','desc')->get();
                 return DataTables::of($events)
                     ->addIndexColumn()
                     ->addColumn('actions', function ($event) {

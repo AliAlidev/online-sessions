@@ -19,7 +19,7 @@ class RoleController extends Controller
     {
         try {
             if ($request->ajax()) {
-                $events = ClientRole::whereNotIn('name', ['super-admin'])->get();
+                $events = ClientRole::whereNotIn('name', ['super-admin'])->orderBy('created_at','desc')->get();
                 return DataTables::of($events)
                     ->addIndexColumn()
                     ->addColumn('actions', function ($role) {

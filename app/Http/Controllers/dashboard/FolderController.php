@@ -30,7 +30,7 @@ class FolderController extends Controller
     {
         try {
             if ($request->ajax()) {
-                $folders = Event::where('bunny_event_name', $eventSlug)->first()->folders;
+                $folders = Event::where('bunny_event_name', $eventSlug)->first()->folders()->orderBy('created_at','desc')->get();
                 return DataTables::of($folders)
                     ->addColumn('actions', function ($folder) use ($eventSlug) {
                         $actions = '';

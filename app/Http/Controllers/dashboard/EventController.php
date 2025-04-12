@@ -67,15 +67,12 @@ class EventController extends Controller
                             return 'Expired';
                         }
                         if ($eventStartDate->gt($now)) {
-                            return 'Not Started';
+                            return 'Pending';
                         }
                         if ($eventEndDate->floatDiffInMonths($now, true) > 1) {
-                            return 'Month +';
+                            return 'Online';
                         }
-                        if ($eventEndDate->floatDiffInMonths($now, true) == 1) {
-                            return 'Month';
-                        }
-                        return 'Month -';
+                        return 'Expire soon';
                     })
                     ->addColumn('event_client', function ($row) {
                         return $row->client?->planner_name;

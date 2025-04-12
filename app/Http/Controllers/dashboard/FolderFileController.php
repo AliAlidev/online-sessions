@@ -33,7 +33,7 @@ class FolderFileController extends Controller
         try {
             $folder = EventFolder::where('bunny_folder_name', $folderSlug)->first();
             if ($request->ajax()) {
-                $files = $folder->files;
+                $files = $folder->files()->orderBy('created_at','desc')->get();
                 return DataTables::of($files)
                     ->addColumn('actions', function ($file) use ($folder, $folderSlug) {
                         $action = '';

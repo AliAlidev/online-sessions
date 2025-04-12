@@ -184,6 +184,9 @@
                                 <label for="folderThumbnail" class="form-label">Folder Thumbnail</label>
                                 <input type="file" id="folderThumbnailInput" class="form-control"
                                     name="folder_thumbnail" accept="image/jpeg,png,jpg,gif,svg,webp">
+                                <div class="mt-2 preview-container">
+                                    <img width="125px" height="125px" class="img-fluid">
+                                </div>
                                 <small class="text-body float-start uploaded-file-name"
                                     style="color: #000; font-style: italic;"></small>
                                 <small class="text-body float-start error-message-div folder_thumbnail-error"
@@ -340,6 +343,8 @@
                             $('#folderNameInput').val(response.data.folder_name);
                             $('#folderTypeInput').val(response.data.folder_type);
                             $('#folderLinkInput').val(response.data.folder_link);
+                            $('.preview-container img').attr('src', "\\" + response.data
+                                .folder_thumbnail);
                             if (response.data.folder_type == 'link')
                                 $('#folderLinkInput').parent().attr('hidden', false);
                             $('#descriptionInput').text(response.data.description);
@@ -507,6 +512,20 @@
                 }
                 fileNameDisplay.attr('hidden', false);
                 fileNameDisplay.text(`Uploaded File: ${fileName}`);
+                if (fileInput.files[0].type.startsWith('image/')) {
+                    const previewContainer = $(this).closest('.col-md-6').find('.preview-container');
+                    previewContainer.empty();
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const img = document.createElement('img');
+                        img.src = e.target.result;
+                        img.style.width = '125px';
+                        img.style.height = '125px';
+                        img.className = 'img-thumbnail';
+                        previewContainer.append(img);
+                    };
+                    reader.readAsDataURL(fileInput.files[0]);
+                }
             } else {
                 fileNameDisplay.text('');
             }

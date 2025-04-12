@@ -160,11 +160,11 @@
                         data: 'event_status',
                         name: 'event_status',
                         render: function(data, type, row) {
-                            if (data == "Not Started") {
-                                return '<span class="badge bg-warning">Not Started</span>';
-                            } else if (data == "Month +") {
-                                return '<span class="badge bg-success">Month +</span>';
-                            } else if (data == "Month -" || data == "Month" || data == "Expired") {
+                            if (data == "Pending") {
+                                return '<span class="badge bg-warning">Pending</span>';
+                            } else if (data == "Online") {
+                                return '<span class="badge bg-success">Online</span>';
+                            } else if (data == "Expire soon" || data == "Expired") {
                                 return '<span class="badge bg-danger">' + data + '</span>';
                             }
                             return '-';

@@ -18,7 +18,7 @@ class ClientController extends Controller
     {
         try {
             if ($request->ajax()) {
-                $clients = Client::get();
+                $clients = Client::orderBy('created_at','desc')->get();
                 return DataTables::of($clients)
                     ->addColumn('actions', function ($client) {
                         $actions = '';

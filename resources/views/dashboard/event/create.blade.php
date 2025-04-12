@@ -134,6 +134,8 @@
                                             <label for="cover-image-file" class="form-label">Cover Image</label>
                                             <input class="form-control" type="file" id="cover-image-file"
                                                 name="cover_image" accept="image/jpeg,png,jpg,gif,svg,webp">
+                                            <div class="mt-2 preview-container">
+                                            </div>
                                             <small class="text-body float-start uploaded-file-name"
                                                 style="color: #000; font-style: italic;"></small>
                                             <small class="text-body float-start error-message-div cover_image-error"
@@ -143,6 +145,8 @@
                                             <label for="formFile" class="form-label">Profile Picture</label>
                                             <input class="form-control" type="file" id="formFile" name="profile_picture"
                                                 accept="image/jpeg,png,jpg,gif,svg,webp">
+                                            <div class="mt-2 preview-container">
+                                            </div>
                                             <small class="text-body float-start uploaded-file-name"
                                                 style="color: #000; font-style: italic;"></small>
                                             <small class="text-body float-start profile_picture-error"
@@ -253,8 +257,8 @@
                                         <div class="col md-6">
                                             <label for="exampleFormControlTextarea1" class="form-label">Link</label>
                                             <div class="url-container mb-6">
-                                                <input type="text" id="urlInput" class="url-input" value="" readonly
-                                                    placeholder="Event Link" name="event_link">
+                                                <input type="text" id="urlInput" class="url-input" value=""
+                                                    readonly placeholder="Event Link" name="event_link">
                                                 <button onclick="copyUrl(event)" class="copy-button">Copy</button>
                                                 <small class="text-body float-start" style="color: #696cff !important"
                                                     hidden>Copied</small>
@@ -406,7 +410,7 @@
                                         <small class="text-body float-start error-message-div accent_color-error"
                                             style="color: #ff0000 !important" hidden></small>
                                     </div>
-                                    <div class="row mb-6">
+                                    {{-- <div class="row mb-6">
                                         <div class="col-md-6">
                                             <label class="form-label">Select Font</label>
                                             <select class="form-select" name="font">
@@ -416,7 +420,7 @@
                                                 <option value="Courier New">Courier New</option>
                                             </select>
                                         </div>
-                                    </div>
+                                    </div> --}}
                                 </div>
                             </div>
                         </div>
@@ -629,6 +633,20 @@
                         fileExtension;
                 }
                 fileNameDisplay.text(`Uploaded File: ${fileName}`);
+                if (fileInput.files[0].type.startsWith('image/')) {
+                    const previewContainer = $(this).closest('.col-md-6').find('.preview-container');
+                    previewContainer.empty();
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const img = document.createElement('img');
+                        img.src = e.target.result;
+                        img.style.width = '125px';
+                        img.style.height = '125px';
+                        img.className = 'img-thumbnail';
+                        previewContainer.append(img);
+                    };
+                    reader.readAsDataURL(fileInput.files[0]);
+                }
             } else {
                 fileNameDisplay.text('');
             }

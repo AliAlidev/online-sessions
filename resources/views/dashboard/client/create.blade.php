@@ -47,6 +47,8 @@
                                     <label for="logo" class="form-label">Logo</label>
                                     <input type="file" id="logo" class="form-control" name="logo"
                                         accept="image/jpeg,png,jpg,gif,svg,webp">
+                                    <div class="mt-2 preview-container">
+                                    </div>
                                     <small class="text-body float-start uploaded-file-name"
                                         style="color: #000; font-style: italic;"></small>
                                     <small class="text-body float-start error-message-div logo-error"
@@ -65,6 +67,8 @@
                                     <label for="profile-picture" class="form-label">Profile Picture</label>
                                     <input type="file" id="profile-picture" class="form-control" name="profile_picture"
                                         accept="image/jpeg,png,jpg,gif,svg,webp">
+                                    <div class="mt-2 preview-container">
+                                    </div>
                                     <small class="text-body float-start uploaded-file-name"
                                         style="color: #000; font-style: italic;"></small>
                                     <small class="text-body float-start error-message-div profile_picture-error"
@@ -202,6 +206,20 @@
                         fileExtension;
                 }
                 fileNameDisplay.text(`Uploaded File: ${fileName}`);
+                if (fileInput.files[0].type.startsWith('image/')) {
+                    const previewContainer = $(this).closest('.col-md-6').find('.preview-container');
+                    previewContainer.empty();
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const img = document.createElement('img');
+                        img.src = e.target.result;
+                        img.style.width = '125px';
+                        img.style.height = '125px';
+                        img.className = 'img-thumbnail';
+                        previewContainer.append(img);
+                    };
+                    reader.readAsDataURL(fileInput.files[0]);
+                }
             } else {
                 fileNameDisplay.text('');
             }

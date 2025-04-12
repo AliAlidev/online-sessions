@@ -113,7 +113,8 @@
                                         <div class="col-md-6">
                                             <label class="form-label" for="event-name-id">{{ __('Name') }}</label>
                                             <div class="input-group input-group-merge">
-                                                <input type="text" id="event-name-id" class="form-control" {{ $event->canUpdateEventNameAndStartDate() ? '' : 'disabled' }}
+                                                <input type="text" id="event-name-id" class="form-control"
+                                                    {{ $event->canUpdateEventNameAndStartDate() ? '' : 'disabled' }}
                                                     name="event_name" value="{{ $event->event_name }}"
                                                     placeholder="Enter Event Name">
                                             </div>
@@ -137,15 +138,21 @@
                                             <label for="cover-image-file" class="form-label">Cover Image</label>
                                             <input class="form-control" type="file" id="cover-image-file"
                                                 name="cover_image" accept="image/jpeg,png,jpg,gif,svg,webp">
+                                            <div class="mt-2 preview-container">
+                                                <img width="125px" height="125px" src="{{ $event->cover_image ? asset($event->cover_image) : '' }}">
+                                            </div>
                                             <small class="text-body float-start uploaded-file-name"
-                                                style="color: #000; font-style: italic;"></small>
+                                            style="color: #000; font-style: italic;"></small>
                                             <small class="text-body float-start error-message-div cover_image-error"
-                                                style="color: #ff0000 !important" hidden></small>
+                                            style="color: #ff0000 !important" hidden></small>
                                         </div>
                                         <div class="col-md-6">
                                             <label for="formFile" class="form-label">Profile Picture</label>
                                             <input class="form-control" type="file" id="formFile" name="profile_picture"
-                                                accept="image/jpeg,png,jpg,gif,svg,webp">
+                                            accept="image/jpeg,png,jpg,gif,svg,webp">
+                                            <div class="mt-2 preview-container">
+                                                <img width="125px" height="125px" src="{{ $event->profile_picture ? asset($event->profile_picture) : '' }}">
+                                            </div>
                                             <small class="text-body float-start uploaded-file-name"
                                                 style="color: #000; font-style: italic;"></small>
                                             <small class="text-body float-start profile_picture-error"
@@ -183,7 +190,8 @@
                                     <div class="row mb-6">
                                         <div class="col-md-6">
                                             <label for="html5-date-input" class="form-label">Start Date</label>
-                                            <input class="form-control start_date" type="date" id="start-date-id" {{ $event->canUpdateEventNameAndStartDate() ? '' : 'disabled' }}
+                                            <input class="form-control start_date" type="date" id="start-date-id"
+                                                {{ $event->canUpdateEventNameAndStartDate() ? '' : 'disabled' }}
                                                 value="{{ $event->start_date }}" name="start_date">
                                             <small class="text-body float-start error-message-div start_date-error"
                                                 style="color: #ff0000 !important" hidden></small>
@@ -463,7 +471,7 @@
                                         <small class="text-body float-start error-message-div accent_color-error"
                                             style="color: #ff0000 !important" hidden></small>
                                     </div>
-                                    <div class="row mb-6">
+                                    {{-- <div class="row mb-6">
                                         <div class="col-md-6">
                                             <label class="form-label">Select Font</label>
                                             <select class="form-select" name="font">
@@ -476,14 +484,15 @@
                                                     value="Courier New">Courier New</option>
                                             </select>
                                         </div>
-                                    </div>
+                                    </div> --}}
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div style="display: flex; gap: 10px; justify-content: flex-end">
                         <a href="javascript:history.back()" class="btn btn-label-primary">Close</a>
-                        <button type="submit" class="btn btn-primary" style="float: right" id="updateButton">Update Event
+                        <button type="submit" class="btn btn-primary" style="float: right" id="updateButton">Update
+                            Event
                             <span id="spinner" style="display:none;">
                                 <i class="fa fa-spinner fa-spin"></i>
                             </span>
@@ -700,6 +709,20 @@
                         fileExtension;
                 }
                 fileNameDisplay.text(`Uploaded File: ${fileName}`);
+                if (fileInput.files[0].type.startsWith('image/')) {
+                    const previewContainer = $(this).closest('.col-md-6').find('.preview-container');
+                    previewContainer.empty();
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const img = document.createElement('img');
+                        img.src = e.target.result;
+                        img.style.width = '125px';
+                        img.style.height = '125px';
+                        img.className = 'img-thumbnail';
+                        previewContainer.append(img);
+                    };
+                    reader.readAsDataURL(fileInput.files[0]);
+                }
             } else {
                 fileNameDisplay.text('');
             }
