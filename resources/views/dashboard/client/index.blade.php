@@ -113,19 +113,23 @@
                     },
                     {
                         data: 'contact_button_link',
-                        name: 'contact_button_link'
+                        name: 'contact_button_link',
+                        visible: false
                     },
                     {
                         data: 'logo',
-                        name: 'logo'
+                        name: 'logo',
+                        visible: false
                     },
                     {
                         data: 'profile_picture',
-                        name: 'profile_picture'
+                        name: 'profile_picture',
+                        visible: false
                     },
                     {
                         data: 'description',
-                        name: 'description'
+                        name: 'description',
+                        visible: false
                     },
                     {
                         data: 'actions',
