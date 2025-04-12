@@ -239,16 +239,19 @@
                                     </div>
                                     <div class="row mb-6">
                                         <div class="col md-6">
-                                            <label for="exampleFormControlTextarea1"
+                                            <label for="exampleFormControlTextarea1Description"
                                                 class="form-label">Description</label>
-                                            <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="description"></textarea>
+                                            <textarea class="form-control" id="exampleFormControlTextarea1Description" rows="3" name="description"></textarea>
+                                            <small id="char-count" class="form-text text-muted">0 / 300 characters</small>
                                             <small class="text-body float-start error-message-div Description-error"
                                                 style="color: #ff0000 !important" hidden></small>
                                         </div>
                                         <div class="col-md-6">
-                                            <label for="exampleFormControlTextarea1" class="form-label">Welcome
+                                            <label for="exampleFormControlTextarea1welcomeMessage"
+                                                class="form-label">Welcome
                                                 Message</label>
-                                            <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="welcome_message"></textarea>
+                                            <textarea class="form-control" id="exampleFormControlTextarea1welcomeMessage" rows="3" name="welcome_message"></textarea>
+                                            <small id="char-count" class="form-text text-muted">0 / 300 characters</small>
                                             <small class="text-body float-start error-message-div welcome_message-error"
                                                 style="color: #ff0000 !important" hidden></small>
                                         </div>
@@ -709,5 +712,22 @@
             link[0].click();
             link.remove();
         });
+    </script>
+
+    <script>
+        $(document).ready(function() {
+            function addCharactersLimitation(inputId, limitation = 300) {
+                const input = document.getElementById(inputId);
+                const counter = input.parentNode.querySelector('#char-count');
+                input.addEventListener('input', function() {
+                    if (input.value.length > limitation) {
+                        input.value = input.value.substring(0, limitation); // Trim excess
+                    }
+                    counter.textContent = `${input.value.length} / ${limitation} characters`;
+                });
+            }
+            addCharactersLimitation('exampleFormControlTextarea1Description');
+            addCharactersLimitation('exampleFormControlTextarea1welcomeMessage');
+        })
     </script>
 @endsection

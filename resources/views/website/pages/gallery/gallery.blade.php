@@ -61,6 +61,10 @@
             /* Vertically center the text next to the spinner */
         }
 
+        .swal2-container{
+            z-index: 9999 !important;
+        }
+
     </style>
     @vite(['resources/js/app.js', 'resources/js/pages/gallery.js'])
 @endpush
