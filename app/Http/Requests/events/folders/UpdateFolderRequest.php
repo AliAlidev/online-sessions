@@ -39,7 +39,7 @@ class UpdateFolderRequest extends FormRequest
             ],
             'folder_type' => 'required|in:image,video,link',
             'description' => 'nullable|string',
-            'folder_thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
+            'folder_thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp',
             'folder_link' => $link
         ];
     }

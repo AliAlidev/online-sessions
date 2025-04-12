@@ -100,6 +100,7 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
+                        <input type="file" id="create-image-compressed" name="folder_thumbnail" hidden>
                         <div class="row mb-6">
                             <div class="col-md-6">
                                 <label for="folderName" class="form-label">Folder Name</label>
@@ -110,7 +111,8 @@
                             </div>
                             <div class="col-md-6">
                                 <label for="folderThumbnail" class="form-label">Folder Thumbnail</label>
-                                <input type="file" id="folderThumbnail" class="form-control" name="folder_thumbnail"
+                                <input type="file" id="folderThumbnail" class="form-control"
+                                    data-compressed-file-id="create-image-compressed"
                                     accept="image/jpeg,png,jpg,gif,svg,webp">
                                 <div class="mt-2 preview-container">
                                 </div>
@@ -174,6 +176,7 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
+                        <input type="file" id="update-image-compressed" name="folder_thumbnail" hidden>
                         <div class="row mb-6">
                             <div class="col-md-6">
                                 <label for="folderName" class="form-label">Folder Name</label>
@@ -185,7 +188,8 @@
                             <div class="col-md-6">
                                 <label for="folderThumbnail" class="form-label">Folder Thumbnail</label>
                                 <input type="file" id="folderThumbnailInput" class="form-control"
-                                    name="folder_thumbnail" accept="image/jpeg,png,jpg,gif,svg,webp">
+                                    data-compressed-file-id="update-image-compressed"
+                                    accept="image/jpeg,png,jpg,gif,svg,webp">
                                 <div class="mt-2 preview-container">
                                     <img width="125px" height="125px" class="img-fluid">
                                 </div>
@@ -345,7 +349,8 @@
                             $('#folderNameInput').val(response.data.folder_name);
                             $('#folderTypeInput').val(response.data.folder_type);
                             $('#folderLinkInput').val(response.data.folder_link);
-                            $('.preview-container img').attr('src', "\\" + response.data.folder_thumbnail).attr('hidden', false);
+                            $('.preview-container img').attr('src', "\\" + response.data
+                                .folder_thumbnail).attr('hidden', false);
                             if (response.data.folder_type == 'link')
                                 $('#folderLinkInput').parent().attr('hidden', false);
                             $('#descriptionInput').text(response.data.description);
@@ -463,7 +468,7 @@
                 $(this).attr('hidden', true);
             });
 
-            $('.preview-container img').attr('src',null).attr('hidden', true);
+            $('.preview-container img').attr('src', null).attr('hidden', true);
 
             $('#folderLink,#folderLinkInput').parent().attr('hidden', true);
         }
@@ -501,8 +506,10 @@
         })
     </script>
 
+    <script src="{{ asset('assets/js/compressor.min.js') }}"></script>
+
     <script>
-        $('input[type="file"]').on('change', function() {
+        $('#folderThumbnail, #folderThumbnailInput').on('change', function() {
             const fileInput = $(this)[0];
             const fileNameDisplay = $(this).closest('.col-md-6').find('.uploaded-file-name');
             if (fileInput.files && fileInput.files[0]) {
@@ -529,9 +536,54 @@
                     };
                     reader.readAsDataURL(fileInput.files[0]);
                 }
+                compressImages(this.id, $(this).data('compressedFileId'));
             } else {
                 fileNameDisplay.text('');
             }
         });
+
+        function compressImages(fileId, compressedFileId) {
+            const input = document.getElementById(fileId);
+            const files = input.files;
+            if (!files.length) return;
+
+            const targetSizeKB = 500; // Target size in KB
+            const dataTransfer = new DataTransfer(); // Holds all final files
+
+            Array.from(files).forEach((file) => {
+                const fileSizeKB = file.size / 1024; // Convert bytes to KB
+
+                // If file is already under target size, skip compression
+                if (fileSizeKB <= targetSizeKB) {
+                    dataTransfer.items.add(file); // Use original file
+                    if (dataTransfer.files.length === files.length) {
+                        document.getElementById(compressedFileId).files = dataTransfer.files;
+                    }
+                    return;
+                }
+
+                // Else compress
+                const quality = Math.max(0.98, targetSizeKB / fileSizeKB); // More aggressive compression if needed
+                new Compressor(file, {
+                    quality: quality,
+                    maxWidth: 1024,
+                    maxHeight: 1024,
+                    success(result) {
+                        const compressedFile = new File([result], file.name, {
+                            type: file.type,
+                            lastModified: Date.now(),
+                        });
+                        dataTransfer.items.add(compressedFile);
+                        if (dataTransfer.files.length === files.length) {
+                            document.getElementById(compressedFileId).files =
+                                dataTransfer.files;
+                        }
+                    },
+                    error(err) {
+                        console.error("Compression error:", err);
+                    }
+                });
+            });
+        }
     </script>
 @endsection
