@@ -264,8 +264,8 @@
                         searchable: false
                     },
                     {
-                        data: 'event_id',
-                        name: 'event_id'
+                        data: 'event_name',
+                        name: 'event_name'
                     },
                     {
                         data: 'folder_name',
@@ -273,7 +273,8 @@
                     },
                     {
                         data: 'bunny_folder_name',
-                        name: 'bunny_folder_name'
+                        name: 'bunny_folder_name',
+                        visible: false
                     },
                     {
                         data: 'folder_type',
@@ -281,7 +282,8 @@
                     },
                     {
                         data: 'description',
-                        name: 'description'
+                        name: 'description',
+                        visible: false
                     },
                     {
                         data: 'folder_thumbnail',

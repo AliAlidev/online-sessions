@@ -40,7 +40,7 @@ class FolderController extends Controller
                         return $actions;
                     })
                     ->addIndexColumn()
-                    ->editColumn('event_id', function ($row) {
+                    ->editColumn('event_name', function ($row) {
                         return $row->event->event_name;
                     })
                     ->editColumn('folder_thumbnail', function ($row) {
