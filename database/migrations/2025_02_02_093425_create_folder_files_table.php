@@ -27,6 +27,7 @@ return new class extends Migration
             $table->string('video_resolution')->nullable();
             $table->string('video_duration')->nullable();
             $table->string('thumbnail_url')->nullable();
+            $table->string('bunny_status')->nullable();
             $table->integer('view_count')->default(0);
 
             $table->foreignId('created_by')->nullable();

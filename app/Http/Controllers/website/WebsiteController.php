@@ -12,6 +12,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 use Throwable;
 
@@ -210,5 +211,32 @@ class WebsiteController extends Controller
             createServerError($th, "deleteFile", "files");
             return response()->json(['success' => true, 'message' => 'Error happen during image deletion']);
         }
+    }
+
+    function bunnyVideoWebhook($request)
+    {
+        Log::alert($request);
+        $data = json_decode($request, true);
+        $video = FolderFile::where('file_bunny_id', $data['VideoGuid'])->first();
+        $video->bunny_status = $data['Status'];
+        $video->save();
+    }
+
+    function getStatusStringFromCode($code)
+    {
+        $data = [
+            0 => "Queued",
+            1 => "Processing",
+            2 => "Encoding",
+            3 => "Finished",
+            4 => "Resolution",
+            5 => "Failed",
+            6 => "PresignedUploadStarted",
+            7 => "PresignedUploadFinished",
+            8 => "PresignedUploadFailed",
+            9 => "CaptionsGenerated",
+            10 => "TitleOrDescriptionGenerated"
+        ];
+        return $data[$code];
     }
 }
