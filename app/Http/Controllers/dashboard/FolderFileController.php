@@ -31,7 +31,9 @@ class FolderFileController extends Controller
     function index(Request $request, $eventSlug, $folderSlug)
     {
         try {
-            $folder = EventFolder::where('bunny_folder_name', $folderSlug)->first();
+            $folder = EventFolder::whereHas('event', function($qrt) use($eventSlug){
+                $qrt->where('bunny_event_name', $eventSlug);
+            })->where('bunny_folder_name', $folderSlug)->first();
             if ($request->ajax()) {
                 $files = $folder->files()->orderBy('created_at','desc')->get();
                 return DataTables::of($files)
@@ -107,7 +109,10 @@ class FolderFileController extends Controller
     public function store(CreateFileRequest $request, $eventSlug, $folderSlug)
     {
         $data = $request->validated();
-        $folder = EventFolder::where('bunny_folder_name', $folderSlug)->first();
+        $folder = EventFolder::whereHas('event', function($qrt) use($eventSlug){
+            $qrt->where('bunny_event_name', $eventSlug);
+        })->where('bunny_folder_name', $folderSlug)->first();
+
         $settingId = null;
         if ($folder->folder_type == "image" && !config('services.demo_mode')) {
             $setting = getSetting();

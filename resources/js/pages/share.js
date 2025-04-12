@@ -168,36 +168,48 @@ $('#image').on('change', function (e) {
     compressImages();
 });
 
-function compressImages() {
+function compressImages(formId) {
     const input = document.getElementById('image');
-    const file = input.files[0];
-    if (!file) return;
+    const files = input.files;
+    if (!files.length) return;
+
     const targetSizeKB = 500; // Target size in KB
-    const dataTransfer = new DataTransfer(); // Holds all compressed files
-    const fileSizeMB = file.size / (1024 * 1024);
-    const fileSizeKB = file.size / 1024; // Convert bytes to KB
-    let quality;
-    if (fileSizeKB <= targetSizeKB) {
-        quality = 1.0;
-    } else {
-        quality = Math.max(0.98, targetSizeKB / fileSizeKB);
-    }
-    new Compressor(file, {
-        quality: quality,
-        maxWidth: 1024, // Resize if needed
-        maxHeight: 1024,
-        success(result) {
-            // Convert Blob to File
-            const compressedFile = new File([result], file.name, {
-                type: file.type,
-                lastModified: Date.now(),
-            });
-            dataTransfer.items.add(compressedFile);
-            document.getElementById('image-compressed').files = dataTransfer.files;
-            document.getElementById('file_size').value = compressedFile.size;
-        },
-        error(err) {
-            console.error("Compression error:", err);
+    const dataTransfer = new DataTransfer(); // Holds all final files
+
+    Array.from(files).forEach((file) => {
+        const fileSizeKB = file.size / 1024; // Convert bytes to KB
+
+        // If file is already under target size, skip compression
+        if (fileSizeKB <= targetSizeKB) {
+            dataTransfer.items.add(file); // Use original file
+            if (dataTransfer.files.length === files.length) {
+                document.getElementById('image-compressed').files = dataTransfer
+                    .files;
+            }
+            return;
         }
+
+        // Else compress
+        const quality = Math.max(0.98, targetSizeKB / fileSizeKB); // More aggressive compression if needed
+        new Compressor(file, {
+            quality: quality,
+            maxWidth: 1024,
+            maxHeight: 1024,
+            success(result) {
+                const compressedFile = new File([result], file.name, {
+                    type: file.type,
+                    lastModified: Date.now(),
+                });
+                dataTransfer.items.add(compressedFile);
+                if (dataTransfer.files.length === files.length) {
+                    document.getElementById("image-compressed").files =
+                        dataTransfer.files;
+                    document.getElementById('file_size').value = compressedFile.size;
+                }
+            },
+            error(err) {
+                console.error("Compression error:", err);
+            }
+        });
     });
 }

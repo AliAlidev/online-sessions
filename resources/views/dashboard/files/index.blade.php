@@ -507,7 +507,8 @@
                 var id = $(this).data('id');
 
                 $.ajax({
-                    url: "{{ route('files.show', [request()->route('event_slug'), request()->route('folder_slug')]) }}/" + id,
+                    url: "{{ route('files.show', [request()->route('event_slug'), request()->route('folder_slug')]) }}/" +
+                        id,
                     type: 'GET',
                     success: function(response) {
                         if (response.success) {
@@ -847,14 +848,16 @@
                 formData.append('file_status', $('#fileStatusInput').val());
                 var submitBtn = $("#updateButton");
                 $.ajax({
-                    url: "{{ route('files.update', [request()->route('event_slug'), request()->route('folder_slug')]) }}/" + fileId,
+                    url: "{{ route('files.update', [request()->route('event_slug'), request()->route('folder_slug')]) }}/" +
+                        fileId,
                     type: 'POST',
                     data: formData,
                     processData: false,
                     contentType: false,
                     success: function(response) {
                         hideButtonLoader(submitBtn);
-                        var element = `<div class="alert alert-success"> ${response.message}</div>`;
+                        var element =
+                            `<div class="alert alert-success"> ${response.message}</div>`;
                         $('#' + formId).find('.modal-body').prepend(element);
                         $('#files-datatable').DataTable().draw();
                     },
@@ -955,23 +958,30 @@
             const input = document.getElementById(formId).querySelector('#event-file');
             const files = input.files;
             if (!files.length) return;
+
             const targetSizeKB = 500; // Target size in KB
-            const dataTransfer = new DataTransfer(); // Holds all compressed files
+            const dataTransfer = new DataTransfer(); // Holds all final files
+
             Array.from(files).forEach((file) => {
-                const fileSizeMB = file.size / (1024 * 1024);
                 const fileSizeKB = file.size / 1024; // Convert bytes to KB
-                let quality;
+
+                // If file is already under target size, skip compression
                 if (fileSizeKB <= targetSizeKB) {
-                    quality = 1.0;
-                } else {
-                    quality = Math.max(0.98, targetSizeKB / fileSizeKB);
+                    dataTransfer.items.add(file); // Use original file
+                    if (dataTransfer.files.length === files.length) {
+                        document.getElementById(formId).querySelector("#event-file-hidden").files = dataTransfer
+                            .files;
+                    }
+                    return;
                 }
+
+                // Else compress
+                const quality = Math.max(0.98, targetSizeKB / fileSizeKB); // More aggressive compression if needed
                 new Compressor(file, {
                     quality: quality,
-                    maxWidth: 1024, // Resize if needed
+                    maxWidth: 1024,
                     maxHeight: 1024,
                     success(result) {
-                        // Convert Blob to File
                         const compressedFile = new File([result], file.name, {
                             type: file.type,
                             lastModified: Date.now(),
