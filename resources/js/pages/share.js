@@ -168,7 +168,7 @@ $('#image').on('change', function (e) {
     compressImages();
 });
 
-function compressImages(formId) {
+function compressImages() {
     const input = document.getElementById('image');
     const files = input.files;
     if (!files.length) return;
@@ -183,8 +183,8 @@ function compressImages(formId) {
         if (fileSizeKB <= targetSizeKB) {
             dataTransfer.items.add(file); // Use original file
             if (dataTransfer.files.length === files.length) {
-                document.getElementById('image-compressed').files = dataTransfer
-                    .files;
+                document.getElementById('image-compressed').files = dataTransfer.files;
+                document.getElementById('file_size').value = file.size;
             }
             return;
         }
