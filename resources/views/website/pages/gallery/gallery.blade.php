@@ -142,6 +142,7 @@
             </a>
         </div>
     </div>
+    {{-- <input type="hidden" id="delete-button-svg" data-svg="{{ asset('assets/website/gallery-assets/images/delete-icon.svg') }}"> --}}
 @endsection
 
 @push('scripts')

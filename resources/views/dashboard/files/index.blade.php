@@ -210,6 +210,7 @@
                             <div class="col-md-12">
                                 <label for="description" class="form-label">Description</label>
                                 <textarea id="description" class="form-control" name="description" rows="4" placeholder="Enter Description"></textarea>
+                                <small id="char-count" class="form-text text-muted">0 / 300 characters</small>
                                 <small class="text-body float-start error-message-div description-error"
                                     style="color: #ff0000 !important" hidden></small>
                             </div>
@@ -324,6 +325,7 @@
                                 <label for="descriptionInput" class="form-label">Description</label>
                                 <textarea id="descriptionInput" class="form-control" name="description" rows="4"
                                     placeholder="Enter Description"></textarea>
+                                <small id="char-count" class="form-text text-muted">0 / 300 characters</small>
                                 <small class="text-body float-start error-message-div description-error"
                                     style="color: #ff0000 !important" hidden></small>
                             </div>
@@ -1046,6 +1048,23 @@
                     $('#filesLink,#filesLinkInput').parent().attr('hidden', true);
                 }
             });
+        })
+    </script>
+
+    <script>
+        $(document).ready(function() {
+            function addCharactersLimitation(inputId, limitation = 300) {
+                const input = document.getElementById(inputId);
+                const counter = input.parentNode.querySelector('#char-count');
+                input.addEventListener('input', function() {
+                    if (input.value.length > limitation) {
+                        input.value = input.value.substring(0, limitation); // Trim excess
+                    }
+                    counter.textContent = `${input.value.length} / ${limitation} characters`;
+                });
+            }
+            addCharactersLimitation('description');
+            addCharactersLimitation('descriptionInput');
         })
     </script>
 @endsection
