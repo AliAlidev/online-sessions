@@ -5,7 +5,7 @@ $(document).ready(async function () {
     await axios.get('/events/check-token',
         {
             headers: {
-                'pageToken': token
+                'pageToken': token,
             }
         }).then(response => {
         }).catch(error => {
