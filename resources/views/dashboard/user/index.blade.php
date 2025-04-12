@@ -107,11 +107,13 @@
                     },
                     {
                         data: 'phone',
-                        name: 'phone'
+                        name: 'phone',
+                        visible: false
                     },
                     {
                         data: 'permissions',
-                        name: 'permissions'
+                        name: 'permissions',
+                        visible: false
                     },
                     {
                         data: 'actions',
