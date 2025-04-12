@@ -31,11 +31,11 @@ class FolderFileController extends Controller
     function index(Request $request, $eventSlug, $folderSlug)
     {
         try {
-            $folder = EventFolder::whereHas('event', function($qrt) use($eventSlug){
+            $folder = EventFolder::whereHas('event', function ($qrt) use ($eventSlug) {
                 $qrt->where('bunny_event_name', $eventSlug);
             })->where('bunny_folder_name', $folderSlug)->first();
             if ($request->ajax()) {
-                $files = $folder->files()->orderBy('created_at','desc')->get();
+                $files = $folder->files()->orderBy('created_at', 'desc')->get();
                 return DataTables::of($files)
                     ->addColumn('actions', function ($file) use ($folder, $folderSlug) {
                         $action = '';
@@ -45,9 +45,11 @@ class FolderFileController extends Controller
                     })
                     ->addIndexColumn()
                     ->editColumn('file', function ($row) {
-                        if ($row->file_type == 'image')
-                            return '<img src="' . asset($row->file) . '" data-type="' . $row->file_type . '" alt="" width="100px" height="100px" class="file-previewer">';
-                        elseif ($row->file_type == 'video') {
+                        if ($row->file_type == 'image') {
+                            return '<a href="'.asset($row->file).'" data-fancybox="preview-gallery" data-caption="Your caption here">
+                                    <img class="file-previewer" src="'.asset($row->file).'" data-type="image" style="width: 100px;height: 100px">
+                                </a> ';
+                        } elseif ($row->file_type == 'video') {
                             return '<a href="' . $this->bunnyVideoService->getEmbedUrl($row->file_bunny_id) . '" target="_blank" class="link"><i class="bx bx-video 2xl" style="font-size: 30px;"></i> </a>';
                         } else
                             return '';
@@ -109,7 +111,7 @@ class FolderFileController extends Controller
     public function store(CreateFileRequest $request, $eventSlug, $folderSlug)
     {
         $data = $request->validated();
-        $folder = EventFolder::whereHas('event', function($qrt) use($eventSlug){
+        $folder = EventFolder::whereHas('event', function ($qrt) use ($eventSlug) {
             $qrt->where('bunny_event_name', $eventSlug);
         })->where('bunny_folder_name', $folderSlug)->first();
 

@@ -37,33 +37,6 @@
             color: white !important;
         }
 
-        #FilePreviewer .modal-body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100%;
-            padding: 5px;
-        }
-
-        #FilePreviewer #modalImage {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            max-height: 60vh;
-        }
-
-        #FilePreviewer #modalImageContain {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            max-height: 60vh;
-        }
-
-        .file-previewer:hover,
-        .file-status-modal {
-            cursor: pointer;
-        }
-
         .hidden-force {
             display: none !important;
         }
@@ -94,6 +67,10 @@
             margin-top: 5px;
         }
     </style>
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" rel="stylesheet" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>
 @endsection
 
 @section('content')
@@ -347,30 +324,6 @@
         </div>
     </div>
 
-    {{-- ////////////// FilePreviewer modal ////////////// --}}
-    <div class="modal fade" id="FilePreviewer" tabindex="-1" style="display: none;" aria-hidden="true"
-        data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <input type="hidden" id="updateFileId" name="file_id">
-                <input type="hidden" class="uploaded-file-name-input" name="file_name">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modalCenterTitle">{{ ucfirst($folderType) }} Preview</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="modal-body d-flex justify-content-center align-items-center">
-                        <img id="modalImage" class="img-fluid" style="display:none;" src="">
-                        <video id="modalVideo" width="100%" style="display:none;" controls>
-                            <source id="modalVideoSource" src="" type="video/mp4">
-                            Your browser does not support the video tag.
-                        </video>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
     {{-- ////////////// change status modal ////////////// --}}
     <div class="modal fade" id="changeStatusModal" tabindex="-1" style="display: none;" aria-hidden="true"
         data-bs-backdrop="static" data-bs-keyboard="false">
@@ -524,21 +477,6 @@
                 })
             });
 
-            $(document).on('click', '.file-previewer', function(e) {
-                e.preventDefault();
-                var src = $(this).attr('src');
-                var type = $(this).data('type');
-                if (type == 'image') {
-                    $('#modalVideo').hide();
-                    $('#modalImage').show().attr('src', src);
-                } else {
-                    $('#modalImage').hide();
-                    $('#modalVideo').show().find('source').attr('src', src);
-                    $('#modalVideo')[0].load();
-                }
-                $('#FilePreviewer').modal('show');
-            });
-
             $(document).on('click', '.file-status-modal', function(e) {
                 e.preventDefault();
                 var status = $(this).data('status');
@@ -546,14 +484,6 @@
                 $('#fileStatusModalInput').val(status);
                 $('#fileIdModalInput').val(id);
                 $('#changeStatusModal').modal('show');
-            });
-
-            $('#FilePreviewer').on('hidden.bs.modal', function() {
-                var video = $('#modalVideo')[0];
-                if (video) {
-                    video.pause();
-                    video.currentTime = 0;
-                }
             });
 
             let allUploadsSuccessCount = 0; // Track if any upload fails
