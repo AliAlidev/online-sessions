@@ -112,6 +112,8 @@
                                 <label for="folderThumbnail" class="form-label">Folder Thumbnail</label>
                                 <input type="file" id="folderThumbnail" class="form-control" name="folder_thumbnail"
                                     accept="image/jpeg,png,jpg,gif,svg,webp">
+                                <div class="mt-2 preview-container">
+                                </div>
                                 <small class="text-body float-start uploaded-file-name"
                                     style="color: #000; font-style: italic;"></small>
                                 <small class="text-body float-start error-message-div folder_thumbnail-error"
@@ -343,8 +345,7 @@
                             $('#folderNameInput').val(response.data.folder_name);
                             $('#folderTypeInput').val(response.data.folder_type);
                             $('#folderLinkInput').val(response.data.folder_link);
-                            $('.preview-container img').attr('src', "\\" + response.data
-                                .folder_thumbnail);
+                            $('.preview-container img').attr('src', "\\" + response.data.folder_thumbnail).attr('hidden', false);
                             if (response.data.folder_type == 'link')
                                 $('#folderLinkInput').parent().attr('hidden', false);
                             $('#descriptionInput').text(response.data.description);
@@ -461,6 +462,8 @@
             $('.uploaded-file-name').each(function() {
                 $(this).attr('hidden', true);
             });
+
+            $('.preview-container img').attr('src',null).attr('hidden', true);
 
             $('#folderLink,#folderLinkInput').parent().attr('hidden', true);
         }
