@@ -246,7 +246,7 @@ class EventController extends Controller
             }
 
             session()->flash('success', 'Event has been updated successfully');
-            return response()->json(['success' => true, 'url' => route('events.index')]);
+            return response()->json(['success' => true, 'url' => route('events.edit', $id)]);
         } catch (Exception $th) {
             createServerError($th, "updateEvent", "events");
             return false;

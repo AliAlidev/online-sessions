@@ -107,7 +107,7 @@ class ClientController extends Controller
                 deleteFile($profilePicture);
             }
             session()->flash('success', 'Client has been updated successfully');
-            return response()->json(['success' => true, 'url' => route('clients.index')]);
+            return response()->json(['success' => true, 'url' => route('clients.edit', $client->id)]);
         } catch (Exception $th) {
             createServerError($th, "updateClient", "clients");
             return false;

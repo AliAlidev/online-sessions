@@ -33,7 +33,7 @@
     <div class="container-xxl flex-grow-1 container-p-y">
         <div class="row">
             <div class="col-xl">
-                <form id="createUserForm">
+                <form id="updateUserForm">
                     <h5 class="mb-0">{{ Breadcrumbs::render('update-user', $user) }}</h5>
                     <div class="card mb-6">
                         <div class="card-header">
@@ -43,14 +43,15 @@
                             <div class="row mb-3">
                                 <div class="col mb-6">
                                     <label for="nameWithTitle" class="form-label">Full Name</label>
-                                    <input type="text" name="full_name" class="form-control" value="{{ $user->full_name }}"
-                                        placeholder="Enter Full Name">
+                                    <input type="text" name="full_name" class="form-control"
+                                        value="{{ $user->full_name }}" placeholder="Enter Full Name">
                                     <small class="text-body float-start error-message-div full_name-error"
                                         style="color: #ff0000 !important" hidden></small>
                                 </div>
                                 <div class="col mb-6">
                                     <label for="nameWithTitle" class="form-label">User Name</label>
-                                    <input type="text" name="name" class="form-control" placeholder="Enter Name" value="{{ $user->name }}">
+                                    <input type="text" name="name" class="form-control" placeholder="Enter Name"
+                                        value="{{ $user->name }}">
                                     <small class="text-body float-start error-message-div name-error"
                                         style="color: #ff0000 !important" hidden></small>
                                 </div>
@@ -58,7 +59,8 @@
                             <div class="row mb-3">
                                 <div class="col mb-6">
                                     <label for="nameWithTitle" class="form-label">Email</label>
-                                    <input type="text" name="email" class="form-control" placeholder="Enter Email" value="{{ $user->email }}">
+                                    <input type="text" name="email" class="form-control" placeholder="Enter Email"
+                                        value="{{ $user->email }}">
                                     <small class="text-body float-start error-message-div email-error"
                                         style="color: #ff0000 !important" hidden></small>
                                 </div>
@@ -80,7 +82,8 @@
                             <div class="row mb-3">
                                 <div class="col mb-6">
                                     <label for="nameWithTitle" class="form-label">Phone</label>
-                                    <input type="text" name="phone" class="form-control" placeholder="Enter Phone" value="{{ $user->phone }}">
+                                    <input type="text" name="phone" class="form-control" placeholder="Enter Phone"
+                                        value="{{ $user->phone }}">
                                     <small class="text-body float-start error-message-div phone-error"
                                         style="color: #ff0000 !important" hidden></small>
                                 </div>
@@ -112,17 +115,20 @@
                                     <h5>Events Permissions</h5>
                                     <div class="row mb-6" style="margin: 3px">
                                         <div class="form-check form-switch mb-2">
-                                            <input class="form-check-input" type="checkbox" {{ in_array('create_event', $permissions) ? 'checked' : '' }}
+                                            <input class="form-check-input" type="checkbox"
+                                                {{ in_array('create_event', $permissions) ? 'checked' : '' }}
                                                 id="create_event" name="permissions[]" value="create_event">
                                             <label class="form-check-label" for="create_event">Create</label>
                                         </div>
                                         <div class="form-check form-switch mb-2">
-                                            <input class="form-check-input" type="checkbox" {{ in_array('update_event', $permissions) ? 'checked' : '' }}
+                                            <input class="form-check-input" type="checkbox"
+                                                {{ in_array('update_event', $permissions) ? 'checked' : '' }}
                                                 id="update_event" name="permissions[]" value="update_event">
                                             <label class="form-check-label" for="update_event">Update</label>
                                         </div>
                                         <div class="form-check form-switch mb-2">
-                                            <input class="form-check-input" type="checkbox" {{ in_array('delete_event', $permissions) ? 'checked' : '' }}
+                                            <input class="form-check-input" type="checkbox"
+                                                {{ in_array('delete_event', $permissions) ? 'checked' : '' }}
                                                 id="delete_event" name="permissions[]" value="delete_event">
                                             <label class="form-check-label" for="delete_event">Delete</label>
                                         </div>
@@ -132,17 +138,20 @@
                                     <h5>Roles Permissions</h5>
                                     <div class="row mb-6" style="margin: 3px">
                                         <div class="form-check form-switch mb-2">
-                                            <input class="form-check-input" type="checkbox" {{ in_array('create_role', $permissions) ? 'checked' : '' }}
+                                            <input class="form-check-input" type="checkbox"
+                                                {{ in_array('create_role', $permissions) ? 'checked' : '' }}
                                                 id="create_role" name="permissions[]" value="create_role">
                                             <label class="form-check-label" for="create_role">Create</label>
                                         </div>
                                         <div class="form-check form-switch mb-2">
-                                            <input class="form-check-input" type="checkbox" {{ in_array('update_role', $permissions) ? 'checked' : '' }}
+                                            <input class="form-check-input" type="checkbox"
+                                                {{ in_array('update_role', $permissions) ? 'checked' : '' }}
                                                 id="update_role" name="permissions[]" value="update_role">
                                             <label class="form-check-label" for="update_role">Update</label>
                                         </div>
                                         <div class="form-check form-switch mb-2">
-                                            <input class="form-check-input" type="checkbox" {{ in_array('delete_role', $permissions) ? 'checked' : '' }}
+                                            <input class="form-check-input" type="checkbox"
+                                                {{ in_array('delete_role', $permissions) ? 'checked' : '' }}
                                                 id="delete_role" name="permissions[]" value="delete_role">
                                             <label class="form-check-label" for="delete_role">Delete</label>
                                         </div>
@@ -152,17 +161,20 @@
                                     <h5>Clients Permissions</h5>
                                     <div class="row mb-6" style="margin: 3px">
                                         <div class="form-check form-switch mb-2">
-                                            <input class="form-check-input" type="checkbox" {{ in_array('create_client', $permissions) ? 'checked' : '' }}
+                                            <input class="form-check-input" type="checkbox"
+                                                {{ in_array('create_client', $permissions) ? 'checked' : '' }}
                                                 id="create_client" name="permissions[]" value="create_client">
                                             <label class="form-check-label" for="create_client">Create</label>
                                         </div>
                                         <div class="form-check form-switch mb-2">
-                                            <input class="form-check-input" type="checkbox" {{ in_array('update_client', $permissions) ? 'checked' : '' }}
+                                            <input class="form-check-input" type="checkbox"
+                                                {{ in_array('update_client', $permissions) ? 'checked' : '' }}
                                                 id="update_client" name="permissions[]" value="update_client">
                                             <label class="form-check-label" for="update_client">Update</label>
                                         </div>
                                         <div class="form-check form-switch mb-2">
-                                            <input class="form-check-input" type="checkbox" {{ in_array('delete_client', $permissions) ? 'checked' : '' }}
+                                            <input class="form-check-input" type="checkbox"
+                                                {{ in_array('delete_client', $permissions) ? 'checked' : '' }}
                                                 id="delete_client" name="permissions[]" value="delete_client">
                                             <label class="form-check-label" for="delete_client">Delete</label>
                                         </div>
@@ -172,17 +184,20 @@
                                     <h5>Folders Permissions</h5>
                                     <div class="row mb-6" style="margin: 3px">
                                         <div class="form-check form-switch mb-2">
-                                            <input class="form-check-input" type="checkbox" {{ in_array('create_folder', $permissions) ? 'checked' : '' }}
+                                            <input class="form-check-input" type="checkbox"
+                                                {{ in_array('create_folder', $permissions) ? 'checked' : '' }}
                                                 id="create_folder" name="permissions[]" value="create_folder">
                                             <label class="form-check-label" for="create_folder">Create</label>
                                         </div>
                                         <div class="form-check form-switch mb-2">
-                                            <input class="form-check-input" type="checkbox" {{ in_array('update_folder', $permissions) ? 'checked' : '' }}
+                                            <input class="form-check-input" type="checkbox"
+                                                {{ in_array('update_folder', $permissions) ? 'checked' : '' }}
                                                 id="update_folder" name="permissions[]" value="update_folder">
                                             <label class="form-check-label" for="update_folder">Update</label>
                                         </div>
                                         <div class="form-check form-switch mb-2">
-                                            <input class="form-check-input" type="checkbox" {{ in_array('delete_folder', $permissions) ? 'checked' : '' }}
+                                            <input class="form-check-input" type="checkbox"
+                                                {{ in_array('delete_folder', $permissions) ? 'checked' : '' }}
                                                 id="delete_folder" name="permissions[]" value="delete_folder">
                                             <label class="form-check-label" for="delete_folder">Delete</label>
                                         </div>
@@ -194,17 +209,20 @@
                                     <h5>Images Permissions</h5>
                                     <div class="row mb-6" style="margin: 3px">
                                         <div class="form-check form-switch mb-2">
-                                            <input class="form-check-input" type="checkbox" {{ in_array('upload_image', $permissions) ? 'checked' : '' }}
+                                            <input class="form-check-input" type="checkbox"
+                                                {{ in_array('upload_image', $permissions) ? 'checked' : '' }}
                                                 id="upload_image" name="permissions[]" value="upload_image">
                                             <label class="form-check-label" for="upload_image">Upload Image</label>
                                         </div>
                                         <div class="form-check form-switch mb-2">
-                                            <input class="form-check-input" type="checkbox" {{ in_array('delete_image', $permissions) ? 'checked' : '' }}
+                                            <input class="form-check-input" type="checkbox"
+                                                {{ in_array('delete_image', $permissions) ? 'checked' : '' }}
                                                 id="delete_image" name="permissions[]" value="delete_image">
                                             <label class="form-check-label" for="delete_image">Delete Image</label>
                                         </div>
                                         <div class="form-check form-switch mb-2">
-                                            <input class="form-check-input" type="checkbox" {{ in_array('update_image', $permissions) ? 'checked' : '' }}
+                                            <input class="form-check-input" type="checkbox"
+                                                {{ in_array('update_image', $permissions) ? 'checked' : '' }}
                                                 id="update_image" name="permissions[]" value="update_image">
                                             <label class="form-check-label" for="update_image">Update Image</label>
                                         </div>
@@ -214,17 +232,20 @@
                                     <h5>Videos Permissions</h5>
                                     <div class="row mb-6" style="margin: 3px">
                                         <div class="form-check form-switch mb-2">
-                                            <input class="form-check-input" type="checkbox" {{ in_array('upload_video', $permissions) ? 'checked' : '' }}
+                                            <input class="form-check-input" type="checkbox"
+                                                {{ in_array('upload_video', $permissions) ? 'checked' : '' }}
                                                 id="upload_video" name="permissions[]" value="upload_video">
                                             <label class="form-check-label" for="upload_video">Upload Video</label>
                                         </div>
                                         <div class="form-check form-switch mb-2">
-                                            <input class="form-check-input" type="checkbox" {{ in_array('delete_video', $permissions) ? 'checked' : '' }}
+                                            <input class="form-check-input" type="checkbox"
+                                                {{ in_array('delete_video', $permissions) ? 'checked' : '' }}
                                                 id="delete_video" name="permissions[]" value="delete_video">
                                             <label class="form-check-label" for="delete_video">Delete Video</label>
                                         </div>
                                         <div class="form-check form-switch mb-2">
-                                            <input class="form-check-input" type="checkbox" {{ in_array('update_video', $permissions) ? 'checked' : '' }}
+                                            <input class="form-check-input" type="checkbox"
+                                                {{ in_array('update_video', $permissions) ? 'checked' : '' }}
                                                 id="update_video" name="permissions[]" value="update_video">
                                             <label class="form-check-label" for="update_video">Update Video</label>
                                         </div>
@@ -233,18 +254,25 @@
                                 <div class="col-md-3">
                                     <h5>Others Permissions</h5>
                                     <div class="form-check form-switch mb-2">
-                                        <input class="form-check-input" type="checkbox" {{ in_array('approve_decline_image', $permissions) ? 'checked' : '' }}
-                                            id="approve_decline_image" name="permissions[]" value="approve_decline_image">
-                                        <label class="form-check-label" for="approve_decline_image">Approve/Decline Images</label>
+                                        <input class="form-check-input" type="checkbox"
+                                            {{ in_array('approve_decline_image', $permissions) ? 'checked' : '' }}
+                                            id="approve_decline_image" name="permissions[]"
+                                            value="approve_decline_image">
+                                        <label class="form-check-label" for="approve_decline_image">Approve/Decline
+                                            Images</label>
                                     </div>
                                     <div class="form-check form-switch mb-2">
-                                        <input class="form-check-input" type="checkbox" {{ in_array('approve_decline_video', $permissions) ? 'checked' : '' }}
-                                            id="approve_decline_video" name="permissions[]" value="approve_decline_video">
-                                        <label class="form-check-label" for="approve_decline_video">Approve/Decline Videos</label>
+                                        <input class="form-check-input" type="checkbox"
+                                            {{ in_array('approve_decline_video', $permissions) ? 'checked' : '' }}
+                                            id="approve_decline_video" name="permissions[]"
+                                            value="approve_decline_video">
+                                        <label class="form-check-label" for="approve_decline_video">Approve/Decline
+                                            Videos</label>
                                     </div>
                                     <div class="form-check form-switch mb-2">
-                                        <input class="form-check-input" type="checkbox" {{ in_array('insights', $permissions) ? 'checked' : '' }}
-                                            id="insights" name="permissions[]" value="insights">
+                                        <input class="form-check-input" type="checkbox"
+                                            {{ in_array('insights', $permissions) ? 'checked' : '' }} id="insights"
+                                            name="permissions[]" value="insights">
                                         <label class="form-check-label" for="insights">Insights</label>
                                     </div>
                                 </div>
@@ -273,7 +301,7 @@
             });
         }
 
-        $('#createUserForm').submit(function(e) {
+        $('#updateUserForm').submit(function(e) {
             e.preventDefault();
             clearErrors();
             var formData = new FormData(this);
@@ -304,8 +332,6 @@
                     if (xhr.status === 422) {
                         let errors = xhr.responseJSON.errors;
                         $.each(errors, function(field, messages) {
-                            console.log(field);
-
                             let inputField = $(`.${field}-error`);
                             inputField.attr('hidden', false);
                             inputField.text(messages[0]);

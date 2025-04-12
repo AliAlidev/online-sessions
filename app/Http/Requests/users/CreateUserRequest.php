@@ -24,7 +24,7 @@ class CreateUserRequest extends FormRequest
         return [
             'name' => 'required|string',
             'full_name' => 'nullable|string',
-            'phone' => 'required|string|max:20|unique:users,phone',
+            'phone' => 'nullable|string|max:20|unique:users,phone',
             'email' => 'required|email|unique:users,email',
             'permissions' => 'nullable|array',
             'password' => 'required|confirmed|regex:/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/',

@@ -191,8 +191,8 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <h5>Other Permissions</h5>
                                 <div class="col-md-3">
+                                    <h5>Images Permissions</h5>
                                     <div class="row mb-6" style="margin: 3px">
                                         <div class="form-check form-switch mb-2">
                                             <input class="form-check-input" type="checkbox"
@@ -201,40 +201,38 @@
                                         </div>
                                         <div class="form-check form-switch mb-2">
                                             <input class="form-check-input" type="checkbox"
-                                                id="upload_video" name="permissions[]" value="upload_video">
-                                            <label class="form-check-label" for="upload_video">Upload Video</label>
+                                                id="delete_image" name="permissions[]" value="delete_image">
+                                            <label class="form-check-label" for="delete_image">Delete Image</label>
+                                        </div>
+                                        <div class="form-check form-switch mb-2">
+                                            <input class="form-check-input" type="checkbox"
+                                                id="update_image" name="permissions[]" value="update_image">
+                                            <label class="form-check-label" for="update_image">Update Image</label>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-md-3">
+                                    <h5>Videos Permissions</h5>
                                     <div class="row mb-6" style="margin: 3px">
                                         <div class="form-check form-switch mb-2">
                                             <input class="form-check-input" type="checkbox"
-                                                id="delete_image" name="permissions[]" value="delete_image">
-                                            <label class="form-check-label" for="delete_image">Delete Images</label>
+                                                id="upload_video" name="permissions[]" value="upload_video">
+                                            <label class="form-check-label" for="upload_video">Upload Video</label>
                                         </div>
                                         <div class="form-check form-switch mb-2">
                                             <input class="form-check-input" type="checkbox"
                                                 id="delete_video" name="permissions[]" value="delete_video">
-                                            <label class="form-check-label" for="delete_video">Delete Videos</label>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="row mb-6" style="margin: 3px">
-                                        <div class="form-check form-switch mb-2">
-                                            <input class="form-check-input" type="checkbox"
-                                                id="update_image" name="permissions[]" value="update_image">
-                                            <label class="form-check-label" for="update_image">Update Images</label>
+                                            <label class="form-check-label" for="delete_video">Delete Video</label>
                                         </div>
                                         <div class="form-check form-switch mb-2">
                                             <input class="form-check-input" type="checkbox"
                                                 id="update_video" name="permissions[]" value="update_video">
-                                            <label class="form-check-label" for="update_video">Update Videos</label>
+                                            <label class="form-check-label" for="update_video">Update Video</label>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-md-3">
+                                    <h5>Others Permissions</h5>
                                     <div class="form-check form-switch mb-2">
                                         <input class="form-check-input" type="checkbox"
                                             id="approve_decline_image" name="permissions[]" value="approve_decline_image">

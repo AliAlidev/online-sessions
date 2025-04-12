@@ -71,6 +71,7 @@ class UserController extends Controller
             $permissions = $data['permissions'] ?? null;
             unset($data['permissions']);
             unset($data['password_confirmation']);
+            $data['dashboard_user'] = 1;
             $user = User::create($data);
             if (isset($permissions))
                 $user->givePermissionTo($permissions);
@@ -96,7 +97,7 @@ class UserController extends Controller
             if (isset($permissions))
                 $user->syncPermissions($permissions);
             session()->flash('success', 'User has been updated successfully');
-            return response()->json(['success' => true, 'url' => route('users.index')]);
+            return response()->json(['success' => true, 'url' => route('users.edit', $id)]);
         } catch (Exception $th) {
             createServerError($th, "updateUser", "users");
             return false;
