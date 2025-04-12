@@ -140,7 +140,7 @@ class WebsiteController extends Controller
     {
         $folderId = $request->folder_id;
         $folder = EventFolder::find($folderId);
-        $videos = $folder->files->where('file_status', 'approved');
+        $videos = $folder->files->where('file_status', 'approved')->where('bunny_status', 3);
         return response()->json([
             'success' => true,
             'html' => view('website.pages.gallery.video', ['videos' => $videos])->render(),
@@ -215,7 +215,6 @@ class WebsiteController extends Controller
 
     function bunnyVideoWebhook(Request $request)
     {
-        Log::alert($request->all());
         $data = $request->all();
         $video = FolderFile::where('file_bunny_id', $data['VideoGuid'])->first();
         $video->bunny_status = $data['Status'];
