@@ -216,7 +216,7 @@ class WebsiteController extends Controller
     function bunnyVideoWebhook(Request $request)
     {
         Log::alert($request->all());
-        $data = json_decode($request, true);
+        $data = $request->all();
         $video = FolderFile::where('file_bunny_id', $data['VideoGuid'])->first();
         $video->bunny_status = $data['Status'];
         $video->save();
