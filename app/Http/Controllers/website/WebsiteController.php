@@ -238,4 +238,9 @@ class WebsiteController extends Controller
         ];
         return $data[$code];
     }
+
+    function checkToken()
+    {
+        return response()->json(['success' => true]);
+    }
 }

@@ -22,19 +22,19 @@ class WebEnsureToken
     {
         $token = $request->header('pageToken');
         if (empty($token)) {
-            return response()->json(['message' => 'Token is invalid'], 400);
+            return response()->json(['success' => false, 'message' => 'Token is invalid'], 400);
         } else {
             try {
                 $user = JWTAuth::setToken($token)->authenticate();
                 if (!$user) {
-                    return response()->json(['message' => 'User not found'], 404);
+                    return response()->json(['success' => false, 'message' => 'User not found'], 404);
                 }
             } catch (TokenExpiredException $e) {
-                return response()->json(['message' => 'Token has expired'], 400);
+                return response()->json(['success' => false, 'message' => 'Token has expired'], 400);
             } catch (TokenInvalidException $e) {
-                return response()->json(['message' => 'Token is invalid'], 400);
+                return response()->json(['success' => false, 'message' => 'Token is invalid'], 400);
             } catch (JWTException $e) {
-                return response()->json(['message' => 'Token error: ' . $e->getMessage()], 400);
+                return response()->json(['success' => false, 'message' => 'Token error: ' . $e->getMessage()], 400);
             }
         }
         return $next($request);

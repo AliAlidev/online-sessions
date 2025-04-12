@@ -114,6 +114,7 @@ Route::controller(WebsiteController::class)->name('landing.')->group(function ()
     Route::middleware('ensure.token')->post('events/share-event-image', 'shareEventImage')->name('share-event-image');
     Route::middleware('ensure.token')->post('/delete-image/{id}', 'deleteImage')->name('delete-image');
     Route::get('events/event-password', 'eventPassword')->name('event_password');
+    Route::middleware('ensure.token')->get('events/check-token', 'checkToken')->name('check_token');
     Route::middleware('ensure.token')->post('/apply-event-password', 'applyEventPassword')->name('apply_event_password');
 });
 

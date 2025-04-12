@@ -1,3 +1,18 @@
+import { getUserToken } from '../auth';
+
+$(document).ready(async function () {
+    var token = await getUserToken();
+    axios.get('/events/check-token',
+        {
+            headers: {
+                'pageToken': token
+            }
+        }).then(response => {
+        }).catch(error => {
+            window.location.href = document.getElementById('main-page-url').dataset.url;
+        });
+})
+
 function scrollTabs(event) {
     var element = event.target.closest('.scroll-arrow');
     var distance = element.dataset.distance;
@@ -57,10 +72,11 @@ async function selectFolder(event) {
     }
     $('#gallery-div').hide();
     $('#loader-div').attr('hidden', false);
+    var token = await getUserToken();
     axios.post(url, {
         _token: csrfToken,
         folder_id: folderId,
-    }, { 'pageToken': window.axios.defaults.headers.common['pageToken'] })
+    }, { headers: { 'pageToken': token } })
         .then(response => {
             var result = response.data;
             $('#gallery-div').html(result.html);
@@ -145,12 +161,13 @@ async function selectFolder(event) {
                         }
                     });
 
-                    function deleteImage(current, instance) {
+                    async function deleteImage(current, instance) {
                         const imgId = current.opts.$orig.data('image-id');
+                        var token = await getUserToken();
                         axios.post('/delete-image/' + imgId, {
                             _token: csrfToken,
                             folder_id: folderId
-                        }).then(response => {
+                        }, { headers: { 'pageToken': token } }).then(response => {
                             instance.close();
                             if (response.data.success) {
                                 Swal.fire({
@@ -248,7 +265,8 @@ async function goToShare(event) {
     var url = element.dataset.url;
     var supportImageUpload = element.dataset.supportImageUpload;
     if (supportImageUpload) {
-        axios.get(url)
+        var token = await getUserToken();
+        axios.get(url, { headers: { 'pageToken': token } })
             .then(response => {
                 window.location.href = response.data.url;
             }).catch(error => {

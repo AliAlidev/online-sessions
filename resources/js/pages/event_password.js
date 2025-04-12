@@ -3,12 +3,17 @@ async function checkPassword(event) {
     var url = event.target.closest('form').getAttribute('action');
     const element = document.getElementById('global-error-message');
     element.style.display = 'none';
-    window.axios.post(url, {
+    var token = await getUserToken();
+    axios.post(url, {
         _token: $('meta[name="csrf-token"]').attr('content'),
         password: $('#password').val(),
         event_slug: $('#event_slug').val(),
         year: $('#year').val(),
         month: $('#month').val()
+    }, {
+        headers: {
+            'pageToken': token
+        }
     })
         .then(response => {
             if (response.data.success) {

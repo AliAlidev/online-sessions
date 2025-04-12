@@ -463,7 +463,7 @@
         }
     </style>
 
-    @vite(['resources/js/pages/share.js'])
+    @vite(['resources/js/app.js', 'resources/js/pages/share.js'])
 @endpush
 
 @section('content')

@@ -1,3 +1,17 @@
+import { getUserToken } from '../auth';
+
+$(document).ready(async function () {
+    var token = await getUserToken();
+    await axios.get('/events/check-token',
+        {
+            headers: {
+                'pageToken': token
+            }
+        }).then(response => {
+        }).catch(error => {
+            window.location.href = document.getElementById('main-page-url').dataset.url;
+        });
+})
 
 const dropArea = document.getElementById('dropArea');
 const fileInput = document.getElementById('image');
