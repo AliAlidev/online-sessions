@@ -12,10 +12,7 @@ async function checkPassword(event) {
     })
         .then(response => {
             if (response.data.success) {
-                localStorage.setItem('event_password', $('#password').val());
-                localStorage.setItem('event_slug', $('#event_slug').val());
-                localStorage.setItem('event_year', $('#year').val());
-                localStorage.setItem('event_month', $('#month').val());
+                localStorage.setItem($('#event_slug').val(), $('#password').val());
                 window.location.href = response.data.url;
             } else {
                 element.textContent = response.data.message;

@@ -141,8 +141,9 @@ class EventController extends Controller
                 'qr_code' => $data['qr_code'],
                 'bunny_main_folder_name' => Carbon::parse($data['start_date'])->year
             ]);
+            $allowGuestUpload = isset($data['image_share_guest_book']) && $data['image_share_guest_book'] == 'on' ? 1 : 0;
             $event->setting()->create([
-                'image_share_guest_book' => isset($data['image_share_guest_book']) && $data['image_share_guest_book'] == 'on' ? 1 : 0,
+                'image_share_guest_book' => $allowGuestUpload,
                 'image_folders' => isset($data['image_folders']) && $data['image_folders'] == 'on' ? 1 : 0,
                 'video_playlist' => isset($data['video_playlist']) && $data['video_playlist'] == 'on' ? 1 : 0,
                 'allow_upload' => isset($data['allow_upload']) && $data['allow_upload'] == 'on' ? 1 : 0,
@@ -153,7 +154,8 @@ class EventController extends Controller
                 'font' => isset($data['font']) ? $data['font'] : ''
             ]);
             $event->organizers()->createMany($data['organizers']);
-            app(FolderController::class)->store(new CreateFolderRequest(['folder_type' => 'image', 'folder_name' => 'Guest Upload']), $event->id);
+            if ($allowGuestUpload)
+                app(FolderController::class)->store(new CreateFolderRequest(['folder_type' => 'image', 'folder_name' => 'Guest Upload', 'folder_thumbnail' => 'assets/img/folders/upload-folder-default.jpg']), $event->bunny_event_name);
             session()->flash('success', 'Event has been created successfully');
             return response()->json(['success' => true, 'url' => route('events.index')]);
         } catch (Exception $th) {
@@ -186,8 +188,9 @@ class EventController extends Controller
             $data['profile_picture'] = $request->hasFile('profile_picture') ? 'storage/' . uploadFile($request->file('profile_picture'), 'events/profile_picture') :  $event->profile_picture;
             $data['qr_code'] = $oldEvent->event_link != $data['event_link'] ? 'storage/' . uploadBase64File($data['qr_code'], 'events/event_qr_code') : $event->qr_code;
             $setting =  $event->setting;
+            $allowGuestUpload = isset($data['image_share_guest_book']) && $data['image_share_guest_book'] == 'on' ? 1 : 0;
             $setting->update([
-                'image_share_guest_book' => isset($data['image_share_guest_book']) && $data['image_share_guest_book'] == 'on' ? 1 : 0,
+                'image_share_guest_book' => $allowGuestUpload,
                 'image_folders' => isset($data['image_folders']) && $data['image_folders'] == 'on' ? 1 : 0,
                 'video_playlist' => isset($data['video_playlist']) && $data['video_playlist'] == 'on' ? 1 : 0,
                 'allow_upload' => isset($data['allow_upload']) && $data['allow_upload'] == 'on' ? 1 : 0,
@@ -209,7 +212,7 @@ class EventController extends Controller
                 'active_duration' => $data['active_duration'],
                 'description' => $data['description'],
                 'event_link' => $data['event_link'],
-                'event_password' => Hash::make($data['event_password']),
+                'event_password' => $data['event_password'] ? Hash::make($data['event_password']) : $oldEvent->event_password,
                 'welcome_message' => $data['welcome_message'],
                 'qr_code' => $data['qr_code']
             ];
@@ -219,6 +222,8 @@ class EventController extends Controller
             }
 
             $event->update($eventData);
+            if ($allowGuestUpload && $event->folders->where('folder_name', 'Guest Upload')->count() == 0)
+                app(FolderController::class)->store(new CreateFolderRequest(['folder_type' => 'image', 'folder_name' => 'Guest Upload', 'folder_thumbnail' => 'assets/img/folders/upload-folder-default.jpg']), $event->bunny_event_name);
             $event->organizers()->whereNotIn('id', array_column($data['organizers'], 'organizer_model_id'))->delete();
             array_map(function ($organizer) use ($event) {
                 if (isset($organizer['organizer_model_id'])) {

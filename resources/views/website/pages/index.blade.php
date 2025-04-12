@@ -77,7 +77,8 @@
                 <div class="buttons-section">
                     <a href=""
                         data-url="{{ route('landing.gallery_redirect_url', ['year' => $year, 'month' => $month, 'event_slug' => $event_slug]) }}"
-                        data-gallery-url = "{{ route('landing.apply_event_password') }}"
+                        data-gallery-url = "{{ route('landing.apply_event_password', ['year' => $year, 'month' => $month, 'event_slug' => $event_slug]) }}"
+                        data-event-slug="{{ $event_slug }}"
                         class="gallery-button">
                         <svg class="button-image" width="46" height="38" viewBox="0 0 46 38" fill="none"
                             xmlns="http://www.w3.org/2000/svg">

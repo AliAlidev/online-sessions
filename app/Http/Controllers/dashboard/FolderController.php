@@ -12,6 +12,7 @@ use App\Services\BunnyImageService;
 use App\Services\BunnyVideoService;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\DataTables;
 
@@ -75,7 +76,10 @@ class FolderController extends Controller
             $data =  $request->all();
             $event = Event::where('bunny_event_name', $eventSlug)->first();
             $eventId = $event->id;
-            $data['folder_thumbnail'] = isset($data['folder_thumbnail']) ? 'storage/' . uploadFile($data['folder_thumbnail'], 'folders/folder_thumbnail') : null;
+            $folderThumbnail="";
+            if(isset($data['folder_thumbnail']))
+                $folderThumbnail = $data['folder_thumbnail'] instanceof UploadedFile ? 'storage/' . uploadFile($data['folder_thumbnail'], 'folders/folder_thumbnail') : $data['folder_thumbnail'];
+            $data['folder_thumbnail'] = $folderThumbnail;
             $data['event_id'] = $eventId;
             $data['folder_name'] = $data['folder_name'];
             $data['bunny_folder_name'] = Str::slug($data['folder_name']);

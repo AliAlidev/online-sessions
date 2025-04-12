@@ -1,16 +1,13 @@
 async function goToGallery(event) {
     event.preventDefault();
-    if (localStorage.getItem('event_password')) {
+    var eventSlug = event.target.closest('a').dataset.eventSlug;
+    if (localStorage.getItem(eventSlug)) {
         var url = event.target.closest('a').dataset.galleryUrl;
-
         const element = document.getElementById('global-error-message');
         element.style.display = 'none';
         window.axios.post(url, {
             _token: document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-            password: localStorage.getItem('event_password'),
-            event_slug: localStorage.getItem('event_slug'),
-            year: localStorage.getItem('event_year'),
-            month: localStorage.getItem('event_month')
+            password: localStorage.getItem(eventSlug)
         })
             .then(response => {
                 if (response.data.success) {

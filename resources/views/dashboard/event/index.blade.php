@@ -212,20 +212,7 @@
                     extend: 'colvis',
                     text: 'Columns',
                     className: 'btn btn-primary'
-                }],
-                rowCallback: function(row, data, index) {
-                    // Remove previously applied classes
-                    $(row).removeClass('table-warning table-success table-danger');
-
-                    // Apply class based on event_status
-                    if (data.event_status === "Not Started") {
-                        $(row).addClass('table-warning'); // yellowish
-                    } else if (data.event_status === "Month +") {
-                        $(row).addClass('table-success'); // greenish
-                    } else if (data.event_status === "Month -" || data.event_status === "Month" || data.event_status === "Expired") {
-                        $(row).addClass('table-danger'); // reddish
-                    }
-                }
+                }]
             });
 
             $(document).on('click', '.delete-event', function(e) {
