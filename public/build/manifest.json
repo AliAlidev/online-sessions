@@ -19,10 +19,13 @@
     ]
   },
   "resources/js/pages/event_password.js": {
-    "file": "assets/event_password-Dlep39Bx.js",
+    "file": "assets/event_password-Bjci6tGR.js",
     "name": "event_password",
     "src": "resources/js/pages/event_password.js",
-    "isEntry": true
+    "isEntry": true,
+    "imports": [
+      "_auth-CrJnzGtq.js"
+    ]
   },
   "resources/js/pages/gallery.js": {
     "file": "assets/gallery-C_jRtwr-.js",
