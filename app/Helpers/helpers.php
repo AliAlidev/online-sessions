@@ -184,6 +184,7 @@ if (!function_exists('checkImageConfig')) {
             $statusCode = $response->getStatusCode(); // Get the HTTP status code
             return $statusCode == 401 ? false : true;
         } catch (Exception $e) {
+            createServerError($e, "checkImageConfig", "helpers");
             if (method_exists($e, 'getResponse') && $e->getResponse() && $e->getResponse()->getStatusCode() == 401)
                 return false;
             return true;
@@ -219,6 +220,7 @@ if (!function_exists('checkVideoConfig')) {
             $statusCode = $response->getStatusCode(); // Get the HTTP status code
             return $statusCode == 200 ? true : false;
         } catch (Exception $e) {
+            createServerError($e, "checkVideoConfig", "helpers");
             if (method_exists($e, 'getResponse') && $e->getResponse() && $e->getResponse()->getStatusCode() == 200)
                 return true;
             return false;
@@ -254,8 +256,8 @@ if (!function_exists('checkPullZoneAvailability')) {
             'content-type' => 'application/json'
         ];
         $body = '{
-           "Name": "' . $pullZoneName . '"
-        }';
+            "Name": "' . $pullZoneName . '.b-cdn.net"
+            }';
         $request = new Request('POST', 'https://api.bunny.net/storagezone/checkavailability', $headers, $body);
         try {
             $response = $client->send($request);
