@@ -1,3 +1,5 @@
+import {getUserToken} from '../auth';
+
 async function checkPassword(event) {
     event.preventDefault();
     var url = event.target.closest('form').getAttribute('action');
