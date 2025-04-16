@@ -55,13 +55,19 @@
 @endsection
 
 @section('content')
+    <div class="alert-danger-invalid-token" id="global-error-message" style="display: none">
+        <span>
+            <strong>Invalid Token:</strong> Please contact info@onlineEventShare.com
+        </span>
+    </div>
     @include('website.layout.menu')
     <div class="container">
         <!-- Left Section -->
         <div class="event-hero-section">
             <!-- Event Details Mobile -->
             <div class="event-title-date event-title-date-mobile">
-                <h1 class="event-title">{{ isset($event->event_alias_name) ? $event->event_alias_name : $event->event_name }}</h1>
+                <h1 class="event-title">
+                    {{ isset($event->event_alias_name) ? $event->event_alias_name : $event->event_name }}</h1>
                 <p class="event-date">{{ $event->start_date }}</p>
             </div>
         </div>
@@ -70,7 +76,8 @@
             <div class="event-details-container">
                 <!-- Event Details Desktop -->
                 <div class="event-title-date event-title-date-desktop">
-                    <h1 class="event-title">{{ isset($event->event_alias_name) ? $event->event_alias_name : $event->event_name }}</h1>
+                    <h1 class="event-title">
+                        {{ isset($event->event_alias_name) ? $event->event_alias_name : $event->event_name }}</h1>
                     <p class="event-date">{{ $event->start_date }}</p>
                 </div>
                 <!-- Buttons Section -->
@@ -78,8 +85,7 @@
                     <a href=""
                         data-url="{{ route('landing.gallery_redirect_url', ['year' => $year, 'month' => $month, 'event_slug' => $event_slug]) }}"
                         data-gallery-url = "{{ route('landing.apply_event_password', ['year' => $year, 'month' => $month, 'event_slug' => $event_slug]) }}"
-                        data-event-slug="{{ $event_slug }}"
-                        class="gallery-button">
+                        data-event-slug="{{ $event_slug }}" class="gallery-button">
                         <svg class="button-image" width="46" height="38" viewBox="0 0 46 38" fill="none"
                             xmlns="http://www.w3.org/2000/svg">
                             <path

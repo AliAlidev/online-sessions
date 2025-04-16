@@ -51,11 +51,6 @@
 
     <!-- Container -->
     @yield('content')
-    <div class="alert-danger-invalid-token" id="global-error-message" style="display: none">
-        <span>
-            <strong>Invalid Token:</strong> Please contact info@onlineEventShare.com
-        </span>
-    </div>
 
     <script src="{{ asset('sha256.min.js') }}"></script>
     @stack('scripts')
