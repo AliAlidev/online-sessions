@@ -31,6 +31,8 @@ class WebsiteController extends Controller
         $month = $request->route('month');
         $eventSlug = $request->route('event_slug');
         $event = Event::where('bunny_event_name', $eventSlug)->first();
+        if (Carbon::parse($event->end_date)->isPast())
+            return view('website.pages.event_expired');
         $event->start_date = Carbon::parse($event->start_date)->format('d/m/Y');
         return view('website.pages.index', ['year' => $year, 'month' => $month, 'event_slug' => $eventSlug, 'event' => $event]);
     }
@@ -91,6 +93,8 @@ class WebsiteController extends Controller
         $month = $request->route('month');
         $eventSlug = $request->route('event_slug');
         $event = Event::where('bunny_event_name', $eventSlug)->first();
+        if (Carbon::parse($event->end_date)->isPast())
+            return view('website.pages.event_expired');
         $event->start_date = Carbon::parse($event->start_date)->format('d/m/Y');
         $foldersList = [];
         $event->folders()->orderBy('order', 'asc')->get()->each(function ($folder) use (&$foldersList, $event) {
@@ -131,6 +135,8 @@ class WebsiteController extends Controller
         $month = $request->route('month');
         $eventSlug = $request->route('event_slug');
         $event = Event::where('bunny_event_name', $eventSlug)->first();
+        if (Carbon::parse($event->end_date)->isPast())
+            return view('website.pages.event_expired');
         $event->start_date = Carbon::parse($event->start_date)->format('d/m/Y');
         return view('website.pages.share', ['year' => $year, 'month' => $month, 'event_slug' => $eventSlug, 'event' => $event]);
     }
@@ -140,7 +146,7 @@ class WebsiteController extends Controller
         $folderId = $request->folder_id;
         $folder = EventFolder::find($folderId);
         $videos = $folder->files->where('file_status', 'approved')->where('bunny_status', 3)->each(function ($video) {
-           $video->file = str_replace('https://video.bunnycdn.com/play/', 'https://iframe.mediadelivery.net/embed/', $video->file);
+            $video->file = str_replace('https://video.bunnycdn.com/play/', 'https://iframe.mediadelivery.net/embed/', $video->file);
         });
         return response()->json([
             'success' => true,

@@ -5,8 +5,6 @@ async function goToGallery(event) {
     var eventSlug = event.target.closest('a').dataset.eventSlug;
     if (localStorage.getItem(eventSlug)) {
         var url = event.target.closest('a').dataset.galleryUrl;
-        const element = document.getElementById('global-error-message');
-        element.style.display = 'none';
         var token = await getUserToken();
         axios.post(url, {
             _token: document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
@@ -43,10 +41,7 @@ async function gotoPasswordVerification(event) {
         .then(response => {
             window.location.href = response.data.url;
         }).catch(error => {
-            var element = document.getElementById('global-error-message');
-            var messageElement = document.querySelector('#global-error-message strong');
-            messageElement.textContent = error.response.data.message + ": ";
-            element.style.display = 'block';
+            console.log(error);
         });
 }
 
@@ -65,10 +60,7 @@ async function goToShare(event) {
             .then(response => {
                 window.location.href = response.data.url;
             }).catch(error => {
-                var element = document.getElementById('global-error-message');
-                var messageElement = document.querySelector('#global-error-message strong');
-                messageElement.textContent = error.response.data.message + ": ";
-                element.style.display = 'block';
+                console.log(error);
             });
     }
 }

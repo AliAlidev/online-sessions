@@ -472,11 +472,6 @@
 
 @section('content')
     <div class="main-container auth-checking">
-        <div class="alert-danger-invalid-token" id="global-error-message" style="display: none">
-            <span>
-                <strong>Invalid Token:</strong> Please contact info@onlineEventShare.com
-            </span>
-        </div>
         <div class="main-header">
             <div class="top-bar">
                 <a href="{{ route('landing.index', ['year' => $year, 'month' => $month, 'event_slug' => $event_slug]) }}"><img

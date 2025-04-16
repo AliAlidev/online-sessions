@@ -1,6 +1,6 @@
 import { getUserToken } from '../auth';
 
-async function checkAuthentication(){
+async function checkAuthentication() {
     const token = await getUserToken();
     try {
         const response = await fetch('/events/check-token', {
@@ -251,10 +251,7 @@ async function selectFolder(event) {
         })
         .catch(error => {
             $('#loader-div').attr('hidden', true);
-            var element = document.getElementById('global-error-message');
-            var messageElement = document.querySelector('#global-error-message strong');
-            messageElement.textContent = error.response.data.message + ": ";
-            element.style.display = 'block';
+            console.log(error.response.data.message);
         });
 }
 
@@ -277,10 +274,7 @@ async function goToShare(event) {
             .then(response => {
                 window.location.href = response.data.url;
             }).catch(error => {
-                var element = document.getElementById('global-error-message');
-                var messageElement = document.querySelector('#global-error-message strong');
-                messageElement.textContent = error.response.data.message + ": ";
-                element.style.display = 'block';
+                console.log(error);
             });
     }
 }

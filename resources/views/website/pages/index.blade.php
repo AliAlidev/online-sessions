@@ -55,11 +55,6 @@
 @endsection
 
 @section('content')
-    <div class="alert-danger-invalid-token" id="global-error-message" style="display: none">
-        <span>
-            <strong>Invalid Token:</strong> Please contact info@onlineEventShare.com
-        </span>
-    </div>
     @include('website.layout.menu')
     <div class="container">
         <!-- Left Section -->
