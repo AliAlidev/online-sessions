@@ -18,7 +18,7 @@ async function checkAuthentication(){
     }
 }
 
-await checkAuthentication();
+checkAuthentication();
 
 const dropArea = document.getElementById('dropArea');
 const fileInput = document.getElementById('image');

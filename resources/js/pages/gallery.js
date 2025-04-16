@@ -18,7 +18,7 @@ async function checkAuthentication(){
     }
 }
 
-await checkAuthentication();
+checkAuthentication();
 
 function scrollTabs(event) {
     var element = event.target.closest('.scroll-arrow');
