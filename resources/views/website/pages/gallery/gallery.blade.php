@@ -14,6 +14,10 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <style>
+        .auth-checking {
+            display: none !important;
+        }
+
         #loader-div {
             /* display: flex; */
             align-items: center;
@@ -61,22 +65,22 @@
             /* Vertically center the text next to the spinner */
         }
 
-        .swal2-container{
+        .swal2-container {
             z-index: 9999 !important;
         }
-
     </style>
-    @vite(['resources/js/app.js', 'resources/js/pages/gallery.js'])
+    @vite(['resources/js/app.js','resources/js/pages/gallery.js'])
 @endpush
 
 @section('content')
-    <div class="main-container">
+    <div class="main-container auth-checking">
         <div class="main-header">
             <div class="top-bar">
                 <a href="{{ route('landing.index', ['year' => $year, 'month' => $month, 'event_slug' => $event_slug]) }}"><img
                         class="top-bar-iamge" src="{{ asset($event->profile_picture) }}" alt=""></a>
                 <div class="event-title-date">
-                    <h1 class="event-title">{{ isset($event->event_alias_name) ? $event->event_alias_name : $event->event_name }}</h1>
+                    <h1 class="event-title">
+                        {{ isset($event->event_alias_name) ? $event->event_alias_name : $event->event_name }}</h1>
                     <p class="event-date">{{ $event->start_date }}</p>
                 </div>
             </div>

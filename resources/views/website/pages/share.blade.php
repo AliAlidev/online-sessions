@@ -10,6 +10,10 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
+        .auth-checking {
+            display: none !important;
+        }
+
         .hidden-force {
             display: none !important;
         }
@@ -467,13 +471,14 @@
 @endpush
 
 @section('content')
-    <div class="main-container">
+    <div class="main-container auth-checking">
         <div class="main-header">
             <div class="top-bar">
                 <a href="{{ route('landing.index', ['year' => $year, 'month' => $month, 'event_slug' => $event_slug]) }}"><img
                         class="top-bar-iamge" src="{{ asset($event->profile_picture) }}" alt=""></a>
                 <div class="event-title-date">
-                    <h1 class="event-title">{{ isset($event->event_alias_name) ? $event->event_alias_name : $event->event_name }}</h1>
+                    <h1 class="event-title">
+                        {{ isset($event->event_alias_name) ? $event->event_alias_name : $event->event_name }}</h1>
                     <p class="event-date">{{ $event->start_date }}</p>
                 </div>
             </div>
