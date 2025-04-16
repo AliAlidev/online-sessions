@@ -4,8 +4,8 @@
         <!-- Video Player -->
         <div class="sticky-section">
             <div class="video-player" style="{{ count($videos) == 0 ? 'display:none' : '' }}">
-                <iframe id="videoIframe" width="640" height="450" frameborder="0" allow="autoplay" allowfullscreen
-                    webkitallowfullscreen mozallowfullscreen></iframe>
+                <iframe id="videoIframe" width="700" height="350" frameborder="0" allow="autoplay" allowfullscreen
+                webkitallowfullscreen mozallowfullscreen></iframe>
             </div>
         </div>
         <!-- Video List -->

@@ -68,8 +68,15 @@
         .swal2-container {
             z-index: 9999 !important;
         }
+
+        .video-player {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+
     </style>
-    @vite(['resources/js/app.js','resources/js/pages/gallery.js'])
+    @vite(['resources/js/app.js', 'resources/js/pages/gallery.js'])
 @endpush
 
 @section('content')
