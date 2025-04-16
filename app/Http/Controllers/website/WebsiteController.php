@@ -93,7 +93,7 @@ class WebsiteController extends Controller
         $event = Event::where('bunny_event_name', $eventSlug)->first();
         $event->start_date = Carbon::parse($event->start_date)->format('d/m/Y');
         $foldersList = [];
-        $event->folders->map(function ($folder) use (&$foldersList, $event) {
+        $event->folders()->orderBy('order', 'asc')->get()->each(function ($folder) use (&$foldersList, $event) {
             if ($event->supportShowImageFolders()) {
                 if ($folder->folder_type == 'image' && $folder->folder_name != 'Guest Upload')
                     $foldersList[] = $folder;

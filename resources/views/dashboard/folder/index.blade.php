@@ -35,6 +35,18 @@
         .delete-folder:hover i {
             color: white !important;
         }
+
+        .folder-order-div {
+            width: 25px;
+            height: 25px;
+            background-color: #3b90c9;
+            border-radius: 50%;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            justify-self: center !important;
+        }
     </style>
 @endsection
 
@@ -78,6 +90,7 @@
                                 <th class="control dt-orderable-none">Description</th>
                                 <th class="control dt-orderable-none">Folder Thumbnail</th>
                                 <th class="control dt-orderable-none">Folder Link</th>
+                                <th class="control dt-orderable-none">Order</th>
                                 <th class="control dt-orderable-none">Actions</th>
                             </tr>
                         </thead>
@@ -101,7 +114,16 @@
                     </div>
                     <div class="modal-body">
                         <input type="file" id="create-image-compressed" name="folder_thumbnail" hidden>
-                        <div class="row mb-6">
+                        <div class="row mb-5">
+                            <div class="col-md-6">
+                                <label for="folderOrder" class="form-label">Folder Order</label>
+                                <input type="number" id="folderOrder" class="form-control" name="order" min="1"
+                                    value="1" placeholder="Enter Folder Order">
+                                <small class="text-body float-start error-message-div folder_order-error"
+                                    style="color: #ff0000 !important" hidden></small>
+                            </div>
+                        </div>
+                        <div class="row mb-5">
                             <div class="col-md-6">
                                 <label for="folderName" class="form-label">Folder Name</label>
                                 <input type="text" id="folderName" class="form-control" name="folder_name"
@@ -122,7 +144,7 @@
                                     style="color: #ff0000 !important" hidden></small>
                             </div>
                         </div>
-                        <div class="row mb-6">
+                        <div class="row mb-5">
                             <div class="col-md-6">
                                 <label for="folderType" class="form-label">Folder Type</label>
                                 <select class="form-select" id="folderType" name="folder_type">
@@ -142,7 +164,7 @@
                                     style="color: #ff0000 !important" hidden></small>
                             </div>
                         </div>
-                        <div class="row mb-6">
+                        <div class="row mb-5">
                             <div class="col-md-12">
                                 <label for="description" class="form-label">Description</label>
                                 <textarea id="description" class="form-control" name="description" rows="4" placeholder="Enter Description"></textarea>
@@ -178,21 +200,30 @@
                     </div>
                     <div class="modal-body">
                         <input type="file" id="update-image-compressed" name="folder_thumbnail" hidden>
-                        <div class="row mb-6">
+                        <div class="row mb-5">
+                            <div class="col-md-6" style="display: none">
+                                <label for="folderOrderInput" class="form-label">Folder Order</label>
+                                <input type="number" id="folderOrderInput" class="form-control" name="order"
+                                    min="1" value="1" placeholder="Enter Folder Order">
+                                <small class="text-body float-start error-message-div folder_order-error"
+                                    style="color: #ff0000 !important" hidden></small>
+                            </div>
+                        </div>
+                        <div class="row mb-5">
                             <div class="col-md-6">
-                                <label for="folderName" class="form-label">Folder Name</label>
+                                <label for="folderNameInput" class="form-label">Folder Name</label>
                                 <input type="text" id="folderNameInput" class="form-control" name="folder_name"
                                     placeholder="Enter Folder Name">
                                 <small class="text-body float-start error-message-div folder_name-error"
                                     style="color: #ff0000 !important" hidden></small>
                             </div>
                             <div class="col-md-6">
-                                <label for="folderThumbnail" class="form-label">Folder Thumbnail</label>
+                                <label for="folderThumbnailInput" class="form-label">Folder Thumbnail</label>
                                 <input type="file" id="folderThumbnailInput" class="form-control"
                                     data-compressed-file-id="update-image-compressed"
                                     accept="image/jpeg,png,jpg,gif,svg,webp">
-                                <div class="mt-2 preview-container">
-                                    <img width="125px" height="125px" class="img-fluid">
+                                <div class="mt-2 preview-container-update">
+                                    <img width="125px" height="125px">
                                 </div>
                                 <small class="text-body float-start uploaded-file-name"
                                     style="color: #000; font-style: italic;"></small>
@@ -200,9 +231,9 @@
                                     style="color: #ff0000 !important" hidden></small>
                             </div>
                         </div>
-                        <div class="row mb-6">
+                        <div class="row mb-5">
                             <div class="col-md-6" id="folderTypeDiv">
-                                <label for="folderType" class="form-label">Folder Type</label>
+                                <label for="folderTypeInput" class="form-label">Folder Type</label>
                                 <select class="form-select" id="folderTypeInput" name="folder_type">
                                     <option selected disabled>Select Folder Type</option>
                                     <option value="image">Image</option>
@@ -213,16 +244,16 @@
                                     style="color: #ff0000 !important" hidden></small>
                             </div>
                             <div class="col-md-6" hidden>
-                                <label for="folderLink" class="form-label">Folder Link</label>
+                                <label for="folderLinkInput" class="form-label">Folder Link</label>
                                 <input type="text" id="folderLinkInput" class="form-control" name="folder_link"
                                     placeholder="Enter Folder Link">
                                 <small class="text-body float-start error-message-div folder_link-error"
                                     style="color: #ff0000 !important" hidden></small>
                             </div>
                         </div>
-                        <div class="row mb-6">
+                        <div class="row mb-5">
                             <div class="col-md-12">
-                                <label for="description" class="form-label">Description</label>
+                                <label for="descriptionInput" class="form-label">Description</label>
                                 <textarea id="descriptionInput" class="form-control" name="description" rows="4"
                                     placeholder="Enter Description"></textarea>
                                 <small id="char-count" class="form-text text-muted">0 / 300 characters</small>
@@ -296,6 +327,10 @@
                         name: 'folder_link'
                     },
                     {
+                        data: 'order',
+                        name: 'order'
+                    },
+                    {
                         data: 'actions',
                         name: 'actions',
                         orderable: false,
@@ -353,12 +388,23 @@
                             $('#folderNameInput').val(response.data.folder_name);
                             $('#folderTypeInput').val(response.data.folder_type);
                             $('#folderLinkInput').val(response.data.folder_link);
-                            $('.preview-container img').attr('src', "\\" + response.data
-                                .folder_thumbnail).attr('hidden', false);
+                            if (response.data.folder_thumbnail) {
+                                $('.preview-container-update img').attr('src', "\\" + response.data.folder_thumbnail);
+                                $('.preview-container-update').show();
+                            } else {
+                                $('.preview-container-update').hide();
+                            }
                             if (response.data.folder_type == 'link')
-                                $('#folderLinkInput').parent().attr('hidden', false);
+                                $('#folderLinkInput').parent().hide();
                             $('#descriptionInput').text(response.data.description);
                             $('#folderIdInput').val(response.data.id);
+                            if (response.data.folder_name != 'Guest Upload') {
+                                $('#folderOrderInput').parent().show();
+                                $('#folderOrderInput').val(response.data.order);
+                            } else {
+                                $('#folderOrderInput').parent().hide();
+                            }
+
                             if (response.data.can_update_folder_name)
                                 $('#folderTypeDiv').show();
                             else
@@ -527,9 +573,10 @@
                 fileNameDisplay.attr('hidden', false);
                 fileNameDisplay.text(`Uploaded File: ${fileName}`);
                 if (fileInput.files[0].type.startsWith('image/')) {
-                    const previewContainer = $(this).closest('.col-md-6').find('.preview-container');
+                    const previewContainer = $(this).attr('id') == 'folderThumbnailInput' ? $(this).closest('.col-md-6').find('.preview-container-update') : $(this).closest('.col-md-6').find('.preview-container');
                     previewContainer.empty();
                     const reader = new FileReader();
+                    $(previewContainer).show();
                     reader.onload = function(e) {
                         const img = document.createElement('img');
                         img.src = e.target.result;

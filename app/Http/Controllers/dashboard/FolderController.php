@@ -30,7 +30,7 @@ class FolderController extends Controller
     {
         try {
             if ($request->ajax()) {
-                $folders = Event::where('bunny_event_name', $eventSlug)->first()->folders()->orderBy('created_at','desc')->get();
+                $folders = Event::where('bunny_event_name', $eventSlug)->first()->folders()->orderBy('created_at', 'desc')->get();
                 return DataTables::of($folders)
                     ->addColumn('actions', function ($folder) use ($eventSlug) {
                         $actions = '';
@@ -43,13 +43,16 @@ class FolderController extends Controller
                     ->editColumn('event_name', function ($row) {
                         return $row->event->event_name;
                     })
+                    ->editColumn('order', function ($row) {
+                        return '<div class="folder-order-div">' . $row->order . '</div>';
+                    })
                     ->editColumn('folder_thumbnail', function ($row) {
                         return $row->folder_thumbnail ? '<img src="/' . $row->folder_thumbnail . '" alt="" width="100px" height="100px">' : null;
                     })
                     ->editColumn('folder_link', function ($row) {
                         return $row->folder_type == "link" ? '<a target="_blank" class="btn btn-label-linkedin" href="' . $row->folder_link . '"> Link </a>' : null;
                     })
-                    ->rawColumns(['folder_thumbnail', 'folder_link', 'actions'])
+                    ->rawColumns(['folder_thumbnail', 'folder_link', 'order' ,'actions'])
                     ->make(true);
             }
             return view('dashboard.folder.index');
@@ -76,8 +79,8 @@ class FolderController extends Controller
             $data =  $request->all();
             $event = Event::where('bunny_event_name', $eventSlug)->first();
             $eventId = $event->id;
-            $folderThumbnail="";
-            if(isset($data['folder_thumbnail']))
+            $folderThumbnail = "";
+            if (isset($data['folder_thumbnail']))
                 $folderThumbnail = $data['folder_thumbnail'] instanceof UploadedFile ? 'storage/' . uploadFile($data['folder_thumbnail'], 'folders/folder_thumbnail') : $data['folder_thumbnail'];
             $data['folder_thumbnail'] = $folderThumbnail;
             $data['event_id'] = $eventId;
