@@ -1,17 +1,24 @@
 import { getUserToken } from '../auth';
 
-$(document).ready(async function () {
-    var token = await getUserToken();
-    await axios.get('/events/check-token',
-        {
+async function checkAuthentication(){
+    const token = await getUserToken();
+    try {
+        const response = await fetch('/events/check-token', {
+            method: 'GET',
             headers: {
                 'pageToken': token
             }
-        }).then(response => {
-        }).catch(error => {
-            window.location.href = document.getElementById('main-page-url').dataset.url;
         });
-})
+        if (!response.ok) throw new Error('Unauthorized');
+        setTimeout(() => {
+            document.querySelector('.main-container').classList.remove('auth-checking');
+        }, 10);
+    } catch (error) {
+        window.location.href = document.getElementById('main-page-url')?.dataset?.url || '/';
+    }
+}
+
+await checkAuthentication();
 
 const dropArea = document.getElementById('dropArea');
 const fileInput = document.getElementById('image');

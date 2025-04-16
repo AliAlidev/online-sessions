@@ -14,6 +14,10 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <style>
+        .auth-checking {
+            display: none !important;
+        }
+
         #loader-div {
             /* display: flex; */
             align-items: center;
@@ -61,8 +65,14 @@
             /* Vertically center the text next to the spinner */
         }
 
-        .swal2-container{
+        .swal2-container {
             z-index: 9999 !important;
+        }
+
+        .video-player {
+            width: 100%;
+            display: flex;
+            justify-content: center;
         }
 
     </style>
@@ -70,7 +80,7 @@
 @endpush
 
 @section('content')
-    <div class="main-container">
+    <div class="main-container auth-checking">
         <div class="main-header">
             <div class="top-bar">
                 <a href="{{ route('landing.index', ['year' => $year, 'month' => $month, 'event_slug' => $event_slug]) }}"><img
