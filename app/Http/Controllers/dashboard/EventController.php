@@ -43,20 +43,15 @@ class EventController extends Controller
                     ->when(!empty($filterClient), fn($query) => $query->where('client_id', $filterClient))
                     ->when(!empty($filterType), fn($query) => $query->where('event_type_id', $filterType))
                     ->when(!empty($filterDate), fn($query) => $query->whereDate('start_date', $filterDate));
-
-                // Step 2: Get collection and filter by custom status
                 $events = $eventsQuery->get()->filter(function ($item) use ($filterStatus) {
                     if (!$filterStatus) return true;
-
                     $eventStartDate = Carbon::parse($item->start_date)->startOfDay();
                     $eventEndDate = Carbon::parse($item->end_date)->endOfDay();
                     $now = Carbon::now()->endOfDay();
-
                     $status = 'Expire soon';
                     if ($eventEndDate->lte($now)) $status = 'Expired';
                     elseif ($eventStartDate->gt($now)) $status = 'Pending';
                     elseif ($eventEndDate->floatDiffInMonths($now, true) > 1) $status = 'Online';
-
                     return $status === $filterStatus;
                 });
 
@@ -81,7 +76,15 @@ class EventController extends Controller
                     ->editColumn('event_name', fn($row) => Auth::user()->hasAnyPermission(['create_folder', 'update_folder', 'delete_folder']) ? '<a href="' . route('folders.index', $row->bunny_event_name) . '">' . $row->event_name . '</a>' : $row->event_name)
                     ->editColumn('profile_picture', fn($row) => $row->profile_picture ? '<img src="/' . $row->profile_picture . '" width="100" height="100">' : '')
                     ->editColumn('cover_image', fn($row) => $row->cover_image ? '<img src="/' . $row->cover_image . '" width="100" height="100">' : '')
-                    ->editColumn('event_link', fn($row) => '<a target="_blank" class="btn btn-label-linkedin" href="' . $row->event_link . '"> Link </a>')
+                    ->editColumn('event_link', function ($row) {
+                        $eventStartDate = Carbon::parse($row->start_date)->startOfDay();
+                        $now = Carbon::now()->endOfDay();
+                        if (Carbon::parse($row->end_date)->isPast())
+                            return '<a target="_blank" class="btn btn-label-linkedin" href="' . route('events.expired') . '"> Link </a>';
+                        if ($eventStartDate->gt($now))
+                            return '<a target="_blank" class="btn btn-label-linkedin" href="' . route('events.pending') . '"> Link </a>';
+                        return '<a target="_blank" class="btn btn-label-linkedin" href="' . $row->event_link . '"> Link </a>';
+                    })
                     ->addColumn('actions', function ($event) {
                         $actions = '';
                         $user = Auth::user();
@@ -288,5 +291,15 @@ class EventController extends Controller
             createServerError($th, "deleteEvent", "events");
             return false;
         }
+    }
+
+    function expired()
+    {
+        return view('website.pages.event_expired');
+    }
+
+    function pending()
+    {
+        return view('website.pages.event_pending');
     }
 }

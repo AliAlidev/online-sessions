@@ -67,6 +67,8 @@ Route::middleware('auth')->group(function () {
         Route::post('/update/{id?}', 'update')->name('update');
         Route::get('/delete/{id?}', 'delete')->name('delete');
         Route::get('/show/{id?}', 'show');
+        Route::get('/expired', 'expired')->name('expired');
+        Route::get('/pending', 'pending')->name('pending');
     });
 
     Route::controller(RoleController::class)->prefix('admin/roles')->name('roles.')->group(function () {
