@@ -400,7 +400,8 @@
                     },
                     {
                         data: 'description',
-                        name: 'description'
+                        name: 'description',
+                        visible: false
                     },
                     {
                         data: 'date',
