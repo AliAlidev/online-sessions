@@ -46,7 +46,7 @@
 
 <body>
     <input type="hidden" id="auth-token-url" value="{{ route('get_auth_token') }}">
-    <input type="hidden" id="main-page-url" data-url="{{ route('landing.index', [request()->route('year'), request()->route('month'), request()->route('event_slug')]) }}">
+    <input type="hidden" id="main-page-url" data-url="{{ route('landing.index', [request()->route('year'), request()->route('event_slug')]) }}">
     @yield('partial_header')
 
     <!-- Container -->

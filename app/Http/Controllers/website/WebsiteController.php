@@ -28,22 +28,21 @@ class WebsiteController extends Controller
     function index(Request $request)
     {
         $year = $request->route('year');
-        $month = $request->route('month');
         $eventSlug = $request->route('event_slug');
         $event = Event::where('bunny_event_name', $eventSlug)->first();
         if (Carbon::parse($event->end_date)->isPast())
             return view('website.pages.event_expired');
         $event->start_date = Carbon::parse($event->start_date)->format('d/m/Y');
-        return view('website.pages.index', ['year' => $year, 'month' => $month, 'event_slug' => $eventSlug, 'event' => $event]);
+        return view('website.pages.index', ['year' => $year, 'event_slug' => $eventSlug, 'event' => $event]);
     }
 
     function galleryRedirectUrl(Request $request)
     {
         $event = Event::where('bunny_event_name', $request->event_slug)->first();
         $wantsPassword = false;
-        $url = route('landing.gallery', ['year' => $request->year, 'month' => $request->month, 'event_slug' => $request->event_slug]);
+        $url = route('landing.gallery', ['year' => $request->year, 'event_slug' => $request->event_slug]);
         if ($event->event_password != null) {
-            $url = route('landing.event_password', ['year' => $request->year, 'month' => $request->month, 'event_slug' => $request->event_slug]);
+            $url = route('landing.event_password', ['year' => $request->year, 'event_slug' => $request->event_slug]);
             $wantsPassword = true;
         }
 
@@ -52,14 +51,13 @@ class WebsiteController extends Controller
             'wantsPassword' => $wantsPassword,
             'url' => $url,
             'year' => $request->year,
-            'month' => $request->month,
             'event_slug' => $request->event_slug
         ]);
     }
 
     function eventPassword(Request $request)
     {
-        return view('website.pages.event_password', ['year' => $request->year, 'month' => $request->month, 'event_slug' => $request->event_slug]);
+        return view('website.pages.event_password', ['year' => $request->year, 'event_slug' => $request->event_slug]);
     }
 
     function applyEventPassword(Request $request)
@@ -71,7 +69,7 @@ class WebsiteController extends Controller
         if (Hash::check($password, $event->event_password))
             return response()->json([
                 'success' => true,
-                'url' => route('landing.gallery', ['year' => $data['year'], 'month' => $data['month'], 'event_slug' => $data['event_slug']])
+                'url' => route('landing.gallery', ['year' => $data['year'], 'event_slug' => $data['event_slug']])
             ]);
         return response()->json(['success' => false, 'message' => 'Invalid password']);
     }
@@ -80,9 +78,8 @@ class WebsiteController extends Controller
     {
         return response()->json([
             'success' => true,
-            'url' => route('landing.share', ['year' => $request->year, 'month' => $request->month, 'event_slug' => $request->event_slug]),
+            'url' => route('landing.share', ['year' => $request->year, 'event_slug' => $request->event_slug]),
             'year' => $request->year,
-            'month' => $request->month,
             'event_slug' => $request->event_slug
         ]);
     }
@@ -90,7 +87,6 @@ class WebsiteController extends Controller
     function gallery(Request $request)
     {
         $year = $request->route('year');
-        $month = $request->route('month');
         $eventSlug = $request->route('event_slug');
         $event = Event::where('bunny_event_name', $eventSlug)->first();
         if (Carbon::parse($event->end_date)->isPast())
@@ -113,7 +109,7 @@ class WebsiteController extends Controller
             if ($folder->folder_type == 'link')
                 $foldersList[] = $folder;
         });
-        return view('website.pages.gallery.gallery', ['year' => $year, 'month' => $month, 'event_slug' => $eventSlug, 'event' => $event, 'folders' => $foldersList]);
+        return view('website.pages.gallery.gallery', ['year' => $year, 'event_slug' => $eventSlug, 'event' => $event, 'folders' => $foldersList]);
     }
 
     function image(Request $request)
@@ -132,13 +128,12 @@ class WebsiteController extends Controller
     function share(Request $request)
     {
         $year = $request->route('year');
-        $month = $request->route('month');
         $eventSlug = $request->route('event_slug');
         $event = Event::where('bunny_event_name', $eventSlug)->first();
         if (Carbon::parse($event->end_date)->isPast())
             return view('website.pages.event_expired');
         $event->start_date = Carbon::parse($event->start_date)->format('d/m/Y');
-        return view('website.pages.share', ['year' => $year, 'month' => $month, 'event_slug' => $eventSlug, 'event' => $event]);
+        return view('website.pages.share', ['year' => $year, 'event_slug' => $eventSlug, 'event' => $event]);
     }
 
     function video(Request $request)

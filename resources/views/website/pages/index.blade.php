@@ -78,8 +78,8 @@
                 <!-- Buttons Section -->
                 <div class="buttons-section">
                     <a href=""
-                        data-url="{{ route('landing.gallery_redirect_url', ['year' => $year, 'month' => $month, 'event_slug' => $event_slug]) }}"
-                        data-gallery-url = "{{ route('landing.apply_event_password', ['year' => $year, 'month' => $month, 'event_slug' => $event_slug]) }}"
+                        data-url="{{ route('landing.gallery_redirect_url', ['year' => $year, 'event_slug' => $event_slug]) }}"
+                        data-gallery-url = "{{ route('landing.apply_event_password', ['year' => $year, 'event_slug' => $event_slug]) }}"
                         data-event-slug="{{ $event_slug }}" class="gallery-button">
                         <svg class="button-image" width="46" height="38" viewBox="0 0 46 38" fill="none"
                             xmlns="http://www.w3.org/2000/svg">
@@ -94,8 +94,8 @@
                         </svg>
                         <span class="button-text gallery">GALLERY</span>
                     </a>
-                    <a href="" style="cursor: {{ $event->supportImageUpload() ? 'pointer' : 'not-allowed' }}"
-                        data-url="{{ $event->supportImageUpload() ? route('landing.share_redirect_url', ['year' => $year, 'month' => $month, 'event_slug' => $event_slug]) : '' }}"
+                    <a href="" style="cursor: {{ $event->supportImageUpload() ? 'pointer' : 'not-allowed' }}; {{ !$event->supportImageUpload() ? 'background-color:#ccc' : '' }}"
+                        data-url="{{ $event->supportImageUpload() ? route('landing.share_redirect_url', ['year' => $year, 'event_slug' => $event_slug]) : '' }}"
                         data-support-image-upload="{{ $event->supportImageUpload() }}" class="share-button">
                         <svg class="button-image" width="45" height="38" viewBox="0 0 45 38" fill="none"
                             xmlns="http://www.w3.org/2000/svg">

@@ -83,7 +83,7 @@
     <div class="main-container auth-checking">
         <div class="main-header">
             <div class="top-bar">
-                <a href="{{ route('landing.index', ['year' => $year, 'month' => $month, 'event_slug' => $event_slug]) }}"><img
+                <a href="{{ route('landing.index', ['year' => $year, 'event_slug' => $event_slug]) }}"><img
                         class="top-bar-iamge" src="{{ asset($event->profile_picture) }}" alt=""></a>
                 <div class="event-title-date">
                     <h1 class="event-title">{{ isset($event->event_alias_name) ? $event->event_alias_name : $event->event_name }}</h1>
@@ -104,7 +104,7 @@
                         <div class="folder folder-thumbnail" data-type= "{{ $folder->folder_type }}"
                             data-folder-name="{{ $folder->folder_name }}" data-id="{{ $folder->id }}"
                             data-folder-link="{{ $folder->folder_link }}"
-                            data-url="{{ $folder->folder_type == 'image' ? route('landing.image', ['year' => $year, 'month' => $month, 'event_slug' => $event_slug]) : route('landing.video', ['year' => $year, 'month' => $month, 'event_slug' => $event_slug]) }}">
+                            data-url="{{ $folder->folder_type == 'image' ? route('landing.image', ['year' => $year, 'event_slug' => $event_slug]) : route('landing.video', ['year' => $year, 'event_slug' => $event_slug]) }}">
                             <svg style="" width="100%" height="100%" viewBox="0 0 120 100" fill="none"
                                 xmlns="http://www.w3.org/2000/svg">
                                 <path
@@ -142,7 +142,7 @@
             <p class="footer-copywrite">Powered by UP EVENTS</p>
             <!-- Share Button -->
             <a href="" style="cursor: {{ $event->supportImageUpload() ? 'pointer' : 'not-allowed' }}"
-                data-url="{{ $event->supportImageUpload() ? route('landing.share_redirect_url', ['year' => $year, 'month' => $month, 'event_slug' => $event_slug]) : '' }}"
+                data-url="{{ $event->supportImageUpload() ? route('landing.share_redirect_url', ['year' => $year, 'event_slug' => $event_slug]) : '' }}"
                 data-support-image-upload="{{ $event->supportImageUpload() }}" class="share-btn-div">
                 <div class="share-button">
                     <img class="share-button-image"

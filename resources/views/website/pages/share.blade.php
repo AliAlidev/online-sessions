@@ -474,7 +474,7 @@
     <div class="main-container auth-checking">
         <div class="main-header">
             <div class="top-bar">
-                <a href="{{ route('landing.index', ['year' => $year, 'month' => $month, 'event_slug' => $event_slug]) }}"><img
+                <a href="{{ route('landing.index', ['year' => $year, 'event_slug' => $event_slug]) }}"><img
                         class="top-bar-iamge" src="{{ asset($event->profile_picture) }}" alt=""></a>
                 <div class="event-title-date">
                     <h1 class="event-title">
@@ -521,7 +521,7 @@
                         </div>
                     </form>
                     <a class="back-button"
-                        href="{{ route('landing.gallery', ['year' => $year, 'month' => $month, 'event_slug' => $event_slug]) }}">
+                        href="{{ route('landing.gallery', ['year' => $year, 'event_slug' => $event_slug]) }}">
                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor"
                             viewBox="0 0 16 16" style="vertical-align: middle; margin-right: 5px;">
                             <path fill-rule="evenodd"
