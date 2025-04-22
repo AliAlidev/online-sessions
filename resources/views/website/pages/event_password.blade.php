@@ -75,7 +75,6 @@
                             action="{{ route('landing.apply_event_password') }}" method="POST">
                             <input type="hidden" id="event_slug" name="event_slug" value="{{ $event_slug }}">
                             <input type="hidden" id="year" name="year" value="{{ $year }}">
-                            <input type="hidden" id="month" name="month" value="{{ $month }}">
                             <div class="mb-6">
                                 <label for="password" class="form-label">Event Password</label>
                                 <input type="password" class="form-control" id="password" name="password"
