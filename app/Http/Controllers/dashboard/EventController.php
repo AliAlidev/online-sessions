@@ -34,64 +34,77 @@ class EventController extends Controller
     {
         try {
             if ($request->ajax()) {
-                $events = Event::orderBy('created_at', 'desc')->get();
+                $filterStatus = $request->filter_status;
+                $filterClient = $request->filter_client;
+                $filterType = $request->filter_type;
+                $filterDate = $request->filter_date;
+
+                $eventsQuery = Event::with(['client', 'type'])
+                    ->when(!empty($filterClient), fn($query) => $query->where('client_id', $filterClient))
+                    ->when(!empty($filterType), fn($query) => $query->where('event_type_id', $filterType))
+                    ->when(!empty($filterDate), fn($query) => $query->whereDate('start_date', $filterDate));
+
+                // Step 2: Get collection and filter by custom status
+                $events = $eventsQuery->get()->filter(function ($item) use ($filterStatus) {
+                    if (!$filterStatus) return true;
+
+                    $eventStartDate = Carbon::parse($item->start_date)->startOfDay();
+                    $eventEndDate = Carbon::parse($item->end_date)->endOfDay();
+                    $now = Carbon::now()->endOfDay();
+
+                    $status = 'Expire soon';
+                    if ($eventEndDate->lte($now)) $status = 'Expired';
+                    elseif ($eventStartDate->gt($now)) $status = 'Pending';
+                    elseif ($eventEndDate->floatDiffInMonths($now, true) > 1) $status = 'Online';
+
+                    return $status === $filterStatus;
+                });
+
                 return DataTables::of($events)
-                    ->editColumn('qr_code', function ($row) {
-                        return '<a href="/' . $row->qr_code . '" download><img src="/' . $row->qr_code . '" alt="" width="100px" height="100px"></a>';
-                    })
-                    ->editColumn('event_name', function ($row) {
-                        return Auth::user()->hasAnyPermission(['create_folder', 'update_folder', 'delete_folder']) ? '<a href="' . route('folders.index', $row->bunny_event_name) . '">' . $row->event_name . '</a>' : $row->event_name;
-                    })
-                    ->editColumn('profile_picture', function ($row) {
-                        return $row->profile_picture ? '<img src="/' . $row->profile_picture . '" alt="" width="100px" height="100px">' : '';
-                    })
-                    ->editColumn('cover_image', function ($row) {
-                        return $row->cover_image ? '<img src="/' . $row->cover_image . '" alt="" width="100px" height="100px">' : '';
-                    })
-                    ->addColumn('event_type', function ($row) {
-                        return $row->type?->name;
-                    })
-                    ->addColumn('time_reminder', function ($row) {
-                        $eventEndDate = Carbon::parse($row->end_date)->endOfDay();
-                        $now = Carbon::now()->endOfDay();
-                        if ($eventEndDate->gt($now)) {
-                            return $eventEndDate->diffInDays($now) . ' days';
-                        }
-                        return '-';
-                    })
                     ->addColumn('event_status', function ($row) {
                         $eventStartDate = Carbon::parse($row->start_date)->startOfDay();
                         $eventEndDate = Carbon::parse($row->end_date)->endOfDay();
                         $now = Carbon::now()->endOfDay();
-                        if ($eventEndDate->lte($now)) {
-                            return 'Expired';
-                        }
-                        if ($eventStartDate->gt($now)) {
-                            return 'Pending';
-                        }
-                        if ($eventEndDate->floatDiffInMonths($now, true) > 1) {
-                            return 'Online';
-                        }
+                        if ($eventEndDate->lte($now)) return 'Expired';
+                        if ($eventStartDate->gt($now)) return 'Pending';
+                        if ($eventEndDate->floatDiffInMonths($now, true) > 1) return 'Online';
                         return 'Expire soon';
                     })
-                    ->addColumn('event_client', function ($row) {
-                        return $row->client?->planner_name;
+                    ->addColumn('event_type', fn($row) => $row->type?->name)
+                    ->addColumn('event_client', fn($row) => $row->client?->planner_name)
+                    ->addColumn('time_reminder', function ($row) {
+                        $eventEndDate = Carbon::parse($row->end_date)->endOfDay();
+                        $now = Carbon::now()->endOfDay();
+                        return $eventEndDate->gt($now) ? $eventEndDate->diffInDays($now) . ' days' : '-';
                     })
-                    ->editColumn('event_link', function ($row) {
-                        return '<a target="_blank" class="btn btn-label-linkedin" href="' . $row->event_link . '"> Link </a>';
-                    })
+                    ->editColumn('qr_code', fn($row) => '<a href="/' . $row->qr_code . '" download><img src="/' . $row->qr_code . '" width="100" height="100"></a>')
+                    ->editColumn('event_name', fn($row) => Auth::user()->hasAnyPermission(['create_folder', 'update_folder', 'delete_folder']) ? '<a href="' . route('folders.index', $row->bunny_event_name) . '">' . $row->event_name . '</a>' : $row->event_name)
+                    ->editColumn('profile_picture', fn($row) => $row->profile_picture ? '<img src="/' . $row->profile_picture . '" width="100" height="100">' : '')
+                    ->editColumn('cover_image', fn($row) => $row->cover_image ? '<img src="/' . $row->cover_image . '" width="100" height="100">' : '')
+                    ->editColumn('event_link', fn($row) => '<a target="_blank" class="btn btn-label-linkedin" href="' . $row->event_link . '"> Link </a>')
                     ->addColumn('actions', function ($event) {
                         $actions = '';
-                        Auth::user()->hasPermissionTo('update_event') ? $actions .= '<a href="' . route('events.edit', $event->id) . '" class="update-event btn btn-icon btn-outline-primary m-1"><i class="bx bx-edit-alt" style="color:#696cff"></i></a>' : '';
-                        Auth::user()->hasPermissionTo('delete_event') ? $actions .= '<a href="#" data-url="' . route('events.delete', $event->id) . '" class="delete-event btn btn-icon btn-outline-primary m-1"><i class="bx bx-trash" style="color:red"></i> </a>' : '';
-                        Auth::user()->hasAnyPermission(['create_folder', 'update_folder', 'delete_folder']) ? $actions .= '<a title="Folders" href="' . route('folders.index', $event->bunny_event_name) . '" class="btn rounded-pill btn-icon btn-primary"><i class="bx bx-folder" style="color:white"></i> </a>' : '';
+                        $user = Auth::user();
+                        if ($user->hasPermissionTo('update_event')) {
+                            $actions .= '<a href="' . route('events.edit', $event->id) . '" class="update-event btn btn-icon btn-outline-primary m-1"><i class="bx bx-edit-alt" style="color:#696cff"></i></a>';
+                        }
+                        if ($user->hasPermissionTo('delete_event')) {
+                            $actions .= '<a href="#" data-url="' . route('events.delete', $event->id) . '" class="delete-event btn btn-icon btn-outline-primary m-1"><i class="bx bx-trash" style="color:red"></i></a>';
+                        }
+                        if ($user->hasAnyPermission(['create_folder', 'update_folder', 'delete_folder'])) {
+                            $actions .= '<a title="Folders" href="' . route('folders.index', $event->bunny_event_name) . '" class="btn rounded-pill btn-icon btn-primary"><i class="bx bx-folder" style="color:white"></i></a>';
+                        }
                         return $actions;
                     })
                     ->addIndexColumn()
                     ->rawColumns(['qr_code', 'event_name', 'profile_picture', 'event_link', 'cover_image', 'actions'])
                     ->make(true);
             }
-            return view('dashboard.event.index');
+
+            $clients = Client::whereHas('event')->pluck('planner_name', 'id')->toArray();
+            $types = EventType::whereHas('event')->pluck('name', 'id')->toArray();
+            $statuses = ['Expired', 'Pending', 'Online', 'Expire soon'];
+            return view('dashboard.event.index', ['clients' => $clients, 'types' => $types, 'statuses' => $statuses]);
         } catch (Exception $th) {
             createServerError($th, "indexEvent", "events");
             return false;

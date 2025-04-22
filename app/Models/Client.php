@@ -25,4 +25,9 @@ class Client extends Model
             $model->created_by = Auth::id();
         });
     }
+
+    function event()
+    {
+        return $this->belongsTo(Event::class, 'id', 'client_id');
+    }
 }

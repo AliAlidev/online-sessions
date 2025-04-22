@@ -49,9 +49,46 @@
         <div class="card">
             @can('create_event')
                 <div class="row card-header flex-column flex-md-row pb-0">
-                    <div class="d-md-flex justify-content-between align-items-center dt-layout-end col-md-auto ms-auto mt-0">
+                    <div class="col-md-10" style="display: flex; gap: 10px;flex-direction: row">
+                        <div class="col-md-2">
+                            <label for="" class="form-label">Client</label>
+                            <select name="filter-clients" id="filter-clients" class="form-select filter">
+                                <option value="">All</option>
+                                @foreach ($clients as $key => $value)
+                                    <option value="{{ $key }}">{{ $value }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label for="" class="form-label">Status</label>
+                            <select name="filter-statuses" id="filter-statuses" class="form-select filter">
+                                <option value="">All</option>
+                                @foreach ($statuses as $key => $value)
+                                    <option value="{{ $value }}">{{ $value }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label for="" class="form-label">Type</label>
+                            <select name="filter-types" id="filter-types" class="form-select filter">
+                                <option value="">All</option>
+                                @foreach ($types as $key => $value)
+                                    <option value="{{ $key }}">{{ $value }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label for="" class="form-label">Start Date</label>
+                            <input type="date" name="filter-dates" id="filter-dates" class="form-control filter">
+                        </div>
+                    </div>
+                    <div class="col-md-2" style="text-align: right">
                         <a href="{{ route('events.create') }}" class="btn btn-primary">Create</a>
                     </div>
+                    {{-- <div class="row" style="display: flex; justify-content: space-between">
+                    </div> --}}
+                    {{-- <div class="d-md-flex justify-content-between align-items-center dt-layout-end col-md-auto ms-auto mt-0">
+                    </div> --}}
                 </div>
             @endcan
             <div class="card-datatable">
@@ -103,7 +140,15 @@
             table = $('#events-datatable').DataTable({
                 processing: true,
                 serverSide: true,
-                ajax: "{{ route('events.index') }}",
+                ajax: {
+                    url: "{{ route('events.index') }}",
+                    data: function(d) {
+                        d.filter_date = $('#filter-dates').val();
+                        d.filter_client = $('#filter-clients').val();
+                        d.filter_status = $('#filter-statuses').val();
+                        d.filter_type = $('#filter-types').val();
+                    }
+                },
                 scrollX: true,
                 scrollY: '400px',
                 scrollCollapse: true,
@@ -231,6 +276,10 @@
                     }
                 });
             });
+
+            $('.filter').on('change', function() {
+                table.draw();
+            })
         });
     </script>
 
