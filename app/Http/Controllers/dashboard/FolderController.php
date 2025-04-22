@@ -52,7 +52,7 @@ class FolderController extends Controller
                     ->editColumn('folder_link', function ($row) {
                         return $row->folder_type == "link" ? '<a target="_blank" class="btn btn-label-linkedin" href="' . $row->folder_link . '"> Link </a>' : null;
                     })
-                    ->rawColumns(['folder_thumbnail', 'folder_link', 'order' ,'actions'])
+                    ->rawColumns(['folder_thumbnail', 'folder_link', 'order', 'actions'])
                     ->make(true);
             }
             return view('dashboard.folder.index');
@@ -84,10 +84,10 @@ class FolderController extends Controller
                 $folderThumbnail = $data['folder_thumbnail'] instanceof UploadedFile ? 'storage/' . uploadFile($data['folder_thumbnail'], 'folders/folder_thumbnail') : $data['folder_thumbnail'];
             $data['folder_thumbnail'] = $folderThumbnail;
             $data['event_id'] = $eventId;
-            $data['folder_name'] = $data['folder_name'];
-            $data['bunny_folder_name'] = Str::slug($data['folder_name']);
+            $data['folder_name'] = $data['folder_name'] ?? '';
+            $data['bunny_folder_name'] = isset($data['folder_name']) ? Str::slug($data['folder_name']) : null;
             $folder = EventFolder::create($data);
-            if ($folder->event->video_collection_id == null) {
+            if ($folder->folder_type == 'video' && $folder->event->video_collection_id == null) {
                 $collection = $this->bunnyVideoService->createCollection($folder->event->bunny_event_name);
                 if ($collection['success'])
                     $folder->event->update(['video_collection_id' => $collection['data']['guid']]);

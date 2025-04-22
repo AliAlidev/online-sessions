@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('event_id')->constrained('events')->onDelete('cascade');
             $table->string('folder_name');
-            $table->string('folder_type');  // 'image', 'video', 'link
+            $table->string('folder_type');  // 'image', 'video', 'link', 'fake'
             $table->text('description')->nullable();
             $table->string('folder_thumbnail')->nullable(); // Path to the thumbnail file
             $table->string('folder_link')->nullable();

@@ -544,8 +544,7 @@
             if (dateTimeValue == '')
                 dateTimeValue = new Date();
             var year = new Date(dateTimeValue).getFullYear();
-            var month = new Date(dateTimeValue).getMonth() + 1;
-            var url = "{{ url('/') }}/events/" + year + "/" + month + "/" + getSlug(eventName);
+            var url = "{{ url('/') }}/events/" + year + "/" + getSlug(eventName);
             $('#urlInput').val(url);
             new QRCode(document.getElementById("qr-code-section"), {
                 text: url,
@@ -677,7 +676,7 @@
 
             // Calculate differences
             let years = end.getFullYear() - start.getFullYear();
-            let months = end.getMonth() - start.getMonth();
+            var month = new Date(dateTimeValue).getMonth() + 1;
             let days = end.getDate() - start.getDate();
 
             // Adjust months and years if needed
@@ -693,7 +692,6 @@
             // Build the duration string dynamically
             let duration = [];
             if (years > 0) duration.push(`${years} year${years > 1 ? "s" : ""}`);
-            if (months > 0) duration.push(`${months} month${months > 1 ? "s" : ""}`);
             if (days > 0) duration.push(`${days} day${days > 1 ? "s" : ""}`);
 
             // Join the parts and return the result

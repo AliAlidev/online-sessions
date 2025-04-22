@@ -615,7 +615,7 @@
                 dateTimeValue = new Date();
             var year = new Date(dateTimeValue).getFullYear();
             var month = new Date(dateTimeValue).getMonth() + 1;
-            var url = "{{ url('/') }}/events/" + year + "/" + month + "/" + getSlug(eventName);
+            var url = "{{ url('/') }}/events/" + year + "/" + getSlug(eventName);
             $('#urlInput').val(url);
             new QRCode(document.getElementById("qr-code-section"), {
                 text: url,

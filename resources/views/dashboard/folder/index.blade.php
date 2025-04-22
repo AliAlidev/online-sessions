@@ -152,6 +152,7 @@
                                     <option value="image">Image</option>
                                     <option value="video">Video</option>
                                     <option value="link">Link</option>
+                                    <option value="fake">Fake</option>
                                 </select>
                                 <small class="text-body float-start error-message-div folder_type-error"
                                     style="color: #ff0000 !important" hidden></small>
@@ -239,6 +240,7 @@
                                     <option value="image">Image</option>
                                     <option value="video">Video</option>
                                     <option value="link">Link</option>
+                                    <option value="fake">Fake</option>
                                 </select>
                                 <small class="text-body float-start error-message-div folder_type-error"
                                     style="color: #ff0000 !important" hidden></small>
