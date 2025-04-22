@@ -77,6 +77,9 @@ async function selectFolder(event) {
         window.open(folderLink, '_blank', 'noopener,noreferrer');
         return false;
     }
+    if (folderType == 'fake') {
+        return false;
+    }
     $('#gallery-div').hide();
     $('#loader-div').attr('hidden', false);
     var token = await getUserToken();
