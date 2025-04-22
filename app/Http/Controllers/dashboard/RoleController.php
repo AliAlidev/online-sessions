@@ -53,7 +53,7 @@ class RoleController extends Controller
     {
         try {
             $data = $request->validated();
-            $data['name'] =  Str::slug($data['name']);
+            $data['name'] =  $data['name'];
             ClientRole::create($data);
             return response()->json(['success' => true, 'message' => 'Role has been created successfully']);
         } catch (Exception $th) {
@@ -67,7 +67,7 @@ class RoleController extends Controller
         try {
             $data = $request->validated();
             ClientRole::find($data['role_id'])->update([
-                'name' => Str::slug($data['name'])
+                'name' => $data['name']
             ]);
             return response()->json(['success' => true, 'message' => 'Role has been updated successfully']);
         } catch (Exception $th) {
