@@ -138,6 +138,8 @@ class WebsiteController extends Controller
         $year = $request->route('year');
         $eventSlug = $request->route('event_slug');
         $event = Event::where('bunny_event_name', $eventSlug)->first();
+        if (!$event->supportImageUpload())
+            return redirect()->route('landing.index', ['year' => $year, 'event_slug' => $eventSlug]);
         if (Carbon::parse($event->end_date)->isPast())
             return view('website.pages.event_expired');
         $eventStartDate = Carbon::parse($event->start_date)->startOfDay();
