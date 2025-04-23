@@ -648,7 +648,7 @@
                     formData.append('video_resolution', $('#video_resolution').val());
                     formData.append('video_name', $('#VideoName').val() == undefined ? '' : $(
                         '#VideoName').val());
-                    formData.append('file_order', $('#fileOrder').val() == undefined ? '' : $(
+                    formData.append('file_order', $('#fileOrder').val() == undefined ? 1 : $(
                         '#fileOrder').val());
                     $(`#file-container-${index} .start-btn`).remove(); // Remove "Start Upload" button
 
@@ -830,7 +830,7 @@
                     '#userNameInput').val());
                 formData.append('video_name', $('#VideoNameInput').val() == undefined ? '' : $(
                     '#VideoNameInput').val());
-                formData.append('file_order', $('#fileOrderInput').val() == undefined ? '' : $(
+                formData.append('file_order', $('#fileOrderInput').val() == undefined ? 1 : $(
                     '#fileOrderInput').val());
                 formData.append('description', $('#descriptionInput').val());
                 var fileId = $('#updateFileId').val();
