@@ -24,13 +24,13 @@ class CreateClientRequest extends FormRequest
         return [
             'planner_name' => 'required|string',
             'planner_business_name' => 'nullable|string',
-            'phone_number' => 'required|string|max:20|unique:clients,phone_number',
-            'email' => 'required|email|unique:clients,email',
+            'phone_number' => 'nullable|string|max:20|unique:clients,phone_number',
+            'email' => 'nullable|email|unique:clients,email',
             'client_role' => 'required|string|exists:client_roles,id',
             'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp',
             'profile_picture' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp',
             'contact_button_text' => 'required|string',
-            'contact_button_link' => 'required|url',
+            'contact_button_link' => 'nullable|url',
             'description' => 'nullable|string'
         ];
     }

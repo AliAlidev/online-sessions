@@ -49,8 +49,10 @@
                                     <input type="file" id="logo" class="form-control" name="logo"
                                         accept="image/jpeg,png,jpg,gif,svg,webp">
                                     <div class="mt-2 preview-container">
-                                        <img width="125px" height="125px"
-                                            src="{{ $client->logo ? asset($client->logo) : '' }}">
+                                        @if (isset($client->logo))
+                                            <img width="125px" height="125px"
+                                                src="{{ $client->logo ? asset($client->logo) : '' }}">
+                                        @endif
                                     </div>
                                     <small class="text-body float-start uploaded-file-name"
                                         style="color: #000; font-style: italic;"></small>
@@ -72,8 +74,10 @@
                                     <input type="file" id="profile-picture" class="form-control" name="profile_picture"
                                         accept="image/jpeg,png,jpg,gif,svg,webp">
                                     <div class="mt-2 preview-container">
-                                        <img width="125px" height="125px"
-                                            src="{{ $client->profile_picture ? asset($client->profile_picture) : '' }}">
+                                        @if (isset($client->profile_picture))
+                                            <img width="125px" height="125px"
+                                                src="{{ $client->profile_picture ? asset($client->profile_picture) : '' }}">
+                                        @endif
                                     </div>
                                     <small class="text-body float-start uploaded-file-name"
                                         style="color: #000; font-style: italic;"></small>
