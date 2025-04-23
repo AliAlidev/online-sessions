@@ -15,7 +15,7 @@ async function checkAuthentication() {
     }
 }
 
-await checkAuthentication();
+checkAuthentication();
 
 
 async function checkEventIfHavePassword() {
@@ -55,7 +55,7 @@ async function checkEventIfHavePassword() {
     }
 }
 
-await checkEventIfHavePassword();
+checkEventIfHavePassword();
 
 async function gotoPasswordVerification() {
     var url = $('#global-event-data').data('url');
