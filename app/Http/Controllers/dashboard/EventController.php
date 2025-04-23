@@ -73,7 +73,7 @@ class EventController extends Controller
                         return $eventEndDate->gt($now) ? $eventEndDate->diffInDays($now) . ' days' : '-';
                     })
                     ->editColumn('qr_code', fn($row) => '<a href="/' . $row->qr_code . '" download><img src="/' . $row->qr_code . '" width="100" height="100"></a>')
-                    ->editColumn('event_name', fn($row) => Auth::user()->hasAnyPermission(['create_folder', 'update_folder', 'delete_folder']) ? '<a href="' . route('folders.index', $row->bunny_event_name) . '">' . $row->event_name . '</a>' : $row->event_name)
+                    ->editColumn('event_name', fn($row) => Auth::user()->hasAnyPermission(['create_folder', 'update_folder', 'delete_folder','list_folders']) ? '<a href="' . route('folders.index', $row->bunny_event_name) . '">' . $row->event_name . '</a>' : $row->event_name)
                     ->editColumn('profile_picture', fn($row) => $row->profile_picture ? '<img src="/' . $row->profile_picture . '" width="100" height="100">' : '')
                     ->editColumn('cover_image', fn($row) => $row->cover_image ? '<img src="/' . $row->cover_image . '" width="100" height="100">' : '')
                     ->editColumn('event_link', function ($row) {
@@ -94,7 +94,7 @@ class EventController extends Controller
                         if ($user->hasPermissionTo('delete_event')) {
                             $actions .= '<a href="#" data-url="' . route('events.delete', $event->id) . '" class="delete-event btn btn-icon btn-outline-primary m-1"><i class="bx bx-trash" style="color:red"></i></a>';
                         }
-                        if ($user->hasAnyPermission(['create_folder', 'update_folder', 'delete_folder'])) {
+                        if ($user->hasAnyPermission(['create_folder', 'update_folder', 'delete_folder', 'list_folders'])) {
                             $actions .= '<a title="Folders" href="' . route('folders.index', $event->bunny_event_name) . '" class="btn rounded-pill btn-icon btn-primary"><i class="bx bx-folder" style="color:white"></i></a>';
                         }
                         return $actions;

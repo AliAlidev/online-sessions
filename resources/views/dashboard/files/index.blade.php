@@ -66,6 +66,10 @@
             margin-left: 1px;
             margin-top: 5px;
         }
+
+        .file-status-modal{
+            cursor: pointer;
+        }
     </style>
 
     <link href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" rel="stylesheet" />

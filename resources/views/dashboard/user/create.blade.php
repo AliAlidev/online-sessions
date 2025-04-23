@@ -127,6 +127,11 @@
                                                 id="delete_event" name="permissions[]" value="delete_event">
                                             <label class="form-check-label" for="delete_event">Delete</label>
                                         </div>
+                                        <div class="form-check form-switch mb-2">
+                                            <input class="form-check-input" type="checkbox"
+                                                id="list_events" name="permissions[]" value="list_events">
+                                            <label class="form-check-label" for="delete_event">List</label>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="col-md-3">
@@ -186,6 +191,11 @@
                                             <input class="form-check-input" type="checkbox"
                                                 id="delete_folder" name="permissions[]" value="delete_folder">
                                             <label class="form-check-label" for="delete_folder">Delete</label>
+                                        </div>
+                                        <div class="form-check form-switch mb-2">
+                                            <input class="form-check-input" type="checkbox"
+                                                id="list_folders" name="permissions[]" value="list_folders">
+                                            <label class="form-check-label" for="list_folders">List</label>
                                         </div>
                                     </div>
                                 </div>

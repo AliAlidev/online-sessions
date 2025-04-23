@@ -74,7 +74,7 @@
                 </ul>
             </li>
         @endcanany
-        @canany(['create_event', 'update_event', 'delete_event'])
+        @canany(['create_event', 'update_event', 'delete_event', 'list_events'])
             <li
                 class="menu-item {{ Route::is('events.*') || Route::is('folders.*') || Route::is('files.*') ? 'active open' : '' }}">
                 <a href="javascript:void(0);" class="menu-link menu-toggle">
@@ -82,7 +82,7 @@
                     <div class="text-truncate" data-i18n="Dashboards">Events</div>
                 </a>
                 <ul class="menu-sub">
-                    @canany(['create_event', 'update_event', 'delete_event'])
+                    @canany(['create_event', 'update_event', 'delete_event', 'list_events'])
                         <li class="menu-item {{ Route::is('events.index') ? 'active' : '' }}">
                             <a href="{{ route('events.index') }}" target="" class="menu-link">
                                 <div class="text-truncate" data-i18n="CRM">All Events</div>

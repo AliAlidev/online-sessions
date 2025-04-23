@@ -39,10 +39,12 @@
                             <i class="bx bx-user bx-md me-3"></i><span>My Profile</span>
                         </a>
                     </li> --}}
-                    <li>
-                        <a class="dropdown-item" href="{{ route('settings.bunny') }}"> <i
-                                class="bx bx-cog bx-md me-3"></i><span>Settings</span> </a>
-                    </li>
+                    @if (Auth::user()->hasRole('super-admin'))
+                        <li>
+                            <a class="dropdown-item" href="{{ route('settings.bunny') }}"> <i
+                                    class="bx bx-cog bx-md me-3"></i><span>Settings</span> </a>
+                        </li>
+                    @endif
                     {{-- <li>
                         <a class="dropdown-item" href="#">
                             <span class="d-flex align-items-center align-middle">

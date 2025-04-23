@@ -13,15 +13,19 @@ class PermissionSeeder extends Seeder
             'create_event',
             'update_event',
             'delete_event',
+            'list_events',
             'create_role',
             'update_role',
             'delete_role',
+            'list_roles',
             'create_client',
             'update_client',
             'delete_client',
+            'list_clients',
             'create_folder',
             'update_folder',
             'delete_folder',
+            'list_folders',
             'upload_image',
             'upload_video',
             'delete_image',
@@ -30,7 +34,11 @@ class PermissionSeeder extends Seeder
             'update_video',
             'approve_decline_image',
             'approve_decline_video',
-            'insights'
+            'insights',
+            'list_users',
+            'create_user',
+            'update_user',
+            'delete_user'
         ];
 
         foreach ($permissions as $permission) {

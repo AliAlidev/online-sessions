@@ -33,74 +33,73 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::controller(EventTypeController::class)->prefix('admin/events-types')->name('events.types.')->group(function () {
-        Route::get('/', 'index')->name('index');
-        Route::post('/store', 'store')->name('store');
-        Route::post('/update/{id}', 'update')->name('update');
-        Route::get('/show/{id}', 'show')->name('show');
-        Route::get('/delete/{id}', 'delete')->name('delete');
+        Route::middleware('role:super-admin')->get('/', 'index')->name('index');
+        Route::middleware('role:super-admin')->post('/store', 'store')->name('store');
+        Route::middleware('role:super-admin')->post('/update/{id}', 'update')->name('update');
+        Route::middleware('role:super-admin')->get('/show/{id}', 'show')->name('show');
+        Route::middleware('role:super-admin')->get('/delete/{id}', 'delete')->name('delete');
     });
 
     Route::controller(FolderController::class)->prefix('admin/{event_slug}/folders')->name('folders.')->group(function () {
-        Route::get('/', 'index')->name('index');
-        Route::post('/store', 'store')->name('store');
-        Route::post('/update/{id?}', 'update')->name('update');
-        Route::get('/show/{id?}', 'show')->name('show');
-        Route::get('/delete/{id?}', 'delete')->name('delete');
+        Route::middleware('permission:list_folders')->get('/', 'index')->name('index');
+        Route::middleware('permission:create_folder')->post('/store', 'store')->name('store');
+        Route::middleware('permission:update_folder')->post('/update/{id?}', 'update')->name('update');
+        Route::middleware('permission:list_folders')->get('/show/{id?}', 'show')->name('show');
+        Route::middleware('permission:delete_folder')->get('/delete/{id?}', 'delete')->name('delete');
     });
 
     Route::controller(FolderFileController::class)->prefix('admin/{event_slug}/{folder_slug}/files')->name('files.')->group(function () {
-        Route::get('/', 'index')->name('index');
-        Route::post('/store', 'store')->name('store');
-        Route::post('/update/{id?}', 'update')->name('update');
-        Route::get('/show/{id?}', 'show')->name('show');
-        Route::get('/delete/{id?}', 'delete')->name('delete');
-        Route::post('/change-status', 'changeStatus')->name('change.status');
-        Route::post('/upload-file', 'uploadFile');
-        Route::get('/uploaded-file-status/{uploadId}', 'uploadedFileStatus');
+        Route::middleware(['permission:upload_video','permission:upload_image','permission:update_image','permission:update_video'])->get('/', 'index')->name('index');
+        Route::middleware(['permission:upload_video', 'permission:upload_image'])->post('/store', 'store')->name('store');
+        Route::middleware(['permission:update_image', 'permission:update_video'])->post('/update/{id?}', 'update')->name('update');
+        Route::middleware(['permission:upload_video','permission:upload_image','permission:update_image','permission:update_video'])->get('/show/{id?}', 'show')->name('show');
+        Route::middleware(['permission:delete_image','permission:delete_video'])->get('/delete/{id?}', 'delete')->name('delete');
+        Route::middleware(['permission:approve_decline_image','permission:approve_decline_video'])->post('/change-status', 'changeStatus')->name('change.status');
+        Route::middleware(['permission:upload_video','permission:upload_image','permission:update_image','permission:update_video'])->post('/upload-file', 'uploadFile');
     });
 
     Route::controller(EventController::class)->prefix('admin')->name('events.')->group(function () {
-        Route::get('events', 'index')->name('index');
-        Route::get('/create', 'create')->name('create');
-        Route::post('/store', 'store')->name('store');
-        Route::get('/edit/{id?}', 'edit')->name('edit');
-        Route::post('/update/{id?}', 'update')->name('update');
-        Route::get('/delete/{id?}', 'delete')->name('delete');
-        Route::get('/show/{id?}', 'show');
+        Route::middleware('permission:list_events')->get('events', 'index')->name('index');
+        Route::middleware('permission:create_event')->get('/create', 'create')->name('create');
+        Route::middleware('permission:create_event')->post('/store', 'store')->name('store');
+        Route::middleware('permission:update_event')->get('/edit/{id?}', 'edit')->name('edit');
+        Route::middleware('permission:update_event')->post('/update/{id?}', 'update')->name('update');
+        Route::middleware('permission:delete_event')->get('/delete/{id?}', 'delete')->name('delete');
+        Route::middleware('permission:list_events')->get('/show/{id?}', 'show');
         Route::get('/expired', 'expired')->name('expired');
         Route::get('/pending', 'pending')->name('pending');
     });
 
     Route::controller(RoleController::class)->prefix('admin/roles')->name('roles.')->group(function () {
-        Route::get('/index', 'index')->name('index');
-        Route::get('/create', 'create')->name('create');
-        Route::post('/store', 'store')->name('store');
-        Route::get('/edit/{id}', 'edit')->name('edit');
-        Route::post('/update/{id}', 'update')->name('update');
-        Route::get('/delete/{id}', 'delete')->name('delete');
-        Route::get('/show/{id}', 'show');
+        Route::middleware('permission:list_roles')->get('/index', 'index')->name('index');
+        Route::middleware('permission:create_role')->get('/create', 'create')->name('create');
+        Route::middleware('permission:create_role')->post('/store', 'store')->name('store');
+        Route::middleware('permission:update_role')->get('/edit/{id}', 'edit')->name('edit');
+        Route::middleware('permission:update_role')->post('/update/{id}', 'update')->name('update');
+        Route::middleware('permission:delete_role')->get('/delete/{id}', 'delete')->name('delete');
+        Route::middleware('permission:list_roles')->get('/show/{id}', 'show');
     });
 
     Route::controller(ClientController::class)->prefix('admin/clients')->name('clients.')->group(function () {
-        Route::get('/index', 'index')->name('index');
-        Route::get('/create', 'create')->name('create');
-        Route::post('/store', 'store')->name('store');
-        Route::get('/edit/{id}', 'edit')->name('edit');
-        Route::post('/update/{id}', 'update')->name('update');
-        Route::get('/delete/{id}', 'delete')->name('delete');
+        Route::middleware('permission:list_clients')->get('/index', 'index')->name('index');
+        Route::middleware('permission:create_client')->get('/create', 'create')->name('create');
+        Route::middleware('permission:create_client')->post('/store', 'store')->name('store');
+        Route::middleware('permission:update_client')->get('/edit/{id}', 'edit')->name('edit');
+        Route::middleware('permission:update_client')->post('/update/{id}', 'update')->name('update');
+        Route::middleware('permission:delete_client')->get('/delete/{id}', 'delete')->name('delete');
     });
 
     Route::controller(UserController::class)->prefix('admin/users')->name('users.')->group(function () {
-        Route::get('/index', 'index')->name('index');
-        Route::get('/create', 'create')->name('create');
-        Route::post('/store', 'store')->name('store');
-        Route::get('/edit/{id}', 'edit')->name('edit');
-        Route::post('/update/{id}', 'update')->name('update');
-        Route::get('/delete/{id}', 'delete')->name('delete');
+        Route::middleware('permission:list_users')->get('/index', 'index')->name('index');
+        Route::middleware('permission:create_user')->get('/create', 'create')->name('create');
+        Route::middleware('permission:create_user')->post('/store', 'store')->name('store');
+        Route::middleware('permission:update_user')->get('/edit/{id}', 'edit')->name('edit');
+        Route::middleware('permission:update_user')->post('/update/{id}', 'update')->name('update');
+        Route::middleware('permission:delete_user')->get('/delete/{id}', 'delete')->name('delete');
     });
 
     Route::controller(SettingController::class)->prefix('admin/settings')->name('settings.')->group(function () {
-        Route::match(['get', 'post'], '/bunny', 'bunnySetting')->name('bunny');
+        Route::middleware('permission:insights')->match(['get', 'post'], '/bunny', 'bunnySetting')->name('bunny');
     });
 });
 
