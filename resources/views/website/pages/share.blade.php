@@ -8,6 +8,12 @@
     @endif
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap 5 JS with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
 
     <style>
         .auth-checking {
@@ -514,11 +520,11 @@
                                 <i class="fas fa-spinner fa-spin"></i>
                             </span>
                         </button>
-                        <div class="row">
+                        {{-- <div class="row">
                             <div class="col-md-12">
                                 <div id="progressContainer" style="margin-top: 20px"></div>
                             </div>
-                        </div>
+                        </div> --}}
                     </form>
                     <a class="back-button"
                         href="{{ route('landing.gallery', ['year' => $year, 'event_slug' => $event_slug]) }}">
@@ -533,6 +539,24 @@
                 </div><!-- End upload-container -->
             </div><!-- End main-body-upload -->
         </div><!-- End Main Body -->
+
+        <!-- Upload Progress Modal -->
+        <div class="modal fade" id="uploadProgressModal" tabindex="-1" aria-labelledby="uploadProgressModalLabel"
+            aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content p-3">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="uploadProgressModalLabel">Uploading...</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                            id="closeModalBtn"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="progressContainer"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
 
     </div><!-- End Main Container -->
     <!-- Footer -->

@@ -191,7 +191,7 @@ class WebsiteController extends Controller
             $data['file'] = $path['path'];
             unset($data['event_id']);
             FolderFile::create($data);
-            return response()->json(['success' => true, 'message' => 'File has been uploaded successfully']);
+            return response()->json(['success' => true, 'message' => 'Image has been uploaded successfully']);
         } catch (Throwable $e) {
             createServerError($e, "updateFile", "files");
             return response()->json(['success' => false, 'message' => $e->getMessage()], 400);

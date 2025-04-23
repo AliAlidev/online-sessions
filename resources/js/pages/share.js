@@ -119,7 +119,9 @@ $('#uploadForm').submit(function (e) {
         return false;
     }
 
-    var progressBar = $('#progressContainer');
+    var progressBar = $('#uploadProgressModal #progressContainer');
+    $('#uploadProgressModal').modal('show');
+
     progressBar.empty(); // Clear previous progress bars
     let fileContainer = $(`
                 <div class="mb-4" id="file-container-0">
@@ -144,7 +146,7 @@ $('#uploadForm').submit(function (e) {
             document.getElementById('thumbnails').innerHTML = '';
             const message = response.data?.message || 'Upload completed successfully';
             const $alert = $(`<div class="alert alert-success">${message}</div>`);
-            $('#uploadForm').closest('.upload-container').prepend($alert);
+            $('.modal-body').prepend($alert);
             setTimeout(() => {
                 $alert.fadeOut(500, () => $alert.remove());
             }, 5000);
