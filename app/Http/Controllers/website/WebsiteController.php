@@ -165,6 +165,13 @@ class WebsiteController extends Controller
         ]);
     }
 
+    function increaseView($fileId)
+    {
+        $file = FolderFile::find($fileId);
+        $file->increment('view_count');
+        return response()->json(['success' => true, 'view_count' => $file->view_count]);
+    }
+
     function shareEventImage(Request $request)
     {
         $data = $request->all();

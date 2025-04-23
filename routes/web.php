@@ -105,6 +105,7 @@ Route::middleware('auth')->group(function () {
 
 //////////////////////////// website ////////////////////////////
 Route::controller(WebsiteController::class)->name('landing.')->group(function () {
+    Route::get('increase-view/{id?}', 'increaseView')->name('increase_view');
     Route::get('events/{year}/{event_slug}', 'index')->name('index');
     Route::get('events/{year}/{event_slug}/gallery', 'gallery')->name('gallery');
     Route::get('events/{year}/{event_slug}/share', 'share')->name('share');

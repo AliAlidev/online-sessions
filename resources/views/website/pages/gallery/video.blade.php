@@ -12,12 +12,12 @@
         <div class="sticky-section">
             <div class="video-list">
                 @foreach ($videos as $video)
-                    <div class="video-item" data-url = "{{ $video->file }}">
+                    <div class="video-item" data-url = "{{ $video->file }}" data-increment-view="{{ route('landing.increase_view').'/'.$video->id }}" data-video-id="{{ $video->id }}">
                         <img src="{{ $video->thumbnail_url }}" alt="{{ $video->file_name }}">
                         <div>
                             <h4>{{ $video->video_name }}</h4>
                             <p>Duration: {{ $video->video_duration }}</p>
-                            <p>Views: {{ $video->view_count }}</p>
+                            <p id="{{ 'video-'. $video->id }}">Views: {{ $video->view_count }}</p>
                         </div>
                     </div>
                 @endforeach
