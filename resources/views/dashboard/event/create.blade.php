@@ -222,15 +222,10 @@
                                         </div>
                                         <div class="col-md-6">
                                             <div class="form-password-toggle">
-                                                <label class="form-label" for="basic-default-password12">Password</label>
+                                                <label class="form-label" for="event-password">Password</label>
                                                 <div class="input-group">
-                                                    <input type="password" class="form-control"
-                                                        id="basic-default-password12" placeholder="············"
-                                                        name="event_password">
-                                                    <span id="basic-default-password2"
-                                                        class="input-group-text cursor-pointer">
-                                                        <i class="bx bx-hide"></i> <!-- Ensure this is the eye icon -->
-                                                    </span>
+                                                    <input type="text" class="form-control" id="event-password"
+                                                        placeholder="" name="event_password">
                                                 </div>
                                             </div>
                                             <small class="text-body float-start error-message-div event_password-error"
@@ -544,8 +539,7 @@
             if (dateTimeValue == '')
                 dateTimeValue = new Date();
             var year = new Date(dateTimeValue).getFullYear();
-            var month = new Date(dateTimeValue).getMonth() + 1;
-            var url = "{{ url('/') }}/events/" + year + "/" + month + "/" + getSlug(eventName);
+            var url = "{{ url('/') }}/events/" + year + "/" + getSlug(eventName);
             $('#urlInput').val(url);
             new QRCode(document.getElementById("qr-code-section"), {
                 text: url,

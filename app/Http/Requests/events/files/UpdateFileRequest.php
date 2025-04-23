@@ -29,7 +29,9 @@ class UpdateFileRequest extends FormRequest
             'file_size'=>'nullable',
             'description'=>'nullable',
             'file_status'=>'required',
-            'video_resolution' => 'nullable'
+            'video_resolution' => 'nullable',
+            'video_name' => 'nullable',
+            'file_order' => 'nullable'
         ];
     }
 }

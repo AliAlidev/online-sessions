@@ -28,22 +28,25 @@ class WebsiteController extends Controller
     function index(Request $request)
     {
         $year = $request->route('year');
-        $month = $request->route('month');
         $eventSlug = $request->route('event_slug');
         $event = Event::where('bunny_event_name', $eventSlug)->first();
+        $eventStartDate = Carbon::parse($event->start_date)->startOfDay();
+        $now = Carbon::now()->endOfDay();
         if (Carbon::parse($event->end_date)->isPast())
             return view('website.pages.event_expired');
+        if ($eventStartDate->gt($now))
+            return view('website.pages.event_pending');
         $event->start_date = Carbon::parse($event->start_date)->format('d/m/Y');
-        return view('website.pages.index', ['year' => $year, 'month' => $month, 'event_slug' => $eventSlug, 'event' => $event]);
+        return view('website.pages.index', ['year' => $year, 'event_slug' => $eventSlug, 'event' => $event]);
     }
 
     function galleryRedirectUrl(Request $request)
     {
         $event = Event::where('bunny_event_name', $request->event_slug)->first();
         $wantsPassword = false;
-        $url = route('landing.gallery', ['year' => $request->year, 'month' => $request->month, 'event_slug' => $request->event_slug]);
+        $url = route('landing.gallery', ['year' => $request->year, 'event_slug' => $request->event_slug]);
         if ($event->event_password != null) {
-            $url = route('landing.event_password', ['year' => $request->year, 'month' => $request->month, 'event_slug' => $request->event_slug]);
+            $url = route('landing.event_password', ['year' => $request->year, 'event_slug' => $request->event_slug]);
             $wantsPassword = true;
         }
 
@@ -52,14 +55,14 @@ class WebsiteController extends Controller
             'wantsPassword' => $wantsPassword,
             'url' => $url,
             'year' => $request->year,
-            'month' => $request->month,
             'event_slug' => $request->event_slug
         ]);
     }
 
     function eventPassword(Request $request)
     {
-        return view('website.pages.event_password', ['year' => $request->year, 'month' => $request->month, 'event_slug' => $request->event_slug]);
+        $event = Event::where('bunny_event_name', $request->event_slug)->first();
+        return view('website.pages.event_password', ['year' => $request->year, 'event_slug' => $request->event_slug, 'event' => $event]);
     }
 
     function applyEventPassword(Request $request)
@@ -68,10 +71,10 @@ class WebsiteController extends Controller
         $eventSlug = $data['event_slug'];
         $password = $data['password'];
         $event = Event::where('bunny_event_name', $eventSlug)->first();
-        if (Hash::check($password, $event->event_password))
+        if (strcmp($password, $event->event_password) == 0)
             return response()->json([
                 'success' => true,
-                'url' => route('landing.gallery', ['year' => $data['year'], 'month' => $data['month'], 'event_slug' => $data['event_slug']])
+                'url' => route('landing.gallery', ['year' => $data['year'], 'event_slug' => $data['event_slug']])
             ]);
         return response()->json(['success' => false, 'message' => 'Invalid password']);
     }
@@ -80,9 +83,8 @@ class WebsiteController extends Controller
     {
         return response()->json([
             'success' => true,
-            'url' => route('landing.share', ['year' => $request->year, 'month' => $request->month, 'event_slug' => $request->event_slug]),
+            'url' => route('landing.share', ['year' => $request->year, 'event_slug' => $request->event_slug]),
             'year' => $request->year,
-            'month' => $request->month,
             'event_slug' => $request->event_slug
         ]);
     }
@@ -90,11 +92,14 @@ class WebsiteController extends Controller
     function gallery(Request $request)
     {
         $year = $request->route('year');
-        $month = $request->route('month');
         $eventSlug = $request->route('event_slug');
         $event = Event::where('bunny_event_name', $eventSlug)->first();
         if (Carbon::parse($event->end_date)->isPast())
             return view('website.pages.event_expired');
+        $eventStartDate = Carbon::parse($event->start_date)->startOfDay();
+        $now = Carbon::now()->endOfDay();
+        if ($eventStartDate->gt($now))
+            return view('website.pages.event_pending');
         $event->start_date = Carbon::parse($event->start_date)->format('d/m/Y');
         $foldersList = [];
         $event->folders()->orderBy('order', 'asc')->get()->each(function ($folder) use (&$foldersList, $event) {
@@ -110,10 +115,10 @@ class WebsiteController extends Controller
                 if ($folder->folder_type == 'video')
                     $foldersList[] = $folder;
             }
-            if ($folder->folder_type == 'link')
+            if ($folder->folder_type == 'link' || $folder->folder_type == 'fake')
                 $foldersList[] = $folder;
         });
-        return view('website.pages.gallery.gallery', ['year' => $year, 'month' => $month, 'event_slug' => $eventSlug, 'event' => $event, 'folders' => $foldersList]);
+        return view('website.pages.gallery.gallery', ['year' => $year, 'event_slug' => $eventSlug, 'event' => $event, 'folders' => $foldersList]);
     }
 
     function image(Request $request)
@@ -132,20 +137,25 @@ class WebsiteController extends Controller
     function share(Request $request)
     {
         $year = $request->route('year');
-        $month = $request->route('month');
         $eventSlug = $request->route('event_slug');
         $event = Event::where('bunny_event_name', $eventSlug)->first();
+        if (!$event->supportImageUpload())
+            return redirect()->route('landing.index', ['year' => $year, 'event_slug' => $eventSlug]);
         if (Carbon::parse($event->end_date)->isPast())
             return view('website.pages.event_expired');
+        $eventStartDate = Carbon::parse($event->start_date)->startOfDay();
+        $now = Carbon::now()->endOfDay();
+        if ($eventStartDate->gt($now))
+            return view('website.pages.event_pending');
         $event->start_date = Carbon::parse($event->start_date)->format('d/m/Y');
-        return view('website.pages.share', ['year' => $year, 'month' => $month, 'event_slug' => $eventSlug, 'event' => $event]);
+        return view('website.pages.share', ['year' => $year, 'event_slug' => $eventSlug, 'event' => $event]);
     }
 
     function video(Request $request)
     {
         $folderId = $request->folder_id;
         $folder = EventFolder::find($folderId);
-        $videos = $folder->files->where('file_status', 'approved')->where('bunny_status', 3)->each(function ($video) {
+        $videos = $folder->files()->orderBy('file_order', 'asc')->where('file_status', 'approved')->where('bunny_status', 3)->get()->each(function ($video) {
             $video->file = str_replace('https://video.bunnycdn.com/play/', 'https://iframe.mediadelivery.net/embed/', $video->file);
         });
         return response()->json([
@@ -153,6 +163,13 @@ class WebsiteController extends Controller
             'html' => view('website.pages.gallery.video', ['videos' => $videos])->render(),
             'files' => $videos
         ]);
+    }
+
+    function increaseView($fileId)
+    {
+        $file = FolderFile::find($fileId);
+        $file->increment('view_count');
+        return response()->json(['success' => true, 'view_count' => $file->view_count]);
     }
 
     function shareEventImage(Request $request)
@@ -174,7 +191,7 @@ class WebsiteController extends Controller
             $data['file'] = $path['path'];
             unset($data['event_id']);
             FolderFile::create($data);
-            return response()->json(['success' => true, 'message' => 'File has been uploaded successfully']);
+            return response()->json(['success' => true, 'message' => 'Image has been uploaded successfully']);
         } catch (Throwable $e) {
             createServerError($e, "updateFile", "files");
             return response()->json(['success' => false, 'message' => $e->getMessage()], 400);

@@ -19,4 +19,9 @@ class EventType extends Model
             $model->created_by = Auth::id();
         });
     }
+
+    function event()
+    {
+        return $this->belongsTo(Event::class, 'id', 'event_type_id');
+    }
 }

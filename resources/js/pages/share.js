@@ -1,6 +1,6 @@
 import { getUserToken } from '../auth';
 
-async function checkAuthentication(){
+async function checkAuthentication() {
     const token = await getUserToken();
     try {
         const response = await fetch('/events/check-token', {
@@ -10,15 +10,58 @@ async function checkAuthentication(){
             }
         });
         if (!response.ok) throw new Error('Unauthorized');
-        setTimeout(() => {
-            document.querySelector('.main-container').classList.remove('auth-checking');
-        }, 10);
     } catch (error) {
         window.location.href = document.getElementById('main-page-url')?.dataset?.url || '/';
     }
 }
 
-checkAuthentication();
+await checkAuthentication();
+
+async function checkEventIfHavePassword() {
+    var eventSlug = $('#global-event-data').val();
+    var galleryUrl = $('#global-event-data').data('eventGalleryUrl');
+    if (localStorage.getItem(eventSlug)) {
+        var token = await getUserToken();
+        axios.post(galleryUrl, {
+            _token: document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+            password: localStorage.getItem(eventSlug)
+        }, {
+            headers: {
+                'pageToken': token
+            }
+        })
+            .then(response => {
+                if (response.data.success) {
+                    setTimeout(() => {
+                        document.querySelector('.main-container').classList.remove('auth-checking');
+                    }, 10);
+                } else {
+                    gotoPasswordVerification();
+                }
+            }).catch(error => {
+                gotoPasswordVerification();
+            });
+    } else {
+        gotoPasswordVerification();
+    }
+}
+
+await checkEventIfHavePassword();
+
+async function gotoPasswordVerification() {
+    var url = $('#global-event-data').data('url');
+    var token = await getUserToken();
+    axios.get(url, {
+        headers: {
+            'pageToken': token
+        }
+    })
+        .then(response => {
+            window.location.href = response.data.url;
+        }).catch(error => {
+            console.log(error);
+        });
+}
 
 const dropArea = document.getElementById('dropArea');
 const fileInput = document.getElementById('image');
@@ -76,7 +119,9 @@ $('#uploadForm').submit(function (e) {
         return false;
     }
 
-    var progressBar = $('#progressContainer');
+    var progressBar = $('#uploadProgressModal #progressContainer');
+    $('#uploadProgressModal').modal('show');
+
     progressBar.empty(); // Clear previous progress bars
     let fileContainer = $(`
                 <div class="mb-4" id="file-container-0">
@@ -101,7 +146,7 @@ $('#uploadForm').submit(function (e) {
             document.getElementById('thumbnails').innerHTML = '';
             const message = response.data?.message || 'Upload completed successfully';
             const $alert = $(`<div class="alert alert-success">${message}</div>`);
-            $('#uploadForm').closest('.upload-container').prepend($alert);
+            $('.modal-body').prepend($alert);
             setTimeout(() => {
                 $alert.fadeOut(500, () => $alert.remove());
             }, 5000);

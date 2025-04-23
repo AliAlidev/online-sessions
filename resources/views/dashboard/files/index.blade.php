@@ -66,6 +66,22 @@
             margin-left: 1px;
             margin-top: 5px;
         }
+
+        .file-status-modal {
+            cursor: pointer;
+        }
+
+        .folder-order-div {
+            width: 25px;
+            height: 25px;
+            background-color: #3b90c9;
+            border-radius: 50%;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            justify-self: center !important;
+        }
     </style>
 
     <link href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" rel="stylesheet" />
@@ -109,8 +125,10 @@
                                 <th class="control dt-orderable-none">File</th>
                                 <th class="control dt-orderable-none">Name & Size</th>
                                 <th class="control dt-orderable-none">User Name</th>
+                                <th class="control dt-orderable-none">Video Name</th>
                                 <th class="control dt-orderable-none">Description</th>
                                 <th class="control dt-orderable-none">Date</th>
+                                <th class="control dt-orderable-none">Order</th>
                                 <th class="control dt-orderable-none">Status</th>
                                 <th class="control dt-orderable-none">Actions</th>
                             </tr>
@@ -135,6 +153,17 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
+                        @if ($folderType == 'video')
+                            <div class="row">
+                                <div class="col-md-4 mb-6">
+                                    <label for="fileOrder" class="form-label">Order</label>
+                                    <input type="number" id="fileOrder" value="1" step="1" name="file_order"
+                                        class="form-control">
+                                    <small class="text-body float-start error-message-div file_order-error"
+                                        style="color: #ff0000 !important" hidden></small>
+                                </div>
+                            </div>
+                        @endif
                         <div class="row mb-6">
                             <div class="col-md-12">
                                 <input type="file" id="event-file-hidden" hidden multiple>
@@ -158,16 +187,25 @@
                             @endif
                         </div>
                         <div class="row mb-6">
-                            <div class="col-md-6">
-                                <label for="userName" class="form-label">User Name</label>
-                                <input type="text" id="UserName" class="form-control" name="user_name"
-                                    placeholder="Enter User Name">
-                                <small class="text-body float-start error-message-div user_name-error"
-                                    style="color: #ff0000 !important" hidden></small>
-                            </div>
+                            @if ($folderType == 'image')
+                                <div class="col-md-6">
+                                    <label for="userName" class="form-label">User Name</label>
+                                    <input type="text" id="UserName" class="form-control" name="user_name"
+                                        placeholder="Enter User Name">
+                                    <small class="text-body float-start error-message-div user_name-error"
+                                        style="color: #ff0000 !important" hidden></small>
+                                </div>
+                            @endif
                             @if ($folderType == 'video')
                                 <div class="col-md-6">
-                                    <label for="userName" class="form-label">Video Resolution</label>
+                                    <label for="VideoName" class="form-label">Video Name</label>
+                                    <input type="text" id="VideoName" class="form-control" name="video_name"
+                                        placeholder="Enter Video Name">
+                                    <small class="text-body float-start error-message-div user_name-error"
+                                        style="color: #ff0000 !important" hidden></small>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="video_resolution" class="form-label">Video Resolution</label>
                                     <select name="video_resolution" class="video_resolution" id="video_resolution"
                                         multiple="multiple">
                                         <option value="240p">240p</option>
@@ -217,36 +255,25 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <form id="updateFileForm">
-                    {{-- <input type="file" id="event-file-hidden" hidden multiple> --}}
                     <input type="hidden" id="updateFileId" name="file_id">
-                    {{-- <input type="hidden" class="uploaded-file-size" name="file_size">
-                    <input type="hidden" class="uploaded-file-name-input" name="file_name"> --}}
                     <div class="modal-header">
                         <h5 class="modal-title" id="modalCenterTitle">Update Uploaded {{ ucfirst($folderType) }}</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        {{-- <div class="row mb-6">
-                            <div class="col-md-12">
-                                <label for="fileInput" class="form-label">{{ ucfirst($folderType) }}</label>
-                                <input type="file" class="form-control event-file" name="file" id="event-file"
-                                    accept='{{ $folderType == 'image' ? 'image/jpeg,png,jpg,gif,svg,webp' : 'video/mp4' }}'>
-                                <small class="text-body float-start uploaded-file-name"
-                                    style="color: #000; font-style: italic;"></small>
-                                <small class="text-body float-start error-message-div file_name-error"
-                                    style="color: #ff0000 !important" hidden></small>
-                            </div>
-                            @if ($folderType == 'image')
-                                <div class="col-md-12 mt-2">
-                                    <div class="form-check form-switch mb-2">
-                                        <input class="form-check-input compress_images" type="checkbox"
-                                            id="compress_images" name="compress_images" value="compress_images">
-                                        <label class="form-check-label" for="compress_images">Compress Images</label>
-                                    </div>
+                        @if ($folderType == 'video')
+                            <div class="row">
+                                <div class="col-md-4 mb-4">
+                                    <label for="fileOrderInput" class="form-label">Order</label>
+                                    <input type="number" id="fileOrderInput" value="1" step="1"
+                                        name="file_order" class="form-control">
+                                    <small class="text-body float-start error-message-div file_order-error"
+                                        style="color: #ff0000 !important" hidden></small>
                                 </div>
-                            @endif
-                        </div> --}}
-                        <div class="row mb-6">
+                        @endif
+                    </div>
+                    <div class="row mb-6">
+                        @if ($folderType == 'image')
                             <div class="col-md-6">
                                 <label for="UserNameInput" class="form-label">User Name</label>
                                 <input type="text" class="form-control" name="user_name" id="userNameInput"
@@ -254,74 +281,81 @@
                                 <small class="text-body float-start error-message-div user_name-error"
                                     style="color: #ff0000 !important" hidden></small>
                             </div>
-                            @if (
-                                ($folderType == 'image' && Auth::user()->hasPermissionTo('approve_decline_image')) ||
-                                    ($folderType == 'video' && Auth::user()->hasPermissionTo('approve_decline_video')))
-                                <div class="col-md-6">
-                                    <label for="fileStatusInput" class="form-label">{{ ucfirst($folderType) }}
-                                        Status</label>
-                                    <select class="form-select" name="file_status" id="fileStatusInput">
-                                        <option selected disabled>Select {{ ucfirst($folderType) }} Status</option>
-                                        <option value="pending">Pending</option>
-                                        <option value="approved">Approved</option>
-                                        <option value="rejected">Rejected</option>
-                                    </select>
-                                    <small class="text-body float-start error-message-div file_status-error"
-                                        style="color: #ff0000 !important" hidden></small>
-                                </div>
-                            @else
-                                <div class="col-md-6">
-                                    <label for="fileStatusInput" class="form-label">{{ ucfirst($folderType) }}
-                                        Status</label>
-                                    <input type="text" class="form-control" name="" id="fileStatusInput"
-                                        readonly>
-                                </div>
-                            @endif
-                        </div>
-                        @if ($folderType == 'video')
-                            <div class="row mb-6" id="video_resolution_div" style="display: none">
-                                <div class="col-md-6">
-                                    <label for="userName" class="form-label">Video Resolution</label>
-                                    <select name="video_resolution" class="video_resolution" id="video_resolution_update"
-                                        multiple="multiple">
-                                        <option value="240p">240p</option>
-                                        <option value="360p">360p</option>
-                                        <option value="480p">480p</option>
-                                        <option value="720p">720p</option>
-                                        <option value="1080p">1080p</option>
-                                        <option value="1440p">1440p</option>
-                                        <option value="2160p">2160p</option>
-                                    </select>
-                                    <small class="text-body float-start error-message-div user_name-error"
-                                        style="color: #ff0000 !important" hidden></small>
-                                </div>
+                        @endif
+                        @if (
+                            ($folderType == 'image' && Auth::user()->hasPermissionTo('approve_decline_image')) ||
+                                ($folderType == 'video' && Auth::user()->hasPermissionTo('approve_decline_video')))
+                            <div class="col-md-6">
+                                <label for="fileStatusInput" class="form-label">{{ ucfirst($folderType) }}
+                                    Status</label>
+                                <select class="form-select" name="file_status" id="fileStatusInput">
+                                    <option selected disabled>Select {{ ucfirst($folderType) }} Status</option>
+                                    <option value="pending">Pending</option>
+                                    <option value="approved">Approved</option>
+                                    <option value="rejected">Rejected</option>
+                                </select>
+                                <small class="text-body float-start error-message-div file_status-error"
+                                    style="color: #ff0000 !important" hidden></small>
+                            </div>
+                        @else
+                            <div class="col-md-6">
+                                <label for="fileStatusInput" class="form-label">{{ ucfirst($folderType) }}
+                                    Status</label>
+                                <input type="text" class="form-control" name="" id="fileStatusInput" readonly>
                             </div>
                         @endif
-                        <div class="row mb-6">
-                            <div class="col-md-12">
-                                <label for="descriptionInput" class="form-label">Description</label>
-                                <textarea id="descriptionInput" class="form-control" name="description" rows="4"
-                                    placeholder="Enter Description"></textarea>
-                                <small id="char-count" class="form-text text-muted">0 / 300 characters</small>
-                                <small class="text-body float-start error-message-div description-error"
+                    </div>
+                    @if ($folderType == 'video')
+                        <div class="col-md-6 mb-6">
+                            <label for="VideoNameInput" class="form-label">Video Name</label>
+                            <input type="text" id="VideoNameInput" class="form-control" name="video_name"
+                                placeholder="Enter Video Name">
+                            <small class="text-body float-start error-message-div user_name-error"
+                                style="color: #ff0000 !important" hidden></small>
+                        </div>
+                        <div class="row mb-6" id="video_resolution_div" style="display: none">
+                            <div class="col-md-6">
+                                <label for="userName" class="form-label">Video Resolution</label>
+                                <select name="video_resolution" class="video_resolution" id="video_resolution_update"
+                                    multiple="multiple">
+                                    <option value="240p">240p</option>
+                                    <option value="360p">360p</option>
+                                    <option value="480p">480p</option>
+                                    <option value="720p">720p</option>
+                                    <option value="1080p">1080p</option>
+                                    <option value="1440p">1440p</option>
+                                    <option value="2160p">2160p</option>
+                                </select>
+                                <small class="text-body float-start error-message-div user_name-error"
                                     style="color: #ff0000 !important" hidden></small>
                             </div>
                         </div>
-                        <div class="row">
-                            <div id="progressContainer"></div>
+                    @endif
+                    <div class="row mb-6">
+                        <div class="col-md-12">
+                            <label for="descriptionInput" class="form-label">Description</label>
+                            <textarea id="descriptionInput" class="form-control" name="description" rows="4"
+                                placeholder="Enter Description"></textarea>
+                            <small id="char-count" class="form-text text-muted">0 / 300 characters</small>
+                            <small class="text-body float-start error-message-div description-error"
+                                style="color: #ff0000 !important" hidden></small>
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal"> Close </button>
-                        <button type="submit" id="updateButton" class="btn btn-primary">Update
-                            <span id="spinner" style="display:none;">
-                                <i class="fa fa-spinner fa-spin"></i>
-                            </span>
-                        </button>
+                    <div class="row">
+                        <div id="progressContainer"></div>
                     </div>
-                </form>
             </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal"> Close </button>
+                <button type="submit" id="updateButton" class="btn btn-primary">Update
+                    <span id="spinner" style="display:none;">
+                        <i class="fa fa-spinner fa-spin"></i>
+                    </span>
+                </button>
+            </div>
+            </form>
         </div>
+    </div>
     </div>
 
     {{-- ////////////// change status modal ////////////// --}}
@@ -396,15 +430,27 @@
                     },
                     {
                         data: 'user_name',
-                        name: 'user_name'
+                        name: 'user_name',
+                        visible: "{{ $folderType == 'video' ? false : true }}"
+                    },
+                    {
+                        data: 'video_name',
+                        name: 'video_name',
+                        visible: "{{ $folderType == 'video' ? true : false }}"
                     },
                     {
                         data: 'description',
-                        name: 'description'
+                        name: 'description',
+                        visible: false
                     },
                     {
                         data: 'date',
                         name: 'date'
+                    },
+                    {
+                        data: 'file_order',
+                        name: 'file_order',
+                        visible: "{{ $folderType == 'video' ? true : false }}"
                     },
                     {
                         data: 'status',
@@ -468,9 +514,11 @@
                     success: function(response) {
                         if (response.success) {
                             $('#userNameInput').val(response.data.user_name);
+                            $('#VideoNameInput').val(response.data.video_name);
                             $('#descriptionInput').text(response.data.description);
                             $('#fileStatusInput').val(response.data.file_status);
                             $('#updateFileId').val(response.data.id);
+                            $('#fileOrderInput').val(response.data.file_order);
                             $('#UpdateFileModal').modal('show');
                         }
                     }
@@ -593,10 +641,15 @@
                     formData.append('file', file);
                     let csrfToken = $('meta[name="csrf-token"]').attr('content');
                     formData.append('_token', csrfToken);
-                    formData.append('user_name', $('#UserName').val());
+                    formData.append('user_name', $('#UserName').val() == undefined ? '' : $('#UserName')
+                        .val());
                     formData.append('description', $('#description').val());
                     formData.append('file_size', file.size);
                     formData.append('video_resolution', $('#video_resolution').val());
+                    formData.append('video_name', $('#VideoName').val() == undefined ? '' : $(
+                        '#VideoName').val());
+                    formData.append('file_order', $('#fileOrder').val() == undefined ? '' : $(
+                        '#fileOrder').val());
                     $(`#file-container-${index} .start-btn`).remove(); // Remove "Start Upload" button
 
                     $.ajax({
@@ -773,7 +826,12 @@
                 let csrfToken = $('meta[name="csrf-token"]').attr('content');
                 var formData = new FormData();
                 formData.append('_token', csrfToken);
-                formData.append('user_name', $('#userNameInput').val());
+                formData.append('user_name', $('#userNameInput').val() == undefined ? '' : $(
+                    '#userNameInput').val());
+                formData.append('video_name', $('#VideoNameInput').val() == undefined ? '' : $(
+                    '#VideoNameInput').val());
+                formData.append('file_order', $('#fileOrderInput').val() == undefined ? '' : $(
+                    '#fileOrderInput').val());
                 formData.append('description', $('#descriptionInput').val());
                 var fileId = $('#updateFileId').val();
                 formData.append('file_id', fileId);

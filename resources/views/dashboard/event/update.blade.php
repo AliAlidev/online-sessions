@@ -139,19 +139,23 @@
                                             <input class="form-control" type="file" id="cover-image-file"
                                                 name="cover_image" accept="image/jpeg,png,jpg,gif,svg,webp">
                                             <div class="mt-2 preview-container">
-                                                <img width="125px" height="125px" src="{{ $event->cover_image ? asset($event->cover_image) : '' }}">
+                                                @if (isset($event->cover_image))
+                                                    <img width="125px" height="125px"
+                                                        src="{{ $event->cover_image ? asset($event->cover_image) : '' }}">
+                                                @endif
                                             </div>
                                             <small class="text-body float-start uploaded-file-name"
-                                            style="color: #000; font-style: italic;"></small>
+                                                style="color: #000; font-style: italic;"></small>
                                             <small class="text-body float-start error-message-div cover_image-error"
-                                            style="color: #ff0000 !important" hidden></small>
+                                                style="color: #ff0000 !important" hidden></small>
                                         </div>
                                         <div class="col-md-6">
                                             <label for="formFile" class="form-label">Profile Picture</label>
                                             <input class="form-control" type="file" id="formFile" name="profile_picture"
-                                            accept="image/jpeg,png,jpg,gif,svg,webp">
+                                                accept="image/jpeg,png,jpg,gif,svg,webp">
                                             <div class="mt-2 preview-container">
-                                                <img width="125px" height="125px" src="{{ $event->profile_picture ? asset($event->profile_picture) : '' }}">
+                                                <img width="125px" height="125px"
+                                                    src="{{ $event->profile_picture ? asset($event->profile_picture) : '' }}">
                                             </div>
                                             <small class="text-body float-start uploaded-file-name"
                                                 style="color: #000; font-style: italic;"></small>
@@ -232,15 +236,11 @@
                                         </div>
                                         <div class="col-md-6">
                                             <div class="form-password-toggle">
-                                                <label class="form-label" for="basic-default-password12">Password</label>
+                                                <label class="form-label" for="event-password">Password</label>
                                                 <div class="input-group">
-                                                    <input type="password" class="form-control"
-                                                        id="basic-default-password12" placeholder="············"
-                                                        name="event_password">
-                                                    <span id="basic-default-password2"
-                                                        class="input-group-text cursor-pointer">
-                                                        <i class="bx bx-hide"></i> <!-- Ensure this is the eye icon -->
-                                                    </span>
+                                                    <input type="text" class="form-control" id="event-password"
+                                                        placeholder="Event Password" name="event_password"
+                                                        value="{{ $event->event_password }}">
                                                 </div>
                                             </div>
                                             <small class="text-body float-start error-message-div event_password-error"
@@ -615,7 +615,7 @@
                 dateTimeValue = new Date();
             var year = new Date(dateTimeValue).getFullYear();
             var month = new Date(dateTimeValue).getMonth() + 1;
-            var url = "{{ url('/') }}/events/" + year + "/" + month + "/" + getSlug(eventName);
+            var url = "{{ url('/') }}/events/" + year + "/" + getSlug(eventName);
             $('#urlInput').val(url);
             new QRCode(document.getElementById("qr-code-section"), {
                 text: url,

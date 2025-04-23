@@ -10,15 +10,67 @@ async function checkAuthentication() {
             }
         });
         if (!response.ok) throw new Error('Unauthorized');
-        setTimeout(() => {
-            document.querySelector('.main-container').classList.remove('auth-checking');
-        }, 10);
     } catch (error) {
         window.location.href = document.getElementById('main-page-url')?.dataset?.url || '/';
     }
 }
 
-checkAuthentication();
+await checkAuthentication();
+
+
+async function checkEventIfHavePassword() {
+    var eventSlug = $('#global-event-data').val();
+    var galleryUrl = $('#global-event-data').data('eventGalleryUrl');
+    if ($('#global-event-data').data('eventHasP')) {
+        if (localStorage.getItem(eventSlug)) {
+            var token = await getUserToken();
+            axios.post(galleryUrl, {
+                _token: document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                password: localStorage.getItem(eventSlug)
+            }, {
+                headers: {
+                    'pageToken': token
+                }
+            })
+                .then(response => {
+                    console.log(response.data);
+
+                    if (response.data.success) {
+                        setTimeout(() => {
+                            document.querySelector('.main-container').classList.remove('auth-checking');
+                        }, 10);
+                    } else {
+                        gotoPasswordVerification();
+                    }
+                }).catch(error => {
+                    gotoPasswordVerification();
+                });
+        } else {
+            gotoPasswordVerification();
+        }
+    } else {
+        setTimeout(() => {
+            document.querySelector('.main-container').classList.remove('auth-checking');
+        }, 10);
+    }
+}
+
+await checkEventIfHavePassword();
+
+async function gotoPasswordVerification() {
+    var url = $('#global-event-data').data('url');
+    var token = await getUserToken();
+    axios.get(url, {
+        headers: {
+            'pageToken': token
+        }
+    })
+        .then(response => {
+            window.location.href = response.data.url;
+        }).catch(error => {
+            console.log(error);
+        });
+}
 
 function scrollTabs(event) {
     var element = event.target.closest('.scroll-arrow');
@@ -48,6 +100,8 @@ function checkScroll() {
 function loadVideo(event) {
     var element = event.target.closest('.video-item');
     var videoUrl = element.dataset.url;
+    var videoId = element.dataset.videoId;
+    var videoViewIncrement = element.dataset.incrementView;
     const playerIframe = document.getElementById('videoIframe');
     const videoSrc = `${videoUrl}?autoplay=true`;
     // Update the iframe source with the selected video
@@ -60,6 +114,19 @@ function loadVideo(event) {
     });
     player.on('error', (error) => {
         console.log('Error occurred:', error);
+    });
+    player.on('ended', () => {
+        $.ajax({
+            url: videoViewIncrement,
+            method: 'GET',
+            success: function (response) {
+                console.log(videoId);
+
+                $('#video-' + videoId).text(response.view_count);
+                console.log(response.view_count);
+            }
+        })
+        player.pause();
     });
 }
 
@@ -75,6 +142,9 @@ async function selectFolder(event) {
     // var $folder = element.dataset.object;
     if (folderType == 'link') {
         window.open(folderLink, '_blank', 'noopener,noreferrer');
+        return false;
+    }
+    if (folderType == 'fake') {
         return false;
     }
     $('#gallery-div').hide();

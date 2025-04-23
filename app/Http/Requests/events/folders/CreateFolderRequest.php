@@ -23,18 +23,23 @@ class CreateFolderRequest extends FormRequest
     public function rules(): array
     {
         $link = 'required|url';
-        if ($this->folder_type != 'link')
+        $name = [
+            'required',
+            'string',
+            Rule::unique('event_folders', 'folder_name')->where(function ($query) {
+                return $query->where('event_id', $this->route('event_id'));
+            }),
+        ];
+
+        if ($this->folder_type != 'link' || $this->folder_type != 'fake')
             $link = 'nullable';
 
+        if ($this->folder_type == 'fake')
+            $name = 'nullable';
+
         return [
-            'folder_name' => [
-                'required',
-                'string',
-                Rule::unique('event_folders', 'folder_name')->where(function ($query) {
-                    return $query->where('event_id', $this->route('event_id'));
-                }),
-            ],
-            'folder_type' => 'required|in:image,video,link',
+            'folder_name' => $name,
+            'folder_type' => 'required|in:image,video,link,fake',
             'description' => 'nullable|string',
             'folder_thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp',
             'folder_link' => $link,
