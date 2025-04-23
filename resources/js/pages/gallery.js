@@ -10,15 +10,58 @@ async function checkAuthentication() {
             }
         });
         if (!response.ok) throw new Error('Unauthorized');
-        setTimeout(() => {
-            document.querySelector('.main-container').classList.remove('auth-checking');
-        }, 10);
     } catch (error) {
         window.location.href = document.getElementById('main-page-url')?.dataset?.url || '/';
     }
 }
 
-checkAuthentication();
+await checkAuthentication();
+
+async function checkEventIfHavePassword() {
+    var eventSlug = $('#global-event-data').val();
+    var galleryUrl = $('#global-event-data').data('eventGalleryUrl');
+    if (localStorage.getItem(eventSlug)) {
+        var token = await getUserToken();
+        axios.post(galleryUrl, {
+            _token: document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+            password: localStorage.getItem(eventSlug)
+        }, {
+            headers: {
+                'pageToken': token
+            }
+        })
+            .then(response => {
+                if (response.data.success) {
+                    setTimeout(() => {
+                        document.querySelector('.main-container').classList.remove('auth-checking');
+                    }, 10);
+                } else {
+                    gotoPasswordVerification();
+                }
+            }).catch(error => {
+                gotoPasswordVerification();
+            });
+    } else {
+        gotoPasswordVerification();
+    }
+}
+
+await checkEventIfHavePassword();
+
+async function gotoPasswordVerification() {
+    var url = $('#global-event-data').data('url');
+    var token = await getUserToken();
+    axios.get(url, {
+        headers: {
+            'pageToken': token
+        }
+    })
+        .then(response => {
+            window.location.href = response.data.url;
+        }).catch(error => {
+            console.log(error);
+        });
+}
 
 function scrollTabs(event) {
     var element = event.target.closest('.scroll-arrow');

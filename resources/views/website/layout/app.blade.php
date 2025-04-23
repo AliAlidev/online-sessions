@@ -42,11 +42,15 @@
         }
     </style>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <input type="hidden" id="global-event-data" value="{{ request()->route('event_slug') }}"
+        data-event-gallery-url="{{ route('landing.apply_event_password', ['year' => $year, 'event_slug' => $event_slug]) }}"
+        data-url="{{ route('landing.gallery_redirect_url', ['year' => $year, 'event_slug' => $event_slug]) }}">
 </head>
 
 <body>
     <input type="hidden" id="auth-token-url" value="{{ route('get_auth_token') }}">
-    <input type="hidden" id="main-page-url" data-url="{{ route('landing.index', [request()->route('year'), request()->route('event_slug')]) }}">
+    <input type="hidden" id="main-page-url"
+        data-url="{{ route('landing.index', [request()->route('year'), request()->route('event_slug')]) }}">
     @yield('partial_header')
 
     <!-- Container -->

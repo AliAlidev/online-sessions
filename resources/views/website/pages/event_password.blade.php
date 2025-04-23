@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport"
         content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-    <title>Online Sessions App</title>
+    <title>{{ isset($event->event_alias_name) ? $event->event_alias_name : $event->event_name }}</title>
     <meta name="description" content="">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
@@ -100,6 +100,17 @@
     <script async="" defer="" src="https://buttons.github.io/buttons.js"></script>
     <script src="{{ asset('sha256.min.js') }}"></script>
     <script src="{{ asset('js/pages/event_password.js') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('form').forEach(function(form) {
+                form.addEventListener('keydown', function(event) {
+                    if (event.key === 'Enter') {
+                        event.preventDefault();
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 
 </html>

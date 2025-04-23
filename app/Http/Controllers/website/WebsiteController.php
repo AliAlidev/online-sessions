@@ -61,7 +61,8 @@ class WebsiteController extends Controller
 
     function eventPassword(Request $request)
     {
-        return view('website.pages.event_password', ['year' => $request->year, 'event_slug' => $request->event_slug]);
+        $event = Event::where('bunny_event_name', $request->event_slug)->first();
+        return view('website.pages.event_password', ['year' => $request->year, 'event_slug' => $request->event_slug, 'event' => $event]);
     }
 
     function applyEventPassword(Request $request)
