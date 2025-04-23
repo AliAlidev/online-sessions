@@ -70,23 +70,6 @@ async function checkEventIfHavePassword() {
     }
 }
 
-checkEventIfHavePassword();
-
-async function gotoPasswordVerification() {
-    var url = $('#global-event-data').data('url');
-    var token = await getUserToken();
-    axios.get(url, {
-        headers: {
-            'pageToken': token
-        }
-    })
-        .then(response => {
-            window.location.href = response.data.url;
-        }).catch(error => {
-            console.log(error);
-        });
-}
-
 function scrollTabs(event) {
     var element = event.target.closest('.scroll-arrow');
     var distance = element.dataset.distance;
