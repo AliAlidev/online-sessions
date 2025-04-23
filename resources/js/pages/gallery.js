@@ -15,22 +15,7 @@ async function checkAuthentication() {
     }
 }
 
-checkEventIfHavePassword();
-
-async function gotoPasswordVerification() {
-    var url = $('#global-event-data').data('url');
-    var token = await getUserToken();
-    axios.get(url, {
-        headers: {
-            'pageToken': token
-        }
-    })
-        .then(response => {
-            window.location.href = response.data.url;
-        }).catch(error => {
-            console.log(error);
-        });
-}
+checkAuthentication();
 
 
 async function checkEventIfHavePassword() {
@@ -68,6 +53,23 @@ async function checkEventIfHavePassword() {
             document.querySelector('.main-container').classList.remove('auth-checking');
         }, 10);
     }
+}
+
+checkEventIfHavePassword();
+
+async function gotoPasswordVerification() {
+    var url = $('#global-event-data').data('url');
+    var token = await getUserToken();
+    axios.get(url, {
+        headers: {
+            'pageToken': token
+        }
+    })
+        .then(response => {
+            window.location.href = response.data.url;
+        }).catch(error => {
+            console.log(error);
+        });
 }
 
 function scrollTabs(event) {
