@@ -70,7 +70,7 @@ class WebsiteController extends Controller
         $eventSlug = $data['event_slug'];
         $password = $data['password'];
         $event = Event::where('bunny_event_name', $eventSlug)->first();
-        if (Hash::check($password, $event->event_password))
+        if (strcmp($password, $event->event_password) == 0)
             return response()->json([
                 'success' => true,
                 'url' => route('landing.gallery', ['year' => $data['year'], 'event_slug' => $data['event_slug']])

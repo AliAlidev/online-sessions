@@ -149,7 +149,7 @@ class EventController extends Controller
                 'active_duration' => $data['active_duration'],
                 'description' => $data['description'],
                 'event_link' => $data['event_link'],
-                'event_password' => isset($data['event_password']) ? Hash::make($data['event_password']) : null,
+                'event_password' => $data['event_password'],
                 'welcome_message' => $data['welcome_message'],
                 'qr_code' => $data['qr_code'],
                 'bunny_main_folder_name' => Carbon::parse($data['start_date'])->year
@@ -225,7 +225,7 @@ class EventController extends Controller
                 'active_duration' => $data['active_duration'],
                 'description' => $data['description'],
                 'event_link' => $data['event_link'],
-                'event_password' => isset($data['event_password']) ? Hash::make($data['event_password']) : $oldEvent->event_password,
+                'event_password' => $data['event_password'],
                 'welcome_message' => $data['welcome_message'],
                 'qr_code' => $data['qr_code']
             ];
