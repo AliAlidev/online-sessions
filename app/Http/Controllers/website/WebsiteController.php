@@ -155,7 +155,7 @@ class WebsiteController extends Controller
     {
         $folderId = $request->folder_id;
         $folder = EventFolder::find($folderId);
-        $videos = $folder->files->where('file_status', 'approved')->where('bunny_status', 3)->each(function ($video) {
+        $videos = $folder->files()->orderBy('file_order', 'asc')->where('file_status', 'approved')->where('bunny_status', 3)->get()->each(function ($video) {
             $video->file = str_replace('https://video.bunnycdn.com/play/', 'https://iframe.mediadelivery.net/embed/', $video->file);
         });
         return response()->json([
