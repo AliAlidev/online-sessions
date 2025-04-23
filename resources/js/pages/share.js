@@ -15,7 +15,7 @@ async function checkAuthentication() {
     }
 }
 
-await checkAuthentication();
+checkAuthentication();
 
 async function checkEventIfHavePassword() {
     var eventSlug = $('#global-event-data').val();
@@ -46,7 +46,53 @@ async function checkEventIfHavePassword() {
     }
 }
 
-await checkEventIfHavePassword();
+checkEventIfHavePassword();
+
+async function gotoPasswordVerification() {
+    var url = $('#global-event-data').data('url');
+    var token = await getUserToken();
+    axios.get(url, {
+        headers: {
+            'pageToken': token
+        }
+    })
+        .then(response => {
+            window.location.href = response.data.url;
+        }).catch(error => {
+            console.log(error);
+        });
+}
+
+async function checkEventIfHavePassword() {
+    var eventSlug = $('#global-event-data').val();
+    var galleryUrl = $('#global-event-data').data('eventGalleryUrl');
+    if (localStorage.getItem(eventSlug)) {
+        var token = await getUserToken();
+        axios.post(galleryUrl, {
+            _token: document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+            password: localStorage.getItem(eventSlug)
+        }, {
+            headers: {
+                'pageToken': token
+            }
+        })
+            .then(response => {
+                if (response.data.success) {
+                    setTimeout(() => {
+                        document.querySelector('.main-container').classList.remove('auth-checking');
+                    }, 10);
+                } else {
+                    gotoPasswordVerification();
+                }
+            }).catch(error => {
+                gotoPasswordVerification();
+            });
+    } else {
+        gotoPasswordVerification();
+    }
+}
+
+checkEventIfHavePassword();
 
 async function gotoPasswordVerification() {
     var url = $('#global-event-data').data('url');

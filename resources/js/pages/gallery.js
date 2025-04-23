@@ -15,7 +15,22 @@ async function checkAuthentication() {
     }
 }
 
-await checkAuthentication();
+checkEventIfHavePassword();
+
+async function gotoPasswordVerification() {
+    var url = $('#global-event-data').data('url');
+    var token = await getUserToken();
+    axios.get(url, {
+        headers: {
+            'pageToken': token
+        }
+    })
+        .then(response => {
+            window.location.href = response.data.url;
+        }).catch(error => {
+            console.log(error);
+        });
+}
 
 
 async function checkEventIfHavePassword() {
@@ -55,7 +70,7 @@ async function checkEventIfHavePassword() {
     }
 }
 
-await checkEventIfHavePassword();
+checkEventIfHavePassword();
 
 async function gotoPasswordVerification() {
     var url = $('#global-event-data').data('url');
