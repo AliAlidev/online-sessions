@@ -270,6 +270,7 @@
                                     <small class="text-body float-start error-message-div file_order-error"
                                         style="color: #ff0000 !important" hidden></small>
                                 </div>
+                            </div>
                         @endif
                         <div class="row mb-6">
                             @if ($folderType == 'image')
@@ -385,10 +386,10 @@
                                 <i class="fa fa-spinner fa-spin"></i>
                             </span>
                         </button>
+                    </div>
                 </form>
             </div>
         </div>
-    </div>
     </div>
 @endsection
 
