@@ -144,7 +144,7 @@
             <a href="" style="cursor: {{ $event->supportImageUpload() ? 'pointer' : 'not-allowed' }}"
                 data-url="{{ $event->supportImageUpload() ? route('landing.share_redirect_url', ['year' => $year, 'event_slug' => $event_slug]) : '' }}"
                 data-support-image-upload="{{ $event->supportImageUpload() }}" class="share-btn-div">
-                <div class="share-button">
+                <div class="share-button" style="{{  !$event->supportImageUpload() ? 'background-color:#ccc' : '' }}">
                     <img class="share-button-image"
                         src="{{ asset('assets/website/gallery-assets/images/upload-icon.svg') }}" alt=""
                         width="26px" height="26px">
