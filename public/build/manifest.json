@@ -3,6 +3,10 @@
     "file": "assets/auth-CrJnzGtq.js",
     "name": "auth"
   },
+  "_index-B20WIEY4.js": {
+    "file": "assets/index-B20WIEY4.js",
+    "name": "index"
+  },
   "resources/css/app.css": {
     "file": "assets/app-l0sNRNKZ.js",
     "name": "app",
@@ -10,12 +14,22 @@
     "isEntry": true
   },
   "resources/js/app.js": {
-    "file": "assets/app-C5ryQ3K7.js",
+    "file": "assets/app-CC34JrAx.js",
     "name": "app",
     "src": "resources/js/app.js",
     "isEntry": true,
     "imports": [
+      "_index-B20WIEY4.js",
       "_auth-CrJnzGtq.js"
+    ]
+  },
+  "resources/js/bootstrap.js": {
+    "file": "assets/bootstrap-6OJn_Iwi.js",
+    "name": "bootstrap",
+    "src": "resources/js/bootstrap.js",
+    "isEntry": true,
+    "imports": [
+      "_index-B20WIEY4.js"
     ]
   },
   "resources/js/pages/event_password.js": {

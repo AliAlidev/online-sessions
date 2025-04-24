@@ -1,0 +1,1 @@
+import{a as o}from"./index-B20WIEY4.js";import{i as a,g as e}from"./auth-CrJnzGtq.js";window.axios=o;window.axios.defaults.headers.common["X-Requested-With"]="XMLHttpRequest";async function t(){await a();const i=await e();window.pageToken=i,window.axios.defaults.headers.common.pageToken=i,window.tokenInitialized=!0}t();
