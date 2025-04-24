@@ -574,7 +574,7 @@
                                         role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"
                                         style="width: 0%" id="progress-bar-${i}"></div>
                                 </div>
-                                <p id="status-${i}" class="text-danger d-inline-block mt-1">Pending</p>
+                                <p id="status-${i}" class="text-danger d-inline-block mt-1"></p>
                                 <button class="btn btn-sm btn-warning retry-btn hidden-force" style="height:15px; width:auto; font-size:10px" data-index="${i}" style="font-size: 12px;">Retry</button>
                             </div>
                         `);
