@@ -740,7 +740,8 @@
                 $(`#file-container-${index} .retry-update-btn`).removeClass('hidden-force'); // Show Retry button
             }
 
-            $(document).on("click", ".retry-btn", function() {
+            $(document).on("click", ".retry-btn", function(e) {
+                e.preventDefault();
                 $(this).addClass('hidden-force');
                 let index = $(this).data("index");
                 let file = $('input[type=file]')[0].files[index]; // Get the failed file
