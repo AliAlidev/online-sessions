@@ -45,7 +45,7 @@ async function checkEventIfHavePassword() {
         } else {
             gotoPasswordVerification();
         }
-    }else{
+    } else {
         setTimeout(() => {
             document.querySelector('.main-container').classList.remove('auth-checking');
         }, 10);
@@ -111,7 +111,22 @@ function updateThumbnails() {
     }
 }
 
+
+function closeModal() {
+    const overlay = document.getElementById('overlay');
+    overlay.classList.remove('show');
+    overlay.addEventListener('transitionend', () => {
+        overlay.classList.add('hidden');
+    }, {
+        once: true
+    });
+}
+
+document.getElementById('closeModalBtn').addEventListener('click', closeModal);
+document.getElementById('closeXBtn').addEventListener('click', closeModal);
+
 $('#uploadForm').submit(function (e) {
+
     e.preventDefault(); // Prevent default form submission
     $('.alert').remove();
     $('.image-error').attr('hidden', true);
@@ -126,19 +141,22 @@ $('#uploadForm').submit(function (e) {
     }
 
     var progressBar = $('#uploadProgressModal #progressContainer');
-    $('#uploadProgressModal').modal('show');
+    /// open progress modal
+    const overlay = document.getElementById('overlay');
+    overlay.classList.remove('hidden');
+    setTimeout(() => overlay.classList.add('show'), 10);
 
     progressBar.empty(); // Clear previous progress bars
     let fileContainer = $(`
-                <div class="mb-4" id="file-container-0">
+                <div class="mb-4" id="file-container-0" style="margin-top:10px">
                     <p class="mb-0">Stage1: File Upload ${file.name}</p>
-                    <div class="progress mt-2">
+                    <div class="progress" style="margin-top:10px">
                         <div class="progress-bar progress-bar-striped progress-bar-animated bg-success"
                             role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"
-                            style="width: 0%" id="progress-bar-0"></div>
+                            style="width: 0%;" id="progress-bar-0"></div>
                     </div>
-                    <p id="status-0" class="text-danger d-inline-block mt-1"></p>
-                    <button class="btn btn-sm btn-warning retry-btn hidden-force" style="height:15px; width:auto; font-size:10px" data-index="0" style="font-size: 12px;">Retry</button>
+                    <p id="status-0" class="text-danger d-inline-block mt-3" style="text-align:start; margin-top:10px"></p>
+                    <button class="btn btn-sm btn-warning retry-btn hidden-force mt-3" style="height:15px; width:auto; font-size:12px; margin-top:10px; text-align:start" data-index="0">Retry</button>
                 </div>
             `);
     progressBar.append(fileContainer);
@@ -151,11 +169,9 @@ $('#uploadForm').submit(function (e) {
             $('#uploadForm')[0].reset();
             document.getElementById('thumbnails').innerHTML = '';
             const message = response.data?.message || 'Upload completed successfully';
-            const $alert = $(`<div class="alert alert-success">${message}</div>`);
-            $('.modal-body').prepend($alert);
-            setTimeout(() => {
-                $alert.fadeOut(500, () => $alert.remove());
-            }, 5000);
+            const $alert = $(`<div class="alert alert-success" style="margin-top:40px; margin-bottom:30px">${message}</div>`);
+            $('#uploadProgressModal').prepend($alert);
+            $('#uploadProgressModalLabel').attr('hidden', true);
         })
         .catch((error) => {
             hideButtonLoader(submitBtn);

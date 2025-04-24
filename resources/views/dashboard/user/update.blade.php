@@ -161,6 +161,12 @@
                                                 id="delete_role" name="permissions[]" value="delete_role">
                                             <label class="form-check-label" for="delete_role">Delete</label>
                                         </div>
+                                        <div class="form-check form-switch mb-2">
+                                            <input class="form-check-input" type="checkbox"
+                                                {{ in_array('list_roles', $permissions) ? 'checked' : '' }}
+                                                id="list_roles" name="permissions[]" value="list_roles">
+                                            <label class="form-check-label" for="list_roles">List</label>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="col-md-3">
@@ -183,6 +189,12 @@
                                                 {{ in_array('delete_client', $permissions) ? 'checked' : '' }}
                                                 id="delete_client" name="permissions[]" value="delete_client">
                                             <label class="form-check-label" for="delete_client">Delete</label>
+                                        </div>
+                                        <div class="form-check form-switch mb-2">
+                                            <input class="form-check-input" type="checkbox"
+                                                {{ in_array('list_clients', $permissions) ? 'checked' : '' }}
+                                                id="list_clients" name="permissions[]" value="list_clients">
+                                            <label class="form-check-label" for="list_clients">List</label>
                                         </div>
                                     </div>
                                 </div>

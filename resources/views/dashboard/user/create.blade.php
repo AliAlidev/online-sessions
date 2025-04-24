@@ -130,7 +130,7 @@
                                         <div class="form-check form-switch mb-2">
                                             <input class="form-check-input" type="checkbox"
                                                 id="list_events" name="permissions[]" value="list_events">
-                                            <label class="form-check-label" for="delete_event">List</label>
+                                            <label class="form-check-label" for="list_events">List</label>
                                         </div>
                                     </div>
                                 </div>
@@ -152,6 +152,11 @@
                                                 id="delete_role" name="permissions[]" value="delete_role">
                                             <label class="form-check-label" for="delete_role">Delete</label>
                                         </div>
+                                        <div class="form-check form-switch mb-2">
+                                            <input class="form-check-input" type="checkbox"
+                                                id="list_roles" name="permissions[]" value="list_roles">
+                                            <label class="form-check-label" for="list_roles">List</label>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="col-md-3">
@@ -171,6 +176,11 @@
                                             <input class="form-check-input" type="checkbox"
                                                 id="delete_client" name="permissions[]" value="delete_client">
                                             <label class="form-check-label" for="delete_client">Delete</label>
+                                        </div>
+                                        <div class="form-check form-switch mb-2">
+                                            <input class="form-check-input" type="checkbox"
+                                                id="list_clients" name="permissions[]" value="list_clients">
+                                            <label class="form-check-label" for="list_clients">List</label>
                                         </div>
                                     </div>
                                 </div>

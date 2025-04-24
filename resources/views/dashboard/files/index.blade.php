@@ -271,91 +271,91 @@
                                         style="color: #ff0000 !important" hidden></small>
                                 </div>
                         @endif
-                    </div>
-                    <div class="row mb-6">
-                        @if ($folderType == 'image')
-                            <div class="col-md-6">
-                                <label for="UserNameInput" class="form-label">User Name</label>
-                                <input type="text" class="form-control" name="user_name" id="userNameInput"
-                                    placeholder="Enter User Name">
+                        <div class="row mb-6">
+                            @if ($folderType == 'image')
+                                <div class="col-md-6">
+                                    <label for="UserNameInput" class="form-label">User Name</label>
+                                    <input type="text" class="form-control" name="user_name" id="userNameInput"
+                                        placeholder="Enter User Name">
+                                    <small class="text-body float-start error-message-div user_name-error"
+                                        style="color: #ff0000 !important" hidden></small>
+                                </div>
+                            @endif
+                            @if (
+                                ($folderType == 'image' && Auth::user()->hasPermissionTo('approve_decline_image')) ||
+                                    ($folderType == 'video' && Auth::user()->hasPermissionTo('approve_decline_video')))
+                                <div class="col-md-6">
+                                    <label for="fileStatusInput" class="form-label">{{ ucfirst($folderType) }}
+                                        Status</label>
+                                    <select class="form-select" name="file_status" id="fileStatusInput">
+                                        <option selected disabled>Select {{ ucfirst($folderType) }} Status</option>
+                                        <option value="pending">Pending</option>
+                                        <option value="approved">Approved</option>
+                                        <option value="rejected">Rejected</option>
+                                    </select>
+                                    <small class="text-body float-start error-message-div file_status-error"
+                                        style="color: #ff0000 !important" hidden></small>
+                                </div>
+                            @else
+                                <div class="col-md-6">
+                                    <label for="fileStatusInput" class="form-label">{{ ucfirst($folderType) }}
+                                        Status</label>
+                                    <input type="text" class="form-control" name="" id="fileStatusInput"
+                                        readonly>
+                                </div>
+                            @endif
+                        </div>
+                        @if ($folderType == 'video')
+                            <div class="col-md-6 mb-6">
+                                <label for="VideoNameInput" class="form-label">Video Name</label>
+                                <input type="text" id="VideoNameInput" class="form-control" name="video_name"
+                                    placeholder="Enter Video Name">
                                 <small class="text-body float-start error-message-div user_name-error"
                                     style="color: #ff0000 !important" hidden></small>
                             </div>
-                        @endif
-                        @if (
-                            ($folderType == 'image' && Auth::user()->hasPermissionTo('approve_decline_image')) ||
-                                ($folderType == 'video' && Auth::user()->hasPermissionTo('approve_decline_video')))
-                            <div class="col-md-6">
-                                <label for="fileStatusInput" class="form-label">{{ ucfirst($folderType) }}
-                                    Status</label>
-                                <select class="form-select" name="file_status" id="fileStatusInput">
-                                    <option selected disabled>Select {{ ucfirst($folderType) }} Status</option>
-                                    <option value="pending">Pending</option>
-                                    <option value="approved">Approved</option>
-                                    <option value="rejected">Rejected</option>
-                                </select>
-                                <small class="text-body float-start error-message-div file_status-error"
-                                    style="color: #ff0000 !important" hidden></small>
-                            </div>
-                        @else
-                            <div class="col-md-6">
-                                <label for="fileStatusInput" class="form-label">{{ ucfirst($folderType) }}
-                                    Status</label>
-                                <input type="text" class="form-control" name="" id="fileStatusInput" readonly>
+                            <div class="row mb-6" id="video_resolution_div" style="display: none">
+                                <div class="col-md-6">
+                                    <label for="userName" class="form-label">Video Resolution</label>
+                                    <select name="video_resolution" class="video_resolution" id="video_resolution_update"
+                                        multiple="multiple">
+                                        <option value="240p">240p</option>
+                                        <option value="360p">360p</option>
+                                        <option value="480p">480p</option>
+                                        <option value="720p">720p</option>
+                                        <option value="1080p">1080p</option>
+                                        <option value="1440p">1440p</option>
+                                        <option value="2160p">2160p</option>
+                                    </select>
+                                    <small class="text-body float-start error-message-div user_name-error"
+                                        style="color: #ff0000 !important" hidden></small>
+                                </div>
                             </div>
                         @endif
-                    </div>
-                    @if ($folderType == 'video')
-                        <div class="col-md-6 mb-6">
-                            <label for="VideoNameInput" class="form-label">Video Name</label>
-                            <input type="text" id="VideoNameInput" class="form-control" name="video_name"
-                                placeholder="Enter Video Name">
-                            <small class="text-body float-start error-message-div user_name-error"
-                                style="color: #ff0000 !important" hidden></small>
-                        </div>
-                        <div class="row mb-6" id="video_resolution_div" style="display: none">
-                            <div class="col-md-6">
-                                <label for="userName" class="form-label">Video Resolution</label>
-                                <select name="video_resolution" class="video_resolution" id="video_resolution_update"
-                                    multiple="multiple">
-                                    <option value="240p">240p</option>
-                                    <option value="360p">360p</option>
-                                    <option value="480p">480p</option>
-                                    <option value="720p">720p</option>
-                                    <option value="1080p">1080p</option>
-                                    <option value="1440p">1440p</option>
-                                    <option value="2160p">2160p</option>
-                                </select>
-                                <small class="text-body float-start error-message-div user_name-error"
+                        <div class="row mb-6">
+                            <div class="col-md-12">
+                                <label for="descriptionInput" class="form-label">Description</label>
+                                <textarea id="descriptionInput" class="form-control" name="description" rows="4"
+                                    placeholder="Enter Description"></textarea>
+                                <small id="char-count" class="form-text text-muted">0 / 300 characters</small>
+                                <small class="text-body float-start error-message-div description-error"
                                     style="color: #ff0000 !important" hidden></small>
                             </div>
                         </div>
-                    @endif
-                    <div class="row mb-6">
-                        <div class="col-md-12">
-                            <label for="descriptionInput" class="form-label">Description</label>
-                            <textarea id="descriptionInput" class="form-control" name="description" rows="4"
-                                placeholder="Enter Description"></textarea>
-                            <small id="char-count" class="form-text text-muted">0 / 300 characters</small>
-                            <small class="text-body float-start error-message-div description-error"
-                                style="color: #ff0000 !important" hidden></small>
+                        <div class="row">
+                            <div id="progressContainer"></div>
                         </div>
                     </div>
-                    <div class="row">
-                        <div id="progressContainer"></div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal"> Close </button>
+                        <button type="submit" id="updateButton" class="btn btn-primary">Update
+                            <span id="spinner" style="display:none;">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </span>
+                        </button>
                     </div>
+                </form>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal"> Close </button>
-                <button type="submit" id="updateButton" class="btn btn-primary">Update
-                    <span id="spinner" style="display:none;">
-                        <i class="fa fa-spinner fa-spin"></i>
-                    </span>
-                </button>
-            </div>
-            </form>
         </div>
-    </div>
     </div>
 
     {{-- ////////////// change status modal ////////////// --}}

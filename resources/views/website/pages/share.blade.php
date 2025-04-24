@@ -8,12 +8,6 @@
     @endif
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Bootstrap 5 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Bootstrap 5 JS with Popper -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
 
     <style>
         .auth-checking {
@@ -473,6 +467,62 @@
         }
     </style>
 
+    <style>
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .overlay.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal {
+            position: relative;
+            background: white;
+            padding: 20px 30px;
+            border-radius: 10px;
+            text-align: center;
+            transform: scale(0.8);
+            transition: transform 0.3s ease;
+            min-width: 600px;
+        }
+
+        .overlay.show .modal {
+            transform: scale(1);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .close-x {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+            color: #999;
+            transition: color 0.2s ease;
+        }
+
+        .close-x:hover {
+            color: #000;
+        }
+    </style>
+
     @vite(['resources/js/app.js', 'resources/js/pages/share.js'])
 @endpush
 
@@ -520,11 +570,6 @@
                                 <i class="fas fa-spinner fa-spin"></i>
                             </span>
                         </button>
-                        {{-- <div class="row">
-                            <div class="col-md-12">
-                                <div id="progressContainer" style="margin-top: 20px"></div>
-                            </div>
-                        </div> --}}
                     </form>
                     <a class="back-button"
                         href="{{ route('landing.gallery', ['year' => $year, 'event_slug' => $event_slug]) }}">
@@ -540,23 +585,14 @@
             </div><!-- End main-body-upload -->
         </div><!-- End Main Body -->
 
-        <!-- Upload Progress Modal -->
-        <div class="modal fade" id="uploadProgressModal" tabindex="-1" aria-labelledby="uploadProgressModalLabel"
-            aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content p-3">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="uploadProgressModalLabel">Uploading...</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
-                            id="closeModalBtn"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div id="progressContainer"></div>
-                    </div>
-                </div>
+        <div id="overlay" class="overlay hidden">
+            <div class="modal" id="uploadProgressModal">
+                <span id="closeXBtn" class="close-x">&times;</span>
+                <h5 class="modal-title" id="uploadProgressModalLabel">Uploading...</h5>
+                <div id="progressContainer"></div>
+                <button type="button" class="close-btn" style="margin-top: 10px" id="closeModalBtn">Close</button>
             </div>
         </div>
-
 
     </div><!-- End Main Container -->
     <!-- Footer -->
