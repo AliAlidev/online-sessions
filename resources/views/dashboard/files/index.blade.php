@@ -87,6 +87,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" rel="stylesheet" />
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>
+    @vite(['resources/js/bootstrap.js'])
 @endsection
 
 @section('content')
@@ -568,13 +569,12 @@
                     let fileContainer = $(`
                             <div class="mb-4" id="file-container-${i}">
                                 <p class="mb-0">Stage1: File Upload ${files[i].name}</p>
-                                <button class="btn btn-sm btn-primary start-btn" data-index="${i}" style="height:15px;width:auto ;font-size: 10px;">Start Upload</button>
                                 <div class="progress mt-2">
                                     <div class="progress-bar progress-bar-striped progress-bar-animated bg-success" style="font-size:12px;height:10px"
                                         role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"
                                         style="width: 0%" id="progress-bar-${i}"></div>
                                 </div>
-                                <p id="status-${i}" class="text-danger d-inline-block mt-1"></p>
+                                <p id="status-${i}" class="text-danger d-inline-block mt-1">Pending</p>
                                 <button class="btn btn-sm btn-warning retry-btn hidden-force" style="height:15px; width:auto; font-size:10px" data-index="${i}" style="font-size: 12px;">Retry</button>
                             </div>
                         `);
@@ -652,69 +652,57 @@
                     formData.append('file_order', $('#fileOrder').val() == undefined ? 1 : $(
                         '#fileOrder').val());
                     $(`#file-container-${index} .start-btn`).remove(); // Remove "Start Upload" button
+                    const uploadUrl = "{{ route('files.store', [request()->route('event_slug'), request()->route('folder_slug')]) }}";
 
-                    $.ajax({
-                        url: "{{ route('files.store', [request()->route('event_slug'), request()->route('folder_slug')]) }}",
-                        type: 'POST',
-                        data: formData,
-                        processData: false,
-                        contentType: false,
-                        xhr: function() {
-                            let xhr = new window.XMLHttpRequest();
-                            xhr.upload.addEventListener("progress", function(event) {
-                                if (event.lengthComputable) {
-                                    let percent = Math.round((event.loaded / event
-                                        .total) * 100);
-                                    $("#progress-bar-" + index).css("width",
-                                        percent + "%").text(percent + "%");
-
+                    axios.post(uploadUrl, formData, {
+                            headers: {
+                                'Content-Type': 'multipart/form-data'
+                            },
+                            onUploadProgress: function(progressEvent) {
+                                if (progressEvent.lengthComputable) {
+                                    const percent = Math.round((progressEvent.loaded /
+                                        progressEvent.total) * 100);
+                                    $(`#progress-bar-${index}`).css("width", percent + "%")
+                                        .text(percent + "%");
                                     if (percent === 100) {
                                         showProcessingStatus(index);
                                     }
                                 }
-                            }, false);
-                            return xhr;
-                        },
-                        success: function(response) {
+                            },
+                            timeout: 30000
+                        })
+                        .then(function(response) {
                             allUploadsSuccessCount++;
-                            clearInterval($("#status-" + index).data(
-                                "interval")); // Stop animated dots
-                            $("#progress-bar-" + index).removeClass("bg-success").addClass(
-                                "bg-primary").text("Completed");
+                            clearInterval($("#status-" + index).data("interval")); // Stop animated dots
+                            $("#progress-bar-" + index).removeClass("bg-success").addClass("bg-primary").text("Completed");
                             $("#status-" + index).addClass('hidden-force');
                             if (allUploadsSuccessCount == filesCount) {
                                 resetForm(formId);
-                                var element =
-                                    `<div class="alert alert-success"> ${response.message}</div>`;
-                                $('#' + formId).find('.modal-body').prepend(element);
+                                var successMessage = `<div class="alert alert-success"> ${response.data.message} </div>`;
+                                $('#' + formId).find('.modal-body').prepend(successMessage);
                                 $('#files-datatable').DataTable().draw();
                             }
-                            resolve(); // Resolve the Promise after successful upload
-                        },
-                        error: function(jqXHR, textStatus) {
-                            clearInterval($("#status-" + index).data(
-                                "interval")); // Stop animated dots
-                            $("#progress-bar-" + index).removeClass("bg-success").addClass(
-                                "bg-danger").text("Failed");
-
-                            let errorMessage = (textStatus === "timeout") ?
-                                "Stage2: Upload timed out" : "Stage2: Failed";
-                            $("#status-" + index).text(errorMessage).show();
-
-                            showRetryButton(index); // Show retry button only when failed
-                            reject(); // Reject the Promise in case of error
-                        }
-                    });
+                            resolve(response); // Resolve with the server response after successful upload
+                        })
+                        .catch(function(error) {
+                            clearInterval($("#status-" + index).data("interval")); // Stop animated dots
+                            $("#progress-bar-" + index).removeClass("bg-success").addClass("bg-danger").text("Failed");
+                            $("#status-" + index).text("Stage2: Failed");
+                            showRetryButton(index); // Optionally show retry button if needed
+                            reject(error); // Reject with the error
+                        });
                 });
             }
 
+
             // Show Progress Bar and Hide Start Button
             function startUpload(file, index) {
+                console.log(index);
+
                 $(`#file-container-${index} .start-btn`).remove(); // Remove "Start Upload" button
                 $(`#file-container-${index} .progress`).show(); // Show progress bar
                 // This ensures progress bar is shown after DOM update
-                setTimeout(() => {
-                    $(`#file-container-${index} .progress`).css('display', 'block');
+                setTimeout(() => { $(`#file-container-${index} .progress`).css('display', 'block');
                 }, 0);
             }
 
@@ -733,6 +721,8 @@
             }
 
             function showRetryButton(index) {
+                console.log(index);
+
                 $(`#file-container-${index} .retry-btn`).removeClass('hidden-force'); // Show Retry button
             }
 
@@ -744,7 +734,7 @@
                 e.preventDefault();
                 $(this).addClass('hidden-force');
                 let index = $(this).data("index");
-                let file = $('input[type=file]')[0].files[index]; // Get the failed file
+                let file = $('#event-file')[0].files[index]; // Get the failed file
 
                 // Reset progress bar and status text
                 $("#progress-bar-" + index)
@@ -762,7 +752,7 @@
             $(document).on("click", ".retry-update-btn", function() {
                 $(this).addClass('hidden-force');
                 let index = $(this).data("index");
-                let file = $('#updateFileForm input[type=file]')[0].files[index]; // Get the failed file
+                let file = $('#updateFileForm #event-file')[0].files[index]; // Get the failed file
 
                 // Reset progress bar and status text
                 $("#updateFileForm #progress-bar-" + index)
@@ -779,7 +769,7 @@
 
             $(document).on("click", ".start-btn", function() {
                 let index = $(this).data("index");
-                let file = $('input[type=file]')[0].files[index]; // Get the file
+                let file = $('#event-file')[0].files[index]; // Get the file
 
                 startUpload(file, index); // Hide button, show progress
                 uploadFile(file, index);
