@@ -8,6 +8,7 @@ use App\Http\Requests\event_types\UpdateEventTypeRequest;
 use App\Models\EventType;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\DataTables;
 
 class EventTypeController extends Controller
@@ -16,12 +17,13 @@ class EventTypeController extends Controller
     {
         try {
             if ($request->ajax()) {
-                $events = EventType::orderBy('created_at','desc')->get();
+                $events = EventType::orderBy('created_at', 'desc')->get();
                 return DataTables::of($events)
                     ->addIndexColumn()
                     ->addColumn('actions', function ($event) {
-                        return '<a href="#" data-id=' . $event->id . ' class="update-event-type btn btn-icon btn-outline-primary"><i class="bx bx-edit-alt" style="color:#696cff"></i></a>
-                                <a href="#" data-url="' . route('events.types.delete', $event->id) . '" class="delete-event-type btn btn-icon btn-outline-primary"><i class="bx bx-trash" style="color:red"></i> </a>';
+                        $action = Auth::user()->hasPermissionTo('update_event_type') ? ('<a href="#" data-id=' . $event->id . ' class="update-event-type btn btn-icon btn-outline-primary"><i class="bx bx-edit-alt" style="color:#696cff"></i></a>') : null;
+                        $action .= Auth::user()->hasPermissionTo('delete_event_type') ? ('<a href="#" data-url="' . route('events.types.delete', $event->id) . '" class="delete-event-type btn btn-icon btn-outline-primary"><i class="bx bx-trash" style="color:red"></i> </a>') : null;
+                        return $action;
                     })
                     ->rawColumns(['actions'])
                     ->make(true);

@@ -29,52 +29,33 @@
                     <i class="fa-solid fa-users" style="font-size: 20px; margin: 0 10px 0 0"></i>
                     <div class="text-truncate" data-i18n="Dashboards">Users</div>
                 </a>
-                {{-- <ul class="menu-sub">
-                    <li class="menu-item {{ Route::is('users.create') ? 'active' : '' }}">
-                        <a href="{{ route('users.create') }}" target="" class="menu-link">
-                            <div class="text-truncate" data-i18n="CRM">Create User</div>
-                        </a>
-                    </li>
-                    <li class="menu-item {{ Route::is('users.index') ? 'active' : '' }}">
-                        <a href="{{ route('users.index') }}" target="" class="menu-link">
-                            <div class="text-truncate" data-i18n="CRM">List Users</div>
-                        </a>
-                    </li>
-                </ul> --}}
             </li>
         @endif
-        @canany(['create_role', 'update_role', 'delete_role', 'create_client', 'update_client', 'delete_client'])
+        @canany(['create_role', 'update_role', 'delete_role','list_roles', 'create_client', 'update_client', 'delete_client','list_clients'])
             <li class="menu-item {{ Route::is('clients.*') || Route::is('roles.*') ? 'active open' : '' }}">
                 <a href="javascript:void(0);" class="menu-link menu-toggle">
                     <i class="fa-solid fa-users" style="font-size: 20px; margin: 0 10px 0 0"></i>
                     <div class="text-truncate" data-i18n="Dashboards">Clients</div>
                 </a>
                 <ul class="menu-sub">
-                    @canany(['create_client', 'update_client', 'delete_client'])
+                    @canany(['create_client', 'update_client', 'delete_client', 'list_clients'])
                         <li class="menu-item {{ Route::is('clients.index') ? 'active' : '' }}">
                             <a href="{{ route('clients.index') }}" target="" class="menu-link">
                                 <div class="text-truncate" data-i18n="CRM">All Clients</div>
                             </a>
                         </li>
                     @endcanany
-                    @canany(['create_role', 'update_role', 'delete_role'])
+                    @canany(['create_role', 'update_role', 'delete_role','list_roles'])
                         <li class="menu-item {{ Route::is('roles.index') ? 'active' : '' }}">
                             <a href="{{ route('roles.index') }}" target="" class="menu-link">
                                 <div class="text-truncate" data-i18n="CRM">Client Roles</div>
                             </a>
                         </li>
                     @endcanany
-                    {{-- @can('create_client')
-                        <li class="menu-item {{ Route::is('clients.create') ? 'active' : '' }}">
-                            <a href="{{ route('clients.create') }}" target="" class="menu-link">
-                                <div class="text-truncate" data-i18n="CRM">Create Client</div>
-                            </a>
-                        </li>
-                    @endcan --}}
                 </ul>
             </li>
         @endcanany
-        @canany(['create_event', 'update_event', 'delete_event', 'list_events'])
+        @canany(['create_event', 'update_event', 'delete_event', 'list_events', 'create_event_type', 'update_event_type', 'delete_event_type', 'list_event_types'])
             <li
                 class="menu-item {{ Route::is('events.*') || Route::is('folders.*') || Route::is('files.*') ? 'active open' : '' }}">
                 <a href="javascript:void(0);" class="menu-link menu-toggle">
@@ -89,20 +70,13 @@
                             </a>
                         </li>
                     @endcanany
-                    @if (Auth::user()->hasRole('super-admin'))
+                    @canany(['create_event_type', 'update_event_type', 'delete_event_type', 'list_event_types'])
                         <li class="menu-item {{ Route::is('events.types.index') ? 'active' : '' }}">
                             <a href="{{ route('events.types.index') }}" target="" class="menu-link">
                                 <div class="text-truncate" data-i18n="CRM">Event Types</div>
                             </a>
                         </li>
-                    @endif
-                    {{-- @can('create_event')
-                        <li class="menu-item {{ Route::is('events.create') ? 'active' : '' }}">
-                            <a href="{{ route('events.create') }}" target="" class="menu-link">
-                                <div class="text-truncate" data-i18n="CRM">Create Event</div>
-                            </a>
-                        </li>
-                    @endcan --}}
+                    @endcanany
                 </ul>
             </li>
         @endcanany

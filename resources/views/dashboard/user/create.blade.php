@@ -212,6 +212,33 @@
                             </div>
                             <div class="row">
                                 <div class="col-md-3">
+                                    <h5>Event Types Permissions</h5>
+                                    <div class="row mb-6" style="margin: 3px">
+                                        <div class="form-check form-switch mb-2">
+                                            <input class="form-check-input" type="checkbox"
+                                                id="create_event_type" name="permissions[]" value="create_event_type">
+                                            <label class="form-check-label" for="create_event_type">Create</label>
+                                        </div>
+                                        <div class="form-check form-switch mb-2">
+                                            <input class="form-check-input" type="checkbox"
+                                                id="update_event_type" name="permissions[]" value="update_event_type">
+                                            <label class="form-check-label" for="update_event_type">Update</label>
+                                        </div>
+                                        <div class="form-check form-switch mb-2">
+                                            <input class="form-check-input" type="checkbox"
+                                                id="delete_event_type" name="permissions[]" value="delete_event_type">
+                                            <label class="form-check-label" for="delete_event_type">Delete</label>
+                                        </div>
+                                        <div class="form-check form-switch mb-2">
+                                            <input class="form-check-input" type="checkbox"
+                                                id="list_event_types" name="permissions[]" value="list_event_types">
+                                            <label class="form-check-label" for="list_event_types">List</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-3">
                                     <h5>Images Permissions</h5>
                                     <div class="row mb-6" style="margin: 3px">
                                         <div class="form-check form-switch mb-2">

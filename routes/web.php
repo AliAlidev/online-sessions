@@ -33,11 +33,11 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::controller(EventTypeController::class)->prefix('admin/events-types')->name('events.types.')->group(function () {
-        Route::middleware('role:super-admin')->get('/', 'index')->name('index');
-        Route::middleware('role:super-admin')->post('/store', 'store')->name('store');
-        Route::middleware('role:super-admin')->post('/update/{id}', 'update')->name('update');
-        Route::middleware('role:super-admin')->get('/show/{id}', 'show')->name('show');
-        Route::middleware('role:super-admin')->get('/delete/{id}', 'delete')->name('delete');
+        Route::middleware('permission:list_event_types')->get('/', 'index')->name('index');
+        Route::middleware('permission:create_event_type')->post('/store', 'store')->name('store');
+        Route::middleware('permission:update_event_type')->post('/update/{id}', 'update')->name('update');
+        Route::middleware('permission:list_event_types')->get('/show/{id}', 'show')->name('show');
+        Route::middleware('permission:delete_event_type')->get('/delete/{id}', 'delete')->name('delete');
     });
 
     Route::controller(FolderController::class)->prefix('admin/{event_slug}/folders')->name('folders.')->group(function () {
