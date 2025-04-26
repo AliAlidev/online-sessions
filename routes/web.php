@@ -49,13 +49,13 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::controller(FolderFileController::class)->prefix('admin/{event_slug}/{folder_slug}/files')->name('files.')->group(function () {
-        Route::middleware(['permission:upload_video','permission:upload_image','permission:update_image','permission:update_video'])->get('/', 'index')->name('index');
+        Route::middleware(['permission:upload_video', 'permission:upload_image', 'permission:update_image', 'permission:update_video', 'permission:approve_decline_image', 'permission:approve_decline_video'])->get('/', 'index')->name('index');
         Route::middleware(['permission:upload_video', 'permission:upload_image'])->post('/store', 'store')->name('store');
         Route::middleware(['permission:update_image', 'permission:update_video'])->post('/update/{id?}', 'update')->name('update');
-        Route::middleware(['permission:upload_video','permission:upload_image','permission:update_image','permission:update_video'])->get('/show/{id?}', 'show')->name('show');
-        Route::middleware(['permission:delete_image','permission:delete_video'])->get('/delete/{id?}', 'delete')->name('delete');
-        Route::middleware(['permission:approve_decline_image','permission:approve_decline_video'])->post('/change-status', 'changeStatus')->name('change.status');
-        Route::middleware(['permission:upload_video','permission:upload_image','permission:update_image','permission:update_video'])->post('/upload-file', 'uploadFile');
+        Route::middleware(['permission:upload_video', 'permission:upload_image', 'permission:update_image', 'permission:update_video'])->get('/show/{id?}', 'show')->name('show');
+        Route::middleware(['permission:delete_image', 'permission:delete_video'])->get('/delete/{id?}', 'delete')->name('delete');
+        Route::middleware(['permission:approve_decline_image', 'permission:approve_decline_video'])->post('/change-status', 'changeStatus')->name('change.status');
+        Route::middleware(['permission:upload_video', 'permission:upload_image', 'permission:update_image', 'permission:update_video'])->post('/upload-file', 'uploadFile');
     });
 
     Route::controller(EventController::class)->prefix('admin')->name('events.')->group(function () {
