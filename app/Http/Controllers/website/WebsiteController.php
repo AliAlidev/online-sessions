@@ -125,7 +125,7 @@ class WebsiteController extends Controller
     {
         $folderId = $request->folder_id;
         $folder = EventFolder::find($folderId);
-        $images = $folder->files()->where('file_status', 'approved')->get();
+        $images = $folder->files()->where('file_status', 'approved')->orderBy('created_at','desc')->get();
         $eventSupportDownload = $folder->event->supportImageDownload();
         return response()->json([
             'success' => true,

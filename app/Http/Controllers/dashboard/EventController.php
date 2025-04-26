@@ -42,7 +42,8 @@ class EventController extends Controller
                 $eventsQuery = Event::with(['client', 'type'])
                     ->when(!empty($filterClient), fn($query) => $query->where('client_id', $filterClient))
                     ->when(!empty($filterType), fn($query) => $query->where('event_type_id', $filterType))
-                    ->when(!empty($filterDate), fn($query) => $query->whereDate('start_date', $filterDate));
+                    ->when(!empty($filterDate), fn($query) => $query->whereDate('start_date', $filterDate))
+                    ->orderBy('created_at', 'desc');
                 $events = $eventsQuery->get()->filter(function ($item) use ($filterStatus) {
                     if (!$filterStatus) return true;
                     $eventStartDate = Carbon::parse($item->start_date)->startOfDay();
