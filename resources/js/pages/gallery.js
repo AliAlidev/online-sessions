@@ -356,7 +356,7 @@ async function selectGuestFolder() {
 
 function makeRequestWhenReady() {
     if (window.tokenInitialized) {
-        var element = $('.horizontal-scroll').children('[data-folder-name="Guest Upload"]').first();
+        var element = $('.horizontal-scroll').children('.folder-thumbnail').first();
         element.click();
     } else {
         setTimeout(makeRequestWhenReady, 100);
