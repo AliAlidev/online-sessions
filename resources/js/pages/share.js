@@ -207,7 +207,7 @@ async function uploadFile(file, index, submitBtn) {
                     }
                 }
             },
-            timeout: 30000
+            timeout: 999000
         });
 
         return response; // This will resolve the outer promise
