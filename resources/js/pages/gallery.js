@@ -1,23 +1,5 @@
 import { getUserToken } from '../auth';
 
-async function checkAuthentication() {
-    const token = await getUserToken();
-    try {
-        const response = await fetch('/events/check-token', {
-            method: 'GET',
-            headers: {
-                'pageToken': token
-            }
-        });
-        if (!response.ok) throw new Error('Unauthorized');
-    } catch (error) {
-        window.location.href = document.getElementById('main-page-url')?.dataset?.url || '/';
-    }
-}
-
-checkAuthentication();
-
-
 async function checkEventIfHavePassword() {
     var eventSlug = $('#global-event-data').val();
     var galleryUrl = $('#global-event-data').data('eventGalleryUrl');
@@ -33,8 +15,6 @@ async function checkEventIfHavePassword() {
                 }
             })
                 .then(response => {
-                    console.log(response.data);
-
                     if (response.data.success) {
                         setTimeout(() => {
                             document.querySelector('.main-container').classList.remove('auth-checking');
@@ -55,7 +35,23 @@ async function checkEventIfHavePassword() {
     }
 }
 
-checkEventIfHavePassword();
+async function checkAuthentication() {
+    const token = await getUserToken();
+    try {
+        const response = await fetch('/events/check-token', {
+            method: 'GET',
+            headers: {
+                'pageToken': token
+            }
+        });
+        if (!response.ok) throw new Error('Unauthorized');
+        checkEventIfHavePassword();
+    } catch (error) {
+        window.location.href = document.getElementById('main-page-url')?.dataset?.url || '/';
+    }
+}
+
+checkAuthentication();
 
 async function gotoPasswordVerification() {
     var url = $('#global-event-data').data('url');
