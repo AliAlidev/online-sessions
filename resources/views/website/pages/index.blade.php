@@ -137,23 +137,25 @@
                     </a>
                 </div>
                 <!-- Planner Swiper Section -->
-                <div class="planner-section">
-                    <div class="testimonial mySwiper">
-                        <div class="swiper-wrapper">
-                            @foreach ($event->organizers as $organizer)
-                                <div class="slide swiper-slide">
-                                    <p class="event-planner-title">{{ $organizer->role->name }}</p>
-                                    <h2 class="event-planner-name">{{ $organizer->client->planner_name }}</h2>
-                                    <button class="social-media-button"
-                                        onclick="{{ isset($organizer->client->contact_button_link) ? "window.open('" . $organizer->client->contact_button_link . "', '_blank')" : null }}">{{ $organizer->client->contact_button_text }}</button>
-                                </div>
-                            @endforeach
+                @if ($event->enable_organizer)
+                    <div class="planner-section">
+                        <div class="testimonial mySwiper">
+                            <div class="swiper-wrapper">
+                                @foreach ($event->organizers as $organizer)
+                                    <div class="slide swiper-slide">
+                                        <p class="event-planner-title">{{ $organizer->role->name }}</p>
+                                        <h2 class="event-planner-name">{{ $organizer->client->planner_name }}</h2>
+                                        <button class="social-media-button"
+                                            onclick="{{ isset($organizer->client->contact_button_link) ? "window.open('" . $organizer->client->contact_button_link . "', '_blank')" : null }}">{{ $organizer->client->contact_button_text }}</button>
+                                    </div>
+                                @endforeach
+                            </div>
+                            <div class="swiper-button-next nav-btn"></div>
+                            <div class="swiper-button-prev nav-btn"></div>
+                            <div class="swiper-pagination"></div>
                         </div>
-                        <div class="swiper-button-next nav-btn"></div>
-                        <div class="swiper-button-prev nav-btn"></div>
-                        <div class="swiper-pagination"></div>
                     </div>
-                </div>
+                @endif
             </div><!-- End Event Details Container -->
             <!-- Footer -->
             <div class="footer">

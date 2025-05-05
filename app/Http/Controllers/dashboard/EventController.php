@@ -74,7 +74,7 @@ class EventController extends Controller
                         return $eventEndDate->gt($now) ? $eventEndDate->diffInDays($now) . ' days' : '-';
                     })
                     ->editColumn('qr_code', fn($row) => '<a href="/' . $row->qr_code . '" download><img src="/' . $row->qr_code . '" width="100" height="100"></a>')
-                    ->editColumn('event_name', fn($row) => Auth::user()->hasAnyPermission(['create_folder', 'update_folder', 'delete_folder','list_folders']) ? '<a href="' . route('folders.index', $row->bunny_event_name) . '">' . $row->event_name . '</a>' : $row->event_name)
+                    ->editColumn('event_name', fn($row) => Auth::user()->hasAnyPermission(['create_folder', 'update_folder', 'delete_folder', 'list_folders']) ? '<a href="' . route('folders.index', $row->bunny_event_name) . '">' . $row->event_name . '</a>' : $row->event_name)
                     ->editColumn('profile_picture', fn($row) => $row->profile_picture ? '<img src="/' . $row->profile_picture . '" width="100" height="100">' : '')
                     ->editColumn('cover_image', fn($row) => $row->cover_image ? '<img src="/' . $row->cover_image . '" width="100" height="100">' : '')
                     ->editColumn('event_link', function ($row) {
@@ -153,7 +153,8 @@ class EventController extends Controller
                 'event_password' => $data['event_password'],
                 'welcome_message' => $data['welcome_message'],
                 'qr_code' => $data['qr_code'],
-                'bunny_main_folder_name' => Carbon::parse($data['start_date'])->year
+                'bunny_main_folder_name' => Carbon::parse($data['start_date'])->year,
+                'enable_organizer' => isset($data['enable_organizer']) ? 1 : 0
             ]);
             $allowGuestUpload = isset($data['image_share_guest_book']) && $data['image_share_guest_book'] == 'on' ? 1 : 0;
             $event->setting()->create([
@@ -228,7 +229,8 @@ class EventController extends Controller
                 'event_link' => $data['event_link'],
                 'event_password' => $data['event_password'],
                 'welcome_message' => $data['welcome_message'],
-                'qr_code' => $data['qr_code']
+                'qr_code' => $data['qr_code'],
+                'enable_organizer' => isset($data['enable_organizer']) ? 1 : 0
             ];
             if ($event && $event->canUpdateEventNameAndStartDate()) {
                 $eventData['event_name'] = $data['event_name'];

@@ -62,7 +62,8 @@ class UpdateEventRequest extends FormRequest
             'auto_image_approve' => 'nullable',
             'allow_image_download' => 'nullable',
             'theme' => 'nullable',
-            'font' => 'nullable'
+            'font' => 'nullable',
+            'enable_organizer' => 'nullable'
         ];
     }
 }

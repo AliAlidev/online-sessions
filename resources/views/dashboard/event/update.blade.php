@@ -295,7 +295,11 @@
                         </div>
                     </div>
                     <div class="card mb-6">
-                        <div class="card-header d-flex justify-content-between align-items-center">
+                        <div class="card-header align-items-center">
+                            <div class="form-check form-switch mb-3">
+                                <input class="form-check-input" type="checkbox" id="enable-organizer-id" name="enable_organizer" {{ $event->enable_organizer == 1 ? 'checked' : '' }}>
+                                <label class="form-check-label" for="flexSwitchCheckChecked">Enable Organizer</label>
+                            </div>
                             <div style="display: flex; gap: 10px" class="mb-1">
                                 <h4>Event Organizer</h4>
                                 <button type="button" class="btn rounded-pill btn-icon btn-primary"
