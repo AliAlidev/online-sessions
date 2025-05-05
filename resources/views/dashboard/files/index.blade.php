@@ -562,7 +562,7 @@
                 progressBar.empty(); // Clear previous progress bars
 
                 let uploadQueue = []; // Queue for all files
-                const MAX_CONCURRENT_UPLOADS = 6;
+                const MAX_CONCURRENT_UPLOADS = 1;
 
                 // Initialize UI for all files (progress bar + Start button)
                 for (let i = 0; i < files.length; i++) {
@@ -936,46 +936,85 @@
             // progressBar.empty();
         }
 
-        function compressImages(formId) {
+        async function compressImages(formId) {
             const input = document.getElementById(formId).querySelector('#event-file');
             const files = input.files;
             if (!files.length) return;
 
-            const targetSizeKB = 500; // Target size in KB
+            let compressionRatios = [];
+            try {
+                // Fetch the JSON file
+                const response = await fetch("{{ asset('/compression-ratios.json') }}"); // Update path as needed
+                if (!response.ok) {
+                    throw new Error(`Failed to fetch compression ratios: ${response.status}`);
+                }
+                compressionRatios = await response.json();
+                console.log(compressionRatios);
+
+            } catch (error) {
+                console.error('Error loading compression ratios:', error);
+                // Fallback to default ratios
+                compressionRatios = [
+                    { minSizeMB: 10, quality: 0.7 },
+                    { minSizeMB: 9, quality: 0.75 },
+                    { minSizeMB: 8, quality: 0.8 },
+                    { minSizeMB: 7, quality: 0.85 },
+                    { minSizeMB: 6, quality: 0.9 },
+                    { minSizeMB: 5, quality: 0.91 },
+                    { minSizeMB: 4, quality: 0.92 },
+                    { minSizeMB: 3, quality: 0.93 },
+                    { minSizeMB: 2, quality: 0.94 },
+                    { minSizeMB: 1, quality: 0.95 },
+                    { minSizeMB: 0.5, quality: 0.99 }
+                ];
+            }
+
             const dataTransfer = new DataTransfer(); // Holds all final files
 
             Array.from(files).forEach((file) => {
-                const fileSizeKB = file.size / 1024; // Convert bytes to KB
+                const fileSizeMB = file.size / (1024 * 1024); // Convert bytes to MB
 
-                // If file is already under target size, skip compression
-                if (fileSizeKB <= targetSizeKB) {
+                // Find the appropriate compression quality
+                let quality = null;
+                for (const ratio of compressionRatios) {
+                    if (fileSizeMB > ratio.minSizeMB) {
+                        quality = Math.max(ratio.quality, 0.7); // Ensure minimum quality of 0.7
+                        break;
+                    }
+                }
+
+                // If no quality is set (file ≤ 0.5MB or no matching threshold), skip compression
+                if (quality === null) {
+                    console.log(`File: ${file.name}, Size: ${fileSizeMB.toFixed(2)} MB, Skipped compression`);
                     dataTransfer.items.add(file); // Use original file
                     if (dataTransfer.files.length === files.length) {
-                        document.getElementById(formId).querySelector("#event-file-hidden").files = dataTransfer
-                            .files;
+                        document.getElementById(formId).querySelector("#event-file-hidden").files = dataTransfer.files;
+                        console.log('Files transferred:', Array.from(dataTransfer.files).map(f => `${f.name} (${(f.size / (1024 * 1024)).toFixed(2)} MB)`));
                     }
                     return;
                 }
 
-                // Else compress
-                const quality = Math.max(0.98, targetSizeKB / fileSizeKB); // More aggressive compression if needed
+                // Compress the file
+                console.log(`File: ${file.name}, Original Size: ${fileSizeMB.toFixed(2)} MB, Quality: ${quality}`);
                 new Compressor(file, {
                     quality: quality,
-                    maxWidth: 1024,
-                    maxHeight: 1024,
+                    maxWidth: 1920, // Increased from 1024
+                    maxHeight: 1920, // Increased from 1024
                     success(result) {
                         const compressedFile = new File([result], file.name, {
                             type: file.type,
                             lastModified: Date.now(),
                         });
+                        const compressedSizeMB = compressedFile.size / (1024 * 1024);
+                        console.log(`File: ${file.name}, Compressed Size: ${compressedSizeMB.toFixed(2)} MB`);
                         dataTransfer.items.add(compressedFile);
                         if (dataTransfer.files.length === files.length) {
-                            document.getElementById(formId).querySelector("#event-file-hidden").files =
-                                dataTransfer.files;
+                            document.getElementById(formId).querySelector("#event-file-hidden").files = dataTransfer.files;
+                            console.log('Files transferred:', Array.from(dataTransfer.files).map(f => `${f.name} (${(f.size / (1024 * 1024)).toFixed(2)} MB)`));
                         }
                     },
                     error(err) {
-                        console.error("Compression error:", err);
+                        console.error(`Compression error for ${file.name}:`, err);
                     }
                 });
             });
