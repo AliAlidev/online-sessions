@@ -39,6 +39,33 @@
                 width: 100vw;
             }
         }
+
+        .gallery-button, .share-button {
+            position: relative;
+        }
+
+        .loader {
+            width: 40px;
+            height:40px;
+            border: 3px solid var(--primary-03);
+            border-top: 3px solid transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        @keyframes spin {
+            0% {
+                transform: translate(-50%, -50%) rotate(0deg);
+            }
+
+            100% {
+                transform: translate(-50%, -50%) rotate(360deg);
+            }
+        }
     </style>
 
     @vite(['resources/js/pages/index.js'])
@@ -79,10 +106,10 @@
                 <div class="buttons-section">
                     <a href=""
                         data-url="{{ route('landing.gallery_redirect_url', ['year' => $year, 'event_slug' => $event_slug]) }}"
-                        data-gallery-url = "{{ route('landing.apply_event_password', ['year' => $year, 'event_slug' => $event_slug]) }}"
+                        data-gallery-url="{{ route('landing.apply_event_password', ['year' => $year, 'event_slug' => $event_slug]) }}"
                         data-event-slug="{{ $event_slug }}" class="gallery-button">
-                        <svg class="button-image" width="46" height="38" viewBox="0 0 46 38" fill="none"
-                            xmlns="http://www.w3.org/2000/svg">
+                        <svg style="display: block" class="button-image" width="46" height="38" viewBox="0 0 46 38"
+                            fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path
                                 d="M44.0832 32.4167C44.0832 33.4333 43.6793 34.4084 42.9604 35.1272C42.2415 35.8461 41.2665 36.25 40.2498 36.25H5.74984C4.73317 36.25 3.75815 35.8461 3.03926 35.1272C2.32037 34.4084 1.9165 33.4333 1.9165 32.4167V11.3333C1.9165 10.3167 2.32037 9.34165 3.03926 8.62276C3.75815 7.90387 4.73317 7.5 5.74984 7.5H13.4165L17.2498 1.75H28.7498L32.5832 7.5H40.2498C41.2665 7.5 42.2415 7.90387 42.9604 8.62276C43.6793 9.34165 44.0832 10.3167 44.0832 11.3333V32.4167Z"
                                 stroke="var(--primary-03)" stroke-width="3" stroke-linecap="round"
@@ -92,19 +119,21 @@
                                 stroke="var(--primary-03)" stroke-width="3" stroke-linecap="round"
                                 stroke-linejoin="round" />
                         </svg>
-                        <span class="button-text gallery">GALLERY</span>
+                        <span class="button-text gallery" style="display: block">GALLERY</span>
+                        <span class="loader" style="display: none;"></span>
                     </a>
                     <a href=""
                         style="cursor: {{ $event->supportImageUpload() ? 'pointer' : 'not-allowed' }}; {{ !$event->supportImageUpload() ? 'background-color:#ccc' : '' }}"
                         data-url="{{ $event->supportImageUpload() ? route('landing.share_redirect_url', ['year' => $year, 'event_slug' => $event_slug]) : '' }}"
                         data-support-image-upload="{{ $event->supportImageUpload() }}" class="share-button">
-                        <svg class="button-image" width="45" height="38" viewBox="0 0 45 38" fill="none"
+                        <svg style="display: block" class="button-image" width="45" height="38" viewBox="0 0 45 38" fill="none"
                             xmlns="http://www.w3.org/2000/svg">
                             <path
                                 d="M43.125 24.75V32.4167C43.125 33.4333 42.6421 34.4084 41.7826 35.1272C40.923 35.8461 39.7572 36.25 38.5417 36.25H6.45833C5.24276 36.25 4.07697 35.8461 3.21743 35.1272C2.35789 34.4084 1.875 33.4333 1.875 32.4167V24.75M33.9583 11.3333L22.5 1.75M22.5 1.75L11.0417 11.3333M22.5 1.75V24.75"
                                 stroke="#fff" stroke-width="3.1" stroke-linecap="round" stroke-linejoin="round" />
                         </svg>
-                        <span class="button-text share">SHARE</span>
+                        <span class="button-text share" style="display: block">SHARE</span>
+                        <span class="loader" style="display: none;"></span>
                     </a>
                 </div>
                 <!-- Planner Swiper Section -->
@@ -116,7 +145,7 @@
                                     <p class="event-planner-title">{{ $organizer->role->name }}</p>
                                     <h2 class="event-planner-name">{{ $organizer->client->planner_name }}</h2>
                                     <button class="social-media-button"
-                                        onclick="{{ isset($organizer->client->contact_button_link) ? "window.open('".$organizer->client->contact_button_link ."', '_blank')" : null }}">{{ $organizer->client->contact_button_text }}</button>
+                                        onclick="{{ isset($organizer->client->contact_button_link) ? "window.open('" . $organizer->client->contact_button_link . "', '_blank')" : null }}">{{ $organizer->client->contact_button_text }}</button>
                                 </div>
                             @endforeach
                         </div>
