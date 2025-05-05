@@ -682,26 +682,21 @@
                                 $('#' + formId).find('.modal-body').prepend(successMessage);
                                 $('#files-datatable').DataTable().draw();
                             }
-                            resolve(response); // Resolve with the server response after successful upload
+                            resolve(response);
                         })
                         .catch(function(error) {
-                            clearInterval($("#status-" + index).data("interval")); // Stop animated dots
+                            clearInterval($("#status-" + index).data("interval"));
                             $("#progress-bar-" + index).removeClass("bg-success").addClass("bg-danger").text("Failed");
                             $("#status-" + index).text("Stage2: Failed");
-                            showRetryButton(index); // Optionally show retry button if needed
-                            reject(error); // Reject with the error
+                            showRetryButton(index);
+                            reject(error);
                         });
                 });
             }
 
-
-            // Show Progress Bar and Hide Start Button
             function startUpload(file, index) {
-                console.log(index);
-
-                $(`#file-container-${index} .start-btn`).remove(); // Remove "Start Upload" button
-                $(`#file-container-${index} .progress`).show(); // Show progress bar
-                // This ensures progress bar is shown after DOM update
+                $(`#file-container-${index} .start-btn`).remove();
+                $(`#file-container-${index} .progress`).show();
                 setTimeout(() => { $(`#file-container-${index} .progress`).css('display', 'block');
                 }, 0);
             }
@@ -721,8 +716,6 @@
             }
 
             function showRetryButton(index) {
-                console.log(index);
-
                 $(`#file-container-${index} .retry-btn`).removeClass('hidden-force'); // Show Retry button
             }
 
@@ -923,17 +916,10 @@
             $('.uploaded-file-name').each(function() {
                 $(this).attr('hidden', true);
             });
-
             $('.video_resolution').val(null).trigger('change');
-
             $('.alert').remove();
-
             $('#filesLink,#filesLinkInput').parent().attr('hidden', true);
-
             $('#video_resolution_div').hide();
-
-            // var progressBar = $('#' + form).parent().find('#progressContainer');
-            // progressBar.empty();
         }
 
         async function compressImages(formId) {
@@ -943,14 +929,11 @@
 
             let compressionRatios = [];
             try {
-                // Fetch the JSON file
-                const response = await fetch("{{ asset('/compression-ratios.json') }}"); // Update path as needed
+                const response = await fetch("{{ asset('/compression-ratios.json') }}");
                 if (!response.ok) {
                     throw new Error(`Failed to fetch compression ratios: ${response.status}`);
                 }
                 compressionRatios = await response.json();
-                console.log(compressionRatios);
-
             } catch (error) {
                 console.error('Error loading compression ratios:', error);
                 // Fallback to default ratios
@@ -985,17 +968,12 @@
 
                 // If no quality is set (file ≤ 0.5MB or no matching threshold), skip compression
                 if (quality === null) {
-                    console.log(`File: ${file.name}, Size: ${fileSizeMB.toFixed(2)} MB, Skipped compression`);
                     dataTransfer.items.add(file); // Use original file
                     if (dataTransfer.files.length === files.length) {
                         document.getElementById(formId).querySelector("#event-file-hidden").files = dataTransfer.files;
-                        console.log('Files transferred:', Array.from(dataTransfer.files).map(f => `${f.name} (${(f.size / (1024 * 1024)).toFixed(2)} MB)`));
                     }
                     return;
                 }
-
-                // Compress the file
-                console.log(`File: ${file.name}, Original Size: ${fileSizeMB.toFixed(2)} MB, Quality: ${quality}`);
                 new Compressor(file, {
                     quality: quality,
                     maxWidth: 1920, // Increased from 1024
@@ -1006,11 +984,9 @@
                             lastModified: Date.now(),
                         });
                         const compressedSizeMB = compressedFile.size / (1024 * 1024);
-                        console.log(`File: ${file.name}, Compressed Size: ${compressedSizeMB.toFixed(2)} MB`);
                         dataTransfer.items.add(compressedFile);
                         if (dataTransfer.files.length === files.length) {
                             document.getElementById(formId).querySelector("#event-file-hidden").files = dataTransfer.files;
-                            console.log('Files transferred:', Array.from(dataTransfer.files).map(f => `${f.name} (${(f.size / (1024 * 1024)).toFixed(2)} MB)`));
                         }
                     },
                     error(err) {

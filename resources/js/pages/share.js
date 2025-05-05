@@ -154,8 +154,10 @@ $('#uploadForm').submit(function (e) {
                             role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"
                             style="width: 0%;" id="progress-bar-0"></div>
                     </div>
-                    <p id="status-0" class="text-danger d-inline-block mt-3" style="text-align:start; margin-top:10px"></p>
-                    <button class="btn btn-sm btn-warning retry-btn hidden-force mt-3" style="height:15px; width:auto; font-size:12px; margin-top:10px; text-align:start" data-index="0">Retry</button>
+                    <div class='d-inline-block'>
+                        <p id="status-0" class="text-danger mt-3" style="text-align:start; margin-top:10px"></p>
+                        <button class="btn btn-sm btn-warning retry-btn hidden-force mt-3" style="height:15px; width:auto; font-size:12px; margin-top:10px; text-align:start" data-index="0">Retry</button>
+                    </div>
                 </div>
             `);
     progressBar.append(fileContainer);
@@ -239,6 +241,24 @@ function showRetryButton(index) {
     $(`#file-container-${index} .retry-btn`).removeClass('hidden-force'); // Show Retry button
 }
 
+$(document).on("click", ".retry-btn", function(e) {
+    e.preventDefault();
+    $(this).addClass('hidden-force');
+    var file = $('#image-compressed')[0].files[0];
+
+    // Reset progress bar and status text
+    $("#progress-bar-0")
+        .css("width", "0%")
+        .removeClass("bg-danger")
+        .addClass("bg-success")
+        .text("0%");
+
+    $("#status-0").text("Stage2: Retrying...");
+
+    // Retry uploading the file using the existing progress bar
+    uploadFile(file, 0);
+});
+
 function showButtonLoader(submitBtn) {
     const spinner = document.getElementById('spinner');
     spinner.style.display = 'inline-block';
@@ -255,19 +275,53 @@ $('#image').on('change', function (e) {
     compressImages();
 });
 
-function compressImages() {
+async function compressImages(formId) {
     const input = document.getElementById('image');
     const files = input.files;
     if (!files.length) return;
 
-    const targetSizeKB = 500; // Target size in KB
+    let compressionRatios = [];
+    try {
+        var filePath = document.getElementById('compression-ratios-file-path');
+        const response = await fetch(filePath.value);
+        if (!response.ok) {
+            throw new Error(`Failed to fetch compression ratios: ${response.status}`);
+        }
+        compressionRatios = await response.json();
+    } catch (error) {
+        console.error('Error loading compression ratios:', error);
+        // Fallback to default ratios
+        compressionRatios = [
+            { minSizeMB: 10, quality: 0.7 },
+            { minSizeMB: 9, quality: 0.75 },
+            { minSizeMB: 8, quality: 0.8 },
+            { minSizeMB: 7, quality: 0.85 },
+            { minSizeMB: 6, quality: 0.9 },
+            { minSizeMB: 5, quality: 0.91 },
+            { minSizeMB: 4, quality: 0.92 },
+            { minSizeMB: 3, quality: 0.93 },
+            { minSizeMB: 2, quality: 0.94 },
+            { minSizeMB: 1, quality: 0.95 },
+            { minSizeMB: 0.5, quality: 0.99 }
+        ];
+    }
+
     const dataTransfer = new DataTransfer(); // Holds all final files
 
     Array.from(files).forEach((file) => {
-        const fileSizeKB = file.size / 1024; // Convert bytes to KB
+        const fileSizeMB = file.size / (1024 * 1024); // Convert bytes to MB
 
-        // If file is already under target size, skip compression
-        if (fileSizeKB <= targetSizeKB) {
+        // Find the appropriate compression quality
+        let quality = null;
+        for (const ratio of compressionRatios) {
+            if (fileSizeMB > ratio.minSizeMB) {
+                quality = Math.max(ratio.quality, 0.7); // Ensure minimum quality of 0.7
+                break;
+            }
+        }
+
+        // If no quality is set (file ≤ 0.5MB or no matching threshold), skip compression
+        if (quality === null) {
             dataTransfer.items.add(file); // Use original file
             if (dataTransfer.files.length === files.length) {
                 document.getElementById('image-compressed').files = dataTransfer.files;
@@ -275,27 +329,23 @@ function compressImages() {
             }
             return;
         }
-
-        // Else compress
-        const quality = Math.max(0.98, targetSizeKB / fileSizeKB); // More aggressive compression if needed
         new Compressor(file, {
             quality: quality,
-            maxWidth: 1024,
-            maxHeight: 1024,
+            maxWidth: 1920, // Increased from 1024
+            maxHeight: 1920, // Increased from 1024
             success(result) {
                 const compressedFile = new File([result], file.name, {
                     type: file.type,
                     lastModified: Date.now(),
                 });
+                const compressedSizeMB = compressedFile.size / (1024 * 1024);
                 dataTransfer.items.add(compressedFile);
                 if (dataTransfer.files.length === files.length) {
-                    document.getElementById("image-compressed").files =
-                        dataTransfer.files;
-                    document.getElementById('file_size').value = compressedFile.size;
+                    document.getElementById(formId).querySelector("#event-file-hidden").files = dataTransfer.files;
                 }
             },
             error(err) {
-                console.error("Compression error:", err);
+                console.error(`Compression error for ${file.name}:`, err);
             }
         });
     });

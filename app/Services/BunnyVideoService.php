@@ -61,7 +61,8 @@ class BunnyVideoService
             $body = json_encode(['title' => $fileName, 'collectionId' => $collectionId]);
             $response = $this->client->post("https://video.bunnycdn.com/library/{$this->libraryId}/videos", [
                 'headers' => $headers,
-                'body' => $body
+                'body' => $body,
+                'verify' => config('services.enable_ssl_verification')
             ]);
 
             $guid = json_decode($response->getBody(), true)['guid'];
@@ -75,7 +76,8 @@ class BunnyVideoService
             $resolution = $resolution ? "?enabledResolutions={$resolution}" : null;
             $response = $this->client->put("https://video.bunnycdn.com/library/{$this->libraryId}/videos/{$guid}" . $resolution, [
                 'headers' => $headers,
-                RequestOptions::BODY => $fileStream
+                RequestOptions::BODY => $fileStream,
+                'verify' => config('services.enable_ssl_verification')
             ]);
         } catch (Throwable $th) {
             $this->deleteVideo($guid);

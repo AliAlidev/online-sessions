@@ -45,6 +45,8 @@ return [
         'base_url' => env('BUNNY_VIDEO_BASE_URL')
     ],
 
-    'demo_mode' => env('DEMO_MODE', false)
+    'demo_mode' => env('DEMO_MODE', false),
+
+    'enable_ssl_verification' => env('ENABLE_SSL_VERIFICATION', false)
 
 ];

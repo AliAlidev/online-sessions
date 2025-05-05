@@ -43,7 +43,8 @@ class BunnyImageService
             try {
                 $response = $this->client->put($url, [
                     'headers' => $headers,
-                    RequestOptions::BODY => $fileStream
+                    RequestOptions::BODY => $fileStream,
+                    'verify' => config('services.enable_ssl_verification')
                 ]);
             } finally {
                 if (is_resource($fileStream)) {
@@ -89,6 +90,7 @@ class BunnyImageService
                 'headers' => [
                     'AccessKey' => $this->storageAccessKey,
                 ],
+                'verify' => config('services.enable_ssl_verification')
             ]);
 
             return json_decode($response->getBody(), true);
@@ -117,6 +119,7 @@ class BunnyImageService
                 'headers' => [
                     'AccessKey' => $this->storageAccessKey,
                 ],
+                'verify' => config('services.enable_ssl_verification')
             ]);
             return $response->getStatusCode() === 200;
         } catch (Throwable $e) {
@@ -140,6 +143,7 @@ class BunnyImageService
                 'headers' => [
                     'AccessKey' => $this->apiKey,
                 ],
+                'verify' => config('services.enable_ssl_verification')
             ]);
 
             return json_decode($response->getBody(), true);

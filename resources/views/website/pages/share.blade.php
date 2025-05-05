@@ -521,6 +521,11 @@
         .close-x:hover {
             color: #000;
         }
+
+        .d-inline-block{
+            display: flex;
+            gap: 20px;
+        }
     </style>
 
     @vite(['resources/js/app.js', 'resources/js/pages/share.js'])
@@ -528,6 +533,7 @@
 
 @section('content')
     <div class="main-container auth-checking">
+        <input type="hidden" id="compression-ratios-file-path" value="{{ asset('/compression-ratios.json') }}">
         <div class="main-header">
             <div class="top-bar">
                 <a href="{{ route('landing.index', ['year' => $year, 'event_slug' => $event_slug]) }}"><img
