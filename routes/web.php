@@ -46,6 +46,7 @@ Route::middleware('auth')->group(function () {
         Route::middleware('permission:update_folder')->post('/update/{id?}', 'update')->name('update');
         Route::middleware('permission:list_folders')->get('/show/{id?}', 'show')->name('show');
         Route::middleware('permission:delete_folder')->get('/delete/{id?}', 'delete')->name('delete');
+        Route::middleware('permission:update_folder')->get('/toggle-visibility/{id?}', 'toggleVisibility')->name('toggle.visibility');
     });
 
     Route::controller(FolderFileController::class)->prefix('admin/{event_slug}/{folder_slug}/files')->name('files.')->group(function () {

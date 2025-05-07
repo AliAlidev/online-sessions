@@ -153,6 +153,13 @@ async function selectFolder(event) {
         .then(response => {
             var result = response.data;
             $('#gallery-div').html(result.html);
+            const refreshButton = document.querySelector('#gallery-div .refresh-button');
+            if (refreshButton) {
+                refreshButton.addEventListener('click', function(event) {
+                    var element = event.target;
+                    document.getElementById(element.dataset.id).click();
+                });
+            }
 
             if (folderType == 'video') {
 
@@ -328,7 +335,6 @@ document.querySelectorAll('.folder-thumbnail').forEach(folder => {
 document.getElementById('scroll-left').addEventListener('click', scrollTabs);
 document.getElementById('scroll-right').addEventListener('click', scrollTabs);
 
-
 async function goToShare(event) {
     event.preventDefault();
     var element = event.target.closest('a');
@@ -346,9 +352,6 @@ async function goToShare(event) {
 }
 
 document.querySelector('.share-btn-div').addEventListener('click', goToShare);
-
-async function selectGuestFolder() {
-}
 
 function makeRequestWhenReady() {
     if (window.tokenInitialized) {

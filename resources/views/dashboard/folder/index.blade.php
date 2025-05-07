@@ -58,11 +58,8 @@
         <div class="card">
 
             <div class="row card-header flex-column flex-md-row pb-0">
-                <div class="d-md-flex justify-content-between align-items-center dt-layout-start col-md-auto me-auto mt-0">
-                </div>
                 <div class="d-md-flex justify-content-between align-items-center dt-layout-end col-md-auto ms-auto mt-0"
                     style="gap: 10px">
-                    {{-- <a href="javascript:history.back()" class="btn btn-label-primary btn-sm">Back</a> --}}
                     <div class="dt-buttons btn-group flex-wrap mb-0">
                         @can('create_folder')
                             <button class="btn btn-sm btn-primary" data-bs-target="#CreateFolderModal" data-bs-toggle="modal"
@@ -391,7 +388,8 @@
                             $('#folderTypeInput').val(response.data.folder_type);
                             $('#folderLinkInput').val(response.data.folder_link);
                             if (response.data.folder_thumbnail) {
-                                $('.preview-container-update img').attr('src', "\\" + response.data.folder_thumbnail);
+                                $('.preview-container-update img').attr('src', "\\" + response
+                                    .data.folder_thumbnail);
                                 $('.preview-container-update').show();
                             } else {
                                 $('.preview-container-update').hide();
@@ -509,6 +507,21 @@
                 var form = $(this).find('form').attr('id');
                 resetForm(form);
             });
+
+            $(document).on('change', '.folder_visibility', function(e) {
+                e.preventDefault();
+                var url = $(this).data('url');
+                $.ajax({
+                    url: url,
+                    type: 'get',
+                    success: function(response) {
+                        if (response.success) {
+                            showAlertMessage(response.message)
+                            table.draw();
+                        }
+                    }
+                })
+            });
         });
 
         function resetForm(form) {
@@ -529,15 +542,15 @@
     <script>
         function showAlertMessage(message) {
             var element = `<div class="d-flex justify-content-end global-alert-section" style="margin-right: 25px">
-        <div class="bs-toast toast fade show bg-success" role="alert" aria-live="assertive" aria-atomic="true">
-            <div class="toast-header">
-                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-            </div>
-            <div class="toast-body">
-                ${message}
-            </div>
-        </div>
-    </div>`;
+                            <div class="bs-toast toast fade show bg-success" role="alert" aria-live="assertive" aria-atomic="true">
+                                <div class="toast-header">
+                                    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                                </div>
+                                <div class="toast-body">
+                                    ${message}
+                                </div>
+                            </div>
+                        </div>`;
             $('.content-wrapper').prepend(element);
             setTimeout(() => {
                 $('.global-alert-section').remove();
@@ -575,7 +588,9 @@
                 fileNameDisplay.attr('hidden', false);
                 fileNameDisplay.text(`Uploaded File: ${fileName}`);
                 if (fileInput.files[0].type.startsWith('image/')) {
-                    const previewContainer = $(this).attr('id') == 'folderThumbnailInput' ? $(this).closest('.col-md-6').find('.preview-container-update') : $(this).closest('.col-md-6').find('.preview-container');
+                    const previewContainer = $(this).attr('id') == 'folderThumbnailInput' ? $(this).closest(
+                        '.col-md-6').find('.preview-container-update') : $(this).closest('.col-md-6').find(
+                        '.preview-container');
                     previewContainer.empty();
                     const reader = new FileReader();
                     $(previewContainer).show();

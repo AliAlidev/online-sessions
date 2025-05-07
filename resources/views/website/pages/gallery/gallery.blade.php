@@ -75,6 +75,40 @@
             justify-content: center;
         }
     </style>
+
+    <style>
+        .refresh-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 14px;
+            background-color: #fff;
+            color: #000;
+            border: 1px solid #000;
+            border-radius: 2px;
+            font-size: 14px;
+            font-family: sans-serif;
+            text-decoration: none;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+            margin-bottom: 10px;
+        }
+
+        .refresh-button:hover {
+            background-color: #f0f0f0;
+        }
+
+        .refresh-button svg {
+            width: 18px;
+            height: 18px;
+            fill: currentColor;
+            transition: transform 0.4s ease;
+        }
+
+        .refresh-button:hover svg {
+            transform: rotate(180deg);
+        }
+    </style>
     @vite(['resources/js/app.js', 'resources/js/pages/gallery.js'])
 @endpush
 
@@ -101,22 +135,25 @@
                 </button>
                 <div class="horizontal-scroll" id="tabs">
                     @foreach ($folders as $folder)
-                        <div class="folder folder-thumbnail" data-type= "{{ $folder->folder_type }}"
-                            data-folder-name="{{ $folder->folder_name }}" data-id="{{ $folder->id }}"
-                            data-folder-link="{{ $folder->folder_link }}"
-                            data-url="{{ $folder->folder_type == 'image' ? route('landing.image', ['year' => $year, 'event_slug' => $event_slug]) : route('landing.video', ['year' => $year, 'event_slug' => $event_slug]) }}">
-                            <svg style="" width="100%" height="100%" viewBox="0 0 120 100" fill="none"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <path
-                                    d="M0 4V96C0 98.2091 1.79086 100 4 100H116C118.209 100 120 98.2091 120 96V13.9672C120 11.7581 118.209 9.96721 116 9.96721H51.6985C50.7965 9.96721 49.921 9.66234 49.2141 9.10208L38.8209 0.865137C38.1139 0.304877 37.2384 0 36.3364 0H4C1.79086 0 0 1.79086 0 4Z"
-                                    fill="var(--accent-01)" />
-                            </svg>
-                            <div class="tab" style="background-image: url('{{ asset($folder->folder_thumbnail) }}')">
+                        @if ($folder->is_visible)
+                            <div id="folder-{{ $folder->id }}" class="folder folder-thumbnail" data-type= "{{ $folder->folder_type }}"
+                                data-folder-name="{{ $folder->folder_name }}" data-id="{{ $folder->id }}"
+                                data-folder-link="{{ $folder->folder_link }}"
+                                data-url="{{ $folder->folder_type == 'image' ? route('landing.image', ['year' => $year, 'event_slug' => $event_slug]) : route('landing.video', ['year' => $year, 'event_slug' => $event_slug]) }}">
+                                <svg style="" width="100%" height="100%" viewBox="0 0 120 100" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                        d="M0 4V96C0 98.2091 1.79086 100 4 100H116C118.209 100 120 98.2091 120 96V13.9672C120 11.7581 118.209 9.96721 116 9.96721H51.6985C50.7965 9.96721 49.921 9.66234 49.2141 9.10208L38.8209 0.865137C38.1139 0.304877 37.2384 0 36.3364 0H4C1.79086 0 0 1.79086 0 4Z"
+                                        fill="var(--accent-01)" />
+                                </svg>
+                                <div class="tab"
+                                    style="background-image: url('{{ asset($folder->folder_thumbnail) }}')">
+                                </div>
+                                <div class="folder-name">
+                                    <p class="folder-name-text">{{ $folder->folder_name }}</p>
+                                </div>
                             </div>
-                            <div class="folder-name">
-                                <p class="folder-name-text">{{ $folder->folder_name }}</p>
-                            </div>
-                        </div>
+                        @endif
                     @endforeach
                 </div><!-- End Horizontal Scroll -->
                 <button id="scroll-right" class="scroll-arrow" data-distance="200">
@@ -144,7 +181,7 @@
             <a href="" style="cursor: {{ $event->supportImageUpload() ? 'pointer' : 'not-allowed' }}"
                 data-url="{{ $event->supportImageUpload() ? route('landing.share_redirect_url', ['year' => $year, 'event_slug' => $event_slug]) : '' }}"
                 data-support-image-upload="{{ $event->supportImageUpload() }}" class="share-btn-div">
-                <div class="share-button" style="{{  !$event->supportImageUpload() ? 'background-color:#ccc' : '' }}">
+                <div class="share-button" style="{{ !$event->supportImageUpload() ? 'background-color:#ccc' : '' }}">
                     <img class="share-button-image"
                         src="{{ asset('assets/website/gallery-assets/images/upload-icon.svg') }}" alt=""
                         width="26px" height="26px">

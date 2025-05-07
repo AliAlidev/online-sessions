@@ -129,7 +129,7 @@ class WebsiteController extends Controller
         $eventSupportDownload = $folder->event->supportImageDownload();
         return response()->json([
             'success' => true,
-            'html' => view('website.pages.gallery.image', ['images' => $images])->render(),
+            'html' => view('website.pages.gallery.image', ['images' => $images, 'folder' => $folder])->render(),
             'eventSupportDownload' => $eventSupportDownload
         ]);
     }
@@ -160,7 +160,7 @@ class WebsiteController extends Controller
         });
         return response()->json([
             'success' => true,
-            'html' => view('website.pages.gallery.video', ['videos' => $videos])->render(),
+            'html' => view('website.pages.gallery.video', ['videos' => $videos, 'folder' => $folder])->render(),
             'files' => $videos
         ]);
     }
