@@ -588,11 +588,8 @@
                 // Start uploading files (up to 6 at a time)
                 processUploads(uploadQueue, MAX_CONCURRENT_UPLOADS)
                     .then(() => {
-                        hideButtonLoader(submitBtn);
                     })
-                    .catch(() => {
-                        hideButtonLoader(submitBtn);
-                    });
+                    .catch(() => {});
             });
 
             // Function to process uploads with concurrency control
@@ -652,7 +649,8 @@
                     formData.append('file_order', $('#fileOrder').val() == undefined ? 1 : $(
                         '#fileOrder').val());
                     $(`#file-container-${index} .start-btn`).remove(); // Remove "Start Upload" button
-                    const uploadUrl = "{{ route('files.store', [request()->route('event_slug'), request()->route('folder_slug')]) }}";
+                    const uploadUrl =
+                        "{{ route('files.store', [request()->route('event_slug'), request()->route('folder_slug')]) }}";
 
                     axios.post(uploadUrl, formData, {
                             headers: {
@@ -673,20 +671,28 @@
                         })
                         .then(function(response) {
                             allUploadsSuccessCount++;
-                            clearInterval($("#status-" + index).data("interval")); // Stop animated dots
-                            $("#progress-bar-" + index).removeClass("bg-success").addClass("bg-primary").text("Completed");
+                            clearInterval($("#status-" + index).data(
+                            "interval")); // Stop animated dots
+                            $("#progress-bar-" + index).removeClass("bg-success").addClass(
+                                "bg-primary").text("Completed");
                             $("#status-" + index).addClass('hidden-force');
                             if (allUploadsSuccessCount == filesCount) {
                                 resetForm(formId);
-                                var successMessage = `<div class="alert alert-success"> ${response.data.message} </div>`;
+                                var successMessage =
+                                `<div class="alert alert-success"> ${response.data.message} </div>`;
                                 $('#' + formId).find('.modal-body').prepend(successMessage);
+                                var submitBtn = $("#storeButton");
+                                hideButtonLoader(submitBtn);
+                                var submitBtn = $("#updateButton");
+                                hideButtonLoader(submitBtn);
                                 $('#files-datatable').DataTable().draw();
                             }
                             resolve(response);
                         })
                         .catch(function(error) {
                             clearInterval($("#status-" + index).data("interval"));
-                            $("#progress-bar-" + index).removeClass("bg-success").addClass("bg-danger").text("Failed");
+                            $("#progress-bar-" + index).removeClass("bg-success").addClass(
+                                "bg-danger").text("Failed");
                             $("#status-" + index).text("Stage2: Failed");
                             showRetryButton(index);
                             reject(error);
@@ -697,7 +703,8 @@
             function startUpload(file, index) {
                 $(`#file-container-${index} .start-btn`).remove();
                 $(`#file-container-${index} .progress`).show();
-                setTimeout(() => { $(`#file-container-${index} .progress`).css('display', 'block');
+                setTimeout(() => {
+                    $(`#file-container-${index} .progress`).css('display', 'block');
                 }, 0);
             }
 
@@ -821,7 +828,6 @@
                 var fileId = $('#updateFileId').val();
                 formData.append('file_id', fileId);
                 formData.append('file_status', $('#fileStatusInput').val());
-                var submitBtn = $("#updateButton");
                 $.ajax({
                     url: "{{ route('files.update', [request()->route('event_slug'), request()->route('folder_slug')]) }}/" +
                         fileId,
@@ -837,7 +843,6 @@
                         $('#files-datatable').DataTable().draw();
                     },
                     error: function(jqXHR, textStatus) {
-                        hideButtonLoader(submitBtn);
                         let errorMessage = (textStatus === "timeout") ?
                             "Stage2: Upload timed out" : "Stage2: Failed";
                         showUpdateRetryButton(index); // Show retry button only when failed
@@ -937,18 +942,50 @@
             } catch (error) {
                 console.error('Error loading compression ratios:', error);
                 // Fallback to default ratios
-                compressionRatios = [
-                    { minSizeMB: 10, quality: 0.7 },
-                    { minSizeMB: 9, quality: 0.75 },
-                    { minSizeMB: 8, quality: 0.8 },
-                    { minSizeMB: 7, quality: 0.85 },
-                    { minSizeMB: 6, quality: 0.9 },
-                    { minSizeMB: 5, quality: 0.91 },
-                    { minSizeMB: 4, quality: 0.92 },
-                    { minSizeMB: 3, quality: 0.93 },
-                    { minSizeMB: 2, quality: 0.94 },
-                    { minSizeMB: 1, quality: 0.95 },
-                    { minSizeMB: 0.5, quality: 0.99 }
+                compressionRatios = [{
+                        minSizeMB: 10,
+                        quality: 0.7
+                    },
+                    {
+                        minSizeMB: 9,
+                        quality: 0.75
+                    },
+                    {
+                        minSizeMB: 8,
+                        quality: 0.8
+                    },
+                    {
+                        minSizeMB: 7,
+                        quality: 0.85
+                    },
+                    {
+                        minSizeMB: 6,
+                        quality: 0.9
+                    },
+                    {
+                        minSizeMB: 5,
+                        quality: 0.91
+                    },
+                    {
+                        minSizeMB: 4,
+                        quality: 0.92
+                    },
+                    {
+                        minSizeMB: 3,
+                        quality: 0.93
+                    },
+                    {
+                        minSizeMB: 2,
+                        quality: 0.94
+                    },
+                    {
+                        minSizeMB: 1,
+                        quality: 0.95
+                    },
+                    {
+                        minSizeMB: 0.5,
+                        quality: 0.99
+                    }
                 ];
             }
 
@@ -970,7 +1007,8 @@
                 if (quality === null) {
                     dataTransfer.items.add(file); // Use original file
                     if (dataTransfer.files.length === files.length) {
-                        document.getElementById(formId).querySelector("#event-file-hidden").files = dataTransfer.files;
+                        document.getElementById(formId).querySelector("#event-file-hidden").files = dataTransfer
+                            .files;
                     }
                     return;
                 }
@@ -986,7 +1024,8 @@
                         const compressedSizeMB = compressedFile.size / (1024 * 1024);
                         dataTransfer.items.add(compressedFile);
                         if (dataTransfer.files.length === files.length) {
-                            document.getElementById(formId).querySelector("#event-file-hidden").files = dataTransfer.files;
+                            document.getElementById(formId).querySelector("#event-file-hidden").files =
+                                dataTransfer.files;
                         }
                     },
                     error(err) {
