@@ -693,6 +693,7 @@ progress {
 }
 
 .img-thumbnail {
+    object-fit: contain;
     padding: 0;
     background-color: rgba(0,0,0,0);
     border: 0 solid var(--bs-border-color);

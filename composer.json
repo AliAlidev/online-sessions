@@ -10,6 +10,7 @@
         "guzzlehttp/guzzle": "^7.2",
         "james-heinrich/getid3": "^1.9",
         "laravel/framework": "^10.10",
+        "laravel/passport": "^11.8",
         "laravel/tinker": "^2.8",
         "laravel/ui": "^4.6",
         "simplesoftwareio/simple-qrcode": "^4.2",
