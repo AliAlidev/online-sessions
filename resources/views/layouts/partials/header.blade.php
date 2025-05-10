@@ -11,6 +11,7 @@
             <li class="nav-item navbar-dropdown dropdown-user dropdown">
                 <a class="nav-link dropdown-toggle hide-arrow p-0" href="javascript:void(0);" data-bs-toggle="dropdown">
                     <div class="avatar avatar-online">
+                    <span class="app-brand-text demo menu-text fw-bold ms-1">{{ strtoupper(Auth::user()->name) }}</span>
                         <img src="{{ asset('assets/img/avatars/user5.webp') }}" alt
                             class="w-px-40 h-auto rounded-circle" />
                     </div>

@@ -141,6 +141,7 @@ h1.event-title{
 .top-bar-iamge{
     width: 130px;
     height: 130px;
+    object-fit: cover;
     clip-path: circle(50% at 50% 50%);
 }
 .folder-thumbnail {

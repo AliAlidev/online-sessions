@@ -701,7 +701,9 @@ progress {
     max-width: 100%;
     height: auto
 }
-
+.mt-2.preview-container img {
+    object-fit: contain;
+}
 .figure {
     display: inline-block
 }
@@ -27855,14 +27857,20 @@ body:not(.modal-open) .layout-content-navbar .layout-navbar {
 }
 
 .avatar {
+    cursor: pointer;
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    align-items: center;
+    /*
     --bs-avatar-size: 2.375rem;
     --bs-avatar-group-border: var(--bs-paper-bg);
     --bs-avatar-initial-inline: 3px;
     --bs-avatar-initial-bg: #eeedf0;
     position: relative;
     block-size: var(--bs-avatar-size);
-    cursor: pointer;
     inline-size: var(--bs-avatar-size)
+    */
 }
 
 .avatar .avatar-initial {

@@ -163,7 +163,9 @@
                             stroke-linejoin="round" />
                     </svg>
                 </button>
+                
             </div><!-- End Scroll Container -->
+            
         </div><!-- End Main Header -->
 
         <div id="loader-div" hidden>
