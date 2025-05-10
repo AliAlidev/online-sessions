@@ -64,7 +64,7 @@
                         @can('create_folder')
                             <button class="btn btn-sm btn-primary" data-bs-target="#CreateFolderModal" data-bs-toggle="modal"
                                 type="button"><span><span class="d-flex align-items-center gap-2">
-                                        <span class="d-none d-sm-inline-block">Add</span>
+                                        <span class="d-none d-sm-inline-block">Add New Folder</span>
                                         <i class="icon-base bx bx-plus icon-sm"></i>
                                     </span>
                                 </span>
@@ -221,7 +221,7 @@
                                     data-compressed-file-id="update-image-compressed"
                                     accept="image/jpeg,png,jpg,gif,svg,webp">
                                 <div class="mt-2 preview-container-update">
-                                    <img width="125px" height="125px">
+                                    <img width="125px" height="125px" style="object-fit:contain">
                                 </div>
                                 <small class="text-body float-start uploaded-file-name"
                                     style="color: #000; font-style: italic;"></small>
@@ -586,7 +586,7 @@
                         fileExtension;
                 }
                 fileNameDisplay.attr('hidden', false);
-                fileNameDisplay.text(`Uploaded File: ${fileName}`);
+                fileNameDisplay.text(`File: ${fileName}`);
                 if (fileInput.files[0].type.startsWith('image/')) {
                     const previewContainer = $(this).attr('id') == 'folderThumbnailInput' ? $(this).closest(
                         '.col-md-6').find('.preview-container-update') : $(this).closest('.col-md-6').find(
