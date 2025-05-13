@@ -81,9 +81,9 @@ class EventController extends Controller
                         $eventStartDate = Carbon::parse($row->start_date)->startOfDay();
                         $now = Carbon::now()->endOfDay();
                         if (Carbon::parse($row->end_date)->isPast())
-                            return '<a target="_blank" class="btn btn-label-linkedin" href="' . route('events.expired') . '"> Link </a>';
+                            return '<a target="_blank" class="btn btn-label-linkedin" href="' . route('events.expired', ['event_slug' => $row->bunny_event_name, 'year' => $row->bunny_main_folder_name]) . '"> Link </a>';
                         if ($eventStartDate->gt($now))
-                            return '<a target="_blank" class="btn btn-label-linkedin" href="' . route('events.pending') . '"> Link </a>';
+                            return '<a target="_blank" class="btn btn-label-linkedin" href="' . route('events.pending', ['event_slug' => $row->bunny_event_name, 'year' => $row->bunny_main_folder_name]) . '"> Link </a>';
                         return '<a target="_blank" class="btn btn-label-linkedin" href="' . $row->event_link . '"> Link </a>';
                     })
                     ->addColumn('actions', function ($event) {
@@ -296,13 +296,19 @@ class EventController extends Controller
         }
     }
 
-    function expired()
+    function expired(Request $request)
     {
-        return view('website.pages.event_expired');
+        $year = $request->route('year');
+        $eventSlug = $request->route('event_slug');
+        $event = Event::where('bunny_event_name', $eventSlug)->first();
+        return view('website.pages.event_expired', ['event' => $event, 'year' => $year, 'event_slug' => $eventSlug]);
     }
 
-    function pending()
+    function pending(Request $request)
     {
-        return view('website.pages.event_pending');
+        $year = $request->route('year');
+        $eventSlug = $request->route('event_slug');
+        $event = Event::where('bunny_event_name', $eventSlug)->first();
+        return view('website.pages.event_pending', ['event' => $event, 'year' => $year, 'event_slug' => $eventSlug]);
     }
 }

@@ -67,8 +67,8 @@ Route::middleware('auth')->group(function () {
         Route::middleware('permission:update_event')->post('/update/{id?}', 'update')->name('update');
         Route::middleware('permission:delete_event')->get('/delete/{id?}', 'delete')->name('delete');
         Route::middleware('permission:list_events')->get('/show/{id?}', 'show');
-        Route::get('/expired', 'expired')->name('expired');
-        Route::get('/pending', 'pending')->name('pending');
+        Route::get('expired/{year}/{event_slug}', 'expired')->name('expired');
+        Route::get('pending/{year}/{event_slug}', 'pending')->name('pending');
     });
 
     Route::controller(RoleController::class)->prefix('admin/roles')->name('roles.')->group(function () {

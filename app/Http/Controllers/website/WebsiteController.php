@@ -34,8 +34,9 @@ class WebsiteController extends Controller
         $now = Carbon::now()->endOfDay();
         if (Carbon::parse($event->end_date)->isPast())
             return view('website.pages.event_expired');
-        if ($eventStartDate->gt($now))
-            return view('website.pages.event_pending');
+        if ($eventStartDate->gt($now)) {
+            return view('website.pages.event_pending', ['event' => $event]);
+        }
         $event->start_date = Carbon::parse($event->start_date)->format('d/m/Y');
         return view('website.pages.index', ['year' => $year, 'event_slug' => $eventSlug, 'event' => $event]);
     }
@@ -99,7 +100,7 @@ class WebsiteController extends Controller
         $eventStartDate = Carbon::parse($event->start_date)->startOfDay();
         $now = Carbon::now()->endOfDay();
         if ($eventStartDate->gt($now))
-            return view('website.pages.event_pending');
+            return view('website.pages.event_pending', ['event' => $event]);
         $event->start_date = Carbon::parse($event->start_date)->format('d/m/Y');
         $foldersList = [];
         $event->folders()->orderBy('order', 'asc')->get()->each(function ($folder) use (&$foldersList, $event) {
@@ -125,7 +126,7 @@ class WebsiteController extends Controller
     {
         $folderId = $request->folder_id;
         $folder = EventFolder::find($folderId);
-        $images = $folder->files()->where('file_status', 'approved')->orderBy('created_at','desc')->get();
+        $images = $folder->files()->where('file_status', 'approved')->orderBy('created_at', 'desc')->get();
         $eventSupportDownload = $folder->event->supportImageDownload();
         return response()->json([
             'success' => true,
@@ -146,7 +147,7 @@ class WebsiteController extends Controller
         $eventStartDate = Carbon::parse($event->start_date)->startOfDay();
         $now = Carbon::now()->endOfDay();
         if ($eventStartDate->gt($now))
-            return view('website.pages.event_pending');
+            return view('website.pages.event_pending', ['event' => $event]);
         $event->start_date = Carbon::parse($event->start_date)->format('d/m/Y');
         return view('website.pages.share', ['year' => $year, 'event_slug' => $eventSlug, 'event' => $event]);
     }
