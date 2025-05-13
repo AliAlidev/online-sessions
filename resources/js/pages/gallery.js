@@ -126,6 +126,15 @@ function loadVideo(event) {
     });
 }
 
+const refreshButton = document.querySelector('.refresh-button');
+if (refreshButton) {
+    refreshButton.addEventListener('click', function (event) {
+        var element = event.target;
+        document.getElementById(element.dataset.id).click();
+        $('.refresh-button').addClass('disabled');
+    });
+}
+
 async function selectFolder(event) {
     event.preventDefault();
     var element = event.target.closest('.folder');
@@ -134,7 +143,7 @@ async function selectFolder(event) {
     var url = element.dataset.url;
     var folderLink = element.dataset.folderLink;
     var csrfToken = $('meta[name="csrf-token"]').attr('content');
-
+    $('.refresh-button').attr('data-id', 'folder-' + folderId);
     // var $folder = element.dataset.object;
     if (folderType == 'link') {
         window.open(folderLink, '_blank', 'noopener,noreferrer');
@@ -153,16 +162,8 @@ async function selectFolder(event) {
         .then(response => {
             var result = response.data;
             $('#gallery-div').html(result.html);
-            const refreshButton = document.querySelector('#gallery-div .refresh-button');
-            if (refreshButton) {
-                refreshButton.addEventListener('click', function(event) {
-                    var element = event.target;
-                    document.getElementById(element.dataset.id).click();
-                });
-            }
 
             if (folderType == 'video') {
-
                 $.getScript("//assets.mediadelivery.net/playerjs/player-0.1.0.min.js").then(() => {
                     const playerIframe = document.getElementById('videoIframe');
                     // Ensure the iframe has a valid `src` attribute
@@ -205,6 +206,7 @@ async function selectFolder(event) {
                 });
                 $('#gallery-div').show();
                 $('#loader-div').attr('hidden', true);
+                $('.refresh-button').removeClass('disabled');
             } else if (folderType == 'image') {
                 var canDownload = result.eventSupportDownload ? 'download' : '';
                 $.getScript("https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js").done(function () {
@@ -314,6 +316,7 @@ async function selectFolder(event) {
 
                     $('#gallery-div').show();
                     $('#loader-div').attr('hidden', true);
+                    $('.refresh-button').removeClass('disabled');
 
                 }).fail(error => {
                     console.log(error);

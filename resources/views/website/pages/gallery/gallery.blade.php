@@ -108,6 +108,17 @@
         .refresh-button:hover svg {
             transform: rotate(180deg);
         }
+
+        a.disabled {
+            pointer-events: none;
+            cursor: default;
+            background-color: #ccc !important;
+        }
+
+        .reload-btn-div{
+            margin: 15px 0px;
+            background-color: #4e7dcd;
+        }
     </style>
     @vite(['resources/js/app.js', 'resources/js/pages/gallery.js'])
 @endpush
@@ -136,9 +147,9 @@
                 <div class="horizontal-scroll" id="tabs">
                     @foreach ($folders as $folder)
                         @if ($folder->is_visible)
-                            <div id="folder-{{ $folder->id }}" class="folder folder-thumbnail" data-type= "{{ $folder->folder_type }}"
-                                data-folder-name="{{ $folder->folder_name }}" data-id="{{ $folder->id }}"
-                                data-folder-link="{{ $folder->folder_link }}"
+                            <div id="folder-{{ $folder->id }}" class="folder folder-thumbnail"
+                                data-type= "{{ $folder->folder_type }}" data-folder-name="{{ $folder->folder_name }}"
+                                data-id="{{ $folder->id }}" data-folder-link="{{ $folder->folder_link }}"
                                 data-url="{{ $folder->folder_type == 'image' ? route('landing.image', ['year' => $year, 'event_slug' => $event_slug]) : route('landing.video', ['year' => $year, 'event_slug' => $event_slug]) }}">
                                 <svg style="" width="100%" height="100%" viewBox="0 0 120 100" fill="none"
                                     xmlns="http://www.w3.org/2000/svg">
@@ -165,7 +176,15 @@
                 </button>
             </div><!-- End Scroll Container -->
         </div><!-- End Main Header -->
-
+        <div class="reload-btn-div">
+            <a data-id= "{{ 'folder-' . $folder->id }}" class="refresh-button">
+                <svg class="reload-icon" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M14.66 15.66A8 8 0 1 1 17 10h-2a6 6 0 1 0-1.76 4.24l1.42 1.42zM12 10h8l-4 4-4-4z"
+                        fill="currentColor" />
+                </svg>
+                Reload
+            </a>
+        </div>
         <div id="loader-div" hidden>
             <div class="loader-container">
                 <div class="loader"></div>
