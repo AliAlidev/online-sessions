@@ -115,15 +115,49 @@
             background-color: #ccc !important;
         }
 
-        .reload-btn-div{
+        .reload-btn-div {
             margin: 15px 0px;
             background-color: #4e7dcd;
         }
     </style>
+
+    <style>
+        #page-loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: white;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #ccc;
+            border-top-color: #333;
+            border-radius: 50%;
+            animation: spin 1s infinite linear;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+
     @vite(['resources/js/app.js', 'resources/js/pages/gallery.js'])
 @endpush
 
 @section('content')
+<div id="page-loader">
+    <div class="spinner"></div>
+</div>
     <div class="main-container auth-checking">
         <div class="main-header">
             <div class="top-bar">

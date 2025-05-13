@@ -522,9 +522,39 @@
             color: #000;
         }
 
-        .d-inline-block{
+        .d-inline-block {
             display: flex;
             gap: 20px;
+        }
+    </style>
+
+    <style>
+        #page-loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: white;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #ccc;
+            border-top-color: #333;
+            border-radius: 50%;
+            animation: spin 1s infinite linear;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
         }
     </style>
 
@@ -532,6 +562,9 @@
 @endpush
 
 @section('content')
+    <div id="page-loader">
+        <div class="spinner"></div>
+    </div>
     <div class="main-container auth-checking">
         <input type="hidden" id="compression-ratios-file-path" value="{{ asset('/compression-ratios.json') }}">
         <div class="main-header">

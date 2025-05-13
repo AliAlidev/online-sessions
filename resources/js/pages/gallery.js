@@ -18,7 +18,8 @@ async function checkEventIfHavePassword() {
                     if (response.data.success) {
                         setTimeout(() => {
                             document.querySelector('.main-container').classList.remove('auth-checking');
-                        }, 10);
+                            removeGalleryMainLoader();
+                        }, 5);
                     } else {
                         gotoPasswordVerification();
                     }
@@ -31,7 +32,15 @@ async function checkEventIfHavePassword() {
     } else {
         setTimeout(() => {
             document.querySelector('.main-container').classList.remove('auth-checking');
-        }, 10);
+            removeGalleryMainLoader();
+        }, 5);
+    }
+}
+
+function removeGalleryMainLoader() {
+    const loader = document.getElementById('page-loader');
+    if (loader) {
+        loader.style.display = 'none';
     }
 }
 
@@ -322,7 +331,9 @@ async function selectFolder(event) {
                     console.log(error);
                 });
                 document.getElementById("tabs").addEventListener("scroll", checkScroll);
+                window.removeEventListener("load", checkScroll);
                 window.addEventListener("load", checkScroll);
+
             }
         })
         .catch(error => {
