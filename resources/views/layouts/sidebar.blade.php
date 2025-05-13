@@ -2,9 +2,9 @@
     <div class="app-brand demo">
         <a href="{{ route('clients.index') }}" class="app-brand-link">
             <span class="app-brand-logo demo">
-                <img src="{{ asset('assets/img/icons/logo.png') }}" width="45px" height="45px" alt="">
+                <img src="{{ asset('assets/img/icons/logo-black.svg') }}" width="190px" alt="">
             </span>
-            <span class="app-brand-text demo menu-text fw-bold ms-1">{{ strtoupper(Auth::user()->name) }}</span>
+
         </a>
         <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto d-block">
             <i class="bx bx-chevron-left bx-sm d-flex align-items-center justify-content-center"></i>
@@ -18,7 +18,7 @@
         @can(['insights'])
             <li class="menu-item class='menu-item' {{ Route::is('insights.*') ? 'active' : '' }}">
                 <a href="{{ route('insights.index') }}" class="menu-link">
-                    <i class="menu-icon tf-icons bx bx-home-smile"></i>
+                    <i class="menu-icon tf-icons bx bxs-home-smile" style="font-size: 22px;"></i>
                     <div class="text-truncate" data-i18n="Dashboards">Insights</div>
                 </a>
             </li>
@@ -26,7 +26,7 @@
         @if (Auth::user()->hasRole('super-admin'))
             <li class="menu-item {{ Route::is('users.*') || Route::is('users.*') ? 'active' : '' }}">
                 <a href="{{ route('users.index') }}" class="menu-link">
-                    <i class="fa-solid fa-users" style="font-size: 20px; margin: 0 10px 0 0"></i>
+                    <i class="bx bxs-user-pin" style="font-size: 20px; margin: 0 10px 0 0"></i>
                     <div class="text-truncate" data-i18n="Dashboards">Users</div>
                 </a>
             </li>
@@ -34,7 +34,7 @@
         @canany(['create_client', 'update_client', 'delete_client','list_clients'])
             <li class="menu-item">
                 <a href="{{ route('clients.index') }}" class="menu-link">
-                    <i class="fa-solid fa-users" style="font-size: 20px; margin: 0 10px 0 0"></i>
+                    <i class="bx bxs-user-account" style="font-size: 22px; margin: 0 10px 0 0"></i>
                     <div class="text-truncate" data-i18n="Dashboards">Clients</div>
                 </a>
             </li>
@@ -51,7 +51,7 @@
             <li
                 class="menu-item {{ Route::is('events.*') || Route::is('folders.*') || Route::is('files.*') ? 'active open' : '' }}">
                 <a href="javascript:void(0);" class="menu-link menu-toggle">
-                    <i class="fa-solid fa-business-time" style="font-size: 20px; margin: 0 10px 0 0"></i>
+                    <i class="bx bxs-calendar-event" style="font-size: 22px; margin: 0 10px 0 0"></i>
                     <div class="text-truncate" data-i18n="Dashboards">Events</div>
                 </a>
                 <ul class="menu-sub">
@@ -75,7 +75,7 @@
         @if (Auth::user()->hasRole('super-admin'))
             <li class="menu-item {{ Route::is('settings.*') ? 'active open' : '' }}">
                 <a href="javascript:void(0);" class="menu-link menu-toggle">
-                    <i class="fa-solid fa-gear" style="font-size: 20px; margin: 0 10px 0 0"></i>
+                    <i class="bx bxs-cog" style="font-size: 20px; margin: 0 10px 0 0"></i>
                     <div class="text-truncate" data-i18n="Dashboards">Setting</div>
                 </a>
                 <ul class="menu-sub">

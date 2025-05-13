@@ -98,7 +98,7 @@ body {
   position: relative;
 }
 .main-body.gallery-section{
-  margin-top: 20px;
+  margin-top: 30px;
     padding: 0 15px; /* Add some padding */
     position: relative;
 }
@@ -141,6 +141,7 @@ h1.event-title{
 .top-bar-iamge{
     width: 130px;
     height: 130px;
+    object-fit: cover;
     clip-path: circle(50% at 50% 50%);
 }
 .folder-thumbnail {

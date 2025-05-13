@@ -33,10 +33,10 @@ class FolderController extends Controller
                 $folders = Event::where('bunny_event_name', $eventSlug)->first()->folders()->orderBy('order', 'asc')->get();
                 return DataTables::of($folders)
                     ->addColumn('actions', function ($folder) use ($eventSlug) {
-                        $actions = '<div style="display:flex; gap:10px">';
+                        $actions = '<div style="display:flex; gap:6px">';
                         Auth::user()->hasPermissionTo('update_folder') ? $actions .= '<a data-id="' . $folder->id . '" href="' . route('folders.update', [$eventSlug, $folder->id]) . '" class="update-folder btn btn-icon btn-outline-primary m-1" title="Edit folder"><i class="bx bx-edit-alt" style="color:#696cff"></i></a>' : '';
                         Auth::user()->hasPermissionTo('delete_folder') ? $actions .= '<a href="#" data-url="' . route('folders.delete', [$eventSlug, $folder->id]) . '" class="delete-folder btn btn-icon btn-outline-primary m-1"><i class="bx bx-trash" style="color:red" title="Delete folder"></i></a>' : '';
-                        ($folder->folder_type == "image" && Auth::user()->hasAnyPermission(['upload_image', 'approve_decline_image'])) || ($folder->folder_type == "video" && Auth::user()->hasAnyPermission(['upload_video', 'approve_decline_video'])) ? $actions .= '<a title="Files" href="' . route('files.index', [$eventSlug, $folder->bunny_folder_name]) . '" class="btn rounded-pill btn-icon btn-primary mt-1" style="margin-left:3px"><i class="bx bx-file" style="color:white"></i> </a>' : '';
+                        ($folder->folder_type == "image" && Auth::user()->hasAnyPermission(['upload_image', 'approve_decline_image'])) || ($folder->folder_type == "video" && Auth::user()->hasAnyPermission(['upload_video', 'approve_decline_video'])) ? $actions .= '<a title="Files" href="' . route('files.index', [$eventSlug, $folder->bunny_folder_name]) . '" class="btn btn-icon btn-primary mt-1" style="margin-left:3px"><i class="bx bx-file" style="color:white"></i> </a>' : '';
                         $actions .= '<div class="form-check form-switch mt-3">
                                 <input class="form-check-input folder_visibility" type="checkbox" title="Toggle folder visibility" name="folder_visibility" data-url="' . route('folders.toggle.visibility', [$eventSlug, $folder->id]). '"'. ($folder->is_visible ? 'checked':'')  . '>
                             </div></div>';
