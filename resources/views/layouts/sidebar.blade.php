@@ -32,7 +32,7 @@
             </li>
         @endif
         @canany(['create_client', 'update_client', 'delete_client','list_clients'])
-            <li class="menu-item">
+            <li class="menu-item {{ Route::is('clients.*') || Route::is('clients.*') ? 'active' : '' }}">
                 <a href="{{ route('clients.index') }}" class="menu-link">
                     <i class="bx bxs-user-account" style="font-size: 22px; margin: 0 10px 0 0"></i>
                     <div class="text-truncate" data-i18n="Dashboards">Clients</div>
@@ -40,7 +40,7 @@
             </li>
         @endcanany
         @canany(['create_vendor', 'update_vendor', 'delete_vendor','list_vendors'])
-            <li class="menu-item">
+            <li class="menu-item {{ Route::is('vendors.*') || Route::is('vendors.*') ? 'active' : '' }}">
                 <a href="{{ route('vendors.index') }}" class="menu-link">
                     <i class="fa-solid fa-users" style="font-size: 20px; margin: 0 10px 0 0"></i>
                     <div class="text-truncate" data-i18n="Dashboards">Vendors</div>
