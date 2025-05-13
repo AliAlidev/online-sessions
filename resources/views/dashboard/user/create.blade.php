@@ -135,31 +135,6 @@
                                     </div>
                                 </div>
                                 <div class="col-md-3">
-                                    <h5>Roles Permissions</h5>
-                                    <div class="row mb-6" style="margin: 3px">
-                                        <div class="form-check form-switch mb-2">
-                                            <input class="form-check-input" type="checkbox"
-                                                id="create_role" name="permissions[]" value="create_role">
-                                            <label class="form-check-label" for="create_role">Create</label>
-                                        </div>
-                                        <div class="form-check form-switch mb-2">
-                                            <input class="form-check-input" type="checkbox"
-                                                id="update_role" name="permissions[]" value="update_role">
-                                            <label class="form-check-label" for="update_role">Update</label>
-                                        </div>
-                                        <div class="form-check form-switch mb-2">
-                                            <input class="form-check-input" type="checkbox"
-                                                id="delete_role" name="permissions[]" value="delete_role">
-                                            <label class="form-check-label" for="delete_role">Delete</label>
-                                        </div>
-                                        <div class="form-check form-switch mb-2">
-                                            <input class="form-check-input" type="checkbox"
-                                                id="list_roles" name="permissions[]" value="list_roles">
-                                            <label class="form-check-label" for="list_roles">List</label>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
                                     <h5>Client Permissions</h5>
                                     <div class="row mb-6" style="margin: 3px">
                                         <div class="form-check form-switch mb-2">
@@ -181,6 +156,31 @@
                                             <input class="form-check-input" type="checkbox"
                                                 id="list_clients" name="permissions[]" value="list_clients">
                                             <label class="form-check-label" for="list_clients">List</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <h5>Vendor Permissions</h5>
+                                    <div class="row mb-6" style="margin: 3px">
+                                        <div class="form-check form-switch mb-2">
+                                            <input class="form-check-input" type="checkbox"
+                                                id="create_vendor" name="permissions[]" value="create_vendor">
+                                            <label class="form-check-label" for="create_vendor">Create</label>
+                                        </div>
+                                        <div class="form-check form-switch mb-2">
+                                            <input class="form-check-input" type="checkbox"
+                                                id="update_vendor" name="permissions[]" value="update_vendor">
+                                            <label class="form-check-label" for="update_vendor">Update</label>
+                                        </div>
+                                        <div class="form-check form-switch mb-2">
+                                            <input class="form-check-input" type="checkbox"
+                                                id="delete_vendor" name="permissions[]" value="delete_vendor">
+                                            <label class="form-check-label" for="delete_vendor">Delete</label>
+                                        </div>
+                                        <div class="form-check form-switch mb-2">
+                                            <input class="form-check-input" type="checkbox"
+                                                id="list_vendors" name="permissions[]" value="list_vendors">
+                                            <label class="form-check-label" for="list_vendors">List</label>
                                         </div>
                                     </div>
                                 </div>
@@ -209,8 +209,6 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="row">
                                 <div class="col-md-3">
                                     <h5>Event Types Permissions</h5>
                                     <div class="row mb-6" style="margin: 3px">
