@@ -38,7 +38,7 @@
                         <div class="card-body">
                             <div class="row mb-6">
                                 <div class="col-md-6">
-                                    <label for="planner-name" class="form-label">Planner Name</label>
+                                    <label for="planner-name" class="form-label">Client Name</label>
                                     <input type="text" id="planner-name" class="form-control" name="planner_name"
                                         value="{{ $client->planner_name }}" placeholder="Enter Planner Name">
                                     <small class="text-body float-start error-message-div planner_name-error"
@@ -62,7 +62,7 @@
                             </div>
                             <div class="row mb-6">
                                 <div class="col-md-6">
-                                    <label for="planner-business-name" class="form-label">Planner Business Name</label>
+                                    <label for="planner-business-name" class="form-label">Client Business Name</label>
                                     <input type="text" id="planner-business-name" class="form-control"
                                         value="{{ $client->planner_business_name }}" name="planner_business_name"
                                         placeholder="Enter Planner Business Name">
@@ -70,35 +70,10 @@
                                         style="color: #ff0000 !important" hidden></small>
                                 </div>
                                 <div class="col-md-6">
-                                    <label for="profile-picture" class="form-label">Profile Picture</label>
-                                    <input type="file" id="profile-picture" class="form-control" name="profile_picture"
-                                        accept="image/jpeg,png,jpg,gif,svg,webp">
-                                    <div class="mt-2 preview-container">
-                                        @if (isset($client->profile_picture))
-                                            <img width="125px" height="125px"
-                                                src="{{ $client->profile_picture ? asset($client->profile_picture) : '' }}">
-                                        @endif
-                                    </div>
-                                    <small class="text-body float-start uploaded-file-name"
-                                        style="color: #000; font-style: italic;"></small>
-                                    <small class="text-body float-start error-message-div profile_picture-error"
-                                        style="color: #ff0000 !important" hidden></small>
-                                </div>
-                            </div>
-                            <div class="row mb-6">
-                                <div class="col-md-6">
                                     <label for="phone-number" class="form-label">Phone Number</label>
                                     <input type="tel" id="phone-number" class="form-control" name="phone_number"
                                         placeholder="Enter Phone Number" value="{{ $client->phone_number }}">
                                     <small class="text-body float-start error-message-div phone_number-error"
-                                        style="color: #ff0000 !important" hidden></small>
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="contact-button-text" class="form-label">Contact Button Text</label>
-                                    <input type="text" id="contact-button-text" class="form-control"
-                                        value="{{ $client->contact_button_text }}" name="contact_button_text"
-                                        placeholder="Enter Contact Button Text">
-                                    <small class="text-body float-start error-message-div contact_button_text-error"
                                         style="color: #ff0000 !important" hidden></small>
                                 </div>
                             </div>
@@ -111,32 +86,10 @@
                                         style="color: #ff0000 !important" hidden></small>
                                 </div>
                                 <div class="col-md-6">
-                                    <label for="contact-link" class="form-label">Contact Button Link</label>
-                                    <input type="url" id="contact-link" class="form-control"
-                                        name="contact_button_link" placeholder="Enter Contact Link"
-                                        value="{{ $client->contact_button_link }}">
-                                    <small class="text-body float-start error-message-div contact_button_link-error"
-                                        style="color: #ff0000 !important" hidden></small>
-                                </div>
-                            </div>
-                            <div class="row mb-6">
-                                <div class="col-md-6">
-                                    <label for="exampleFormControlSelect1" class="form-label">Role</label>
-                                    <select class="form-select" id="exampleFormControlSelect1" name="client_role"
-                                        aria-label="Default select example">
-                                        <option selected disabled>Select Type</option>
-                                        @foreach ($roles as $key => $role)
-                                            <option {{ $client->client_role == $key ? 'selected' : '' }}
-                                                value="{{ $key }}"> {{ $role }} </option>
-                                        @endforeach
-                                    </select>
+                                    <label for="client_role" class="form-label">Role</label>
+                                    <input type="text" id="client_role" class="form-control" name="client_role"
+                                        value="{{ $client->client_role }}" placeholder="Enter Client role">
                                     <small class="text-body float-start error-message-div client_role-error"
-                                        style="color: #ff0000 !important" hidden></small>
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="description" class="form-label">Description</label>
-                                    <textarea id="description" class="form-control" name="description" rows="4" placeholder="Enter Description">{{ $client->description }}</textarea>
-                                    <small class="text-body float-start error-message-div description-error"
                                         style="color: #ff0000 !important" hidden></small>
                                 </div>
                             </div>

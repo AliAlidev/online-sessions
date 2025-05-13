@@ -44,16 +44,12 @@
                         <thead>
                             <tr>
                                 <th class="control dt-orderable-none">ID</th>
-                                <th class="control dt-orderable-none">Planner Name</th>
-                                <th class="control dt-orderable-none">Planner Business Name</th>
+                                <th class="control dt-orderable-none">Client Name</th>
+                                <th class="control dt-orderable-none">Client Business Name</th>
                                 <th class="control dt-orderable-none">Phone Number</th>
                                 <th class="control dt-orderable-none">Email</th>
                                 <th class="control dt-orderable-none">Role</th>
-                                <th class="control dt-orderable-none">Contact Button Text</th>
-                                <th class="control dt-orderable-none">Contact Button Link</th>
                                 <th class="control dt-orderable-none">Logo</th>
-                                <th class="control dt-orderable-none">Profile Picture</th>
-                                <th class="control dt-orderable-none">Description</th>
                                 <th class="control dt-orderable-none">Actions</th>
                             </tr>
                         </thead>
@@ -108,27 +104,8 @@
                         name: 'client_role'
                     },
                     {
-                        data: 'contact_button_text',
-                        name: 'contact_button_text'
-                    },
-                    {
-                        data: 'contact_button_link',
-                        name: 'contact_button_link',
-                        visible: false
-                    },
-                    {
                         data: 'logo',
                         name: 'logo',
-                        visible: false
-                    },
-                    {
-                        data: 'profile_picture',
-                        name: 'profile_picture',
-                        visible: false
-                    },
-                    {
-                        data: 'description',
-                        name: 'description',
                         visible: false
                     },
                     {
@@ -144,20 +121,7 @@
                     extend: 'colvis', // Column visibility button
                     text: 'Columns', // Customize the button text
                     className: 'btn btn-primary' // Add a class for styling
-                }],
-                columnDefs: [{
-                        targets: 8,
-                        visible: false
-                    },
-                    {
-                        targets: 9,
-                        visible: false
-                    },
-                    {
-                        targets: 10,
-                        visible: false
-                    }
-                ]
+                }]
             });
 
             $(document).on('click', '.delete-client', function(e) {

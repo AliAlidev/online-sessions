@@ -37,7 +37,7 @@
                         <div class="card-body">
                             <div class="row mb-6">
                                 <div class="col-md-6">
-                                    <label for="planner-name" class="form-label">Planner Name</label>
+                                    <label for="planner-name" class="form-label">Client Name</label>
                                     <input type="text" id="planner-name" class="form-control" name="planner_name"
                                         placeholder="Enter Planner Name">
                                     <small class="text-body float-start error-message-div planner_name-error"
@@ -57,37 +57,17 @@
                             </div>
                             <div class="row mb-6">
                                 <div class="col-md-6">
-                                    <label for="planner-business-name" class="form-label">Planner Business Name</label>
+                                    <label for="planner-business-name" class="form-label">Client Business Name</label>
                                     <input type="text" id="planner-business-name" class="form-control"
                                         name="planner_business_name" placeholder="Enter Planner Business Name">
                                     <small class="text-body float-start error-message-div planner_business_name-error"
                                         style="color: #ff0000 !important" hidden></small>
                                 </div>
                                 <div class="col-md-6">
-                                    <label for="profile-picture" class="form-label">Profile Picture</label>
-                                    <input type="file" id="profile-picture" class="form-control" name="profile_picture"
-                                        accept="image/jpeg,png,jpg,gif,svg,webp">
-                                    <div class="mt-2 preview-container">
-                                    </div>
-                                    <small class="text-body float-start uploaded-file-name"
-                                        style="color: #000; font-style: italic;"></small>
-                                    <small class="text-body float-start error-message-div profile_picture-error"
-                                        style="color: #ff0000 !important" hidden></small>
-                                </div>
-                            </div>
-                            <div class="row mb-6">
-                                <div class="col-md-6">
                                     <label for="phone-number" class="form-label">Phone Number</label>
                                     <input type="tel" id="phone-number" class="form-control" name="phone_number"
                                         placeholder="Enter Phone Number" value="">
                                     <small class="text-body float-start error-message-div phone_number-error"
-                                        style="color: #ff0000 !important" hidden></small>
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="contact-button-text" class="form-label">Contact Button Text</label>
-                                    <input type="text" id="contact-button-text" class="form-control"
-                                        name="contact_button_text" placeholder="Enter Contact Button Text">
-                                    <small class="text-body float-start error-message-div contact_button_text-error"
                                         style="color: #ff0000 !important" hidden></small>
                                 </div>
                             </div>
@@ -100,30 +80,10 @@
                                         style="color: #ff0000 !important" hidden></small>
                                 </div>
                                 <div class="col-md-6">
-                                    <label for="contact-link" class="form-label">Contact Button Link</label>
-                                    <input type="url" id="contact-link" class="form-control" name="contact_button_link"
-                                        placeholder="Enter Contact Link" value="">
-                                    <small class="text-body float-start error-message-div contact_button_link-error"
-                                        style="color: #ff0000 !important" hidden></small>
-                                </div>
-                            </div>
-                            <div class="row mb-6">
-                                <div class="col-md-6">
-                                    <label for="exampleFormControlSelect1" class="form-label">Role</label>
-                                    <select class="form-select" id="exampleFormControlSelect1" name="client_role"
-                                        aria-label="Default select example">
-                                        <option selected disabled>Select Type</option>
-                                        @foreach ($roles as $key => $role)
-                                            <option value="{{ $key }}"> {{ $role }} </option>
-                                        @endforeach
-                                    </select>
+                                    <label for="client_role" class="form-label">Role</label>
+                                    <input type="text" id="client_role" class="form-control" name="client_role"
+                                        placeholder="Enter Client Role">
                                     <small class="text-body float-start error-message-div client_role-error"
-                                        style="color: #ff0000 !important" hidden></small>
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="description" class="form-label">Description</label>
-                                    <textarea id="description" class="form-control" name="description" rows="4" placeholder="Enter Description"></textarea>
-                                    <small class="text-body float-start error-message-div description-error"
                                         style="color: #ff0000 !important" hidden></small>
                                 </div>
                             </div>
