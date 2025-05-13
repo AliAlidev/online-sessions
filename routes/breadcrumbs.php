@@ -6,6 +6,7 @@ use App\Models\Client;
 use App\Models\Event;
 use App\Models\EventFolder;
 use App\Models\User;
+use App\Models\Vendor;
 use Diglactic\Breadcrumbs\Breadcrumbs;
 
 // Breadcrumbs::for('insights', function ($trail) {
@@ -59,6 +60,21 @@ Breadcrumbs::for('update-client', function ($trail, $clientId) {
     $trail->parent('clients');
     $clientName = Client::find($clientId)->planner_name;
     $trail->push('Update Client - ' . $clientName, '');
+});
+
+Breadcrumbs::for('vendors', function ($trail) {
+    $trail->push('Vendors List', route('vendors.index'));
+});
+
+Breadcrumbs::for('create-vendor', function ($trail) {
+    $trail->parent('vendors');
+    $trail->push('Create Vendor', '');
+});
+
+Breadcrumbs::for('update-vendor', function ($trail, $clientId) {
+    $trail->parent('vendors');
+    $clientName = Vendor::find($clientId)->planner_name;
+    $trail->push('Update Vendor - ' . $clientName, '');
 });
 
 Breadcrumbs::for('event-types', function ($trail) {

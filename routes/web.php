@@ -9,6 +9,7 @@ use App\Http\Controllers\dashboard\RoleController;
 use App\Http\Controllers\dashboard\SettingController;
 use App\Http\Controllers\dashboard\InsightController;
 use App\Http\Controllers\dashboard\UserController;
+use App\Http\Controllers\dashboard\VendorController;
 use App\Http\Controllers\website\WebsiteController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -88,6 +89,15 @@ Route::middleware('auth')->group(function () {
         Route::middleware('permission:update_client')->get('/edit/{id}', 'edit')->name('edit');
         Route::middleware('permission:update_client')->post('/update/{id}', 'update')->name('update');
         Route::middleware('permission:delete_client')->get('/delete/{id}', 'delete')->name('delete');
+    });
+
+    Route::controller(VendorController::class)->prefix('admin/vendors')->name('vendors.')->group(function () {
+        Route::middleware('permission:list_vendors')->get('/index', 'index')->name('index');
+        Route::middleware('permission:create_vendor')->get('/create', 'create')->name('create');
+        Route::middleware('permission:create_vendor')->post('/store', 'store')->name('store');
+        Route::middleware('permission:update_vendor')->get('/edit/{id}', 'edit')->name('edit');
+        Route::middleware('permission:update_vendor')->post('/update/{id}', 'update')->name('update');
+        Route::middleware('permission:delete_vendor')->get('/delete/{id}', 'delete')->name('delete');
     });
 
     Route::controller(UserController::class)->prefix('admin/users')->name('users.')->group(function () {
