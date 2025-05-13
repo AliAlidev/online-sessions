@@ -40,13 +40,14 @@
             }
         }
 
-        .gallery-button, .share-button {
+        .gallery-button,
+        .share-button {
             position: relative;
         }
 
         .loader {
             width: 40px;
-            height:40px;
+            height: 40px;
             border: 3px solid var(--primary-03);
             border-top: 3px solid transparent;
             border-radius: 50%;
@@ -68,6 +69,21 @@
         }
     </style>
 
+    <style>
+        #page-loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: white;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+
     @vite(['resources/js/pages/index.js'])
 @endpush
 
@@ -84,6 +100,9 @@
 @section('content')
     @include('website.layout.menu')
     <div class="container">
+        <div id="page-loader">
+            <img src="{{ asset('assets/img/loader/loader.gif') }}" alt="">
+        </div>
         <!-- Left Section -->
         <div class="event-hero-section">
             <!-- Event Details Mobile -->
@@ -126,8 +145,8 @@
                         style="cursor: {{ $event->supportImageUpload() ? 'pointer' : 'not-allowed' }}; {{ !$event->supportImageUpload() ? 'background-color:#ccc' : '' }}"
                         data-url="{{ $event->supportImageUpload() ? route('landing.share_redirect_url', ['year' => $year, 'event_slug' => $event_slug]) : '' }}"
                         data-support-image-upload="{{ $event->supportImageUpload() }}" class="share-button">
-                        <svg style="display: block" class="button-image" width="45" height="38" viewBox="0 0 45 38" fill="none"
-                            xmlns="http://www.w3.org/2000/svg">
+                        <svg style="display: block" class="button-image" width="45" height="38" viewBox="0 0 45 38"
+                            fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path
                                 d="M43.125 24.75V32.4167C43.125 33.4333 42.6421 34.4084 41.7826 35.1272C40.923 35.8461 39.7572 36.25 38.5417 36.25H6.45833C5.24276 36.25 4.07697 35.8461 3.21743 35.1272C2.35789 34.4084 1.875 33.4333 1.875 32.4167V24.75M33.9583 11.3333L22.5 1.75M22.5 1.75L11.0417 11.3333M22.5 1.75V24.75"
                                 stroke="#fff" stroke-width="3.1" stroke-linecap="round" stroke-linejoin="round" />

@@ -31,6 +31,13 @@ async function goToGallery(event) {
     }
 }
 
+function removeGalleryMainLoader() {
+    const loader = document.getElementById('page-loader');
+    if (loader) {
+        loader.style.display = 'none';
+    }
+}
+
 function showButtonLoader(button, type = 'gallery') {
     button.querySelector('svg').style.display = 'none';
     button.querySelector('.' + type).style.display = 'none';
@@ -84,3 +91,5 @@ async function goToShare(event) {
 }
 
 document.querySelector('.share-button').addEventListener('click', goToShare);
+window.addEventListener('load', removeGalleryMainLoader);
+

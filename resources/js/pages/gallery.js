@@ -37,6 +37,7 @@ async function checkEventIfHavePassword() {
     }
 }
 
+
 function removeGalleryMainLoader() {
     const loader = document.getElementById('page-loader');
     if (loader) {

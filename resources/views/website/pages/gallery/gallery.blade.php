@@ -134,30 +134,15 @@
             align-items: center;
             justify-content: center;
         }
-
-        .spinner {
-            width: 50px;
-            height: 50px;
-            border: 5px solid #ccc;
-            border-top-color: #333;
-            border-radius: 50%;
-            animation: spin 1s infinite linear;
-        }
-
-        @keyframes spin {
-            to {
-                transform: rotate(360deg);
-            }
-        }
     </style>
 
     @vite(['resources/js/app.js', 'resources/js/pages/gallery.js'])
 @endpush
 
 @section('content')
-<div id="page-loader">
-    <div class="spinner"></div>
-</div>
+    <div id="page-loader">
+        <img src="{{ asset('assets/img/loader/loader.gif') }}" alt="">
+    </div>
     <div class="main-container auth-checking">
         <div class="main-header">
             <div class="top-bar">
@@ -170,7 +155,7 @@
                 </div>
             </div>
             <!-- Horizontal Scroll -->
-            <div class="scroll-container"> 
+            <div class="scroll-container">
                 <div class="horizontal-scroll" id="tabs">
                     @foreach ($folders as $folder)
                         @if ($folder->is_visible)
@@ -207,7 +192,7 @@
                         <path d="M9 18L15 12L9 6" stroke="var(--accent-01)" stroke-width="2" stroke-linecap="round"
                             stroke-linejoin="round" />
                     </svg>
-                </button>               
+                </button>
             </div><!-- End Scroll Container -->
         </div><!-- End Main Header -->
         <div class="reload-btn-div">

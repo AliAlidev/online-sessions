@@ -541,21 +541,6 @@
             align-items: center;
             justify-content: center;
         }
-
-        .spinner {
-            width: 50px;
-            height: 50px;
-            border: 5px solid #ccc;
-            border-top-color: #333;
-            border-radius: 50%;
-            animation: spin 1s infinite linear;
-        }
-
-        @keyframes spin {
-            to {
-                transform: rotate(360deg);
-            }
-        }
     </style>
 
     @vite(['resources/js/app.js', 'resources/js/pages/share.js'])
@@ -563,7 +548,7 @@
 
 @section('content')
     <div id="page-loader">
-        <div class="spinner"></div>
+        <img src="{{ asset('assets/img/loader/loader.gif') }}" alt="">
     </div>
     <div class="main-container auth-checking">
         <input type="hidden" id="compression-ratios-file-path" value="{{ asset('/compression-ratios.json') }}">
