@@ -10,6 +10,7 @@ use App\Models\Client;
 use App\Models\ClientRole;
 use App\Models\Event;
 use App\Models\EventType;
+use App\Models\Vendor;
 use App\Services\BunnyImageService;
 use App\Services\BunnyVideoService;
 use Carbon\Carbon;
@@ -119,9 +120,9 @@ class EventController extends Controller
     {
         try {
             $types = EventType::pluck('name', 'id');
-            $roles = ClientRole::whereNotIn('name', ['super-admin'])->pluck('name', 'id');
+            $vendors = Vendor::pluck('vendor_name', 'id');
             $clients = Client::pluck('planner_name', 'id');
-            return view('dashboard.event.create', ['types' => $types, 'roles' => $roles, 'clients' => $clients]);
+            return view('dashboard.event.create', ['types' => $types, 'vendors' => $vendors, 'clients' => $clients]);
         } catch (Exception $th) {
             createServerError($th, "createEvent", "events");
             return false;
@@ -186,7 +187,8 @@ class EventController extends Controller
             $types = EventType::pluck('name', 'id');
             $roles = ClientRole::whereNotIn('name', ['super-admin'])->pluck('name', 'id');
             $clients = Client::pluck('planner_name', 'id');
-            return view('dashboard.event.update', ['event' => $event, 'types' => $types, 'roles' => $roles, 'clients' => $clients]);
+            $vendors = Vendor::pluck('vendor_name', 'id');
+            return view('dashboard.event.update', ['event' => $event, 'types' => $types, 'roles' => $roles, 'clients' => $clients, 'vendors' => $vendors]);
         } catch (Exception $th) {
             createServerError($th, "editEvent", "events");
             return false;
@@ -282,8 +284,8 @@ class EventController extends Controller
             deleteFile($profilePicture);
             $qrCode = str_replace("storage/", "", $event->qr_code);
             deleteFile($qrCode);
-            $event->folders->map(function ($folder) {
-                app(FolderController::class)->delete($folder->id);
+            $event->folders->map(function ($folder) use ($event) {
+                app(FolderController::class)->delete($event->bunny_event_name, $folder->id);
             });
             $this->bunnyImageService->deleteFolderItSelf($event->bunny_main_folder_name . '/' . $event->bunny_event_name . '/');
             $event->delete();
@@ -291,6 +293,7 @@ class EventController extends Controller
             $this->bunnyVideoService->deleteCollection($event->video_collection_id);
             return response()->json(['success' => true, 'count' => $count]);
         } catch (Exception $th) {
+            dd($th->getMessage());
             createServerError($th, "deleteEvent", "events");
             return false;
         }

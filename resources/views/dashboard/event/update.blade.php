@@ -318,22 +318,16 @@
                                             <div class="col-md-4">
                                                 <select class="form-select organizers-organizer_id">
                                                     <option value="" selected disabled>Select Option</option>
-                                                    @foreach ($clients as $key => $client)
+                                                    @foreach ($vendors as $key => $vendor)
                                                         <option {{ $organizer->organizer_id == $key ? 'selected' : '' }}
-                                                            value="{{ $key }}">{{ $client }}</option>
+                                                            value="{{ $key }}">{{ $vendor }}</option>
                                                     @endforeach
                                                 </select>
                                                 <small class="text-body float-start error-message-div"
                                                     style="color: #ff0000 !important" hidden></small>
                                             </div>
                                             <div class="col-md-4">
-                                                <select class="form-select organizers-role_in_event">
-                                                    <option value="" selected disabled>Role In Event</option>
-                                                    @foreach ($roles as $key => $role)
-                                                        <option {{ $organizer->role_in_event == $key ? 'selected' : '' }}
-                                                            value="{{ $key }}">{{ $role }}</option>
-                                                    @endforeach
-                                                </select>
+                                                <input type="text" class="form-control organizers-role_in_event" value="{{ $organizer->role_in_event }}" placeholder="Role In Event" name="role_in_event" >
                                                 <small class="text-body float-start error-message-div"
                                                     style="color: #ff0000 !important" hidden></small>
                                             </div>
@@ -359,12 +353,7 @@
                                                 style="color: #ff0000 !important" hidden></small>
                                         </div>
                                         <div class="col-md-4">
-                                            <select class="form-select organizers-role_in_event">
-                                                <option value="" selected disabled>Role In Event</option>
-                                                @foreach ($roles as $key => $role)
-                                                    <option value="{{ $key }}">{{ $role }}</option>
-                                                @endforeach
-                                            </select>
+                                             <input type="text" class="form-control organizers-role_in_event" value="" placeholder="Role In Event" name="role_in_event" >
                                             <small class="text-body float-start error-message-div"
                                                 style="color: #ff0000 !important" hidden></small>
                                         </div>
@@ -535,7 +524,7 @@
             var organizers = [];
             $('.organizer-row').each(function(index, item) {
                 var clientId = $(item).find('.organizers-organizer_id :selected').val();
-                var roleId = $(item).find('.organizers-role_in_event :selected').val();
+                var roleId = $(item).find('.organizers-role_in_event').val();
                 var organizerModelId = $(item).find('.organizer-model-id').val() ?? '';
                 formData.append(`organizers[${index}][organizer_id]`, clientId);
                 formData.append(`organizers[${index}][role_in_event]`, roleId);
@@ -659,6 +648,9 @@
                 $(newOrganizerRow).find('.error-message-div').attr('hidden', true);
                 newOrganizerRow.find('select').each(function() {
                     $(this).prop('selectedIndex', 0);
+                });
+                newOrganizerRow.find('input').each(function() {
+                    $(this).val('');
                 });
                 newOrganizerRow.find('small').each(function() {
                     $(this).prop('hidden', 'hidden');

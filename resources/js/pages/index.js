@@ -57,7 +57,7 @@ async function gotoPasswordVerification(event) {
         .then(response => {
             window.location.href = response.data.url;
         }).catch(error => {
-            hideGalleryLoader(button);
+            hideButtonLoader(button);
             console.log(error);
         });
 }

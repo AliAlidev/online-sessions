@@ -24,7 +24,7 @@ class EventOrganizer extends Model
         return $this->belongsTo(ClientRole::class, 'role_in_event');
     }
 
-    function client() {
-        return $this->belongsTo(Client::class, 'organizer_id');
+    function vendor() {
+        return $this->belongsTo(Vendor::class, 'organizer_id');
     }
 }

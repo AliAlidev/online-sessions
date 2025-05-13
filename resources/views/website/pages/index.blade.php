@@ -143,10 +143,10 @@
                             <div class="swiper-wrapper">
                                 @foreach ($event->organizers as $organizer)
                                     <div class="slide swiper-slide">
-                                        <p class="event-planner-title">{{ $organizer->role->name }}</p>
-                                        <h2 class="event-planner-name">{{ $organizer->client->planner_name }}</h2>
+                                        <p class="event-planner-title">{{ $organizer->role_in_event }}</p>
+                                        <h2 class="event-planner-name">{{ $organizer->vendor->vendor_name }}</h2>
                                         <button class="social-media-button"
-                                            onclick="{{ isset($organizer->client->contact_button_link) ? "window.open('" . $organizer->client->contact_button_link . "', '_blank')" : null }}">{{ $organizer->client->contact_button_text }}</button>
+                                            onclick="{{ isset($organizer->vendor->contact_button_link) ? "window.open('" . $organizer->vendor->contact_button_link . "', '_blank')" : null }}">{{ $organizer->vendor->contact_button_text }}</button>
                                     </div>
                                 @endforeach
                             </div>

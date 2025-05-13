@@ -22,7 +22,7 @@ return new class extends Migration
             $table->foreignId('created_by')->nullable();
             $table->foreign('created_by')->references('id')->on('users')->onDelete('set null');
             $table->foreign('event_id')->references('id')->on('events')->onDelete('cascade');
-            $table->foreign('organizer_id')->references('id')->on('clients')->onDelete('cascade');
+            $table->foreign('organizer_id')->references('id')->on('vendors')->onDelete('cascade');
         });
     }
 

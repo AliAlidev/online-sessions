@@ -155,6 +155,13 @@ return [
             'path' => storage_path('logs/clients.log')
         ],
 
+        'vendors' => [
+            'driver' => 'single',
+            'level' => env('LOG_LEVEL', 'debug'),
+            'replace_placeholders' => true,
+            'path' => storage_path('logs/vendors.log')
+        ],
+
         'events' => [
             'driver' => 'single',
             'level' => env('LOG_LEVEL', 'debug'),
