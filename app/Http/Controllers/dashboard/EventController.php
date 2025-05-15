@@ -324,11 +324,7 @@ class EventController extends Controller
     public function checkPending($id)
     {
         $event = Event::findOrFail($id);
-
         $isPending = $event->isEventPending();
-
-        Log::info("Checked event #$id pending status: " . ($isPending ? 'YES' : 'NO'));
-
         return response()->json([
             'event_id' => $id,
             'is_pending' => $isPending,
