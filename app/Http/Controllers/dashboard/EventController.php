@@ -18,6 +18,7 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Yajra\DataTables\DataTables;
 use Illuminate\Support\Str;
 
@@ -63,7 +64,7 @@ class EventController extends Controller
                         $eventEndDate = Carbon::parse($row->end_date)->endOfDay();
                         $now = Carbon::now()->endOfDay();
                         if ($eventEndDate->lte($now)) return 'Expired';
-                        if ($eventStartDate->gt($now)) return 'Pending';
+                        if ($eventStartDate->lt($now)) return 'Pending';
                         if ($eventEndDate->floatDiffInMonths($now, true) > 1) return 'Online';
                         return 'Expire soon';
                     })
@@ -293,7 +294,6 @@ class EventController extends Controller
             $this->bunnyVideoService->deleteCollection($event->video_collection_id);
             return response()->json(['success' => true, 'count' => $count]);
         } catch (Exception $th) {
-            dd($th->getMessage());
             createServerError($th, "deleteEvent", "events");
             return false;
         }
@@ -312,6 +312,26 @@ class EventController extends Controller
         $year = $request->route('year');
         $eventSlug = $request->route('event_slug');
         $event = Event::where('bunny_event_name', $eventSlug)->first();
+
+        $eventStartDate = Carbon::parse($event->start_date)->startOfDay();
+        $now = Carbon::now()->endOfDay();
+        if (!Carbon::parse($event->end_date)->isPast() && !$eventStartDate->gt($now))
+            return view('website.pages.index', ['year' => $year, 'event_slug' => $eventSlug, 'event' => $event]);
+
         return view('website.pages.event_pending', ['event' => $event, 'year' => $year, 'event_slug' => $eventSlug]);
+    }
+
+    public function checkPending($id)
+    {
+        $event = Event::findOrFail($id);
+
+        $isPending = $event->isEventPending();
+
+        Log::info("Checked event #$id pending status: " . ($isPending ? 'YES' : 'NO'));
+
+        return response()->json([
+            'event_id' => $id,
+            'is_pending' => $isPending,
+        ]);
     }
 }

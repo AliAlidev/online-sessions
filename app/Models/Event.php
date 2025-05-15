@@ -73,11 +73,40 @@ class Event extends Model
 
     function supportImageUpload()
     {
-        return  $this->setting->allow_upload == 1 ? true : false;
+        return $this->setting->allow_upload == 1 ? true : false;
     }
 
     function supportImageDownload()
     {
-        return  $this->setting->allow_image_download == 1 ? true : false;
+        return $this->setting->allow_image_download == 1 ? true : false;
+    }
+
+    public function isEventPending(?Carbon $referenceTime = null): bool
+    {
+        $eventStart = $this->getEventStartDate();
+
+        if (!$eventStart) {
+            return false;
+        }
+
+        return $this->compareStartDateWith(
+            $eventStart,
+            $referenceTime ?? $this->getCurrentTime()
+        );
+    }
+
+    protected function getEventStartDate(): ?Carbon
+    {
+        return $this->start_date ? Carbon::parse($this->start_date) : null;
+    }
+
+    protected function getCurrentTime(): Carbon
+    {
+        return Carbon::now();
+    }
+
+    protected function compareStartDateWith(Carbon $eventStart, Carbon $reference): bool
+    {
+        return $eventStart->greaterThanOrEqualTo($reference);
     }
 }
