@@ -48,7 +48,11 @@ class Event extends Model
 
     function canUpdateEventNameAndStartDate()
     {
-        return Carbon::parse($this->start_date)->gte(Carbon::now()) ? true : false;
+        $status = eventStatus($this);
+        if ($status == 'Pending') return true;
+        return false;
+
+        // return Carbon::parse($this->start_date)->gte(Carbon::now()->endOfDay()) ? true : false;
     }
 
     function supportAutoApprove()
@@ -79,34 +83,5 @@ class Event extends Model
     function supportImageDownload()
     {
         return $this->setting->allow_image_download == 1 ? true : false;
-    }
-
-    public function isEventPending(?Carbon $referenceTime = null): bool
-    {
-        $eventStart = $this->getEventStartDate();
-
-        if (!$eventStart) {
-            return false;
-        }
-
-        return $this->compareStartDateWith(
-            $eventStart,
-            $referenceTime ?? $this->getCurrentTime()
-        );
-    }
-
-    protected function getEventStartDate(): ?Carbon
-    {
-        return $this->start_date ? Carbon::parse($this->start_date) : null;
-    }
-
-    protected function getCurrentTime(): Carbon
-    {
-        return Carbon::now();
-    }
-
-    protected function compareStartDateWith(Carbon $eventStart, Carbon $reference): bool
-    {
-        return $eventStart->greaterThanOrEqualTo($reference);
     }
 }

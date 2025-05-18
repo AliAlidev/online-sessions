@@ -139,7 +139,9 @@
                                 stroke-linejoin="round" />
                         </svg>
                         <span class="button-text gallery" style="display: block">GALLERY</span>
-                        <span class="loader" style="display: none;"></span>
+                        <div style="width: 100%; height: 100%; position: absolute;">
+                            <span class="loader" style="display: none;"></span>
+                        </div>
                     </a>
                     <a href=""
                         style="cursor: {{ $event->supportImageUpload() ? 'pointer' : 'not-allowed' }}; {{ !$event->supportImageUpload() ? 'background-color:#ccc' : '' }}"
@@ -152,7 +154,9 @@
                                 stroke="#fff" stroke-width="3.1" stroke-linecap="round" stroke-linejoin="round" />
                         </svg>
                         <span class="button-text share" style="display: block">SHARE</span>
-                        <span class="loader" style="display: none;"></span>
+                        <div style="width: 100%; height: 100%; position: absolute;">
+                            <span class="loader" style="display: none;"></span>
+                        </div>
                     </a>
                 </div>
                 <!-- Planner Swiper Section -->

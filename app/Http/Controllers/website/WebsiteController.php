@@ -30,11 +30,10 @@ class WebsiteController extends Controller
         $year = $request->route('year');
         $eventSlug = $request->route('event_slug');
         $event = Event::where('bunny_event_name', $eventSlug)->first();
-        $eventStartDate = Carbon::parse($event->start_date)->startOfDay();
-        $now = Carbon::now()->endOfDay();
-        if (Carbon::parse($event->end_date)->isPast())
+        $status = eventStatus($event);
+        if ($status == 'Expired')
             return view('website.pages.event_expired', ['event' => $event, 'year' => $year, 'event_slug' => $eventSlug]);
-        if ($eventStartDate->gt($now)) {
+        if ($status == 'Pending') {
             return view('website.pages.event_pending', ['event' => $event, 'year' => $year, 'event_slug' => $eventSlug]);
         }
         $event->start_date = Carbon::parse($event->start_date)->format('d/m/Y');
@@ -95,12 +94,13 @@ class WebsiteController extends Controller
         $year = $request->route('year');
         $eventSlug = $request->route('event_slug');
         $event = Event::where('bunny_event_name', $eventSlug)->first();
-        if (Carbon::parse($event->end_date)->isPast())
-            return view('website.pages.event_expired', ['event' => $event, 'year' => $year, 'event_slug' => $eventSlug]);
-        $eventStartDate = Carbon::parse($event->start_date)->startOfDay();
-        $now = Carbon::now()->endOfDay();
-        if ($eventStartDate->gt($now))
+
+        $status = eventStatus($event);
+        if ($status == 'Pending')
             return view('website.pages.event_pending', ['event' => $event, 'year' => $year, 'event_slug' => $eventSlug]);
+        if ($status == 'Expired')
+            return view('website.pages.event_expired', ['event' => $event, 'year' => $year, 'event_slug' => $eventSlug]);
+
         $event->start_date = Carbon::parse($event->start_date)->format('d/m/Y');
         $foldersList = [];
         $event->folders()->orderBy('order', 'asc')->get()->each(function ($folder) use (&$foldersList, $event) {
@@ -142,12 +142,12 @@ class WebsiteController extends Controller
         $event = Event::where('bunny_event_name', $eventSlug)->first();
         if (!$event->supportImageUpload())
             return redirect()->route('landing.index', ['year' => $year, 'event_slug' => $eventSlug]);
-        if (Carbon::parse($event->end_date)->isPast())
-            return view('website.pages.event_expired', ['event' => $event, 'year' => $year, 'event_slug' => $eventSlug]);
-        $eventStartDate = Carbon::parse($event->start_date)->startOfDay();
-        $now = Carbon::now()->endOfDay();
-        if ($eventStartDate->gt($now))
+
+        $status = eventStatus($event);
+        if ($status == 'Pending')
             return view('website.pages.event_pending', ['event' => $event, 'year' => $year, 'event_slug' => $eventSlug]);
+        if ($status == 'Expired')
+            return view('website.pages.event_expired', ['event' => $event, 'year' => $year, 'event_slug' => $eventSlug]);
         $event->start_date = Carbon::parse($event->start_date)->format('d/m/Y');
         return view('website.pages.share', ['year' => $year, 'event_slug' => $eventSlug, 'event' => $event]);
     }

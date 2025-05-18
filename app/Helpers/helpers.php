@@ -180,7 +180,7 @@ if (!function_exists('checkImageConfig')) {
         ];
         $request = new Request('GET', 'https://' . $region . '.bunnycdn.com/' . $storageName . '/*', $headers);
         try {
-            $response = $client->send($request,['verify' => config('services.enable_ssl_verification')]);
+            $response = $client->send($request, ['verify' => config('services.enable_ssl_verification')]);
             $statusCode = $response->getStatusCode(); // Get the HTTP status code
             return $statusCode == 401 ? false : true;
         } catch (Exception $e) {
@@ -216,7 +216,7 @@ if (!function_exists('checkVideoConfig')) {
         ];
         $request = new Request('GET', 'https://video.bunnycdn.com/library/' . $videoLibraryId . '/videos', $headers);
         try {
-            $response = $client->send($request,['verify' => config('services.enable_ssl_verification')]);
+            $response = $client->send($request, ['verify' => config('services.enable_ssl_verification')]);
             $statusCode = $response->getStatusCode(); // Get the HTTP status code
             return $statusCode == 200 ? true : false;
         } catch (Exception $e) {
@@ -237,7 +237,7 @@ if (!function_exists('checkApiKey')) {
         ];
         $request = new Request('GET', 'https://api.bunny.net/apikey', $headers);
         try {
-            $response = $client->send($request,['verify' => config('services.enable_ssl_verification')]);
+            $response = $client->send($request, ['verify' => config('services.enable_ssl_verification')]);
             $statusCode = $response->getStatusCode();
             return $statusCode == 200 ? true : false;
         } catch (Exception $e) {
@@ -260,7 +260,7 @@ if (!function_exists('checkPullZoneAvailability')) {
             }';
         $request = new Request('POST', 'https://api.bunny.net/storagezone/checkavailability', $headers, $body);
         try {
-            $response = $client->send($request,['verify' => config('services.enable_ssl_verification')]);
+            $response = $client->send($request, ['verify' => config('services.enable_ssl_verification')]);
             $statusCode = json_decode($response->getBody(), true);
             if (isset($statusCode['Available']) && $statusCode['Available'])
                 return true;
@@ -277,11 +277,23 @@ if (!function_exists('checkFileExistence')) {
     function checkFileExistence($url)
     {
         $headers = @get_headers($url);
-        // Check if the file exists by analyzing the HTTP response status code
         if ($headers && strpos($headers[0], '200') !== false) {
             return true;
         } else {
             return false;
         }
+    }
+}
+
+if (!function_exists('eventStatus')) {
+    function eventStatus($event)
+    {
+        $eventStartDate = Carbon::parse($event->start_date)->startOfDay();
+        $eventEndDate = Carbon::parse($event->end_date)->endOfDay();
+        $now = Carbon::now()->endOfDay();
+        if ($eventEndDate->lt($now)) return 'Expired';
+        if ($eventStartDate->gt($now)) return 'Pending';
+        if ($eventEndDate->floatDiffInMonths($now, true) >= 1) return 'Online';
+        return 'Expire soon';
     }
 }

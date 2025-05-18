@@ -71,7 +71,7 @@
         a.disabled {
             pointer-events: none;
             cursor: default;
-            background-color:#ccc !important;
+            background-color: #ccc !important;
         }
 
         .timer {
@@ -206,7 +206,8 @@
     <script src="{{ asset('assets/website/lp-assets/js/script.js') }}"></script>
 
     <script>
-        const targetDate = new Date("{{ $event->start_date }}").getTime(); // Set your wedding date
+        const utcString = "{{ \Carbon\Carbon::parse($event->start_date)->format('Y-m-d H:i:s') }}";
+        const targetDate = new Date(utcString).getTime();
         function updateCountdown() {
             const now = new Date().getTime();
             let diff = targetDate - now;

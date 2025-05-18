@@ -48,25 +48,13 @@ class EventController extends Controller
                     ->orderBy('created_at', 'desc');
                 $events = $eventsQuery->get()->filter(function ($item) use ($filterStatus) {
                     if (!$filterStatus) return true;
-                    $eventStartDate = Carbon::parse($item->start_date)->startOfDay();
-                    $eventEndDate = Carbon::parse($item->end_date)->endOfDay();
-                    $now = Carbon::now()->endOfDay();
-                    $status = 'Expire soon';
-                    if ($eventEndDate->lte($now)) $status = 'Expired';
-                    elseif ($eventStartDate->gt($now)) $status = 'Pending';
-                    elseif ($eventEndDate->floatDiffInMonths($now, true) > 1) $status = 'Online';
+                    $status = eventStatus($item);
                     return $status === $filterStatus;
                 });
 
                 return DataTables::of($events)
                     ->addColumn('event_status', function ($row) {
-                        $eventStartDate = Carbon::parse($row->start_date)->startOfDay();
-                        $eventEndDate = Carbon::parse($row->end_date)->endOfDay();
-                        $now = Carbon::now()->endOfDay();
-                        if ($eventEndDate->lte($now)) return 'Expired';
-                        if ($eventStartDate->lt($now)) return 'Pending';
-                        if ($eventEndDate->floatDiffInMonths($now, true) > 1) return 'Online';
-                        return 'Expire soon';
+                        return eventStatus($row);
                     })
                     ->addColumn('event_type', fn($row) => $row->type?->name)
                     ->addColumn('event_client', fn($row) => $row->client?->planner_name)
@@ -80,11 +68,10 @@ class EventController extends Controller
                     ->editColumn('profile_picture', fn($row) => $row->profile_picture ? '<img src="/' . $row->profile_picture . '" width="100" height="100">' : '')
                     ->editColumn('cover_image', fn($row) => $row->cover_image ? '<img src="/' . $row->cover_image . '" width="100" height="100">' : '')
                     ->editColumn('event_link', function ($row) {
-                        $eventStartDate = Carbon::parse($row->start_date)->startOfDay();
-                        $now = Carbon::now()->endOfDay();
-                        if (Carbon::parse($row->end_date)->isPast())
+                        $status = eventStatus($row);
+                        if ($status == 'Expired')
                             return '<a target="_blank" class="btn btn-label-linkedin" href="' . route('events.expired', ['event_slug' => $row->bunny_event_name, 'year' => $row->bunny_main_folder_name]) . '"> Link </a>';
-                        if ($eventStartDate->gt($now))
+                        if ($status == 'Pending')
                             return '<a target="_blank" class="btn btn-label-linkedin" href="' . route('events.pending', ['event_slug' => $row->bunny_event_name, 'year' => $row->bunny_main_folder_name]) . '"> Link </a>';
                         return '<a target="_blank" class="btn btn-label-linkedin" href="' . $row->event_link . '"> Link </a>';
                     })
@@ -304,7 +291,12 @@ class EventController extends Controller
         $year = $request->route('year');
         $eventSlug = $request->route('event_slug');
         $event = Event::where('bunny_event_name', $eventSlug)->first();
-        return view('website.pages.event_expired', ['event' => $event, 'year' => $year, 'event_slug' => $eventSlug]);
+        $status = eventStatus($event);
+        if ($status == 'Expired')
+            return view('website.pages.event_expired', ['event' => $event, 'year' => $year, 'event_slug' => $eventSlug]);
+        if ($status == 'Pending')
+            return view('website.pages.event_pending', ['event' => $event, 'year' => $year, 'event_slug' => $eventSlug]);
+        return view('website.pages.index', ['year' => $year, 'event_slug' => $eventSlug, 'event' => $event]);
     }
 
     function pending(Request $request)
@@ -313,21 +305,11 @@ class EventController extends Controller
         $eventSlug = $request->route('event_slug');
         $event = Event::where('bunny_event_name', $eventSlug)->first();
 
-        $eventStartDate = Carbon::parse($event->start_date)->startOfDay();
-        $now = Carbon::now()->endOfDay();
-        if (!Carbon::parse($event->end_date)->isPast() && !$eventStartDate->gt($now))
-            return view('website.pages.index', ['year' => $year, 'event_slug' => $eventSlug, 'event' => $event]);
-
-        return view('website.pages.event_pending', ['event' => $event, 'year' => $year, 'event_slug' => $eventSlug]);
-    }
-
-    public function checkPending($id)
-    {
-        $event = Event::findOrFail($id);
-        $isPending = $event->isEventPending();
-        return response()->json([
-            'event_id' => $id,
-            'is_pending' => $isPending,
-        ]);
+        $status = eventStatus($event);
+        if ($status == 'Expired')
+            return view('website.pages.event_expired', ['event' => $event, 'year' => $year, 'event_slug' => $eventSlug]);
+        if ($status == 'Pending')
+            return view('website.pages.event_pending', ['event' => $event, 'year' => $year, 'event_slug' => $eventSlug]);
+        return view('website.pages.index', ['year' => $year, 'event_slug' => $eventSlug, 'event' => $event]);
     }
 }
