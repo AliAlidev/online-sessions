@@ -1,6 +1,7 @@
 @extends('website.layout.app')
 
 @push('styles')
+    <link rel="preload" as="image" href="{{ asset('assets/img/loader/loader.gif') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" />
     <link href="https://fonts.googleapis.com/css2?family=Parisienne&display=swap" rel="stylesheet">
     @if ($event->setting->theme == 'dark')
@@ -91,7 +92,6 @@
             text-decoration: none;
             cursor: pointer;
             transition: background-color 0.3s, color 0.3s;
-            margin-bottom: 10px;
         }
 
         .refresh-button:hover {
@@ -114,10 +114,11 @@
             cursor: default;
             background-color: #ccc !important;
         }
-
         .reload-btn-div {
+            display:flex;
+            justify-content: space-between;
+            padding:10px 20px;
             margin: 15px 0px;
-            background-color: #4e7dcd;
         }
     </style>
 
@@ -131,8 +132,15 @@
             background: white;
             z-index: 9999;
             display: flex;
+            flex-direction:column;
             align-items: center;
             justify-content: center;
+            gap:8px;
+        }
+        #page-loader p{
+            color:#000;
+            font-size:14px;
+            font-weight:normal;
         }
     </style>
 
@@ -142,6 +150,7 @@
 @section('content')
     <div id="page-loader">
         <img src="{{ asset('assets/img/loader/loader.gif') }}" width="40px" alt="">
+        <p>Loading....</p>
     </div>
     <div class="main-container auth-checking">
         <div class="main-header">
@@ -179,6 +188,18 @@
                         @endif
                     @endforeach
                 </div><!-- End Horizontal Scroll -->
+                
+            </div><!-- End Scroll Container -->
+        </div><!-- End Main Header -->
+        <div class="reload-btn-div">
+            <a data-id= "{{ 'folder-' . $folder->id }}" class="refresh-button">
+                <svg class="reload-icon" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M14.66 15.66A8 8 0 1 1 17 10h-2a6 6 0 1 0-1.76 4.24l1.42 1.42zM12 10h8l-4 4-4-4z"
+                        fill="currentColor" />
+                </svg>
+                Reload
+            </a>
+            <div class="scroll-buttons">
                 <button id="scroll-left" class="scroll-arrow" data-distance="-200">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
                         xmlns="http://www.w3.org/2000/svg">
@@ -193,21 +214,11 @@
                             stroke-linejoin="round" />
                     </svg>
                 </button>
-            </div><!-- End Scroll Container -->
-        </div><!-- End Main Header -->
-        <div class="reload-btn-div">
-            <a data-id= "{{ 'folder-' . $folder->id }}" class="refresh-button">
-                <svg class="reload-icon" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M14.66 15.66A8 8 0 1 1 17 10h-2a6 6 0 1 0-1.76 4.24l1.42 1.42zM12 10h8l-4 4-4-4z"
-                        fill="currentColor" />
-                </svg>
-                Reload
-            </a>
+            </div>
         </div>
         <div id="loader-div" hidden>
             <div class="loader-container">
-                <div class="loader"></div>
-                <div class="loading-text">Loading...</div>
+                <img src="{{ asset('assets/img/loader/loader.gif') }}" width="40px" alt="">
             </div>
         </div>
         <div id="gallery-div"></div>

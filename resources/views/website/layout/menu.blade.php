@@ -4,13 +4,14 @@
 
 .social-container {
   display: flex;
+  flex-direction:column;
   gap:4px;
   justify-content: center;
   align-items: center;z-index:25000;
 }
 ul {
   display: flex;
-  gap:4px;
+  gap:18px;
   justify-content: center;
   align-items: center;z-index:25000;
 }
@@ -25,15 +26,21 @@ ul li a {
   transition: .5s;
   z-index: 3;
 }
+h5.contact-us{
+  font-size:14px;
+  margin-bottom:6px;
+  font-weight:normal;
+}
 </style>
 <div class="menu" id="menu">
 
    <div class="social-container">
+    <h5 class="contact-us">Connect with us:</h5>
      <ul>
         <li><a href="#"><i class="fab fa-telegram-plane"></i></a></li>  
         <li><a href="#"><i class="fab fa-whatsapp icon"></i></a></li>  
         <li><a href="#"><i class="fab fa-instagram icon"></i></a></li>   
-        <li><a href="#"><i class="fab fa-facebook icon"></i></a></li> 
+        <li><a href="#"><i class="fab fa-facebook-f"></i></a></li> 
         <li><a href="#"><i class="fas fa-envelope"></i></a></li> 
         <li><a href="#"><i class="fab fa-chrome icon"></i></a></li>     
       </ul>

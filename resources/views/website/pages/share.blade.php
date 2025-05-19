@@ -1,6 +1,7 @@
 @extends('website.layout.app')
 
 @push('styles')
+    <link rel="preload" as="image" href="{{ asset('assets/img/loader/loader.gif') }}">
     @if ($event->setting->theme == 'dark')
         <link rel="stylesheet" href="{{ asset('assets/website/share-assets/css/style-dark.css') }}" />
     @else
@@ -538,8 +539,15 @@
             background: white;
             z-index: 9999;
             display: flex;
+            flex-direction:column;
             align-items: center;
             justify-content: center;
+            gap:8px;
+        }
+        #page-loader p{
+            color:#000;
+            font-size:14px;
+            font-weight:normal;
         }
     </style>
 
@@ -548,8 +556,9 @@
 
 @section('content')
     <div id="page-loader">
-        <img src="{{ asset('assets/img/loader/loader.gif') }}" alt="">
-    </div>
+            <img src="{{ asset('assets/img/loader/loader.gif') }}" width="40px" alt="">
+            <p>Loading....</p>
+        </div>
     <div class="main-container auth-checking">
         <input type="hidden" id="compression-ratios-file-path" value="{{ asset('/compression-ratios.json') }}">
         <div class="main-header">

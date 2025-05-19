@@ -191,30 +191,21 @@ h1.event-title{
 }
 .scroll-arrow {
     border: 1px solid var(--accent-01);
-    border-radius: 50%;
+    border-radius: 0;
     color: white;
     padding: 5px;;
     line-height: 0;
     cursor: pointer;
-    position: absolute;
     z-index: 10;
-    transform: translateY(-50%);
     background-color: rgba(255, 255, 255, 0.8);
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    opacity: 0;
     z-index: 9995;
 }
-.scroll-container:hover .scroll-arrow {
-    opacity: 1;
-}
-#scroll-left {
-    left: -14px;
-    top: 50%;
-    display: none;
-}
-#scroll-right {
-    right: -14px;
-    top: 55%;
+.scroll-buttons{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap:8px;
 }
 /********************************** Gallery **********************************/
 .gallery {
@@ -384,15 +375,6 @@ h1.event-title{
     }
     .scroll-arrow {
         opacity: 1;
-    }
-    #scroll-left {
-        left: 10px;
-        top: 50%;
-        display: none;
-    }
-    #scroll-right {
-        right: 10px;
-        top: 50%;
     }
     .footer .footer-copywrite {
     font-size: 10px;

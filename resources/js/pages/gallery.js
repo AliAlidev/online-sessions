@@ -95,12 +95,6 @@ function checkScroll() {
     const scrollLeft = tabs.scrollLeft;
     const scrollWidth = tabs.scrollWidth;
     const clientWidth = tabs.clientWidth;
-
-    document.getElementById("scroll-left").style.display = scrollLeft > 0 ? "block" :
-        "none";
-    document.getElementById("scroll-right").style.display = (scrollLeft +
-        clientWidth) >= (scrollWidth - 50) ?
-        "none" : "block";
 }
 
 function loadVideo(event) {
@@ -227,7 +221,7 @@ async function selectFolder(event) {
                             "fullScreen",
                             canDownload,
                             "delete",
-                            "close"
+                            "close",
                         ],
                         btnTpl: {
                             delete: `<button data-fancybox-delete class="fancybox-button fancybox-button--delete" title="Delete" hidden>
@@ -250,7 +244,8 @@ async function selectFolder(event) {
                                     deleteImage(current, instance);
                                 }
                             });
-                        }
+                        },
+                        clickOutside: "close"
                     });
 
                     async function deleteImage(current, instance) {
