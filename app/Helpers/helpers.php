@@ -288,9 +288,9 @@ if (!function_exists('checkFileExistence')) {
 if (!function_exists('eventStatus')) {
     function eventStatus($event)
     {
-        $eventStartDate = Carbon::parse($event->start_date)->startOfDay();
-        $eventEndDate = Carbon::parse($event->end_date)->endOfDay();
-        $now = Carbon::now()->endOfDay();
+        $eventStartDate = Carbon::parse($event->start_date);
+        $eventEndDate = Carbon::parse($event->end_date);
+        $now = Carbon::now();
         if ($eventEndDate->lt($now)) return 'Expired';
         if ($eventStartDate->gt($now)) return 'Pending';
         if ($eventEndDate->floatDiffInMonths($now, true) >= 1) return 'Online';

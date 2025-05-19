@@ -24,8 +24,8 @@ return new class extends Migration
             $table->text('welcome_message')->nullable();
             $table->string('cover_image')->nullable();
             $table->string('profile_picture')->nullable();
-            $table->date('start_date');
-            $table->date('end_date');
+            $table->dateTime('start_date');
+            $table->dateTime('end_date');
             $table->string('active_duration')->nullable();
             $table->string('event_link');
             $table->string('event_password')->nullable();
