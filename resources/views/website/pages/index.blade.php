@@ -101,7 +101,7 @@
     @include('website.layout.menu')
     <div class="container">
         <div id="page-loader">
-            <img src="{{ asset('assets/img/loader/loader.gif') }}" alt="">
+            <img src="{{ asset('assets/img/loader/loader.gif') }}" width="40px" alt="">
         </div>
         <!-- Left Section -->
         <div class="event-hero-section">

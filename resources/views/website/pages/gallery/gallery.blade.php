@@ -141,7 +141,7 @@
 
 @section('content')
     <div id="page-loader">
-        <img src="{{ asset('assets/img/loader/loader.gif') }}" alt="">
+        <img src="{{ asset('assets/img/loader/loader.gif') }}" width="40px" alt="">
     </div>
     <div class="main-container auth-checking">
         <div class="main-header">

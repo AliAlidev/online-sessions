@@ -43,9 +43,6 @@ body {
 .event-title-date.event-title-date-mobile{
   color: var(--primary-01);
 }
-.menu a {
-  color: var(--primary-01);
-}
 /******* --primary-02 *******/
 .event-planner-title{
   color: var(--primary-02);
@@ -60,6 +57,9 @@ body {
   color: var(--primary-02);
 }
 /******* --primary-03 *******/
+.menu a {
+  color: var(--primary-03);
+}
 .social-media-button {
     color: var(--primary-03);
     font-family:var(--font-body-01);
@@ -133,7 +133,7 @@ body {
 .menu a {
     text-decoration: none;
     font-size: 20px;
-    margin: 15px 0;
+    margin: 12px 0;
 }
 .menu.active {
     left: 0;

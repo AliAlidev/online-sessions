@@ -133,7 +133,7 @@ body {
 .menu a {
     text-decoration: none;
     font-size: 20px;
-    margin: 15px 0;
+    margin: 12px 0;
 }
 .menu.active {
     left: 0;
