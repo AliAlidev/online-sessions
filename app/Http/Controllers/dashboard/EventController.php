@@ -59,8 +59,8 @@ class EventController extends Controller
                     ->addColumn('event_type', fn($row) => $row->type?->name)
                     ->addColumn('event_client', fn($row) => $row->client?->planner_name)
                     ->addColumn('time_reminder', function ($row) {
-                        $eventEndDate = Carbon::parse($row->end_date)->endOfDay();
-                        $now = Carbon::now()->endOfDay();
+                        $eventEndDate = Carbon::parse($row->end_date);
+                        $now = Carbon::now();
                         return $eventEndDate->gt($now) ? $eventEndDate->diffInDays($now) . ' days' : '-';
                     })
                     ->editColumn('qr_code', fn($row) => '<a href="/' . $row->qr_code . '" download><img src="/' . $row->qr_code . '" width="100" height="100"></a>')

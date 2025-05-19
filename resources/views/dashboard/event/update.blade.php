@@ -194,7 +194,7 @@
                                     <div class="row mb-6">
                                         <div class="col-md-6">
                                             <label for="html5-date-input" class="form-label">Start Date</label>
-                                            <input class="form-control start_date" type="date" id="start-date-id"
+                                            <input class="form-control start_date" type="datetime-local" id="start-date-id"
                                                 {{ $event->canUpdateEventNameAndStartDate() ? '' : 'disabled' }}
                                                 value="{{ $event->start_date }}" name="start_date">
                                             <small class="text-body float-start error-message-div start_date-error"
@@ -202,7 +202,7 @@
                                         </div>
                                         <div class="col-md-6">
                                             <label for="html5-date-input" class="form-label">End Date</label>
-                                            <input class="form-control end_date" type="date"
+                                            <input class="form-control end_date" type="datetime-local"
                                                 value="{{ $event->end_date }}" name="end_date">
                                             <small class="text-body float-start error-message-div end_date-error"
                                                 style="color: #ff0000 !important" hidden></small>
@@ -297,7 +297,8 @@
                     <div class="card mb-6">
                         <div class="card-header align-items-center">
                             <div class="form-check form-switch mb-3">
-                                <input class="form-check-input" type="checkbox" id="enable-organizer-id" name="enable_organizer" {{ $event->enable_organizer == 1 ? 'checked' : '' }}>
+                                <input class="form-check-input" type="checkbox" id="enable-organizer-id"
+                                    name="enable_organizer" {{ $event->enable_organizer == 1 ? 'checked' : '' }}>
                                 <label class="form-check-label" for="flexSwitchCheckChecked">Enable Organizer</label>
                             </div>
                             <div style="display: flex; gap: 10px" class="mb-1">
@@ -327,7 +328,9 @@
                                                     style="color: #ff0000 !important" hidden></small>
                                             </div>
                                             <div class="col-md-4">
-                                                <input type="text" class="form-control organizers-role_in_event" value="{{ $organizer->role_in_event }}" placeholder="Role In Event" name="role_in_event" >
+                                                <input type="text" class="form-control organizers-role_in_event"
+                                                    value="{{ $organizer->role_in_event }}" placeholder="Role In Event"
+                                                    name="role_in_event">
                                                 <small class="text-body float-start error-message-div"
                                                     style="color: #ff0000 !important" hidden></small>
                                             </div>
@@ -353,7 +356,8 @@
                                                 style="color: #ff0000 !important" hidden></small>
                                         </div>
                                         <div class="col-md-4">
-                                             <input type="text" class="form-control organizers-role_in_event" value="" placeholder="Role In Event" name="role_in_event" >
+                                            <input type="text" class="form-control organizers-role_in_event"
+                                                value="" placeholder="Role In Event" name="role_in_event">
                                             <small class="text-body float-start error-message-div"
                                                 style="color: #ff0000 !important" hidden></small>
                                         </div>
@@ -726,7 +730,7 @@
     </script>
 
     <script>
-        $('input[type="date"]').on('change', function() {
+        $('input[type="datetime-local"]').on('change', function() {
             var start = $('.start_date').val();
             var end = $('.end_date').val();
             var diff = calculateActiveDuration(start, end);
@@ -735,37 +739,42 @@
         });
 
         function calculateActiveDuration(startDate, endDate) {
-            // Parse the dates
             const start = new Date(startDate);
             const end = new Date(endDate);
-
-            // Check if the dates are valid
             if (isNaN(start) || isNaN(end)) {
                 return "Invalid dates";
             }
-
-            // Calculate differences
-            let years = end.getFullYear() - start.getFullYear();
-            let months = end.getMonth() - start.getMonth();
-            let days = end.getDate() - start.getDate();
-
-            // Adjust months and years if needed
-            if (days < 0) {
-                months -= 1;
-                days += new Date(end.getFullYear(), end.getMonth(), 0).getDate();
+            let diff = end - start;
+            if (diff < 0) {
+                return "End date is before start date";
             }
+            let duration = [];
+            let years = end.getFullYear() - start.getFullYear();
+            let tempStart = new Date(start);
+            tempStart.setFullYear(start.getFullYear() + years);
+            if (tempStart > end) {
+                years--;
+                tempStart.setFullYear(tempStart.getFullYear() - 1);
+            }
+            duration.push(...(years > 0 ? [`${years} year${years > 1 ? "s" : ""}`] : []));
+            let months = end.getMonth() - tempStart.getMonth();
             if (months < 0) {
-                years -= 1;
                 months += 12;
             }
-
-            // Build the duration string dynamically
-            let duration = [];
-            if (years > 0) duration.push(`${years} year${years > 1 ? "s" : ""}`);
-            if (months > 0) duration.push(`${months} month${months > 1 ? "s" : ""}`);
-            if (days > 0) duration.push(`${days} day${days > 1 ? "s" : ""}`);
-
-            // Join the parts and return the result
+            tempStart.setMonth(tempStart.getMonth() + months);
+            if (tempStart > end) {
+                months--;
+                tempStart.setMonth(tempStart.getMonth() - 1);
+            }
+            duration.push(...(months > 0 ? [`${months} month${months > 1 ? "s" : ""}`] : []));
+            let days = Math.floor((end - tempStart) / (1000 * 60 * 60 * 24));
+            tempStart.setDate(tempStart.getDate() + days);
+            duration.push(...(days > 0 ? [`${days} day${days > 1 ? "s" : ""}`] : []));
+            let hours = Math.floor((end - tempStart) / (1000 * 60 * 60));
+            tempStart.setHours(tempStart.getHours() + hours);
+            duration.push(...(hours > 0 ? [`${hours} hour${hours > 1 ? "s" : ""}`] : []));
+            let minutes = Math.floor((end - tempStart) / (1000 * 60));
+            duration.push(...(minutes > 0 ? [`${minutes} minute${minutes > 1 ? "s" : ""}`] : []));
             return duration.length > 0 ? duration.join(", ") : "No difference";
         }
     </script>
