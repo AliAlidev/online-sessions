@@ -85,7 +85,7 @@ class EventController extends Controller
                             $actions .= '<a href="#" data-url="' . route('events.delete', $event->id) . '" class="delete-event btn btn-icon btn-outline-primary m-1"><i class="bx bx-trash" style="color:red"></i></a>';
                         }
                         if ($user->hasAnyPermission(['create_folder', 'update_folder', 'delete_folder', 'list_folders'])) {
-                            $actions .= '<a title="Folders" href="' . route('folders.index', $event->bunny_event_name) . '" class="btn rounded-pill btn-icon btn-primary"><i class="bx bx-folder" style="color:white"></i></a>';
+                            $actions .= '<a title="Folders" href="' . route('folders.index', $event->bunny_event_name) . '" class="btn btn-icon btn-primary"><i class="bx bx-folder" style="color:white"></i></a>';
                         }
                         return $actions;
                     })

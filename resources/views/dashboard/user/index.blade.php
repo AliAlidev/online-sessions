@@ -46,7 +46,7 @@
         <div class="card">
             <div class="row card-header flex-column flex-md-row pb-0">
                 <div class="d-md-flex justify-content-between align-items-center dt-layout-end col-md-auto ms-auto mt-0">
-                    <a href="{{ route('users.create') }}" class="btn btn-primary">Create</a>
+                    <a href="{{ route('users.create') }}" class="btn btn-primary">Create User</a>
                 </div>
             </div>
             <div class="card-datatable">

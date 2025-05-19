@@ -33,7 +33,7 @@
             @can('create_vendor')
                 <div class="row card-header flex-column flex-md-row pb-0">
                     <div class="d-md-flex justify-content-between align-items-center dt-layout-end col-md-auto ms-auto mt-0">
-                        <a href="{{ route('vendors.create') }}" class="btn btn-primary">Create</a>
+                        <a href="{{ route('vendors.create') }}" class="btn btn-primary">Create Vendor</a>
                     </div>
                 </div>
             @endcan
