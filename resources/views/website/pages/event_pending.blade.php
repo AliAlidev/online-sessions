@@ -77,8 +77,8 @@
         .timer {
             display: flex;
             justify-content: center;
-            font-size: 48px;
-            gap: 20px;
+            font-size: 40px;
+            gap: 14px;
             flex-wrap: wrap;
         }
 
@@ -86,7 +86,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            min-width: 80px;
+            min-width: 60px;
             color: #888;
         }
 
@@ -165,32 +165,33 @@
                         <span class="loader" style="display: none;"></span>
                     </a>
                 </div>
-            </div><!-- End Event Details Container -->
-            <!-- counter Section -->
-            <div class="timer-container">
-                <h3 class="">A beautiful beginning is on its way.</h3>
-                <div class="timer" id="countdown">
-                    <div class="segment">
-                        <div id="days">201</div>
-                        <div class="label">DAYS</div>
-                    </div>
-                    <div>:</div>
-                    <div class="segment">
-                        <div id="hours">15</div>
-                        <div class="label">HOURS</div>
-                    </div>
-                    <div>:</div>
-                    <div class="segment">
-                        <div id="minutes">52</div>
-                        <div class="label">MINUTES</div>
-                    </div>
-                    <div>:</div>
-                    <div class="segment">
-                        <div id="seconds">53</div>
-                        <div class="label">SECONDS</div>
+                <!-- counter Section -->
+                <div class="timer-container">
+                    <h3 class="" style="color:#000">A beautiful beginning is on its way.</h3>
+                    <div class="timer" id="countdown">
+                        <div class="segment">
+                            <div id="days">201</div>
+                            <div class="label">DAYS</div>
+                        </div>
+                        <div>:</div>
+                        <div class="segment">
+                            <div id="hours">15</div>
+                            <div class="label">HOURS</div>
+                        </div>
+                        <div>:</div>
+                        <div class="segment">
+                            <div id="minutes">52</div>
+                            <div class="label">MINUTES</div>
+                        </div>
+                        <div>:</div>
+                        <div class="segment">
+                            <div id="seconds">53</div>
+                            <div class="label">SECONDS</div>
+                        </div>
                     </div>
                 </div>
-            </div>
+            </div><!-- End Event Details Container -->
+            
             <!-- Footer -->
             <div class="footer">
                 <p class="footer-copywrite">Powered by UP EVENTS</p>

@@ -284,10 +284,10 @@
                         <div class="card-header align-items-center">
                             <div class="form-check form-switch mb-3">
                                 <input class="form-check-input" type="checkbox" id="enable-organizer-id" name="enable_organizer">
-                                <label class="form-check-label" for="flexSwitchCheckChecked">Enable Organizer</label>
+                                <label class="form-check-label" for="flexSwitchCheckChecked">Enable Vendors Section</label>
                             </div>
-                            <div style="display: flex; gap: 10px" class="mb-1">
-                                <h4>Event Organizer</h4>
+                            <div style="display: flex; gap: 10px; align-items: baseline;" class="mb-1">
+                                <h5>Add New Vendor</h5>
                                 <button type="button" class="btn rounded-pill btn-icon btn-primary"
                                     id="organizer-add-button">
                                     <span class="fa fa-plus" style="font-size: 15px"></span>
@@ -391,13 +391,13 @@
                                         <div class="col-md-6">
                                             <label class="form-label">Select Accent Color</label>
                                             <div class="color-picker">
-                                                <div class="color-box" style="background-color: #b71c1c;"
+                                                <div class="color-box" style="background-color: #EFBF04;"
                                                     data-color="#b71c1c"></div>
-                                                <div class="color-box" style="background-color: #1a237e;"
+                                                <div class="color-box" style="background-color: #233d4e"
                                                     data-color="#1a237e"></div>
-                                                <div class="color-box" style="background-color: #2e7d32;"
+                                                <div class="color-box" style="background-color: #bd3b3b;"
                                                     data-color="#2e7d32"></div>
-                                                <div class="color-box" style="background-color: #00838f;"
+                                                <div class="color-box" style="background-color: #1f2e60;"
                                                     data-color="#00838f"></div>
                                             </div>
                                         </div>
@@ -405,7 +405,7 @@
                                             <input type="color" class="form-control" id="colors-palette">
                                         </div>
                                         <small class="text-body float-start error-message-div accent_color-error"
-                                            style="color: #ff0000 !important" hidden></small>
+                                            style="color: #EFBF04 !important" hidden></small>
                                     </div>
                                     {{-- <div class="row mb-6">
                                         <div class="col-md-6">

@@ -6,11 +6,12 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.2.2/css/buttons.dataTables.min.css">
     <style>
         table>thead>tr>th {
-            text-align: center;
+            text-align: left;
+            padding: 10px 10px !important;
         }
 
         table>tbody>tr>td {
-            text-align: center;
+            text-align: left;
         }
 
         .dataTables_wrapper .dt-buttons {
@@ -83,7 +84,7 @@
                         </div>
                     </div>
                     <div class="col-md-2" style="text-align: right">
-                        <a href="{{ route('events.create') }}" class="btn btn-primary">Create</a>
+                        <a href="{{ route('events.create') }}" class="btn btn-primary">Create Event</a>
                     </div>
                     {{-- <div class="row" style="display: flex; justify-content: space-between">
                     </div> --}}
@@ -195,7 +196,8 @@
                     },
                     {
                         data: 'active_duration',
-                        name: 'active_duration'
+                        name: 'active_duration',
+                        visible: false
                     },
                     {
                         data: 'time_reminder',

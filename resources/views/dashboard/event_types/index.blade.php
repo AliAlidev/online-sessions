@@ -50,7 +50,7 @@
                         @haspermission('create_event_type')
                             <button class="btn btn-sm btn-primary" data-bs-target="#CreateEventTypeModal" data-bs-toggle="modal"
                                 type="button"><span><span class="d-flex align-items-center gap-2">
-                                        <span class="d-none d-sm-inline-block">Add New Folder</span>
+                                        <span class="d-none d-sm-inline-block">Add Event type</span>
                                         <i class="icon-base bx bx-plus icon-sm"></i>
                                     </span>
                                 </span>

@@ -298,10 +298,10 @@
                         <div class="card-header align-items-center">
                             <div class="form-check form-switch mb-3">
                                 <input class="form-check-input" type="checkbox" id="enable-organizer-id" name="enable_organizer" {{ $event->enable_organizer == 1 ? 'checked' : '' }}>
-                                <label class="form-check-label" for="flexSwitchCheckChecked">Enable Organizer</label>
+                                <label class="form-check-label" for="flexSwitchCheckChecked">Enable Vendors Section</label>
                             </div>
-                            <div style="display: flex; gap: 10px" class="mb-1">
-                                <h4>Event Organizer</h4>
+                            <div style="display: flex; gap: 10px; align-items: baseline;" class="mb-1">
+                                <h5>Add New Vendor</h5>
                                 <button type="button" class="btn rounded-pill btn-icon btn-primary"
                                     id="organizer-add-button">
                                     <span class="fa fa-plus" style="font-size: 15px"></span>
@@ -447,14 +447,14 @@
                                         <div class="col-md-6">
                                             <label class="form-label">Select Accent Color</label>
                                             <div class="color-picker">
-                                                <div class="color-box {{ $event->setting?->accent_color == '#b71c1c' ? 'selected' : '' }}"
-                                                    style="background-color: #b71c1c;" data-color="#b71c1c"></div>
-                                                <div class="color-box {{ $event->setting?->accent_color == '#1a237e' ? 'selected' : '' }}"
-                                                    style="background-color: #1a237e;" data-color="#1a237e"></div>
-                                                <div class="color-box {{ $event->setting?->accent_color == '#2e7d32' ? 'selected' : '' }}"
-                                                    style="background-color: #2e7d32;" data-color="#2e7d32"></div>
-                                                <div class="color-box {{ $event->setting?->accent_color == '#00838f' ? 'selected' : '' }}"
-                                                    style="background-color: #00838f;" data-color="#00838f"></div>
+                                                <div class="color-box {{ $event->setting?->accent_color == '#EFBF04' ? 'selected' : '' }}"
+                                                    style="background-color: #EFBF04;" data-color="#EFBF04"></div>
+                                                <div class="color-box {{ $event->setting?->accent_color == '#233d4e' ? 'selected' : '' }}"
+                                                    style="background-color: #233d4e;" data-color="#233d4e"></div>
+                                                <div class="color-box {{ $event->setting?->accent_color == '#bd3b3b' ? 'selected' : '' }}"
+                                                    style="background-color: #bd3b3b;" data-color="#bd3b3b"></div>
+                                                <div class="color-box {{ $event->setting?->accent_color == '#1f2e60' ? 'selected' : '' }}"
+                                                    style="background-color: #1f2e60;" data-color="#1f2e60"></div>
                                             </div>
                                         </div>
                                         <div class="col-md-6 mt-7">
@@ -462,7 +462,7 @@
                                                 value="{{ $event->setting?->accent_color }}">
                                         </div>
                                         <small class="text-body float-start error-message-div accent_color-error"
-                                            style="color: #ff0000 !important" hidden></small>
+                                            style="color: #EFBF04 !important" hidden></small>
                                     </div>
                                     {{-- <div class="row mb-6">
                                         <div class="col-md-6">

@@ -51,7 +51,7 @@ class FolderFileController extends Controller
                     ->editColumn('file', function ($row) {
                         if ($row->file_type == 'image') {
                             return '<a href="' . asset($row->file) . '" data-fancybox="preview-gallery" data-caption=" <strong>' . $row->user_name . "</strong><br>" . $row->description . '">
-                                    <img class="file-previewer" src="' . asset($row->file) . '" data-type="image" style="width: 100px;height: 100px">
+                                    <img class="file-previewer" src="' . asset($row->file) . '" data-type="image" style="width: 100px;height: 100px; object-fit:contain;">
                                 </a> ';
                         } elseif ($row->file_type == 'video') {
                             return '<a href="' . $this->bunnyVideoService->getEmbedUrl($row->file_bunny_id) . '" target="_blank" class="link"><i class="bx bx-video 2xl" style="font-size: 30px;"></i> </a>';
