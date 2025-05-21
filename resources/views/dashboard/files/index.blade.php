@@ -667,7 +667,7 @@
                                     }
                                 }
                             },
-                            timeout: 999000
+                            timeout: 3600000
                         })
                         .then(function(response) {
                             allUploadsSuccessCount++;
