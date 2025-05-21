@@ -231,6 +231,8 @@
                         width="26px" height="26px">
                 </div>
             </a>
+            <!-- Scroll to Top -->
+            <button id="scrollTopBtn" title="Go to top"><svg width="30px" height="30px" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><line class="scroll-to-top-cls-1" x1="16" x2="25" y1="11.5" y2="20.5"/><line class="scroll-to-top-cls-1" x1="7" x2="16" y1="20.5" y2="11.5"/></svg></button>
         </div>
     </div>
     {{-- <input type="hidden" id="delete-button-svg" data-svg="{{ asset('assets/website/gallery-assets/images/delete-icon.svg') }}"> --}}
@@ -238,4 +240,13 @@
 
 @push('scripts')
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script>
+        const scrollTopBtn = document.getElementById("scrollTopBtn");
+        window.onscroll = function() {
+            scrollTopBtn.style.display = window.scrollY > 1000 ? "block" : "none";
+        };
+        scrollTopBtn.onclick = function() {
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        };
+    </script>
 @endpush

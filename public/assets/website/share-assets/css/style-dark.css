@@ -52,13 +52,6 @@ body {
   background-color: var(--primary-01);
 }
 /******* --primary-02 *******/
-.drop-area p {
-  color: var(--primary-03);
-}
-i.fas.fa-cloud-upload-alt {
-    font-size: 30px;
-    color: var(--primary-03);
-}
 .user_name_label{
   color: var(--primary-02);
 }
@@ -94,6 +87,19 @@ i.fas.fa-cloud-upload-alt {
   color:#676767;
 }
 /******* --primary-03 *******/
+.drop-area p {
+  color: var(--primary-03);
+}
+i.fas.fa-cloud-upload-alt {
+    font-size: 30px;
+    color: var(--primary-03);
+}
+input#user_name {
+    color: var(--primary-03);
+}
+textarea#caption{
+  color: var(--primary-03);
+}
 /******* --primary-04 *******/
 .drop-area {
   background-color: var(--primary-04);
@@ -495,7 +501,7 @@ textarea#caption{
           text-align: center;
       }
       .drop-area p {
-      color: var(--primary-03);
+      color: #676767;
       font-size: 14px;
       margin-top: 8px;
       font-weight: normal;
