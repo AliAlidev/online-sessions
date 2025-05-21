@@ -135,7 +135,6 @@ if (refreshButton) {
     refreshButton.addEventListener('click', function (event) {
         var element = event.target;
         document.getElementById(element.dataset.id).click();
-        $('.refresh-button').addClass('disabled');
     });
 }
 
@@ -215,6 +214,7 @@ async function selectFolder(event) {
                 var canDownload = result.eventSupportDownload ? 'download' : '';
                 $.getScript("https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js").done(function () {
                     $('[data-fancybox="gallery"]').fancybox({
+                        clickOutside: "close",
                         buttons: [
                             "zoom",
                             "slideShow",
@@ -244,8 +244,7 @@ async function selectFolder(event) {
                                     deleteImage(current, instance);
                                 }
                             });
-                        },
-                        clickOutside: "close"
+                        }  
                     });
 
                     async function deleteImage(current, instance) {

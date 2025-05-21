@@ -179,7 +179,7 @@ $('#uploadForm').submit(function (e) {
             $('#uploadForm')[0].reset();
             document.getElementById('thumbnails').innerHTML = '';
             const message = response.data?.message || 'Upload completed successfully';
-            const $alert = $(`<div class="alert alert-success" style="margin-top:40px; margin-bottom:30px">${message}</div>`);
+            const $alert = $(`<div class="alert alert-success guest-upload-success" style=""><i class="fa fa-check" aria-hidden="true"></i>${message}</div>`);
             $('#uploadProgressModal').prepend($alert);
             $('#uploadProgressModalLabel').attr('hidden', true);
         })

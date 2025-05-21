@@ -74,10 +74,10 @@
             --bs-progress-bar-transition: width 0.6s ease;
             display: flex;
             overflow: hidden;
-            background-color: var(--bs-progress-bg);
+            background-color: #ccc;
             border-radius: var(--bs-progress-border-radius);
-            font-size: 12px;
-            height: 10px
+            font-size: 10px;
+            height: 12px
         }
 
         .progress-bar {
@@ -88,7 +88,7 @@
             color: var(--bs-progress-bar-color);
             text-align: center;
             white-space: nowrap;
-            background-color: var(--bs-progress-bar-bg);
+            background-color: cornflowerblue;
             transition: var(--bs-progress-bar-transition);
             color: white;
         }
@@ -430,19 +430,21 @@
             font-size: 10px;
         }
 
-        .alert-success {
-            color: #0f5132;
-            /* Text color */
-            background-color: #d1e7dd;
-            /* Background color */
-            border: 1px solid #badbcc;
-            /* Border */
+        .alert-success.guest-upload-success{
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: var(--primary-02);
             padding: 1rem 1.25rem;
             border-radius: 0.375rem;
             position: relative;
             margin-bottom: 1rem;
         }
-
+        .alert-success.guest-upload-success i{
+            font-size:32px;
+            color: var(--accent-01);
+        }
         .alert-success a {
             color: #0f5132;
             /* Link color */
@@ -489,16 +491,6 @@
             pointer-events: auto;
         }
 
-        .modal {
-            position: relative;
-            background: white;
-            padding: 20px 30px;
-            border-radius: 10px;
-            text-align: center;
-            transform: scale(0.8);
-            transition: transform 0.3s ease;
-            min-width: 600px;
-        }
 
         .overlay.show .modal {
             transform: scale(1);
@@ -623,14 +615,14 @@
                 <span id="closeXBtn" class="close-x">&times;</span>
                 <h5 class="modal-title" id="uploadProgressModalLabel">Uploading...</h5>
                 <div id="progressContainer"></div>
-                <button type="button" class="close-btn" style="margin-top: 10px" id="closeModalBtn">Close</button>
+                <button type="button" class="close-btn" id="closeModalBtn">Close</button>
             </div>
         </div>
 
     </div><!-- End Main Container -->
     <!-- Footer -->
-    <div class="footer">
-        <p class="footer-copywrite">Powered by UP EVENTS</p>
+    <div class="footer share-page-footer">
+        <p class="footer-copywrite">Powered by EVERMOMENT</p>
     </div>
 @endsection
 

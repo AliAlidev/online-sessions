@@ -194,7 +194,7 @@
             
             <!-- Footer -->
             <div class="footer">
-                <p class="footer-copywrite">Powered by UP EVENTS</p>
+                <p class="footer-copywrite">Powered by EVERMOMENT</p>
             </div>
         </div><!-- End Event Details section -->
     </div><!-- End Container -->

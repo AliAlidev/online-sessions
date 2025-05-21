@@ -26,6 +26,22 @@
     --font-event-title-01: 'Taviraj-Regular';
     --font-body-01: 'Roboto-Regular';
 }
+.modal {
+    position: relative;
+    background: var(--primary-01);;
+    padding: 20px 30px;
+    border-radius: 10px;
+    text-align: center;
+    transform: scale(0.8);
+    transition: transform 0.3s ease;
+    min-width: 600px;
+}
+#progressContainer p{
+  color: var(--primary-02);
+}
+#uploadProgressModalLabel{
+  color: var(--primary-02);
+}
 /******* --primary-01 *******/
 body {
   background-color: var(--primary-01);
@@ -247,6 +263,10 @@ body {
 }
 
 @media (max-width: 768px) {
+  .modal {
+      min-width: unset;
+      max-width: 90vw;
+    }
     .gallery {
         grid-template-columns: repeat(2, 1fr);
     }
@@ -418,7 +438,7 @@ textarea#caption{
 .close-btn {
     margin-top: 20px;
     padding: 8px 16px;
-    background-color: #3A7CA5;
+    background-color: var(--accent-01);
     color: white;
     border: none;
     border-radius: 6px;
@@ -483,6 +503,9 @@ textarea#caption{
     bottom: 0;
     left: 0;
     z-index: 9992;
+}
+.footer.share-page-footer{
+    background-color: transparent;
 }
 .footer .footer-copywrite{
   font-size: 12px;

@@ -190,14 +190,14 @@ h1.event-title{
     position: relative;
 }
 .scroll-arrow {
-    border: 1px solid var(--accent-01);
+    border: 1px solid var(--primary-02);
     border-radius: 0;
     color: white;
     padding: 5px;;
     line-height: 0;
     cursor: pointer;
     z-index: 10;
-    background-color: rgba(255, 255, 255, 0.8);
+    background-color: transparent;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
     z-index: 9995;
 }
