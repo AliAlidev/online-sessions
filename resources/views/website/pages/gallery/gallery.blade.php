@@ -249,4 +249,15 @@
             window.scrollTo({ top: 0, behavior: "smooth" });
         };
     </script>
+    <script>
+    document.querySelectorAll('.folder-thumbnail').forEach(folder => {
+        folder.addEventListener('click', function () {
+            // Remove 'clicked' from all other folders
+            document.querySelectorAll('.folder-thumbnail').forEach(f => f.classList.remove('clicked'));
+            
+            // Add 'clicked' to the current one
+            this.classList.add('clicked');
+        });
+    });
+    </script>
 @endpush

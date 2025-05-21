@@ -176,6 +176,9 @@ h1.event-title{
 .folder-thumbnail:hover {
     transform: scale(1.05); /* Scale up on hover */
 }
+.folder-thumbnail.clicked {
+    transform: scale(1.1); /* Scale up on hover */
+}
 .tab{
   width: 164px;
   height: 112px;
