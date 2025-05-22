@@ -18,14 +18,12 @@
         .auth-checking {
             display: none !important;
         }
-
         #loader-div {
             /* display: flex; */
             align-items: center;
             justify-content: center;
             padding-top: 13%;
         }
-
         /* Style for the loader container */
         .loader-container {
             display: flex;
@@ -34,7 +32,6 @@
             font-size: 16px;
             color: #555;
         }
-
         /* Spinner style */
         .loader {
             border: 4px solid #f3f3f3;
@@ -46,18 +43,15 @@
             margin-right: 10px;
             /* Space between spinner and text */
         }
-
         /* Animation for the spinner */
         @keyframes spin {
             0% {
                 transform: rotate(0deg);
             }
-
             100% {
                 transform: rotate(360deg);
             }
         }
-
         /* Text style for "Loading..." */
         .loading-text {
             font-size: 16px;
@@ -65,11 +59,9 @@
             line-height: 50px;
             /* Vertically center the text next to the spinner */
         }
-
         .swal2-container {
             z-index: 9999 !important;
         }
-
         .video-player {
             width: 100%;
             display: flex;
