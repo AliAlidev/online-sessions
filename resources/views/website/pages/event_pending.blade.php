@@ -72,37 +72,7 @@
             pointer-events: none;
             cursor: default;
             background-color: #ccc !important;
-        }
-
-        .timer {
-            display: flex;
-            justify-content: center;
-            font-size: 40px;
-            gap: 14px;
-            flex-wrap: wrap;
-        }
-
-        .segment {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-width: 60px;
-            color: #888;
-        }
-
-        .label {
-            font-size: 14px;
-            margin-top: 5px;
-            color: #888;
-            letter-spacing: 1px;
-        }
-
-        .timer-container {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
+        }  
     </style>
 @endpush
 
@@ -125,7 +95,7 @@
             <div class="event-title-date event-title-date-mobile">
                 <h1 class="event-title">
                     {{ isset($event->event_alias_name) ? $event->event_alias_name : $event->event_name }}</h1>
-                <p class="event-date">{{ $event->start_date }}</p>
+                <p class="event-date">{{ \Carbon\Carbon::parse($event->start_date)->format('Y-m-d') }}</p>
             </div>
         </div>
         <!-- Right Section -->
@@ -135,7 +105,7 @@
                 <div class="event-title-date event-title-date-desktop">
                     <h1 class="event-title">
                         {{ isset($event->event_alias_name) ? $event->event_alias_name : $event->event_name }}</h1>
-                    <p class="event-date">{{ $event->start_date }}</p>
+                    <p class="event-date">{{ \Carbon\Carbon::parse($event->start_date)->format('Y-m-d') }}</p>
                 </div>
                 <!-- Buttons Section -->
                 <div class="buttons-section">
@@ -165,9 +135,10 @@
                         <span class="loader" style="display: none;"></span>
                     </a>
                 </div>
+                <!-- Beautiful beginning -->
+                <h3 class="" style="color:#000">A beautiful beginning is on its way.</h3>
                 <!-- counter Section -->
                 <div class="timer-container">
-                    <h3 class="" style="color:#000">A beautiful beginning is on its way.</h3>
                     <div class="timer" id="countdown">
                         <div class="segment">
                             <div id="days">201</div>

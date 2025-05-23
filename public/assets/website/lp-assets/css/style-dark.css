@@ -427,6 +427,38 @@ button {
 .footer .footer-copywrite{
   font-size: 12px;
 }
+/**************************** Event Expired Page **********************************/
+.event-subscription-ended-text{
+  color: #fff;
+  margin-top: 20px;
+}
+/**************************** Event Pending Page **********************************/
+.timer {
+    display: flex;
+    justify-content: center;
+    font-size: 40px;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+.segment {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 60px;
+    color: #fff;
+}
+ .label {
+    font-size: 14px;
+    color: #fff;
+    letter-spacing: 1px;
+}
+
+.timer-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
 /**************************** Media Queries **********************************/
 @media screen and (max-width: 991px) {
   .event-title-date.event-title-date-mobile h1, .event-title-date.event-title-date-mobile p
@@ -443,7 +475,7 @@ button {
     display: none;
   }
   .event-details-container{
-    gap:0;
+    gap:2dvh;
     margin-top: -20px;
   }
   .menu {

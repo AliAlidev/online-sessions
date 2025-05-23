@@ -114,7 +114,8 @@ body {
   position: relative;
 }
 .main-body.gallery-section{
-  margin-top: 30px;
+  margin-top: 20px;
+  margin-bottom: 90px;
     padding: 0 15px; /* Add some padding */
     position: relative;
 }
@@ -270,6 +271,7 @@ h1.event-title{
     bottom: 0;
     left: 0;
     z-index: 9992;
+    box-shadow: 0 -4px 5px -4px rgba(255, 255, 255, 0.1);
 }
 .footer .footer-copywrite{
   font-size: 12px;
@@ -348,16 +350,61 @@ h1.event-title{
       transform: scale(1.05);
   }
   .video-item h4 {
+    color: #fff;
       font-size: 14px;
       margin: 0 0 5px 0;
   }
   .video-item p {
       font-size: 12px;
       margin: 0;
+      color: #fff;
   }
   .video-item:last-of-type{
     margin-bottom: 11dvh;
   }
+  .sticky-section.sticky-section-player {
+    height: 350px !important;
+    position: relative; /* Not sticky on desktop */
+    overflow: hidden;
+}
+@media (max-width: 991px) {
+    .sticky-section.sticky-section-player {
+        height: 35vw !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .sticky-section.sticky-section-player {
+        height: 52.1vw !important;
+        position: sticky;
+        top: 0;
+        
+    }
+}
+.video-player {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+#videoIframe {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    min-width: 100%;
+    min-height: 100%;
+    transform: translate(-50%, -50%);
+    border-radius: 5px;
+    background-color: #000;
+    pointer-events: auto;
+}
+.video-item {
+    padding: 0;
+}
+.video-item.active {
+    background-color: var(--primary-04); /* Change to your preferred color */
+    border-radius: 6px;
+}
 /*********************** Responsive Design *********************/
 @media (max-width: 1024px) {
     .gallery {

@@ -55,34 +55,86 @@
             cursor: pointer;
             padding: 0;
         }
+        @if ($event->setting->theme == 'dark')
+        .gallery-login-container{
+            background-image: url('{{ asset('assets/img/illustrations/aaaaa.png') }}');
+            background-color: rgb(41,41,41,0.4);
+            background-size: 200px;
+            background-repeat:repeat;
+        }
+        .gallery-login-card{
+            background-color: #292929;
+        }
+        h4.enter-password-text {
+            color: #fff;
+        }
+        .gallery-login-btn{
+            background-color: #EDEDED;
+            color: #292929;
+            box-shadow: unset !important;
+        } 
+        .gallery-login-btn:hover{
+            background-color: #EDEDED !important;;
+            color: #292929;
+            box-shadow: unset !important;
+        }      
+        @else
+        .gallery-login-container{
+            background-image: url('{{ asset('assets/img/illustrations/wedding-patterrn.png') }}');
+            background-color: rgb(231,231,231,0.4);
+            background-size: 200px;
+            background-repeat:repeat;
+        }
+        .gallery-login-card{
+            background-color: #FFFFFF;
+        }
+        .gallery-login-btn{
+            background-color: #292929;
+            box-shadow: unset !important;
+        }
+        .gallery-login-btn:hover{
+            background-color: #292929 !important;
+            box-shadow: unset !important;
+        }
+        h4.enter-password-text {
+            color: #292929;
+        }
+        @endif
+        h4.enter-password-text {
+            text-align: center;
+            line-height: normal;
+            margin-bottom:20px !important;
+        }
+        .form-control:focus, .form-select:focus {
+            border-color: unset !important;
+        }
     </style>
     <script src="{{ asset('assets/js/config.js') }}"></script>
 </head>
 
 <body>
-    <div class="container-xxl">
+    <div class="container-xxl gallery-login-container">
         <div class="authentication-wrapper authentication-basic container-p-y">
             <div class="authentication-inner">
                 <!-- Register -->
-                <div class="card px-sm-6 px-0">
+                <div class="card px-sm-6 px-0 gallery-login-card">
                     <div class="card-body">
 
                         <div class="alert-danger-invalid-token" id="global-error-message" style="display: none">
                         </div>
-                        <h4 class="mb-1">Please enter event password </h4>
-
+                        <h4 class="mb-1 enter-password-text">Please enter the password to access our special moments.</h4>
                         <form id="formAuthentication" class="mb-6"
                             action="{{ route('landing.apply_event_password') }}" method="POST">
                             <input type="hidden" id="event_slug" name="event_slug" value="{{ $event_slug }}">
                             <input type="hidden" id="year" name="year" value="{{ $year }}">
                             <div class="mb-6">
-                                <label for="password" class="form-label">Event Password</label>
+                                <!--<label for="password" class="form-label">Event Password</label>-->
                                 <input type="password" class="form-control" id="password" name="password"
-                                    placeholder="Enter your password or user name" autofocus="">
+                                    placeholder="Enter password" autofocus="">
                             </div>
                             <div class="mb-6">
-                                <button class="btn btn-primary d-grid w-100" id="formAuthenticationBtn"
-                                    type="button">Apply</button>
+                                <button class="btn btn-primary d-grid w-100 gallery-login-btn" id="formAuthenticationBtn"
+                                    type="button">Enter Gallery</button>
                             </div>
                         </form>
                     </div>
