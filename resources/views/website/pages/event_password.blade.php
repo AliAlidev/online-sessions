@@ -55,38 +55,16 @@
             cursor: pointer;
             padding: 0;
         }
-        @if ($event->setting->theme == 'dark')
         .gallery-login-container{
-            background-image: url('{{ asset('assets/img/illustrations/aaaaa.png') }}');
-            background-color: rgb(41,41,41,0.4);
-            background-size: 200px;
-            background-repeat:repeat;
-        }
-        .gallery-login-card{
-            background-color: #292929;
-        }
-        h4.enter-password-text {
-            color: #fff;
-        }
-        .gallery-login-btn{
-            background-color: #EDEDED;
-            color: #292929;
-            box-shadow: unset !important;
-        } 
-        .gallery-login-btn:hover{
-            background-color: #EDEDED !important;;
-            color: #292929;
-            box-shadow: unset !important;
-        }      
-        @else
-        .gallery-login-container{
-            background-image: url('{{ asset('assets/img/illustrations/wedding-patterrn.png') }}');
+            background-image: url('{{ asset('assets/img/illustrations/wedding-patterrn-light.svg') }}');
             background-color: rgb(231,231,231,0.4);
             background-size: 200px;
             background-repeat:repeat;
         }
         .gallery-login-card{
-            background-color: #FFFFFF;
+            background-color: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(2px);
+            -webkit-backdrop-filter: blur(2px);
         }
         .gallery-login-btn{
             background-color: #292929;
@@ -99,7 +77,6 @@
         h4.enter-password-text {
             color: #292929;
         }
-        @endif
         h4.enter-password-text {
             text-align: center;
             line-height: normal;
@@ -107,6 +84,28 @@
         }
         .form-control:focus, .form-select:focus {
             border-color: unset !important;
+        }
+        .authentication-wrapper.authentication-basic .authentication-inner:before{
+            background-image: unset;
+        }
+        .light-style .authentication-wrapper.authentication-basic .authentication-inner:after{
+            background-image: unset;
+        }
+        .form-control {
+             --bs-input-border-color: color-mix(in sRGB, var(--bs-base-color) 52%, var(--bs-paper-bg));
+        }
+        .form-control:focus{
+            border-width: 1px;
+            box-shadow: unset;
+        }
+        .login-page-logo{
+            position:absolute;
+            bottom: 15px;
+            left: calc(50vw - 85px);
+        }
+        button#formAuthenticationBtn {
+            box-shadow: unset;
+            border: unset;
         }
     </style>
     <script src="{{ asset('assets/js/config.js') }}"></script>
@@ -119,8 +118,10 @@
                 <!-- Register -->
                 <div class="card px-sm-6 px-0 gallery-login-card">
                     <div class="card-body">
-
                         <div class="alert-danger-invalid-token" id="global-error-message" style="display: none">
+                        </div>
+                        <div style="text-align:center;margin-bottom:10px">
+                            <img src="{{ asset('assets/img/illustrations/love-lock.svg') }}" width="80px;" alt="">
                         </div>
                         <h4 class="mb-1 enter-password-text">Please enter the password to access our special moments.</h4>
                         <form id="formAuthentication" class="mb-6"
@@ -143,6 +144,9 @@
             </div>
         </div>
     </div>
+    <div class="login-page-logo">
+            <img src="{{ asset('assets/img/icons/logo-black.svg') }}" width="170px" alt="">    
+    </div> 
     <script src="{{ asset('assets/vendor/libs/jquery/jquery.js') }}"></script>
     <script src="{{ asset('assets/vendor/libs/popper/popper.js') }}"></script>
     <script src="{{ asset('assets/vendor/js/bootstrap.js') }}"></script>
