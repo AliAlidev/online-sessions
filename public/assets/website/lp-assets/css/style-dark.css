@@ -85,7 +85,6 @@ body {
 .share-button {
     background-color: var(--accent-01);
 }
-
 /**************************** Main Styles **********************************/
 * {
     margin: 0;
@@ -142,7 +141,6 @@ body {
     fill: #fff;
   }
 /**************************** Left Section **********************************/
-
 .event-title-date.event-title-date-mobile h1, .event-title-date.event-title-date-mobile p
 {
   visibility: hidden;
@@ -267,7 +265,7 @@ h1.event-title{
   position: relative;
   max-width: 380px;
   width: 100%;
-  padding: 0 0 50px 0;
+  padding: 0;
   overflow: hidden;
 }
 .testimonial .slide {
@@ -293,14 +291,8 @@ h1.event-title{
   height: 26px;
   width: 26px;
   border-radius: 50%;
-  transform: translateY(-10px) !important;
+  transform: translateY(6px) !important;
   transition: 0.2s;
-}
-.nav-btn.swiper-button-prev{
-  transform: translateX(10px);
-}
-.nav-btn.swiper-button-next{
-  transform: translateX(-10px);
 }
 .nav-btn::after, .nav-btn::before{
   border-radius: 50%;
@@ -356,8 +348,8 @@ h1.event-title{
 .buttons-section {
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
-    gap: 6px;
+    justify-content: center;
+    gap: 20px;
     width: 100%;
 }
 button {
@@ -429,7 +421,7 @@ button {
 }
 /**************************** Event Expired Page **********************************/
 .event-subscription-ended-text{
-  color: #fff;
+  color: #000;
   margin-top: 20px;
 }
 /**************************** Event Pending Page **********************************/
@@ -445,14 +437,13 @@ button {
     flex-direction: column;
     align-items: center;
     min-width: 60px;
-    color: #fff;
+    color: #000;
 }
  .label {
     font-size: 14px;
-    color: #fff;
+    color: #000;
     letter-spacing: 1px;
 }
-
 .timer-container {
     display: flex;
     flex-direction: column;
@@ -524,16 +515,14 @@ button {
   }
   .buttons-section{
     justify-content: center;
-    gap: 14px;
+    gap: 20px;
   }
   .gallery-button {
-    width: 174px;
-    height: 114px;
+    height: 16dvh;
     -webkit-tap-highlight-color: transparent;
   }
   .share-button {
-    width: 174px;
-    height: 114px;
+    height: 16dvh;
     -webkit-tap-highlight-color: transparent;
   }
   .gallery-button .button-image{
@@ -565,22 +554,23 @@ button {
     margin-bottom: 0.5vh;
   }
   .testimonial{
-    padding: 0 0 4dvh 0;
+    padding: 0;
     width: 96vw;
     max-width: 380px;
   }
-
 }
 @media screen and (max-width: 768px) {
 
 }
-@media screen and (max-width: 360px) {
-  .gallery-button {
+@media screen and (max-width: 381px) {
+ .gallery-button {
     width: 44vw;
+    height: 15dvh;
     margin-right: 5px;
   }
   .share-button {
     width: 44vw;
+    height: 15dvh;
     margin-left: 5px;
   }
   h1.event-title {
