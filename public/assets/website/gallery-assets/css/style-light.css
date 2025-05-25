@@ -155,11 +155,12 @@ h1.event-title{
   font-weight: 400;
   font-style: normal;
 }
-.top-bar-iamge{
-    width: 130px;
-    height: 130px;
+.top-bar-iamge {
+    width: 120px;
+    height: 120px;
     object-fit: cover;
-    clip-path: circle(50% at 50% 50%);
+    border-radius: 50%;
+    box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.4);
 }
 .folder-thumbnail {
     display: inline-block;
@@ -243,23 +244,27 @@ h1.event-title{
     height: 100%;
     object-fit: cover;
     display: block;
-    border-radius: 8px;
-    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-    background-size: 400% 100%;
-    width: 100%;
-    display: block;
     border-radius: 4px;
-    animation: placeholderMove 1.5s linear infinite;
+    background: linear-gradient(
+        90deg,
+        #eeeeee 0%,
+        #dddddd 40%,
+        #eeeeee 100%
+    );
+    background-size: 200% 100%;
+    animation: placeholderMove 1.5s ease-in-out infinite;
     min-width: 100px;
 }
+
 @keyframes placeholderMove {
     0% {
-        background-position: 100% 0;
+        background-position: 200% 0;
     }
     100% {
-        background-position: -100% 0;
+        background-position: -200% 0;
     }
 }
+
 /********************************** Footer **********************************/
 .footer {
     height: 66px;

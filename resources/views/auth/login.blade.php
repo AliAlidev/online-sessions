@@ -34,6 +34,14 @@
             pointer-events: auto;
             z-index: 1;
         }
+        .admin-login-logo{
+            text-align: center;
+            margin-bottom:20px; 
+        }
+        .evermoment-admin-login{
+            color:#4a4a4a;
+            text-align:center;
+        }
     </style>
     <script src="{{ asset('assets/js/config.js') }}"></script>
 </head>
@@ -100,9 +108,10 @@
                             </a>
                         </div> --}}
                         <!-- /Logo -->
-                        <h4 class="mb-1">Welcome to online sessions 👋</h4>
-                        <p class="mb-6">Please sign-in to your account and start the adventure</p>
-
+                         <div class="admin-login-logo">
+                                <img src="{{ asset('assets/img/icons/logo-black.svg') }}" width="210px" alt="">    
+                         </div> 
+                        <h5 class="evermoment-admin-login">Evermoment Admin Login</h5>
                         <form id="formAuthentication" class="mb-6" action="{{ route('login') }}" method="POST">
                             @csrf
                             <div class="mb-6">

@@ -74,13 +74,13 @@
             background-color: #292929 !important;
             box-shadow: unset !important;
         }
-        h4.enter-password-text {
-            color: #292929;
-        }
-        h4.enter-password-text {
+        .enter-password-text {
             text-align: center;
             line-height: normal;
-            margin-bottom:20px !important;
+            color: #292929;
+            text-align:center;
+            line-height: 22px;
+            margin: 20px 0 !important;
         }
         .form-control:focus, .form-select:focus {
             border-color: unset !important;
@@ -98,7 +98,7 @@
             border-width: 1px;
             box-shadow: unset;
         }
-        .login-page-logo{
+        .gallery-login-logo{
             position:absolute;
             bottom: 15px;
             left: calc(50vw - 85px);
@@ -123,7 +123,7 @@
                         <div style="text-align:center;margin-bottom:10px">
                             <img src="{{ asset('assets/img/illustrations/love-lock.svg') }}" width="80px;" alt="">
                         </div>
-                        <h4 class="mb-1 enter-password-text">Please enter the password to access our special moments.</h4>
+                        <h5 class="mb-1 enter-password-text">Please enter the password to access our special moments.</h5>
                         <form id="formAuthentication" class="mb-6"
                             action="{{ route('landing.apply_event_password') }}" method="POST">
                             <input type="hidden" id="event_slug" name="event_slug" value="{{ $event_slug }}">
@@ -144,7 +144,7 @@
             </div>
         </div>
     </div>
-    <div class="login-page-logo">
+    <div class="gallery-login-logo">
             <img src="{{ asset('assets/img/icons/logo-black.svg') }}" width="170px" alt="">    
     </div> 
     <script src="{{ asset('assets/vendor/libs/jquery/jquery.js') }}"></script>
