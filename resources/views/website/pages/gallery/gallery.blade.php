@@ -84,6 +84,7 @@
             text-decoration: none;
             cursor: pointer;
             transition: background-color 0.3s, color 0.3s;
+            box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
         }
         .refresh-button svg {
             width: 18px;
@@ -104,7 +105,7 @@
         .reload-btn-div {
             display:flex;
             justify-content: space-between;
-            padding:10px 20px;
+            padding:10px 15px;
             margin: 15px 0px;
         }
     </style>
@@ -141,9 +142,18 @@
     </div>
     <div class="main-container auth-checking">
         <div class="main-header">
-            <div class="top-bar">
+            <div class="top-bar" style="position:relative">
                 <a href="{{ route('landing.index', ['year' => $year, 'event_slug' => $event_slug]) }}"><img
-                        class="top-bar-iamge" src="{{ asset($event->profile_picture) }}" alt=""></a>
+                        class="top-bar-image" src="{{ asset($event->profile_picture) }}" alt=""></a>
+                <!--<img src="{{ asset('assets/img/illustrations/a2.svg') }}" alt="" style="position:absolute;z-index:9999;top:-2px;left:12px; width:127px;fill:#ccc !important">-->     
+                
+                @if ($event->setting->theme == 'dark')
+                    <img src="{{ asset('assets/img/illustrations/gallery-profile-crown-white.svg') }}" alt="" style="position:absolute;z-index:9999;top:-12px;left:4px; width:144px;">
+                @else
+                    <img src="{{ asset('assets/img/illustrations/gallery-profile-crown-black.svg') }}" alt="" style="position:absolute;z-index:9999;top:-12px;left:4px; width:144px;">
+                @endif
+                
+                                <!--<img src="{{ asset('assets/img/illustrations/a4.svg') }}" alt="" style="position:absolute;z-index:9999;top:-16px;left:-1px; width:152px;fill:#ccc !important">-->
                 <div class="event-title-date">
                     <h1 class="event-title">
                         {{ isset($event->event_alias_name) ? $event->event_alias_name : $event->event_name }}</h1>

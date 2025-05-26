@@ -258,11 +258,11 @@ async function selectFolder(event) {
                             if (response.data.success) {
                                 Swal.fire({
                                     position: 'top',
-                                    title: 'Deleted!',
+                                    title: 'Done!',
                                     text: response.message || 'Image was deleted successfully',
                                     icon: 'success',
                                     showConfirmButton: false,
-                                    showCloseButton: true
+                                    showCloseButton: true, 
                                 });
                                 current.opts.$orig.closest('.grid-item').remove();
                             } else {

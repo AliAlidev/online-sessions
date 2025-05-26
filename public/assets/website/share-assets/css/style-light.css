@@ -129,9 +129,6 @@ body {
     border-radius: 8px; /* Optional: Rounded corners */
     position: relative;
 }
-.main-body{
-    padding: 0 15px; /* Add some padding */
-}
 .main-body-upload{
   display: flex;
   flex-direction: column;
@@ -140,9 +137,8 @@ body {
     padding: 0 15px; /* Add some padding */
 }
 .top-bar{
-  height: 110px;
   padding: 0 15px;
-  margin-top: 20px;
+  margin-top: 26px;
   display: flex;
   flex-direction: row;
   justify-content: start;
@@ -155,21 +151,26 @@ body {
   justify-content: start;
   align-items: start;
 }
-.event-title{
-  font-size: 24px;
-  font-weight: 400;
-  font-style: normal;
-  max-width: 320px;
+h1.event-title{
+  margin: 0;
+  text-align: left;
+  transform-origin: bottom;
+  font-size: 28px;
+  line-height: 28px;
+  font-weight:normal;
+  max-width: 400px;
 }
 .event-date{
   font-size: 16px;
   font-weight: 400;
   font-style: normal;
 }
-.top-bar-iamge{
+.top-bar-image {
     width: 120px;
     height: 120px;
-    clip-path: circle(50% at 50% 50%); /* Creates a circle with 50% radius, centered on the image */
+    object-fit: cover;
+    border-radius: 50%;
+    box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.4);
 }
 .upload-button.disabled {
        pointer-events: none;
