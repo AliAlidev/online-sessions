@@ -3,9 +3,9 @@
     "file": "assets/auth-CrJnzGtq.js",
     "name": "auth"
   },
-  "_axios-8o6r61Bn.js": {
-    "file": "assets/axios-8o6r61Bn.js",
-    "name": "axios"
+  "_index-B20WIEY4.js": {
+    "file": "assets/index-B20WIEY4.js",
+    "name": "index"
   },
   "resources/css/app.css": {
     "file": "assets/app-l0sNRNKZ.js",
@@ -14,22 +14,22 @@
     "isEntry": true
   },
   "resources/js/app.js": {
-    "file": "assets/app-CBbqRvD3.js",
+    "file": "assets/app-CC34JrAx.js",
     "name": "app",
     "src": "resources/js/app.js",
     "isEntry": true,
     "imports": [
-      "_axios-8o6r61Bn.js",
+      "_index-B20WIEY4.js",
       "_auth-CrJnzGtq.js"
     ]
   },
   "resources/js/bootstrap.js": {
-    "file": "assets/bootstrap-BQNCvtVp.js",
+    "file": "assets/bootstrap-6OJn_Iwi.js",
     "name": "bootstrap",
     "src": "resources/js/bootstrap.js",
     "isEntry": true,
     "imports": [
-      "_axios-8o6r61Bn.js"
+      "_index-B20WIEY4.js"
     ]
   },
   "resources/js/pages/event_password.js": {
@@ -60,7 +60,7 @@
     ]
   },
   "resources/js/pages/share.js": {
-    "file": "assets/share-BmLUVmPb.js",
+    "file": "assets/share-nAZF6oak.js",
     "name": "share",
     "src": "resources/js/pages/share.js",
     "isEntry": true,
@@ -69,7 +69,7 @@
     ]
   },
   "resources/sass/app.scss": {
-    "file": "assets/app-DZUsWXEA.css",
+    "file": "assets/app-4_8pTTiw.css",
     "src": "resources/sass/app.scss",
     "isEntry": true
   }
