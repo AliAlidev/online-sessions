@@ -1,13 +1,10 @@
-<style>
-
-</style>
-<div class="main-body">
+<div class="main-body" style="margin-bottom: 30px;">
     <!-- Video Section-->
     <div class="video-container">
         <!-- Video Player -->
         <div class="sticky-section sticky-section-player">
             <div class="video-player" style="{{ count($videos) == 0 ? 'display:none' : '' }}"> 
-                <iframe id="videoIframe" frameborder="0" allow="autoplay" allowfullscreen
+                <iframe id="videoIframe" style="" frameborder="0" allow="autoplay" allowfullscreen
                     webkitallowfullscreen mozallowfullscreen></iframe>
             </div>
         </div>

@@ -440,6 +440,7 @@
             border-radius: 0.375rem;
             position: relative;
             margin-bottom: 1rem;
+            opacity: 1;
         }
         .alert-success.guest-upload-success i{
             font-size:32px;
@@ -541,6 +542,10 @@
             font-size:14px;
             font-weight:normal;
         }
+        #progressContainer > div > p{
+           word-wrap: break-word;
+           overflow-wrap: break-word; 
+        }
     </style>
 
     @vite(['resources/js/app.js', 'resources/js/pages/share.js'])
@@ -554,9 +559,15 @@
     <div class="main-container auth-checking">
         <input type="hidden" id="compression-ratios-file-path" value="{{ asset('/compression-ratios.json') }}">
         <div class="main-header">
-            <div class="top-bar">
-                <a href="{{ route('landing.index', ['year' => $year, 'event_slug' => $event_slug]) }}"><img
-                        class="top-bar-iamge" src="{{ asset($event->profile_picture) }}" alt=""></a>
+            <div class="top-bar" style="position:relative">
+                    <a href="{{ route('landing.index', ['year' => $year, 'event_slug' => $event_slug]) }}"><img
+                            class="top-bar-image" src="{{ asset($event->profile_picture) }}" alt="">
+                        @if ($event->setting->theme == 'dark')
+                            <img src="{{ asset('assets/img/illustrations/gallery-profile-crown-white.svg') }}" alt="" style="position:absolute;z-index:9999;top:-12px;left:3px; width:144px;">
+                        @else
+                            <img src="{{ asset('assets/img/illustrations/gallery-profile-crown-black.svg') }}" alt="" style="position:absolute;z-index:9999;top:-12px;left:3px; width:144px;">
+                        @endif
+                    </a>
                 <div class="event-title-date">
                     <h1 class="event-title">
                         {{ isset($event->event_alias_name) ? $event->event_alias_name : $event->event_name }}</h1>

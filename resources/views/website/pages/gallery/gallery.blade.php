@@ -2,6 +2,7 @@
 
 @push('styles')
     <link rel="preload" as="image" href="{{ asset('assets/img/loader/loader.gif') }}">
+    <link rel="preload" as="image" href="{{ asset('assets/img/loader/loader-white.gif') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" />
     <link href="https://fonts.googleapis.com/css2?family=Parisienne&display=swap" rel="stylesheet">
     @if ($event->setting->theme == 'dark')
@@ -68,47 +69,6 @@
             justify-content: center;
         }
     </style>
-
-    <style>
-        .refresh-button {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 8px 14px;
-            background-color: transparent;
-            color: var(--primary-02);
-            border: 1px solid var(--primary-02);
-            border-radius: 2px;
-            font-size: 14px;
-            font-family: sans-serif;
-            text-decoration: none;
-            cursor: pointer;
-            transition: background-color 0.3s, color 0.3s;
-        }
-        .refresh-button svg {
-            width: 18px;
-            height: 18px;
-            fill: currentColor;
-            transition: transform 0.4s ease;
-        }
-
-        .refresh-button:hover svg {
-            transform: rotate(180deg);
-        }
-
-        a.disabled {
-            pointer-events: none;
-            cursor: default;
-            background-color: #ccc !important;
-        }
-        .reload-btn-div {
-            display:flex;
-            justify-content: space-between;
-            padding:10px 20px;
-            margin: 15px 0px;
-        }
-    </style>
-
     <style>
         #page-loader {
             position: fixed;
@@ -141,9 +101,15 @@
     </div>
     <div class="main-container auth-checking">
         <div class="main-header">
-            <div class="top-bar">
-                <a href="{{ route('landing.index', ['year' => $year, 'event_slug' => $event_slug]) }}"><img
-                        class="top-bar-iamge" src="{{ asset($event->profile_picture) }}" alt=""></a>
+            <div class="top-bar" style="position:relative">
+                    <a href="{{ route('landing.index', ['year' => $year, 'event_slug' => $event_slug]) }}"><img
+                            class="top-bar-image" src="{{ asset($event->profile_picture) }}" alt="">
+                        @if ($event->setting->theme == 'dark')
+                            <img src="{{ asset('assets/img/illustrations/gallery-profile-crown-white.svg') }}" alt="" style="position:absolute;z-index:9999;top:-12px;left:3px; width:144px;">
+                        @else
+                            <img src="{{ asset('assets/img/illustrations/gallery-profile-crown-black.svg') }}" alt="" style="position:absolute;z-index:9999;top:-12px;left:3px; width:144px;">
+                        @endif
+                    </a>
                 <div class="event-title-date">
                     <h1 class="event-title">
                         {{ isset($event->event_alias_name) ? $event->event_alias_name : $event->event_name }}</h1>
@@ -205,7 +171,11 @@
         </div>
         <div id="loader-div" hidden>
             <div class="loader-container">
-                <img src="{{ asset('assets/img/loader/loader.gif') }}" width="40px" alt="">
+                    @if ($event->setting->theme == 'dark')
+                        <img src="{{ asset('assets/img/loader/loader-white.gif') }}" width="40px" alt="">
+                    @else
+                        <img src="{{ asset('assets/img/loader/loader.gif') }}" width="40px" alt="">
+                    @endif   
             </div>
         </div>
         <div id="gallery-div"></div>
