@@ -1,6 +1,4 @@
-<style>
-</style>
-<div class="main-body">
+<div class="main-body" style="margin-bottom: 30px;">
     <!-- Video Section-->
     <div class="video-container">
         <!-- Video Player -->
