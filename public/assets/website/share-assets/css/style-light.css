@@ -510,7 +510,7 @@ textarea#caption{
     z-index: 9992;
 }
 .footer.share-page-footer{
-    background-color: transparent;
+    background-color: var(--primary-01);
 }
 .footer .footer-copywrite{
   font-size: 12px;

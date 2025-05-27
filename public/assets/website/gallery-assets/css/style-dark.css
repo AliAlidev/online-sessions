@@ -29,14 +29,14 @@
   #scrollTopBtn {
     display: none;
     position: fixed;
-    bottom: 14px;
+    bottom: 16px;
     right: 16px;
     width: 34px;
     height: 34px;
     background-color: transparent;
     color: #fff;
     border: 1px solid #fff;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    box-shadow: 1px 1px 2px rgba(255, 255, 255, 0.2);
     cursor: pointer;
     font-size: 20px;
     z-index: 9994;
@@ -212,19 +212,58 @@ h1.event-title{
 }
 .scroll-arrow {
     border: 1px solid var(--primary-02);
-    border-radius: 0;
+    border-radius: 2px;
     color: white;
     padding: 5px;;
     line-height: 0;
     cursor: pointer;
     z-index: 10;
     background-color: transparent;
-    box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+    box-shadow: 1px 1px 2px rgba(255, 255, 255, 0.2);
     z-index: 9995;
 }
 .scroll-container:hover .scroll-arrow {
     opacity: 1;
 }
+/********************************** Refresh Button **********************************/
+.refresh-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 14px;
+            background-color: transparent;
+            color: var(--primary-02);
+            border: 1px solid var(--primary-02);
+            border-radius: 2px;
+            font-size: 14px;
+            font-family: sans-serif;
+            text-decoration: none;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+            box-shadow: 1px 1px 2px rgba(255, 255, 255, 0.2);
+        }
+        .refresh-button svg {
+            width: 18px;
+            height: 18px;
+            fill: currentColor;
+            transition: transform 0.4s ease;
+        }
+
+        .refresh-button:hover svg {
+            transform: rotate(180deg);
+        }
+
+        a.disabled {
+            pointer-events: none;
+            cursor: default;
+            background-color: #ccc !important;
+        }
+        .reload-btn-div {
+            display:flex;
+            justify-content: space-between;
+            padding:10px 15px;
+            margin: 15px 0px;
+        }
 /********************************** Gallery **********************************/
 .gallery {
     display: grid;
@@ -423,7 +462,7 @@ div#swal2-html-container{
 
 @media (max-width: 768px) {
     .sticky-section.sticky-section-player {
-        height: 52.1vw !important;
+        height: 52.4vw !important;
         position: sticky;
         top: 0;
         
@@ -442,7 +481,7 @@ div#swal2-html-container{
     min-width: 100%;
     min-height: 100%;
     transform: translate(-50%, -50%);
-    border-radius: 5px;
+    border-radius: 10px;
     background-color: #000;
     pointer-events: auto;
 }
@@ -468,17 +507,17 @@ div#swal2-html-container{
         grid-template-columns: repeat(3, 1fr);
     }
     .folder-thumbnail {
-        width: 143px;
-        height: 133px;
+        width: 154px;
+        height: 136px;
         margin-right: 12px;
     }
     .tab{
-      width: 143px;
-      height: 94px;
-      bottom: 6px;
+      width: 154px;
+      height: 100px;
+      bottom: 3px;
     }
     .folder-name{
-      width: 144px;
+      width: 154px;
       text-align: center;
       z-index: 9999;
       position: absolute;
