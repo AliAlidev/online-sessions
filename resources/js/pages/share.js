@@ -250,7 +250,7 @@ function showRetryButton(index) {
     $(`#file-container-${index} .retry-btn`).removeClass('hidden-force'); // Show Retry button
 }
 
-$(document).on("click", ".retry-btn", function(e) {
+$(document).on("click", ".retry-btn", function (e) {
     e.preventDefault();
     $(this).addClass('hidden-force');
     var file = $('#image-compressed')[0].files[0];
@@ -330,13 +330,17 @@ async function compressImages(formId) {
         }
 
         // If no quality is set (file ≤ 0.5MB or no matching threshold), skip compression
+        dataTransfer.items.add(file); // Use original file
         if (quality === null) {
-            dataTransfer.items.add(file); // Use original file
             if (dataTransfer.files.length === files.length) {
                 document.getElementById('image-compressed').files = dataTransfer.files;
                 document.getElementById('file_size').value = file.size;
             }
             return;
+        }
+        else {
+            document.getElementById('image-compressed').files = dataTransfer.files;
+            document.getElementById('file_size').value = file.size;
         }
         new Compressor(file, {
             quality: quality,
