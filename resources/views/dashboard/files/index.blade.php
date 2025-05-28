@@ -181,7 +181,7 @@
                                 <div class="col-md-12 mt-2">
                                     <div class="form-check form-switch mb-2">
                                         <input class="form-check-input compress_images" type="checkbox" id="compress_images"
-                                            name="compress_images" value="compress_images">
+                                            name="compress_images" value="compress_images" checked>
                                         <label class="form-check-label" for="compress_images">Compress Images</label>
                                     </div>
                                 </div>

@@ -23,7 +23,7 @@
     --primary-02: #1E1E1E; /** Nero **/
     --primary-03: #292929; /** Chromaphobic Black **/
     --primary-04: #E7E7E7; /** White Smoke **/
-    --font-event-title-01: 'Taviraj-Regular';
+    --font-event-title-01: "Playfair Display", serif;
     --font-body-01: 'Roboto-Regular';
 }
   #scrollTopBtn {
@@ -132,7 +132,7 @@ body {
 .horizontal-scroll {
     overflow-x: auto;
     white-space: nowrap;
-    padding: 20px 15px 20px 15px;
+    padding: 24px 15px 24px 15px;
     scroll-behavior: smooth;
     z-index: 9991;
 }
@@ -141,15 +141,17 @@ body {
   flex-direction: column;
   justify-content: start;
   align-items: start;
+  gap: 8px;
 }
 h1.event-title{
   margin: 0;
   text-align: left;
   transform-origin: bottom;
   font-size: 28px;
-  line-height: 28px;
+  line-height: 30px;
   font-weight:normal;
   max-width: 400px;
+  letter-spacing: 0.6px;
 }
 .event-date{
   font-size: 16px;
@@ -203,6 +205,7 @@ h1.event-title{
 }
 .folder-name-text{
   text-shadow: unset;
+  font-weight: normal;
 }
 /* Scroll Arrows */
 .scroll-container {
@@ -215,7 +218,8 @@ h1.event-title{
     border: 1px solid var(--primary-02);
     border-radius: 0;
     color: white;
-    padding: 5px;;
+    width: 34px;
+    height: 34px;
     line-height: 0;
     cursor: pointer;
     z-index: 10;
@@ -231,17 +235,21 @@ h1.event-title{
   gap:8px;
 }
 /********************************** Refresh Button **********************************/
+.scroll-buttons {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+}
 .refresh-button {
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            padding: 8px 14px;
+            padding: 7px 14px;
             background-color: transparent;
             color: var(--primary-02);
             border: 1px solid var(--primary-02);
             border-radius: 2px;
             font-size: 14px;
-            font-family: sans-serif;
             text-decoration: none;
             cursor: pointer;
             transition: background-color 0.3s, color 0.3s;
@@ -267,7 +275,7 @@ h1.event-title{
             display:flex;
             justify-content: space-between;
             padding:10px 15px;
-            margin: 15px 0px;
+            margin: 2px 0px;
         }
 /********************************** Gallery **********************************/
 .gallery {
@@ -539,6 +547,13 @@ div#swal2-html-container{
     /***** Video Folder *****/
 }
 @media (max-width: 768px) {
+  .scroll-arrow{
+    width: 30px;
+    height: 30px;
+  }
+  .refresh-button {
+    padding: 5px 14px;
+  }
   .sticky-section:nth-child(1) { width: 100%; }
   .sticky-section:nth-child(2) { width: 100%; }
 
@@ -562,5 +577,6 @@ div#swal2-html-container{
     h1.event-title {
     font-size: 22px;
     line-height: 22px;
+        max-width: 360px;
 }
 }

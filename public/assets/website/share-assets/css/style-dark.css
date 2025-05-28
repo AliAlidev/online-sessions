@@ -24,7 +24,7 @@
     --primary-03: #EDEDED;
     --primary-04: #292929;
     --accent-01: #1FAACC;
-    --font-event-title-01: 'Taviraj-Regular';
+    --font-event-title-01: "Playfair Display", serif;
     --font-body-01: 'Roboto-Regular';
 }
 .modal {
@@ -47,6 +47,10 @@
 body {
   background-color: var(--primary-01);
   font-family: var(--font-body-01);
+}
+
+h1.event-title{
+  font-family:var(--font-event-title-01);
 }
 .footer{
   background-color: var(--primary-01);
@@ -160,12 +164,17 @@ body {
   flex-direction: column;
   justify-content: start;
   align-items: start;
+  gap: 8px;
 }
-.event-title{
-  font-size: 24px;
-  font-weight: 400;
-  font-style: normal;
-  max-width: 320px;
+h1.event-title{
+  margin: 0;
+  text-align: left;
+  transform-origin: bottom;
+  font-size: 28px;
+  line-height: 30px;
+  font-weight:normal;
+  max-width: 400px;
+  letter-spacing: 0.6px;
 }
 .event-date{
   font-size: 16px;
@@ -533,4 +542,11 @@ textarea#caption{
   .footer .footer-copywrite {
       font-size: 10px;
   }
+}
+@media (max-width: 768px) {
+ h1.event-title {
+    font-size: 22px;
+    line-height: 22px;
+        max-width: 360px;
+}
 }

@@ -24,6 +24,7 @@
         }
 
         .upload-image-btn {
+            font-family:var(--font-body-01);
             color: white;
             border: none;
             padding: 12px 25px;

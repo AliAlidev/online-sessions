@@ -23,7 +23,7 @@
     --primary-02: #1E1E1E; /** Nero **/
     --primary-03: #292929; /** Chromaphobic Black **/
     --primary-04: #E7E7E7; /** White Smoke **/
-    --font-event-title-01: 'Taviraj-Regular';
+    --font-event-title-01: "Playfair Display", serif;
     --font-body-01: 'Roboto-Regular';
 }
 .modal {
@@ -46,6 +46,9 @@
 body {
   background-color: var(--primary-01);
   font-family: var(--font-body-01);
+}
+h1.event-title{
+  font-family:var(--font-event-title-01);
 }
 .footer{
   background-color: var(--primary-01);
@@ -520,4 +523,11 @@ textarea#caption{
   .footer .footer-copywrite {
       font-size: 10px;
   }
+}
+@media (max-width: 768px) {
+ h1.event-title {
+    font-size: 22px;
+    line-height: 22px;
+        max-width: 360px;
+}
 }

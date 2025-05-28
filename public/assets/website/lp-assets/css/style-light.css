@@ -23,7 +23,7 @@
     --primary-02: #1E1E1E; /** Nero **/
     --primary-03: #292929; /** Chromaphobic Black **/
     --primary-04: #E7E7E7; /** White Smoke **/
-    --font-event-title-01: 'Taviraj-Regular';
+    --font-event-title-01: "Playfair Display", serif;
     --font-body-01: 'Roboto-Regular';
 }
 /******* Fonts *******/
@@ -31,7 +31,7 @@ body {
     font-family:var(--font-body-01);
 }
 h1.event-title{
-  font-family:var(--font-event-title-01);
+  font-family: var(--font-event-title-01);
 }
 /******* --primary-01 *******/
 body {
@@ -176,7 +176,11 @@ h1.event-title{
   text-align: center;
   transform-origin: bottom;
   font-size: 36px;
-  line-height: 34px;font-weight:normal;
+  font-optical-sizing: auto;
+  font-weight: 600;
+  font-style: normal;
+  line-height: 38px;
+  letter-spacing: 0.6px;
 }
 .event-date {
     font-size: 16px;
@@ -213,8 +217,9 @@ h1.event-title{
     font-size: 12px;
 }
 .event-planner-name{
-    font-size: 24px;
+    font-size: 22px;
     margin-bottom: 10px;
+    font-weight: 500;
 }
 /* Navigation Arrows */
 .navigation {
@@ -575,9 +580,11 @@ button {
   }
   h1.event-title {
       font-size: 30px;
+      line-height: 34px;
+      font-weight: 500 !important;
     }
     .buttons-section {
-          gap: 6px;
+          gap: 4px;
       }
 }
 @media (hover: none) {

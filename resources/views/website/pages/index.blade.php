@@ -10,7 +10,6 @@
     @else
         <link rel="stylesheet" href="{{ asset('assets/website/lp-assets/css/style-light.css') }}">
     @endif
-
     <style>
         .event-hero-section {
             width: 50vw;
