@@ -16,78 +16,10 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <style>
-        .auth-checking {
-            display: none !important;
-        }
-        #loader-div {
-            /* display: flex; */
-            align-items: center;
-            justify-content: center;
-            padding-top: 13%;
-        }
-        /* Style for the loader container */
-        .loader-container {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 16px;
-            color: #555;
-        }
+
         /* Spinner style */
         .loader {
-            border: 4px solid #f3f3f3;
             border-top: 4px solid {{ $event->setting->accent_color != '' ? $event->setting->accent_color : '#B89148' }};
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            animation: spin 2s linear infinite;
-            margin-right: 10px;
-            /* Space between spinner and text */
-        }
-        /* Animation for the spinner */
-        @keyframes spin {
-            0% {
-                transform: rotate(0deg);
-            }
-            100% {
-                transform: rotate(360deg);
-            }
-        }
-        /* Text style for "Loading..." */
-        .loading-text {
-            font-size: 16px;
-            color: #555;
-            line-height: 50px;
-            /* Vertically center the text next to the spinner */
-        }
-        .swal2-container {
-            z-index: 9999 !important;
-        }
-        .video-player {
-            width: 100%;
-            display: flex;
-            justify-content: center;
-        }
-    </style>
-    <style>
-        #page-loader {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: white;
-            z-index: 9999;
-            display: flex;
-            flex-direction:column;
-            align-items: center;
-            justify-content: center;
-            gap:8px;
-        }
-        #page-loader p{
-            color:#000;
-            font-size:14px;
-            font-weight:normal;
         }
     </style>
 
@@ -141,7 +73,7 @@
                         @endif
                     @endforeach
                 </div><!-- End Horizontal Scroll -->
-                
+
             </div><!-- End Scroll Container -->
         </div><!-- End Main Header -->
         <div class="reload-btn-div">
@@ -175,7 +107,7 @@
                         <img src="{{ asset('assets/img/loader/loader-white.gif') }}" width="40px" alt="">
                     @else
                         <img src="{{ asset('assets/img/loader/loader.gif') }}" width="40px" alt="">
-                    @endif   
+                    @endif
             </div>
         </div>
         <div id="gallery-div"></div>
@@ -216,7 +148,7 @@
         folder.addEventListener('click', function () {
             // Remove 'clicked' from all other folders
             document.querySelectorAll('.folder-thumbnail').forEach(f => f.classList.remove('clicked'));
-            
+
             // Add 'clicked' to the current one
             this.classList.add('clicked');
         });

@@ -12,67 +12,14 @@
 
     <style>
         .event-hero-section {
-            width: 50vw;
-            position: relative;
             background-image: url('{{ asset($event->cover_image) }}');
-            background-position: center;
-            background-size: cover;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-end;
-            position: relative;
-            overflow: hidden;
         }
 
         @media screen and (max-width: 991px) {
             .event-hero-section {
-                position: relative;
                 background-image: url('{{ asset($event->cover_image) }}');
-                background-position: center;
-                background-size: cover;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                justify-content: flex-end;
-                height: 60dvh !important;
-                width: 100vw;
             }
         }
-
-        .gallery-button,
-        .share-button {
-            position: relative;
-        }
-
-        .loader {
-            width: 40px;
-            height: 40px;
-            border: 3px solid var(--primary-03);
-            border-top: 3px solid transparent;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            position: absolute;
-            left: 50%;
-            top: 50%;
-            transform: translate(-50%, -50%);
-        }
-
-        @keyframes spin {
-            0% {
-                transform: translate(-50%, -50%) rotate(0deg);
-            }
-
-            100% {
-                transform: translate(-50%, -50%) rotate(360deg);
-            }
-        }
-
-        a.disabled {
-            pointer-events: none;
-            cursor: default;
-            background-color: #ccc !important;
-        }  
     </style>
 @endpush
 
@@ -162,7 +109,7 @@
                     </div>
                 </div>
             </div><!-- End Event Details Container -->
-            
+
             <!-- Footer -->
             <div class="footer">
                 <p class="footer-copywrite">Powered by EVERMOMENT</p>
@@ -180,6 +127,7 @@
     <script>
         const utcString = "{{ \Carbon\Carbon::parse($event->start_date)->format('Y-m-d H:i:s') }}";
         const targetDate = new Date(utcString).getTime();
+
         function updateCountdown() {
             const now = new Date().getTime();
             let diff = targetDate - now;
