@@ -817,16 +817,6 @@
     background-color: #292929 !important;
     box-shadow: unset !important;
 }
-
-.enter-password-text {
-    text-align: center;
-    line-height: normal;
-    color: #292929;
-    text-align: center;
-    line-height: 22px;
-    margin: 20px 0 !important;
-}
-
 .form-control:focus,
 .form-select:focus {
     border-color: unset !important;

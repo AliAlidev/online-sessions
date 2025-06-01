@@ -154,4 +154,17 @@
         });
     });
     </script>
+    <script>
+        $(document).on('touchstart', function(e) {
+        // If fancybox is open and tap outside image content
+        if ($.fancybox.getInstance()) {
+            const instance = $.fancybox.getInstance();
+            const $content = instance.current.$content;
+
+            if (!$content.is(e.target) && $content.has(e.target).length === 0) {
+            instance.close();
+            }
+        }
+        });
+    </script>
 @endpush

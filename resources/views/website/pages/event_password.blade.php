@@ -1,6 +1,5 @@
 <html lang="en" class="light-style layout-wide customizer-hide" dir="ltr" data-theme="theme-default"
     data-assets-path="../assets/" data-template="vertical-menu-template-free" data-style="light">
-
 <head>
     <meta charset="utf-8">
     <meta name="viewport"
@@ -25,6 +24,28 @@
     <style type="text/css">
         .gallery-login-container {
             background-image: url('{{ asset('assets/img/illustrations/wedding-patterrn-light.svg') }}');
+        }
+        .enter-password-text {
+            text-align: center;
+            line-height: normal;
+            color: #292929;
+            text-align: center;
+            line-height: 22px;
+            margin: 16px 0 !important;
+        }    
+        i#togglePassword{
+            position: absolute;
+            right: 60px;
+            top: 55%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            font-size: 20px;
+            color: #6c757d;
+        }
+        @media (max-width: 600px) {
+            i#togglePassword{
+                right: 40px;
+            }
         }
     </style>
     <script src="{{ asset('assets/js/config.js') }}"></script>
@@ -53,6 +74,7 @@
                                 <!--<label for="password" class="form-label">Event Password</label>-->
                                 <input type="password" class="form-control" id="password" name="password"
                                     placeholder="Enter password" autofocus="">
+                                    <i class="bx bx-hide" id="togglePassword" onclick="togglePassword()"></i>     
                             </div>
                             <div class="mb-6">
                                 <button class="btn btn-primary d-grid w-100 gallery-login-btn"
@@ -87,6 +109,22 @@
                 });
             });
         });
+    </script>
+    <script>
+    function togglePassword() {
+        const passwordInput = document.getElementById("password");
+        const toggleIcon = document.getElementById("togglePassword");
+
+        if (passwordInput.type === "password") {
+            passwordInput.type = "text";
+            toggleIcon.classList.remove("bx-hide");
+            toggleIcon.classList.add("bx-show");
+        } else {
+            passwordInput.type = "password";
+            toggleIcon.classList.remove("bx-show");
+            toggleIcon.classList.add("bx-hide");
+        }
+    }
     </script>
 </body>
 
