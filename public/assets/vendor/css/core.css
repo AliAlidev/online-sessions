@@ -217,7 +217,7 @@ table#folders-datatable tbody tr td img{
     object-fit: contain;
 }
 .dataTables_scrollBody{
-    max-height: 800px !important;
+    max-height: 1800px !important;
 }
 hr {
     margin: 1rem 0;

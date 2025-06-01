@@ -311,7 +311,7 @@ h1.event-title{
 
 /********************************** Footer **********************************/
 .footer {
-    height: 66px;
+    height: 62px;
     width: 100%;
     margin: 0 auto;
     display: flex;
@@ -327,6 +327,8 @@ h1.event-title{
 }
 .footer .footer-copywrite{
   font-size: 12px;
+  position: fixed;
+    bottom: 10px;
 }
 /********************************** Image Delete Popup **********************************/
 .swal2-popup.swal2-modal.swal2-icon-success.swal2-show{
@@ -378,7 +380,7 @@ div#swal2-html-container{
   justify-content: center;
   align-items: center;
   position: fixed;
-  bottom: 30px;
+  bottom: 22px;
   left: calc(50% - 35px);
   border-radius: 50px;
   width: 70px;
@@ -531,7 +533,7 @@ div#swal2-html-container{
       text-align: center;
       z-index: 9999;
       position: absolute;
-      bottom: -18px;
+      bottom: -20px;
     }
     .scroll-arrow {
         opacity: 1;
@@ -543,11 +545,11 @@ div#swal2-html-container{
 }
 @media (max-width: 768px) {
   .scroll-arrow{
-    width: 30px;
-    height: 30px;
+    width: 32px;
+    height: 32px;
   }
   .refresh-button {
-    padding: 5px 14px;
+    padding: 6px 14px;
   }
   .sticky-section:nth-child(1) { width: 100%;padding-top: 15px; }
   .sticky-section:nth-child(2) { width: 100%; }

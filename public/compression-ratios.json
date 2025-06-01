@@ -1,13 +1,13 @@
 [
-    { "minSizeMB": 10, "quality": 0.74 },
-    { "minSizeMB": 9, "quality": 0.76 },
-    { "minSizeMB": 8, "quality": 0.78 },
-    { "minSizeMB": 7, "quality": 0.82 },
-    { "minSizeMB": 6, "quality": 0.84 },
-    { "minSizeMB": 5, "quality": 0.85 },
-    { "minSizeMB": 4, "quality": 0.86 },
-    { "minSizeMB": 3, "quality": 0.89 },
-    { "minSizeMB": 2, "quality": 0.91 },
-    { "minSizeMB": 1, "quality": 0.92 },
-    { "minSizeMB": 0.5, "quality": 0.93 }
+    { "minSizeMB": 10, "quality": 0.78 },
+    { "minSizeMB": 9, "quality": 0.79 },
+    { "minSizeMB": 8, "quality": 0.80 },
+    { "minSizeMB": 7, "quality": 0.81 },
+    { "minSizeMB": 6, "quality": 0.82 },
+    { "minSizeMB": 5, "quality": 0.83 },
+    { "minSizeMB": 4, "quality": 0.84 },
+    { "minSizeMB": 3, "quality": 0.85 },
+    { "minSizeMB": 2, "quality": 0.86 },
+    { "minSizeMB": 1, "quality": 0.87 },
+    { "minSizeMB": 0.5, "quality": 0.88 }
 ]

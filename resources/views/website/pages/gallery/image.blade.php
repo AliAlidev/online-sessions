@@ -5,7 +5,7 @@
                 <a href="{{ asset($image->file) }}" data-fancybox="gallery"
                     data-can-delete="{{ $image->created_by == auth()->user()->id ? 'true' : 'false' }}"
                     data-image-id={{ $image->id }}
-                    data-caption="<strong>{{ $image->user_name }}</strong><br>{{ $image->description }}">
+                    data-caption="<span style='font-size:18px;'>{{ $image->user_name }}</span><br>{{ $image->description }}">
                     <img class="lazy" alt="" data-src="{{ asset($image->file) }}">
                 </a>
             </div>
