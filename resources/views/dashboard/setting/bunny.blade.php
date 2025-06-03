@@ -198,7 +198,7 @@
         });
 
         function showErrorMessage(message) {
-            var element = `<div class="d-flex justify-content-end global-alert-section" style="margin-right: 25px">
+            var element = `<div class="global-alert-section" style="margin-right: 25px">
             <div class="bs-toast toast fade show bg-danger" role="alert" aria-live="assertive" aria-atomic="true">
             <div class="toast-header">
                 <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>

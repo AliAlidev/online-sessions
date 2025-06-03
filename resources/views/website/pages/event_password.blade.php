@@ -22,9 +22,6 @@
     <script src="{{ asset('assets/vendor/js/helpers.js') }}"></script>
     @vite(['resources/js/app.js', 'resources/js/pages/event_password.js'])
     @vite(['resources/css/app.css'])
-    <style type="text/css">
-        
-    </style>
     <script src="{{ asset('assets/js/config.js') }}"></script>
 </head>
 

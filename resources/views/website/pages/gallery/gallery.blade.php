@@ -14,18 +14,14 @@
     <!-- Add these to your head -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
     <style>
-
         /* Spinner style */
         .loader {
             border-top: 4px solid {{ $event->setting->accent_color != '' ? $event->setting->accent_color : '#B89148' }};
         }
     </style>
-
     @vite(['resources/js/app.js', 'resources/js/pages/gallery.js'])
 @endpush
-
 @section('content')
     <div id="page-loader">
         <img src="{{ asset('assets/img/loader/loader.gif') }}" width="40px" alt="">
