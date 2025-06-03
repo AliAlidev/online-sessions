@@ -21,32 +21,9 @@
     <link rel="stylesheet" href="{{ asset('assets/vendor/css/pages/page-auth.css') }}">
     <script src="{{ asset('assets/vendor/js/helpers.js') }}"></script>
     @vite(['resources/js/app.js', 'resources/js/pages/event_password.js'])
+    @vite(['resources/css/app.css'])
     <style type="text/css">
-        .gallery-login-container {
-            background-image: url('{{ asset('assets/img/illustrations/wedding-patterrn-light.svg') }}');
-        }
-        .enter-password-text {
-            text-align: center;
-            line-height: normal;
-            color: #292929;
-            text-align: center;
-            line-height: 22px;
-            margin: 16px 0 !important;
-        }    
-        i#togglePassword{
-            position: absolute;
-            right: 60px;
-            top: 55%;
-            transform: translateY(-50%);
-            cursor: pointer;
-            font-size: 20px;
-            color: #6c757d;
-        }
-        @media (max-width: 600px) {
-            i#togglePassword{
-                right: 40px;
-            }
-        }
+        
     </style>
     <script src="{{ asset('assets/js/config.js') }}"></script>
 </head>

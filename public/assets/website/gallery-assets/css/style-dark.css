@@ -323,7 +323,7 @@ h1.event-title{
     bottom: 0;
     left: 0;
     z-index: 9992;
-    box-shadow: 0 -4px 5px -4px rgba(255, 255, 255, 0.1);
+    box-shadow: 0 -3px 4px -5px rgba(255, 255, 255, 0.1);
 }
 .footer .footer-copywrite{
   font-size: 12px;

@@ -851,7 +851,31 @@ button#formAuthenticationBtn {
 }
 
 /* ************************ End Event Password Page ************************ */
-
+.gallery-login-container {
+            background-image: url('{{ asset('assets/img/illustrations/wedding-patterrn-light.svg') }}');
+        }
+        .enter-password-text {
+            text-align: center;
+            line-height: normal;
+            color: #292929;
+            text-align: center;
+            line-height: 22px;
+            margin: 16px 0 !important;
+        }    
+        i#togglePassword{
+            position: absolute;
+            right: 60px;
+            top: 55%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            font-size: 20px;
+            color: #6c757d;
+        }
+        @media (max-width: 600px) {
+            i#togglePassword{
+                right: 40px;
+            }
+        }
 
 /* ************************ Event Pending Page ************************ */
 .event-hero-section {
