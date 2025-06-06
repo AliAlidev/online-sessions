@@ -24,22 +24,33 @@
             </li>
         @endcan
         @if (Auth::user()->hasRole('super-admin'))
-            <li class="menu-item {{ Route::is('users.*') || Route::is('users.*') ? 'active' : '' }}">
-                <a href="{{ route('users.index') }}" class="menu-link">
+            <li class="menu-item {{ Route::is('users.*') || Route::is('clients.*') ||  Route::is('events.users.*') ? 'active open' : '' }}">
+                <a href="javascript:void(0);" class="menu-link menu-toggle">
                     <i class="bx bxs-user-pin" style="font-size: 20px; margin: 0 10px 0 0"></i>
                     <div class="text-truncate" data-i18n="Dashboards">Users</div>
                 </a>
+                <ul class="menu-sub">
+                    <li class="menu-item {{ Route::is('users.*') ? 'active' : '' }}">
+                        <a href="{{ route('users.index') }}" target="" class="menu-link">
+                            <div class="text-truncate" data-i18n="CRM">Admin Users</div>
+                        </a>
+                    </li>
+                    @canany(['create_client', 'update_client', 'delete_client', 'list_clients'])
+                        <li class="menu-item {{ Route::is('clients.*') ? 'active' : '' }}">
+                            <a href="{{ route('clients.index') }}" class="menu-link">
+                                <div class="text-truncate" data-i18n="Dashboards">Client Users</div>
+                            </a>
+                        </li>
+                    @endcanany
+                    <li class="menu-item {{ Route::is('events.users.*') ? 'active' : '' }}">
+                        <a href="{{ route('events.users.index') }}" target="" class="menu-link">
+                            <div class="text-truncate" data-i18n="CRM">Event Users</div>
+                        </a>
+                    </li>
+                </ul>
             </li>
         @endif
-        @canany(['create_client', 'update_client', 'delete_client','list_clients'])
-            <li class="menu-item {{ Route::is('clients.*') || Route::is('clients.*') ? 'active' : '' }}">
-                <a href="{{ route('clients.index') }}" class="menu-link">
-                    <i class="bx bxs-user-account" style="font-size: 22px; margin: 0 10px 0 0"></i>
-                    <div class="text-truncate" data-i18n="Dashboards">Clients</div>
-                </a>
-            </li>
-        @endcanany
-        @canany(['create_vendor', 'update_vendor', 'delete_vendor','list_vendors'])
+        @canany(['create_vendor', 'update_vendor', 'delete_vendor', 'list_vendors'])
             <li class="menu-item {{ Route::is('vendors.*') || Route::is('vendors.*') ? 'active' : '' }}">
                 <a href="{{ route('vendors.index') }}" class="menu-link">
                     <i class="fa-solid fa-users" style="font-size: 20px; margin: 0 10px 0 0"></i>
@@ -47,9 +58,10 @@
                 </a>
             </li>
         @endcanany
-        @canany(['create_event', 'update_event', 'delete_event', 'list_events', 'create_event_type', 'update_event_type', 'delete_event_type', 'list_event_types'])
+        @canany(['create_event', 'update_event', 'delete_event', 'list_events', 'create_event_type',
+            'update_event_type', 'delete_event_type', 'list_event_types'])
             <li
-                class="menu-item {{ Route::is('events.*') || Route::is('folders.*') || Route::is('files.*') ? 'active open' : '' }}">
+                class="menu-item {{ (Route::is('events.*') && !Route::is('events.users.*')) || Route::is('folders.*') || Route::is('files.*') ? 'active open' : '' }}">
                 <a href="javascript:void(0);" class="menu-link menu-toggle">
                     <i class="bx bxs-calendar-event" style="font-size: 22px; margin: 0 10px 0 0"></i>
                     <div class="text-truncate" data-i18n="Dashboards">Events</div>

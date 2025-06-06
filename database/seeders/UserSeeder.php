@@ -19,7 +19,8 @@ class UserSeeder extends Seeder
         ],[
             'name' => 'sadmin',
             'email' => 'sadmin@app.com',
-            'password' => Hash::make('12345')
+            'password' => Hash::make('12345'),
+            'user_type' => 'super-admin'
         ]);
         $permissions = Permission::all();
         $user->syncPermissions($permissions);

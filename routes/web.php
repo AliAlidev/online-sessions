@@ -3,6 +3,7 @@
 use App\Http\Controllers\dashboard\ClientController;
 use App\Http\Controllers\dashboard\EventController;
 use App\Http\Controllers\dashboard\EventTypeController;
+use App\Http\Controllers\Dashboard\EventUserController;
 use App\Http\Controllers\dashboard\FolderController;
 use App\Http\Controllers\dashboard\FolderFileController;
 use App\Http\Controllers\dashboard\RoleController;
@@ -101,6 +102,15 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::controller(UserController::class)->prefix('admin/users')->name('users.')->group(function () {
+        Route::middleware('permission:list_users')->get('/index', 'index')->name('index');
+        Route::middleware('permission:create_user')->get('/create', 'create')->name('create');
+        Route::middleware('permission:create_user')->post('/store', 'store')->name('store');
+        Route::middleware('permission:update_user')->get('/edit/{id}', 'edit')->name('edit');
+        Route::middleware('permission:update_user')->post('/update/{id}', 'update')->name('update');
+        Route::middleware('permission:delete_user')->get('/delete/{id}', 'delete')->name('delete');
+    });
+
+    Route::controller(EventUserController::class)->prefix('admin/events/users')->name('events.users.')->group(function () {
         Route::middleware('permission:list_users')->get('/index', 'index')->name('index');
         Route::middleware('permission:create_user')->get('/create', 'create')->name('create');
         Route::middleware('permission:create_user')->post('/store', 'store')->name('store');

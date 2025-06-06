@@ -99,7 +99,6 @@ Breadcrumbs::for('settings', function ($trail) {
 });
 
 Breadcrumbs::for('users', function ($trail) {
-    // $trail->parent('insights');
     $trail->push('Users List', route('users.index'));
 });
 
@@ -110,5 +109,19 @@ Breadcrumbs::for('create-user', function ($trail) {
 
 Breadcrumbs::for('update-user', function ($trail, $user) {
     $trail->parent('users');
+    $trail->push('Update User - ' . $user->name, '');
+});
+
+Breadcrumbs::for('events-users', function ($trail) {
+    $trail->push('Users List', route('events.users.index'));
+});
+
+Breadcrumbs::for('create-event-user', function ($trail) {
+    $trail->parent('events-users');
+    $trail->push('Create User', '');
+});
+
+Breadcrumbs::for('update-event-user', function ($trail, $user) {
+    $trail->parent('events-users');
     $trail->push('Update User - ' . $user->name, '');
 });

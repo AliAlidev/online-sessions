@@ -16,7 +16,7 @@ class UserController extends Controller
     {
         try {
             if ($request->ajax()) {
-                $clients = User::where('dashboard_user', 1)->orderBy('created_at', 'desc')->get();
+                $clients = User::where('dashboard_user', 1)->where('user_type', 'admin')->orderBy('created_at', 'desc')->get();
                 return DataTables::of($clients)
                     ->addColumn('actions', function ($client) {
                         return '<a data-id="' . $client->id . '" href="' . route('users.edit', $client->id) . '" class="update-client btn btn-icon btn-outline-primary"><i class="bx bx-edit-alt" style="color:#696cff"></i></a>
@@ -72,6 +72,7 @@ class UserController extends Controller
             unset($data['permissions']);
             unset($data['password_confirmation']);
             $data['dashboard_user'] = 1;
+            $data['user_type'] = 'admin';
             $user = User::create($data);
             if (isset($permissions))
                 $user->givePermissionTo($permissions);
