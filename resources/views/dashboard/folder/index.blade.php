@@ -230,18 +230,20 @@
                             </div>
                         </div>
                         <div class="row mb-5">
-                            <div class="col-md-6" id="folderTypeDiv">
-                                <label for="folderTypeInput" class="form-label">Folder Type</label>
-                                <select class="form-select" id="folderTypeInput" name="folder_type">
-                                    <option selected disabled>Select Folder Type</option>
-                                    <option value="image">Image</option>
-                                    <option value="video">Video</option>
-                                    <option value="link">Link</option>
-                                    <option value="fake">Fake</option>
-                                </select>
-                                <small class="text-body float-start error-message-div folder_type-error"
-                                    style="color: #ff0000 !important" hidden></small>
-                            </div>
+                            @if (getUserType() != 'event-user')
+                                <div class="col-md-6" id="folderTypeDiv">
+                                    <label for="folderTypeInput" class="form-label">Folder Type</label>
+                                    <select class="form-select" id="folderTypeInput" name="folder_type">
+                                        <option selected disabled>Select Folder Type</option>
+                                        <option value="image">Image</option>
+                                        <option value="video">Video</option>
+                                        <option value="link">Link</option>
+                                        <option value="fake">Fake</option>
+                                    </select>
+                                    <small class="text-body float-start error-message-div folder_type-error"
+                                        style="color: #ff0000 !important" hidden></small>
+                                </div>
+                            @endif
                             <div class="col-md-6" hidden>
                                 <label for="folderLinkInput" class="form-label">Folder Link</label>
                                 <input type="text" id="folderLinkInput" class="form-control" name="folder_link"

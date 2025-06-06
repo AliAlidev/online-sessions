@@ -35,6 +35,11 @@ class EventController extends Controller
     function index(Request $request)
     {
         try {
+            if (getUserType() == 'event-user') {
+                $event = Event::find(Auth::user()->event_id);
+                return redirect()->route('folders.index', ['event_slug' => $event->bunny_event_name]);
+            }
+
             if ($request->ajax()) {
                 $filterStatus = $request->filter_status;
                 $filterClient = $request->filter_client;

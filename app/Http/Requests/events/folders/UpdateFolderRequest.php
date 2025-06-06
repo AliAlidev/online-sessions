@@ -41,7 +41,7 @@ class UpdateFolderRequest extends FormRequest
         return [
             'folder_id' => 'required|exists:event_folders,id',
             'folder_name' => $name,
-            'folder_type' => 'required|in:image,video,link,fake',
+            'folder_type' => (getUserType() != 'event-user' ? 'required|' : null) . 'in:image,video,link,fake',
             'description' => 'nullable|string',
             'folder_thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp',
             'folder_link' => $link,

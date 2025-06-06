@@ -67,14 +67,11 @@ class EventUserController extends Controller
         $permissions = [
             'list_events',
             'list_folders',
+            'update_folder',
             'upload_image',
             'approve_decline_image',
-            'upload_video',
-            'approve_decline_video',
             'delete_image',
-            'delete_video',
             'update_image',
-            'update_video'
         ];
         $user->givePermissionTo($permissions);
     }

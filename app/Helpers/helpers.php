@@ -6,6 +6,7 @@ use App\Models\Setting;
 use Carbon\Carbon;
 use GuzzleHttp\Client as GuzzleHttpClient;
 use GuzzleHttp\Psr7\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -295,5 +296,13 @@ if (!function_exists('eventStatus')) {
         if ($eventStartDate->gt($now)) return 'Pending';
         if ($eventEndDate->floatDiffInMonths($now, true) >= 1) return 'Online';
         return 'Expire soon';
+    }
+}
+
+if (!function_exists('getUserType')) {
+
+    function getUserType()
+    {
+        return Auth::user()->user_type ?? 'normal';
     }
 }
