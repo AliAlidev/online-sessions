@@ -281,6 +281,7 @@ h1.event-title{
   /*row-gap: 30px;*/
   height: 100%;
   width: 100%;
+  margin-bottom: 20px;
 }
 .details .name {
   font-size: 14px;
@@ -338,7 +339,7 @@ h1.event-title{
 .swiper-horizontal>.swiper-pagination-bullets,
 .swiper-pagination-bullets.swiper-pagination-horizontal,
 .swiper-pagination-custom, .swiper-pagination-fraction {
-    bottom: 20px !important;
+    bottom: -5px !important;
   }
 .swiper-pagination-bullet {
     width: 6px;

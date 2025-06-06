@@ -3,33 +3,32 @@
     "file": "assets/auth-CrJnzGtq.js",
     "name": "auth"
   },
-  "_index-B20WIEY4.js": {
-    "file": "assets/index-B20WIEY4.js",
-    "name": "index"
+  "_axios-8o6r61Bn.js": {
+    "file": "assets/axios-8o6r61Bn.js",
+    "name": "axios"
   },
   "resources/css/app.css": {
-    "file": "assets/app-l0sNRNKZ.js",
-    "name": "app",
+    "file": "assets/app-BVUn5e_a.css",
     "src": "resources/css/app.css",
     "isEntry": true
   },
   "resources/js/app.js": {
-    "file": "assets/app-CC34JrAx.js",
+    "file": "assets/app-CBbqRvD3.js",
     "name": "app",
     "src": "resources/js/app.js",
     "isEntry": true,
     "imports": [
-      "_index-B20WIEY4.js",
+      "_axios-8o6r61Bn.js",
       "_auth-CrJnzGtq.js"
     ]
   },
   "resources/js/bootstrap.js": {
-    "file": "assets/bootstrap-6OJn_Iwi.js",
+    "file": "assets/bootstrap-BQNCvtVp.js",
     "name": "bootstrap",
     "src": "resources/js/bootstrap.js",
     "isEntry": true,
     "imports": [
-      "_index-B20WIEY4.js"
+      "_axios-8o6r61Bn.js"
     ]
   },
   "resources/js/pages/event_password.js": {
@@ -69,7 +68,7 @@
     ]
   },
   "resources/sass/app.scss": {
-    "file": "assets/app-4_8pTTiw.css",
+    "file": "assets/app-DZUsWXEA.css",
     "src": "resources/sass/app.scss",
     "isEntry": true
   }

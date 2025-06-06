@@ -217,7 +217,7 @@ table#folders-datatable tbody tr td img{
     object-fit: contain;
 }
 .dataTables_scrollBody{
-    max-height: 800px !important;
+    max-height: 1800px !important;
 }
 hr {
     margin: 1rem 0;
@@ -26258,7 +26258,6 @@ li:not(:first-child) .dropdown-item,.dropdown-menu .dropdown-item:not(:first-chi
 .layout-page,.content-wrapper,.content-wrapper>*,.layout-menu {
     min-block-size: 1px
 }
-
 .layout-navbar,.content-footer {
     flex: 0 0 auto
 }
@@ -28549,3 +28548,9 @@ body:not(.modal-open) .layout-content-navbar .layout-navbar {
   .menu-collapsed:not(:hover) .menu-inner > .menu-item > .menu-toggle::after {
     display: none;
   }
+
+.global-alert-section{
+    position: absolute !important;
+    right: 0 !important;
+    z-index: 9999;
+}

@@ -393,13 +393,13 @@
                                             <label class="form-label">Select Accent Color</label>
                                             <div class="color-picker">
                                                 <div class="color-box" style="background-color: #EFBF04;"
-                                                    data-color="#b71c1c"></div>
+                                                    data-color="#EFBF04"></div>
                                                 <div class="color-box" style="background-color: #233d4e"
-                                                    data-color="#1a237e"></div>
+                                                    data-color="#233d4e"></div>
                                                 <div class="color-box" style="background-color: #bd3b3b;"
-                                                    data-color="#2e7d32"></div>
+                                                    data-color="#bd3b3b"></div>
                                                 <div class="color-box" style="background-color: #1f2e60;"
-                                                    data-color="#00838f"></div>
+                                                    data-color="#1f2e60"></div>
                                             </div>
                                         </div>
                                         <div class="col-md-6 mt-7">

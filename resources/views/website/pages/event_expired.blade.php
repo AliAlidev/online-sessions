@@ -12,68 +12,13 @@
 
     <style>
         .event-hero-section {
-            width: 50vw;
-            position: relative;
             background-image: url('{{ asset($event->cover_image) }}');
-            background-position: center;
-            background-size: cover;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-end;
-            position: relative;
-            overflow: hidden;
         }
 
         @media screen and (max-width: 991px) {
             .event-hero-section {
-                position: relative;
                 background-image: url('{{ asset($event->cover_image) }}');
-                background-position: center;
-                background-size: cover;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                justify-content: flex-end;
-                height: 60dvh !important;
-                width: 100vw;
             }
-        }
-
-        .gallery-button,
-        .share-button {
-            position: relative;
-        }
-
-        .loader {
-            width: 40px;
-            height: 40px;
-            border: 3px solid var(--primary-03);
-            border-top: 3px solid transparent;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            position: absolute;
-            left: 50%;
-            top: 50%;
-            transform: translate(-50%, -50%);
-        }
-
-        @keyframes spin {
-            0% {
-                transform: translate(-50%, -50%) rotate(0deg);
-            }
-
-            100% {
-                transform: translate(-50%, -50%) rotate(360deg);
-            }
-        }
-
-        .expired-container {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            color: rgb(218, 87, 87)
         }
     </style>
 @endpush
