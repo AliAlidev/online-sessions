@@ -47,6 +47,7 @@ class EventController extends Controller
                 $filterDate = $request->filter_date;
 
                 $eventsQuery = Event::with(['client', 'type'])
+                    ->when(getUserType() == 'client', fn($query) => $query->where('client_id', Auth::user()->client?->id))
                     ->when(!empty($filterClient), fn($query) => $query->where('client_id', $filterClient))
                     ->when(!empty($filterType), fn($query) => $query->where('event_type_id', $filterType))
                     ->when(!empty($filterDate), fn($query) => $query->whereDate('start_date', $filterDate))
@@ -162,7 +163,8 @@ class EventController extends Controller
                 'accent_color' => isset($data['accent_color']) ? $data['accent_color'] : '',
                 'font' => isset($data['font']) ? $data['font'] : ''
             ]);
-            $event->organizers()->createMany($data['organizers']);
+            if (isset($data['enable_organizer']) && $this->hasValidOrganizers($data['organizers']))
+                $event->organizers()->createMany($data['organizers']);
             if ($allowGuestUpload)
                 app(FolderController::class)->store(new CreateFolderRequest(['folder_type' => 'image', 'folder_name' => 'Guest Upload', 'folder_thumbnail' => 'assets/img/folders/upload-folder-default.jpg']), $event->bunny_event_name);
             session()->flash('success', 'Event has been created successfully');
@@ -171,6 +173,16 @@ class EventController extends Controller
             createServerError($th, "storeEvent", "events");
             return false;
         }
+    }
+
+    function hasValidOrganizers($organizers)
+    {
+        $valid = true;
+        foreach ($organizers as $key => $organizer) {
+            if (!isset($organizer['organizer_id']) || !isset($organizer['role_in_event']))
+                $valid = false;
+        }
+        return $valid;
     }
 
     function edit($id)
@@ -196,38 +208,45 @@ class EventController extends Controller
             $data = $request->validated();
             $data['cover_image'] = $request->hasFile('cover_image') ? 'storage/' . uploadFile($request->file('cover_image'), 'events/event_cover_image') :  $event->cover_image;
             $data['profile_picture'] = $request->hasFile('profile_picture') ? 'storage/' . uploadFile($request->file('profile_picture'), 'events/profile_picture') :  $event->profile_picture;
-            $data['qr_code'] = $oldEvent->event_link != $data['event_link'] ? 'storage/' . uploadBase64File($data['qr_code'], 'events/event_qr_code') : $event->qr_code;
+            $data['qr_code'] = (isset($data['event_link']) && $oldEvent->event_link != $data['event_link']) ? 'storage/' . uploadBase64File($data['qr_code'], 'events/event_qr_code') : $event->qr_code;
             $setting =  $event->setting;
-            $allowGuestUpload = isset($data['image_share_guest_book']) && $data['image_share_guest_book'] == 'on' ? 1 : 0;
-            $setting->update([
-                'image_share_guest_book' => $allowGuestUpload,
-                'image_folders' => isset($data['image_folders']) && $data['image_folders'] == 'on' ? 1 : 0,
-                'video_playlist' => isset($data['video_playlist']) && $data['video_playlist'] == 'on' ? 1 : 0,
+            $settingData = [
                 'allow_upload' => isset($data['allow_upload']) && $data['allow_upload'] == 'on' ? 1 : 0,
                 'auto_image_approve' => isset($data['auto_image_approve']) && $data['auto_image_approve'] == 'on' ? 1 : 0,
                 'allow_image_download' => isset($data['allow_image_download']) && $data['allow_image_download'] == 'on' ? 1 : 0,
                 'theme' => isset($data['theme']) ? $data['theme'] : '',
                 'accent_color' => isset($data['accent_color']) ? $data['accent_color'] : '',
                 'font' => isset($data['font']) ? $data['font'] : ''
-            ]);
+            ];
+            $allowGuestUpload = false;
+            if (!isClientUser()) {
+                $allowGuestUpload = isset($data['image_share_guest_book']) && $data['image_share_guest_book'] == 'on' ? 1 : 0;
+                $settingData['image_share_guest_book'] = $allowGuestUpload;
+                $settingData['image_folders'] = isset($data['image_folders']) && $data['image_folders'] == 'on' ? 1 : 0;
+                $settingData['video_playlist'] = isset($data['video_playlist']) && $data['video_playlist'] == 'on' ? 1 : 0;
+            }
+            $setting->update($settingData);
+
             $eventData = [
                 'event_alias_name' => $data['event_alias_name'],
                 'cover_image' => $data['cover_image'],
-                'event_type_id' => $data['event_type_id'],
                 'profile_picture' => $data['profile_picture'],
-                'client_id' => $data['client_id'],
-                'end_date' => $data['end_date'],
-                'customer' => $data['customer'],
-                'venue' => $data['venue'],
-                'active_duration' => $data['active_duration'],
                 'description' => $data['description'],
-                'event_link' => $data['event_link'],
                 'event_password' => $data['event_password'],
                 'welcome_message' => $data['welcome_message'],
-                'qr_code' => $data['qr_code'],
                 'enable_organizer' => isset($data['enable_organizer']) ? 1 : 0
             ];
-            if ($event && $event->canUpdateEventNameAndStartDate()) {
+            if (!isClientUser()) {
+                $eventData['event_type_id'] = $data['event_type_id'];
+                $eventData['client_id'] = $data['client_id'];
+                $eventData['end_date'] = $data['end_date'];
+                $eventData['customer'] = $data['customer'];
+                $eventData['venue'] = $data['venue'];
+                $eventData['active_duration'] = $data['active_duration'];
+                $eventData['event_link'] = $data['event_link'];
+                $eventData['qr_code'] = $data['qr_code'];
+            }
+            if ($event && $event->canUpdateEventNameAndStartDate() && !isClientUser()) {
                 $eventData['event_name'] = $data['event_name'];
                 $eventData['start_date'] = $data['start_date'];
             }
@@ -235,17 +254,20 @@ class EventController extends Controller
             $event->update($eventData);
             if ($allowGuestUpload && $event->folders->where('folder_name', 'Guest Upload')->count() == 0)
                 app(FolderController::class)->store(new CreateFolderRequest(['folder_type' => 'image', 'folder_name' => 'Guest Upload', 'folder_thumbnail' => 'assets/img/folders/upload-folder-default.jpg']), $event->bunny_event_name);
-            $event->organizers()->whereNotIn('id', array_column($data['organizers'], 'organizer_model_id'))->delete();
-            array_map(function ($organizer) use ($event) {
-                if (isset($organizer['organizer_model_id'])) {
-                    $rowId = $organizer['organizer_model_id'];
-                    unset($organizer['organizer_model_id']);
-                    $event->organizers()->find($rowId)->update($organizer);
-                } else {
-                    unset($organizer['organizer_model_id']);
-                    $event->organizers()->create($organizer);
-                }
-            }, $data['organizers']);
+
+            if (!isClientUser() && isset($data['enable_organizer']) && $this->hasValidOrganizers($data['organizers'])) {
+                $event->organizers()->whereNotIn('id', array_column($data['organizers'], 'organizer_model_id'))->delete();
+                array_map(function ($organizer) use ($event) {
+                    if (isset($organizer['organizer_model_id'])) {
+                        $rowId = $organizer['organizer_model_id'];
+                        unset($organizer['organizer_model_id']);
+                        $event->organizers()->find($rowId)->update($organizer);
+                    } else {
+                        unset($organizer['organizer_model_id']);
+                        $event->organizers()->create($organizer);
+                    }
+                }, $data['organizers']);
+            }
             if ($request->hasFile('cover_image')) {
                 $coverImage = str_replace("storage/", "", $oldEvent->cover_image);
                 deleteFile($coverImage);
@@ -254,7 +276,7 @@ class EventController extends Controller
                 $profilePicture = str_replace("storage/", "", $oldEvent->profile_picture);
                 deleteFile($profilePicture);
             }
-            if ($oldEvent->event_link != $data['event_link']) {
+            if (!isClientUser() && $oldEvent->event_link != $data['event_link']) {
                 $qrCode = str_replace("storage/", "", $oldEvent->qr_code);
                 deleteFile($qrCode);
             }
@@ -262,6 +284,7 @@ class EventController extends Controller
             session()->flash('success', 'Event has been updated successfully');
             return response()->json(['success' => true, 'url' => route('events.edit', $id)]);
         } catch (Exception $th) {
+            dd($th->getMessage());
             createServerError($th, "updateEvent", "events");
             return false;
         }

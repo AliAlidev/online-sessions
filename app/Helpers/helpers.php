@@ -306,3 +306,11 @@ if (!function_exists('getUserType')) {
         return Auth::user()->user_type ?? 'normal';
     }
 }
+
+if (!function_exists('isClientUser')) {
+
+    function isClientUser()
+    {
+        return getUserType() == 'client';
+    }
+}

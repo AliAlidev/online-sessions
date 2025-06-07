@@ -110,17 +110,19 @@
                             <div class="row mb-6">
                                 <div class="col-md-8">
                                     <div class="row mb-6">
-                                        <div class="col-md-6">
-                                            <label class="form-label" for="event-name-id">{{ __('Name') }}</label>
-                                            <div class="input-group input-group-merge">
-                                                <input type="text" id="event-name-id" class="form-control"
-                                                    {{ $event->canUpdateEventNameAndStartDate() ? '' : 'disabled' }}
-                                                    name="event_name" value="{{ $event->event_name }}"
-                                                    placeholder="Enter Event Name">
+                                        @if (!isClientUser())
+                                            <div class="col-md-6">
+                                                <label class="form-label" for="event-name-id">{{ __('Name') }}</label>
+                                                <div class="input-group input-group-merge">
+                                                    <input type="text" id="event-name-id" class="form-control"
+                                                        {{ $event->canUpdateEventNameAndStartDate() ? '' : 'disabled' }}
+                                                        name="event_name" value="{{ $event->event_name }}"
+                                                        placeholder="Enter Event Name">
+                                                </div>
+                                                <small class="text-body float-start error-message-div event_name-error"
+                                                    style="color: #ff0000 !important"></small>
                                             </div>
-                                            <small class="text-body float-start error-message-div event_name-error"
-                                                style="color: #ff0000 !important"></small>
-                                        </div>
+                                        @endif
                                         <div class="col-md-6">
                                             <label class="form-label"
                                                 for="event-alias-name-id">{{ __('Alias Name') }}</label>
@@ -154,8 +156,10 @@
                                             <input class="form-control" type="file" id="formFile" name="profile_picture"
                                                 accept="image/jpeg,png,jpg,gif,svg,webp">
                                             <div class="mt-2 preview-container">
-                                                <img width="125px" height="125px"
-                                                    src="{{ $event->profile_picture ? asset($event->profile_picture) : '' }}">
+                                                @if ($event->profile_picture)
+                                                    <img width="125px" height="125px"
+                                                        src="{{ $event->profile_picture ? asset($event->profile_picture) : '' }}">
+                                                @endif
                                             </div>
                                             <small class="text-body float-start uploaded-file-name"
                                                 style="color: #000; font-style: italic;"></small>
@@ -163,77 +167,85 @@
                                                 style="color: #ff0000 !important" hidden></small>
                                         </div>
                                     </div>
+                                    @if (!isClientUser())
+                                        <div class="row mb-6">
+                                            <div class="col-md-6">
+                                                <label for="exampleFormControlSelect1" class="form-label">Type</label>
+                                                <select class="form-select" id="exampleFormControlSelect1"
+                                                    name="event_type_id" aria-label="Default select example">
+                                                    <option selected disabled>Select Type</option>
+                                                    @foreach ($types as $key => $type)
+                                                        <option {{ $event->event_type_id == $key ? 'selected' : '' }}
+                                                            value="{{ $key }}">{{ $type }}</option>
+                                                    @endforeach
+                                                </select>
+                                                <small class="text-body float-start error-message-div event_type_id-error"
+                                                    style="color: #ff0000 !important" hidden></small>
+                                            </div>
+                                            <div class="col md-6">
+                                                <label for="exampleFormControlSelect1" class="form-label">Client</label>
+                                                <select class="form-select" id="exampleFormControlSelect1" name="client_id"
+                                                    aria-label="Default select example">
+                                                    <option selected disabled>Select Client</option>
+                                                    @foreach ($clients as $key => $client)
+                                                        <option {{ $event->client_id == $key ? 'selected' : '' }}
+                                                            value="{{ $key }}">{{ $client }}</option>
+                                                    @endforeach
+                                                </select>
+                                                <small class="text-body float-start error-message-div client_id-error"
+                                                    style="color: #ff0000 !important" hidden></small>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-6">
+                                            <div class="col-md-6">
+                                                <label for="html5-date-input" class="form-label">Start Date</label>
+                                                <input class="form-control start_date" type="datetime-local"
+                                                    id="start-date-id"
+                                                    {{ $event->canUpdateEventNameAndStartDate() ? '' : 'disabled' }}
+                                                    value="{{ $event->start_date }}" name="start_date">
+                                                <small class="text-body float-start error-message-div start_date-error"
+                                                    style="color: #ff0000 !important" hidden></small>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="html5-date-input" class="form-label">End Date</label>
+                                                <input class="form-control end_date" type="datetime-local"
+                                                    value="{{ $event->end_date }}" name="end_date">
+                                                <small class="text-body float-start error-message-div end_date-error"
+                                                    style="color: #ff0000 !important" hidden></small>
+                                            </div>
+                                        </div>
+                                    @endif
+                                    @if (!isClientUser())
+                                        <div class="row mb-6">
+                                            <div class="col md-6">
+                                                <label for="active-duration" class="form-label">Active Duration</label>
+                                                <input class="form-control" type="text"
+                                                    value="{{ $event->active_duration }}" name="active_duration"
+                                                    id="active-duration" readonly>
+                                                <small
+                                                    class="text-body float-start error-message-div active_duration-error"
+                                                    style="color: #ff0000 !important" hidden></small>
+                                            </div>
+                                            <div class="col md-6">
+                                                <label for="exampleFormControlSelect1" class="form-label">Customer</label>
+                                                <input class="form-control" type="text"
+                                                    value="{{ $event->customer }}" placeholder="Enter Customer Name"
+                                                    id="event-customer-name" name="customer">
+                                                <small class="text-body float-start error-message-div customer-error"
+                                                    style="color: #ff0000 !important" hidden></small>
+                                            </div>
+                                        </div>
+                                    @endif
                                     <div class="row mb-6">
-                                        <div class="col-md-6">
-                                            <label for="exampleFormControlSelect1" class="form-label">Type</label>
-                                            <select class="form-select" id="exampleFormControlSelect1" name="event_type_id"
-                                                aria-label="Default select example">
-                                                <option selected disabled>Select Type</option>
-                                                @foreach ($types as $key => $type)
-                                                    <option {{ $event->event_type_id == $key ? 'selected' : '' }}
-                                                        value="{{ $key }}">{{ $type }}</option>
-                                                @endforeach
-                                            </select>
-                                            <small class="text-body float-start error-message-div event_type_id-error"
-                                                style="color: #ff0000 !important" hidden></small>
-                                        </div>
-                                        <div class="col md-6">
-                                            <label for="exampleFormControlSelect1" class="form-label">Client</label>
-                                            <select class="form-select" id="exampleFormControlSelect1" name="client_id"
-                                                aria-label="Default select example">
-                                                <option selected disabled>Select Client</option>
-                                                @foreach ($clients as $key => $client)
-                                                    <option {{ $event->client_id == $key ? 'selected' : '' }}
-                                                        value="{{ $key }}">{{ $client }}</option>
-                                                @endforeach
-                                            </select>
-                                            <small class="text-body float-start error-message-div client_id-error"
-                                                style="color: #ff0000 !important" hidden></small>
-                                        </div>
-                                    </div>
-                                    <div class="row mb-6">
-                                        <div class="col-md-6">
-                                            <label for="html5-date-input" class="form-label">Start Date</label>
-                                            <input class="form-control start_date" type="datetime-local" id="start-date-id"
-                                                {{ $event->canUpdateEventNameAndStartDate() ? '' : 'disabled' }}
-                                                value="{{ $event->start_date }}" name="start_date">
-                                            <small class="text-body float-start error-message-div start_date-error"
-                                                style="color: #ff0000 !important" hidden></small>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <label for="html5-date-input" class="form-label">End Date</label>
-                                            <input class="form-control end_date" type="datetime-local"
-                                                value="{{ $event->end_date }}" name="end_date">
-                                            <small class="text-body float-start error-message-div end_date-error"
-                                                style="color: #ff0000 !important" hidden></small>
-                                        </div>
-                                    </div>
-                                    <div class="row mb-6">
-                                        <div class="col md-6">
-                                            <label for="active-duration" class="form-label">Active Duration</label>
-                                            <input class="form-control" type="text"
-                                                value="{{ $event->active_duration }}" name="active_duration"
-                                                id="active-duration" readonly>
-                                            <small class="text-body float-start error-message-div active_duration-error"
-                                                style="color: #ff0000 !important" hidden></small>
-                                        </div>
-                                        <div class="col md-6">
-                                            <label for="exampleFormControlSelect1" class="form-label">Customer</label>
-                                            <input class="form-control" type="text" value="{{ $event->customer }}"
-                                                placeholder="Enter Customer Name" id="event-customer-name"
-                                                name="customer">
-                                            <small class="text-body float-start error-message-div customer-error"
-                                                style="color: #ff0000 !important" hidden></small>
-                                        </div>
-                                    </div>
-                                    <div class="row mb-6">
-                                        <div class="col md-6">
-                                            <label for="html5-number-input" class="form-label">Venue</label>
-                                            <input class="form-control" type="text" value="{{ $event->venue }}"
-                                                name="venue" placeholder="Enter Venue" id="html5-number-input">
-                                            <small class="text-body float-start error-message-div venue-error"
-                                                style="color: #ff0000 !important" hidden></small>
-                                        </div>
+                                        @if (!isClientUser())
+                                            <div class="col md-6">
+                                                <label for="html5-number-input" class="form-label">Venue</label>
+                                                <input class="form-control" type="text" value="{{ $event->venue }}"
+                                                    name="venue" placeholder="Enter Venue" id="html5-number-input">
+                                                <small class="text-body float-start error-message-div venue-error"
+                                                    style="color: #ff0000 !important" hidden></small>
+                                            </div>
+                                        @endif
                                         <div class="col-md-6">
                                             <div class="form-password-toggle">
                                                 <label class="form-label" for="event-password">Password</label>
@@ -263,20 +275,22 @@
                                                 style="color: #ff0000 !important" hidden></small>
                                         </div>
                                     </div>
-                                    <div class="row mb-6">
-                                        <div class="col md-6">
-                                            <label for="exampleFormControlTextarea1" class="form-label">Link</label>
-                                            <div class="url-container mb-6">
-                                                <input type="text" id="urlInput" class="url-input" readonly
-                                                    value="{{ $event->event_link }}" name="event_link">
-                                                <button onclick="copyUrl(event)" class="copy-button">Copy</button>
-                                                <small class="text-body float-start" style="color: #696cff !important"
-                                                    hidden>Copied</small>
-                                                <small class="text-body float-start error-message-div event_link-error"
-                                                    style="color: #ff0000 !important" hidden></small>
+                                    @if (!isClientUser())
+                                        <div class="row mb-6">
+                                            <div class="col md-6">
+                                                <label for="exampleFormControlTextarea1" class="form-label">Link</label>
+                                                <div class="url-container mb-6">
+                                                    <input type="text" id="urlInput" class="url-input" readonly
+                                                        value="{{ $event->event_link }}" name="event_link">
+                                                    <button onclick="copyUrl(event)" class="copy-button">Copy</button>
+                                                    <small class="text-body float-start" style="color: #696cff !important"
+                                                        hidden>Copied</small>
+                                                    <small class="text-body float-start error-message-div event_link-error"
+                                                        style="color: #ff0000 !important" hidden></small>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
+                                    @endif
                                 </div>
                                 <div class="col-md-4">
                                     <div class="row">
@@ -297,30 +311,64 @@
                     <div class="card mb-6">
                         <div class="card-header align-items-center">
                             <div class="form-check form-switch mb-3">
-                                <input class="form-check-input" type="checkbox" id="enable-organizer-id" name="enable_organizer" {{ $event->enable_organizer == 1 ? 'checked' : '' }}>
-                                <label class="form-check-label" for="flexSwitchCheckChecked">Enable Vendors Section</label>
+                                <input class="form-check-input" type="checkbox" id="enable-organizer-id"
+                                    name="enable_organizer" {{ $event->enable_organizer == 1 ? 'checked' : '' }}>
+                                <label class="form-check-label" for="enable-organizer-id">Enable Vendors
+                                    Section</label>
                             </div>
-                            <div style="display: flex; gap: 10px; align-items: baseline;" class="mb-1">
-                                <h5>Add New Vendor</h5>
-                                <button type="button" class="btn rounded-pill btn-icon btn-primary"
-                                    id="organizer-add-button">
-                                    <span class="fa fa-plus" style="font-size: 15px"></span>
-                                </button>
-                            </div>
+                            @if (!isClientUser())
+                                <div style="display: flex; gap: 10px; align-items: baseline;" class="mb-1">
+                                    <h5>Add New Vendor</h5>
+                                    <button type="button" class="btn rounded-pill btn-icon btn-primary" disabled
+                                        id="organizer-add-button">
+                                        <span class="fa fa-plus" style="font-size: 15px"></span>
+                                    </button>
+                                </div>
+                            @endif
                         </div>
-                        <div class="card-body">
-                            <div class="organizer-container">
-                                @if ($event->organizers->count() > 0)
-                                    @foreach ($event->organizers as $index => $organizer)
+                        @if (!isClientUser())
+                            <div class="card-body">
+                                <div class="organizer-container">
+                                    @if ($event->organizers->count() > 0)
+                                        @foreach ($event->organizers as $index => $organizer)
+                                            <div class="row organizer-row mb-6">
+                                                <input type="hidden" class="organizer-model-id" id=""
+                                                    value="{{ $organizer->id }}">
+                                                <div class="col-md-4">
+                                                    <select class="form-select organizers-organizer_id">
+                                                        <option value="" selected disabled>Select Option</option>
+                                                        @foreach ($vendors as $key => $vendor)
+                                                            <option
+                                                                {{ $organizer->organizer_id == $key ? 'selected' : '' }}
+                                                                value="{{ $key }}">{{ $vendor }}</option>
+                                                        @endforeach
+                                                    </select>
+                                                    <small class="text-body float-start error-message-div"
+                                                        style="color: #ff0000 !important" hidden></small>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <input type="text" class="form-control organizers-role_in_event"
+                                                        value="{{ $organizer->role_in_event }}"
+                                                        placeholder="Role In Event" name="role_in_event">
+                                                    <small class="text-body float-start error-message-div"
+                                                        style="color: #ff0000 !important" hidden></small>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <button type="button"
+                                                        class="btn rounded-pill btn-icon btn-danger remove-row organizer-remove-button"
+                                                        {{ $index != 0 ? '' : 'hidden' }}>
+                                                        <span class="fa fa-minus" style="font-size: 15px"></span>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        @endforeach
+                                    @else
                                         <div class="row organizer-row mb-6">
-                                            <input type="hidden" class="organizer-model-id" id=""
-                                                value="{{ $organizer->id }}">
                                             <div class="col-md-4">
                                                 <select class="form-select organizers-organizer_id">
                                                     <option value="" selected disabled>Select Option</option>
-                                                    @foreach ($vendors as $key => $vendor)
-                                                        <option {{ $organizer->organizer_id == $key ? 'selected' : '' }}
-                                                            value="{{ $key }}">{{ $vendor }}</option>
+                                                    @foreach ($clients as $key => $client)
+                                                        <option value="{{ $key }}">{{ $client }}</option>
                                                     @endforeach
                                                 </select>
                                                 <small class="text-body float-start error-message-div"
@@ -328,49 +376,22 @@
                                             </div>
                                             <div class="col-md-4">
                                                 <input type="text" class="form-control organizers-role_in_event"
-                                                    value="{{ $organizer->role_in_event }}" placeholder="Role In Event"
-                                                    name="role_in_event">
+                                                    value="" placeholder="Role In Event" name="role_in_event">
                                                 <small class="text-body float-start error-message-div"
                                                     style="color: #ff0000 !important" hidden></small>
                                             </div>
                                             <div class="col-md-4">
                                                 <button type="button"
                                                     class="btn rounded-pill btn-icon btn-danger remove-row organizer-remove-button"
-                                                    {{ $index != 0 ? '' : 'hidden' }}>
+                                                    hidden>
                                                     <span class="fa fa-minus" style="font-size: 15px"></span>
                                                 </button>
                                             </div>
                                         </div>
-                                    @endforeach
-                                @else
-                                    <div class="row organizer-row mb-6">
-                                        <div class="col-md-4">
-                                            <select class="form-select organizers-organizer_id">
-                                                <option value="" selected disabled>Select Option</option>
-                                                @foreach ($clients as $key => $client)
-                                                    <option value="{{ $key }}">{{ $client }}</option>
-                                                @endforeach
-                                            </select>
-                                            <small class="text-body float-start error-message-div"
-                                                style="color: #ff0000 !important" hidden></small>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <input type="text" class="form-control organizers-role_in_event"
-                                                value="" placeholder="Role In Event" name="role_in_event">
-                                            <small class="text-body float-start error-message-div"
-                                                style="color: #ff0000 !important" hidden></small>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <button type="button"
-                                                class="btn rounded-pill btn-icon btn-danger remove-row organizer-remove-button"
-                                                hidden>
-                                                <span class="fa fa-minus" style="font-size: 15px"></span>
-                                            </button>
-                                        </div>
-                                    </div>
-                                @endif
+                                    @endif
+                                </div>
                             </div>
-                        </div>
+                        @endif
                     </div>
                     <div class="card mb-6">
                         <div class="card-header d-flex justify-content-between align-items-center">
@@ -378,54 +399,59 @@
                         </div>
                         <div class="card-body">
                             <div class="row mb-6">
-                                <div class="col-md-4">
-                                    <h5>General Settings</h5>
-                                    <div class="row mb-6" style="margin: 3px">
-                                        <div class="form-check form-switch mb-2">
-                                            <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked"
-                                                {{ $event->setting?->image_share_guest_book == 1 ? 'checked' : '' }}
-                                                name="image_share_guest_book">
-                                            <label class="form-check-label" for="flexSwitchCheckChecked">Image Share -
-                                                Guest Upload</label>
-                                        </div>
-                                        <div class="form-check form-switch mb-2">
-                                            <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked"
-                                                {{ $event->setting?->image_folders == 1 ? 'checked' : '' }}
-                                                name="image_folders">
-                                            <label class="form-check-label" for="flexSwitchCheckChecked">Image
-                                                Folders</label>
-                                        </div>
-                                        <div class="form-check form-switch mb-2">
-                                            <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked"
-                                                {{ $event->setting?->video_playlist == 1 ? 'checked' : '' }}
-                                                name="video_playlist">
-                                            <label class="form-check-label" for="flexSwitchCheckChecked">Video
-                                                Folders</label>
+                                @if (!isClientUser())
+                                    <div class="col-md-4">
+                                        <h5>General Settings</h5>
+                                        <div class="row mb-6" style="margin: 3px">
+                                            <div class="form-check form-switch mb-2">
+                                                <input class="form-check-input" type="checkbox"
+                                                    id="image_share_guest_book"
+                                                    {{ $event->setting?->image_share_guest_book == 1 ? 'checked' : '' }}
+                                                    name="image_share_guest_book">
+                                                <label class="form-check-label" for="image_share_guest_book">Image Share -
+                                                    Guest Upload</label>
+                                            </div>
+                                            <div class="form-check form-switch mb-2">
+                                                <input class="form-check-input" type="checkbox"
+                                                    id="image_folders"
+                                                    {{ $event->setting?->image_folders == 1 ? 'checked' : '' }}
+                                                    name="image_folders">
+                                                <label class="form-check-label" for="image_folders">Image
+                                                    Folders</label>
+                                            </div>
+                                            <div class="form-check form-switch mb-2">
+                                                <input class="form-check-input" type="checkbox"
+                                                    id="video_playlist"
+                                                    {{ $event->setting?->video_playlist == 1 ? 'checked' : '' }}
+                                                    name="video_playlist">
+                                                <label class="form-check-label" for="video_playlist">Video
+                                                    Folders</label>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
+                                @endif
                                 <div class="col-md-4">
                                     <h5>Guest Upload Folder Settings</h5>
                                     <div class="row mb-6" style="margin: 3px">
                                         <div class="form-check form-switch mb-2">
-                                            <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked"
+                                            <input class="form-check-input" type="checkbox" id="allow_upload"
                                                 {{ $event->setting?->allow_upload == 1 ? 'checked' : '' }}
                                                 name="allow_upload">
-                                            <label class="form-check-label" for="flexSwitchCheckChecked">Enable
+                                            <label class="form-check-label" for="allow_upload">Enable
                                                 Upload</label>
                                         </div>
                                         <div class="form-check form-switch mb-2">
-                                            <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked"
+                                            <input class="form-check-input" type="checkbox" id="auto_image_approve"
                                                 {{ $event->setting?->auto_image_approve == 1 ? 'checked' : '' }}
                                                 name="auto_image_approve">
-                                            <label class="form-check-label" for="flexSwitchCheckChecked">Auto Image
+                                            <label class="form-check-label" for="auto_image_approve">Auto Image
                                                 Approval</label>
                                         </div>
                                         <div class="form-check form-switch mb-2">
-                                            <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked"
+                                            <input class="form-check-input" type="checkbox" id="allow_image_download"
                                                 {{ $event->setting?->allow_image_download == 1 ? 'checked' : '' }}
                                                 name="allow_image_download">
-                                            <label class="form-check-label" for="flexSwitchCheckChecked">Allow Image
+                                            <label class="form-check-label" for="allow_image_download">Allow Image
                                                 Download</label>
                                         </div>
                                     </div>
@@ -780,7 +806,6 @@
 
     <script>
         $(document).ready(function() {
-            // var eventName = $('#event-name-id').val();
             updateLinkValue();
         })
     </script>
@@ -796,5 +821,15 @@
             link[0].click();
             link.remove();
         });
+    </script>
+
+    <script>
+        $('#enable-organizer-id').on('change', function(e) {
+            var element = e.target;
+            if ($(element).is(':checked'))
+                $('#organizer-add-button').attr('disabled', false);
+            else
+                $('#organizer-add-button').attr('disabled', true);
+        })
     </script>
 @endsection

@@ -42,6 +42,9 @@ class LoginController extends Controller
 
     protected function authenticated(Request $request, $user)
     {
+        if (getUserType() == 'event-user' || getUserType() == 'client')
+            return redirect()->route('events.index');
+
         if (Auth::user()->hasRole('super-admin'))
             return redirect()->route('insights.index');
         else if (Auth::user()->hasAnyPermission(['create_event', 'update_event', 'delete_event']))
@@ -64,7 +67,7 @@ class LoginController extends Controller
         $fieldType = filter_var($request->email, FILTER_VALIDATE_EMAIL) ? 'email' : 'name';
 
         if (Auth::attempt([$fieldType => $request->email, 'password' => $request->password], $request->filled('remember'))) {
-            return redirect()->intended(route('insights.index'));
+            return $this->authenticated($request, Auth::user());
         }
 
         return back()->withErrors(['email' => 'Invalid credentials.'])->withInput();

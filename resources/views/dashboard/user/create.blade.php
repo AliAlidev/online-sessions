@@ -34,10 +34,10 @@
         <div class="row">
             <div class="col-xl">
                 <form id="createUserForm">
-                    <h5 class="mb-0">{{ Breadcrumbs::render('create-user') }}</h5>
+                    <h5 class="mb-0">{{ Breadcrumbs::render('create-admin') }}</h5>
                     <div class="card mb-6">
                         <div class="card-header">
-                            <h5 class="mb-0">User Information</h5>
+                            <h5 class="mb-0">Admin Information</h5>
                         </div>
                         <div class="card-body">
                             <div class="row mb-3">
@@ -297,7 +297,7 @@
                             </div>
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-primary" style="float: right" id="storeButton">Crete User
+                    <button type="submit" class="btn btn-primary" style="float: right" id="storeButton">Crete Admin
                         <span id="spinner" style="display:none;">
                             <i class="fa fa-spinner fa-spin"></i>
                         </span>

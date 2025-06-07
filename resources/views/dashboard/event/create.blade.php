@@ -283,12 +283,14 @@
                     <div class="card mb-6">
                         <div class="card-header align-items-center">
                             <div class="form-check form-switch mb-3">
-                                <input class="form-check-input" type="checkbox" id="enable-organizer-id" name="enable_organizer">
-                                <label class="form-check-label" for="flexSwitchCheckChecked">Enable Vendors Section</label>
+                                <input class="form-check-input" type="checkbox" id="enable-organizer-id"
+                                    name="enable_organizer">
+                                <label class="form-check-label" for="enable-organizer-id">Enable Vendors
+                                    Section</label>
                             </div>
                             <div style="display: flex; gap: 10px; align-items: baseline;" class="mb-1">
                                 <h5>Add New Vendor</h5>
-                                <button type="button" class="btn rounded-pill btn-icon btn-primary"
+                                <button type="button" class="btn rounded-pill btn-icon btn-primary" disabled
                                     id="organizer-add-button">
                                     <span class="fa fa-plus" style="font-size: 15px"></span>
                                 </button>
@@ -333,21 +335,21 @@
                                     <h5>General Settings</h5>
                                     <div class="row mb-6" style="margin: 3px">
                                         <div class="form-check form-switch mb-2">
-                                            <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked"
+                                            <input class="form-check-input" type="checkbox" id="image_share_guest_book"
                                                 name="image_share_guest_book">
-                                            <label class="form-check-label" for="flexSwitchCheckChecked">Image Share -
+                                            <label class="form-check-label" for="image_share_guest_book">Image Share -
                                                 Guest Upload</label>
                                         </div>
                                         <div class="form-check form-switch mb-2">
-                                            <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked"
+                                            <input class="form-check-input" type="checkbox" id="image_folders"
                                                 name="image_folders">
-                                            <label class="form-check-label" for="flexSwitchCheckChecked">Image
+                                            <label class="form-check-label" for="image_folders">Image
                                                 Folders</label>
                                         </div>
                                         <div class="form-check form-switch mb-2">
-                                            <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked"
+                                            <input class="form-check-input" type="checkbox" id="video_playlist"
                                                 name="video_playlist">
-                                            <label class="form-check-label" for="flexSwitchCheckChecked">Video
+                                            <label class="form-check-label" for="video_playlist">Video
                                                 Folders</label>
                                         </div>
                                     </div>
@@ -356,21 +358,21 @@
                                     <h5>Guest Upload Folder Settings</h5>
                                     <div class="row mb-6" style="margin: 3px">
                                         <div class="form-check form-switch mb-2">
-                                            <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked"
+                                            <input class="form-check-input" type="checkbox" id="allow_upload"
                                                 name="allow_upload">
-                                            <label class="form-check-label" for="flexSwitchCheckChecked">Enable
+                                            <label class="form-check-label" for="allow_upload">Enable
                                                 Upload</label>
                                         </div>
                                         <div class="form-check form-switch mb-2">
-                                            <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked"
+                                            <input class="form-check-input" type="checkbox" id="auto_image_approve"
                                                 name="auto_image_approve">
-                                            <label class="form-check-label" for="flexSwitchCheckChecked">Auto Image
+                                            <label class="form-check-label" for="auto_image_approve">Auto Image
                                                 Approval</label>
                                         </div>
                                         <div class="form-check form-switch mb-2">
-                                            <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked"
+                                            <input class="form-check-input" type="checkbox" id="allow_image_download"
                                                 name="allow_image_download">
-                                            <label class="form-check-label" for="flexSwitchCheckChecked">Allow Image
+                                            <label class="form-check-label" for="allow_image_download">Allow Image
                                                 Download</label>
                                         </div>
                                     </div>
@@ -730,6 +732,16 @@
             }
             addCharactersLimitation('exampleFormControlTextarea1Description');
             addCharactersLimitation('exampleFormControlTextarea1welcomeMessage');
+        })
+    </script>
+
+    <script>
+        $('#enable-organizer-id').on('change', function(e) {
+            var element = e.target;
+            if ($(element).is(':checked'))
+                $('#organizer-add-button').attr('disabled', false);
+            else
+                $('#organizer-add-button').attr('disabled', true);
         })
     </script>
 @endsection

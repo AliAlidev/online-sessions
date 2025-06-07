@@ -21,6 +21,11 @@
                 transform: rotate(360deg);
             }
         }
+
+        #basic-default-password2 {
+            pointer-events: auto;
+            z-index: 1;
+        }
     </style>
 @endsection
 
@@ -84,6 +89,37 @@
                                     <input type="text" id="client_role" class="form-control" name="client_role"
                                         placeholder="Enter Client Role">
                                     <small class="text-body float-start error-message-div client_role-error"
+                                        style="color: #ff0000 !important" hidden></small>
+                                </div>
+                            </div>
+                            <div class="row mb-6">
+                                <div class="col-md-6">
+                                    <div class="form-password-toggle">
+                                        <label class="form-label" for="password_id">Password</label>
+                                        <div class="input-group">
+                                            <input type="password" class="form-control" id="password_id"
+                                                placeholder="············" name="password">
+                                            <span id="basic-default-password2" class="input-group-text cursor-pointer">
+                                                <i class="bx bx-hide"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <small class="text-body float-start error-message-div password-error"
+                                        style="color: #ff0000 !important" hidden></small>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-password-toggle">
+                                        <label class="form-label" for="password_confirmation_id">Password
+                                            Confirmation</label>
+                                        <div class="input-group">
+                                            <input type="password" class="form-control" id="password_confirmation_id"
+                                                placeholder="············" name="password_confirmation">
+                                            <span id="basic-default-password2" class="input-group-text cursor-pointer">
+                                                <i class="bx bx-hide"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <small class="text-body float-start error-message-div password-error"
                                         style="color: #ff0000 !important" hidden></small>
                                 </div>
                             </div>

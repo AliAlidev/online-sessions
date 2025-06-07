@@ -24,10 +24,19 @@ class CreateClientRequest extends FormRequest
         return [
             'planner_name' => 'required|string',
             'planner_business_name' => 'nullable|string',
-            'phone_number' => 'nullable|string|max:20|unique:clients,phone_number',
-            'email' => 'nullable|email|unique:clients,email',
+            'phone_number' => 'nullable|string|max:20|unique:users,phone',
+            'email' => 'required|email|unique:users,email',
             'client_role' => 'required|string',
-            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp'
+            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp',
+            'password' => 'required|confirmed|regex:/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/',
+            'password_confirmation' => 'required'
+        ];
+    }
+
+    function messages()
+    {
+        return [
+            'password.regex' => "The password must be at least 8 characters long and include at least one uppercase letter, one lowercase letter, one number, and one of those @$!%*?& special character."
         ];
     }
 }

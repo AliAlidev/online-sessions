@@ -34,10 +34,10 @@
         <div class="row">
             <div class="col-xl">
                 <form id="updateUserForm">
-                    <h5 class="mb-0">{{ Breadcrumbs::render('update-user', $user) }}</h5>
+                    <h5 class="mb-0">{{ Breadcrumbs::render('update-admin', $user) }}</h5>
                     <div class="card mb-6">
                         <div class="card-header">
-                            <h5 class="mb-0">User Information</h5>
+                            <h5 class="mb-0">Admin Information</h5>
                         </div>
                         <div class="card-body">
                             <div class="row mb-3">
@@ -334,7 +334,7 @@
                     </div>
                     <div style="display: flex; gap: 10px; justify-content: flex-end">
                         <a href="javascript:history.back()" class="btn btn-label-primary">Close</a>
-                        <button type="submit" class="btn btn-primary" style="float: right" id="storeButton">Update User
+                        <button type="submit" class="btn btn-primary" style="float: right" id="storeButton">Update Admin
                             <span id="spinner" style="display:none;">
                                 <i class="fa fa-spinner fa-spin"></i>
                             </span>

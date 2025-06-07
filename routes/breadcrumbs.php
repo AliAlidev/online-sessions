@@ -4,17 +4,10 @@
 
 use App\Models\Client;
 use App\Models\Event;
-use App\Models\EventFolder;
-use App\Models\User;
 use App\Models\Vendor;
 use Diglactic\Breadcrumbs\Breadcrumbs;
 
-// Breadcrumbs::for('insights', function ($trail) {
-//     $trail->push('Insights', route('insights.index'));
-// });
-
 Breadcrumbs::for('events', function ($trail) {
-    // $trail->parent('insights');
     $trail->push('Events List', route('events.index'));
 });
 
@@ -26,7 +19,6 @@ Breadcrumbs::for('event', function ($trail, $eventSlug) {
 
 Breadcrumbs::for('folder', function ($trail, $eventSlug) {
     $trail->parent('event', $eventSlug);
-    // $trail->push('Folders List', '');
 });
 
 Breadcrumbs::for('folders', function ($trail, $eventSlug, $folderSlug) {
@@ -37,17 +29,13 @@ Breadcrumbs::for('folders', function ($trail, $eventSlug, $folderSlug) {
 
 Breadcrumbs::for('files', function ($trail, $eventSlug, $folderSlug) {
     $trail->parent('folders', $eventSlug, $folderSlug);
-    // $folder = EventFolder::where('bunny_folder_name', $folderSlug)->first();
-    // $trail->push(ucfirst($folder->folder_type).'s List', '');
 });
 
 Breadcrumbs::for('roles', function ($trail) {
-    // $trail->parent('insights');
     $trail->push('Roles List', route('roles.index'));
 });
 
 Breadcrumbs::for('clients', function ($trail) {
-    // $trail->parent('insights');
     $trail->push('Clients List', route('clients.index'));
 });
 
@@ -73,12 +61,11 @@ Breadcrumbs::for('create-vendor', function ($trail) {
 
 Breadcrumbs::for('update-vendor', function ($trail, $clientId) {
     $trail->parent('vendors');
-    $clientName = Vendor::find($clientId)->planner_name;
+    $clientName = Vendor::find($clientId)->vendor_name;
     $trail->push('Update Vendor - ' . $clientName, '');
 });
 
 Breadcrumbs::for('event-types', function ($trail) {
-    // $trail->parent('insights');
     $trail->push('Event Types List', route('events.types.index'));
 });
 
@@ -94,22 +81,21 @@ Breadcrumbs::for('update-event', function ($trail, $eventId) {
 });
 
 Breadcrumbs::for('settings', function ($trail) {
-    // $trail->parent('insights');
     $trail->push('Bunny Setting', '');
 });
 
-Breadcrumbs::for('users', function ($trail) {
-    $trail->push('Users List', route('users.index'));
+Breadcrumbs::for('admins', function ($trail) {
+    $trail->push('Admins List', route('users.index'));
 });
 
-Breadcrumbs::for('create-user', function ($trail) {
-    $trail->parent('users');
-    $trail->push('Create User', '');
+Breadcrumbs::for('create-admin', function ($trail) {
+    $trail->parent('admins');
+    $trail->push('Create Admin', '');
 });
 
-Breadcrumbs::for('update-user', function ($trail, $user) {
-    $trail->parent('users');
-    $trail->push('Update User - ' . $user->name, '');
+Breadcrumbs::for('update-admin', function ($trail, $user) {
+    $trail->parent('admins');
+    $trail->push('Update Admin - ' . $user->name, '');
 });
 
 Breadcrumbs::for('events-users', function ($trail) {
