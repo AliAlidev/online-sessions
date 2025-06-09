@@ -3,7 +3,7 @@
 use App\Http\Controllers\dashboard\ClientController;
 use App\Http\Controllers\dashboard\EventController;
 use App\Http\Controllers\dashboard\EventTypeController;
-use App\Http\Controllers\Dashboard\EventUserController;
+use App\Http\Controllers\dashboard\EventUserController;
 use App\Http\Controllers\dashboard\FolderController;
 use App\Http\Controllers\dashboard\FolderFileController;
 use App\Http\Controllers\dashboard\RoleController;
