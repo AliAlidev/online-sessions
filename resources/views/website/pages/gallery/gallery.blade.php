@@ -100,9 +100,9 @@
         <div id="loader-div" hidden>
             <div class="loader-container">
                     @if ($event->setting->theme == 'dark')
-                        <img src="{{ asset('assets/img/loader/loader-white.gif') }}" width="40px" alt="">
+                        <img src="{{ asset('assets/img/loader/loader-white.gif') }}" width="34px" alt="">
                     @else
-                        <img src="{{ asset('assets/img/loader/loader.gif') }}" width="40px" alt="">
+                        <img src="{{ asset('assets/img/loader/loader.gif') }}" width="34px" alt="">
                     @endif
             </div>
         </div>
