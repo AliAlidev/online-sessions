@@ -45,9 +45,11 @@
         <h5 class="mb-0">{{ Breadcrumbs::render('events-users') }}</h5>
         <div class="card">
             <div class="row card-header flex-column flex-md-row pb-0">
-                <div class="d-md-flex justify-content-between align-items-center dt-layout-end col-md-auto ms-auto mt-0">
-                    <a href="{{ route('events.users.create') }}" class="btn btn-primary">Create User</a>
-                </div>
+                @haspermission('create_event_user')
+                    <div class="d-md-flex justify-content-between align-items-center dt-layout-end col-md-auto ms-auto mt-0">
+                        <a href="{{ route('events.users.create') }}" class="btn btn-primary">Create User</a>
+                    </div>
+                @endhaspermission
             </div>
             <div class="card-datatable">
                 <div class="justify-content-between dt-layout-table" style="padding: 20px">

@@ -42,7 +42,7 @@ class LoginController extends Controller
 
     protected function authenticated(Request $request, $user)
     {
-        if (getUserType() == 'event-user' || getUserType() == 'client')
+        if (isEventUser() || isClientUser())
             return redirect()->route('events.index');
 
         if (Auth::user()->hasRole('super-admin'))

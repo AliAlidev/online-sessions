@@ -177,7 +177,7 @@
                                 <small class="text-body float-start error-message-div file-error file_name-error"
                                     style="color: #ff0000 !important" hidden></small>
                             </div>
-                            @if ($folderType == 'image')
+                            @if ($folderType == 'image' && !isClientUser() && !isEventUser())
                                 <div class="col-md-12 mt-2">
                                     <div class="form-check form-switch mb-2">
                                         <input class="form-check-input compress_images" type="checkbox" id="compress_images"
@@ -539,17 +539,24 @@
             let allUploadsSuccessCount = 0; // Track if any upload fails
             let filesCount = 0;
             let formId = null;
-            $('#createFileForm').submit(function(e) {
+            $('#createFileForm').submit(async function(e) {
                 e.preventDefault(); // Prevent default form submission
                 formId = e.target.id;
                 $('.alert').remove();
                 var submitBtn = $("#storeButton");
                 showButtonLoader(submitBtn);
 
-                if ($('#' + formId + ' #compress_images').is(':checked'))
+                if ("{{ isClientUser() || isEventUser() }}") {
+                    await compressImages(formId);
                     var files = $('#' + formId + ' #event-file-hidden')[0].files;
-                else
-                    var files = $('#' + formId + ' .event-file')[0].files;
+                } else {
+                    if ($('#' + formId + ' #compress_images').is(':checked')) {
+                        await compressImages(formId);
+                        var files = $('#' + formId + ' #event-file-hidden')[0].files;
+                    } else
+                        var files = $('#' + formId + ' .event-file')[0].files;
+                }
+
                 filesCount = files.length;
                 if (files.length == 0) {
                     $('.file_name-error').attr('hidden', false);
@@ -587,8 +594,7 @@
 
                 // Start uploading files (up to 6 at a time)
                 processUploads(uploadQueue, MAX_CONCURRENT_UPLOADS)
-                    .then(() => {
-                    })
+                    .then(() => {})
                     .catch(() => {});
             });
 
@@ -672,14 +678,14 @@
                         .then(function(response) {
                             allUploadsSuccessCount++;
                             clearInterval($("#status-" + index).data(
-                            "interval")); // Stop animated dots
+                                "interval")); // Stop animated dots
                             $("#progress-bar-" + index).removeClass("bg-success").addClass(
                                 "bg-primary").text("Completed");
                             $("#status-" + index).addClass('hidden-force');
                             if (allUploadsSuccessCount == filesCount) {
                                 resetForm(formId);
                                 var successMessage =
-                                `<div class="alert alert-success"> ${response.data.message} </div>`;
+                                    `<div class="alert alert-success"> ${response.data.message} </div>`;
                                 $('#' + formId).find('.modal-body').prepend(successMessage);
                                 var submitBtn = $("#storeButton");
                                 hideButtonLoader(submitBtn);
@@ -896,15 +902,6 @@
                     }
                 })
             });
-
-            $('.compress_images').on('change', function(e) {
-                var formId = $(this).closest('form').attr('id');
-                if (this.checked) {
-                    compressImages(formId);
-                } else {
-                    $("#" + formId + " #event-file-hidden").val("");
-                }
-            });
         });
 
         function clearErrors() {
@@ -935,9 +932,7 @@
             let compressionRatios = [];
             try {
                 const response = await fetch("{{ asset('/compression-ratios.json') }}");
-                if (!response.ok) {
-                    throw new Error(`Failed to fetch compression ratios: ${response.status}`);
-                }
+                if (!response.ok) throw new Error(`Failed to fetch compression ratios: ${response.status}`);
                 compressionRatios = await response.json();
             } catch (error) {
                 console.error('Error loading compression ratios:', error);
@@ -989,50 +984,52 @@
                 ];
             }
 
-            const dataTransfer = new DataTransfer(); // Holds all final files
+            const dataTransfer = new DataTransfer(); // Will collect final files
 
-            Array.from(files).forEach((file) => {
-                const fileSizeMB = file.size / (1024 * 1024); // Convert bytes to MB
-
-                // Find the appropriate compression quality
+            const compressPromises = Array.from(files).map((file) => {
+                const fileSizeMB = file.size / (1024 * 1024);
                 let quality = null;
+
                 for (const ratio of compressionRatios) {
                     if (fileSizeMB > ratio.minSizeMB) {
-                        quality = Math.max(ratio.quality, 0.7); // Ensure minimum quality of 0.7
+                        quality = Math.max(ratio.quality, 0.7);
                         break;
                     }
                 }
 
-                // If no quality is set (file ≤ 0.5MB or no matching threshold), skip compression
+                // If no quality is defined, return original file
                 if (quality === null) {
-                    dataTransfer.items.add(file); // Use original file
-                    if (dataTransfer.files.length === files.length) {
-                        document.getElementById(formId).querySelector("#event-file-hidden").files = dataTransfer
-                            .files;
-                    }
-                    return;
+                    dataTransfer.items.add(file);
+                    return Promise.resolve();
                 }
-                new Compressor(file, {
-                    quality: quality,
-                    maxWidth: 1920, // Increased from 1024
-                    maxHeight: 1920, // Increased from 1024
-                    success(result) {
-                        const compressedFile = new File([result], file.name, {
-                            type: file.type,
-                            lastModified: Date.now(),
-                        });
-                        const compressedSizeMB = compressedFile.size / (1024 * 1024);
-                        dataTransfer.items.add(compressedFile);
-                        if (dataTransfer.files.length === files.length) {
-                            document.getElementById(formId).querySelector("#event-file-hidden").files =
-                                dataTransfer.files;
+
+                return new Promise((resolve, reject) => {
+                    new Compressor(file, {
+                        quality: quality,
+                        maxWidth: 1920,
+                        maxHeight: 1920,
+                        success(result) {
+                            const compressedFile = new File([result], file.name, {
+                                type: file.type,
+                                lastModified: Date.now()
+                            });
+                            dataTransfer.items.add(compressedFile);
+                            resolve();
+                        },
+                        error(err) {
+                            console.error(`Compression error for ${file.name}:`, err);
+                            dataTransfer.items.add(file); // Fallback to original
+                            resolve(); // Still resolve to not break the batch
                         }
-                    },
-                    error(err) {
-                        console.error(`Compression error for ${file.name}:`, err);
-                    }
+                    });
                 });
             });
+
+            // Wait for all files to be processed
+            await Promise.all(compressPromises);
+
+            // Set files in hidden input
+            document.getElementById(formId).querySelector("#event-file-hidden").files = dataTransfer.files;
         }
     </script>
 

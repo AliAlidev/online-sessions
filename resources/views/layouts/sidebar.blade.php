@@ -23,18 +23,31 @@
                 </a>
             </li>
         @endcan
-        @if (Auth::user()->hasRole('super-admin'))
-            <li class="menu-item {{ Route::is('users.*') || Route::is('clients.*') ||  Route::is('events.users.*') ? 'active open' : '' }}">
+        @if (Auth::user()->hasRole('super-admin') ||
+                Auth::user()->hasAnyPermission([
+                    'create_client',
+                    'update_client',
+                    'delete_client',
+                    'list_clients',
+                    'create_event_user',
+                    'update_event_user',
+                    'delete_event_user',
+                    'list_event_users',
+                ]))
+            <li
+                class="menu-item {{ Route::is('users.*') || Route::is('clients.*') || Route::is('events.users.*') ? 'active open' : '' }}">
                 <a href="javascript:void(0);" class="menu-link menu-toggle">
                     <i class="bx bxs-user-pin" style="font-size: 20px; margin: 0 10px 0 0"></i>
                     <div class="text-truncate" data-i18n="Dashboards">Users</div>
                 </a>
                 <ul class="menu-sub">
-                    <li class="menu-item {{ Route::is('users.*') ? 'active' : '' }}">
-                        <a href="{{ route('users.index') }}" target="" class="menu-link">
-                            <div class="text-truncate" data-i18n="CRM">Admin Users</div>
-                        </a>
-                    </li>
+                    @if (Auth::user()->hasRole('super-admin'))
+                        <li class="menu-item {{ Route::is('users.*') ? 'active' : '' }}">
+                            <a href="{{ route('users.index') }}" target="" class="menu-link">
+                                <div class="text-truncate" data-i18n="CRM">Admin Users</div>
+                            </a>
+                        </li>
+                    @endif
                     @canany(['create_client', 'update_client', 'delete_client', 'list_clients'])
                         <li class="menu-item {{ Route::is('clients.*') ? 'active' : '' }}">
                             <a href="{{ route('clients.index') }}" class="menu-link">
@@ -42,11 +55,13 @@
                             </a>
                         </li>
                     @endcanany
-                    <li class="menu-item {{ Route::is('events.users.*') ? 'active' : '' }}">
-                        <a href="{{ route('events.users.index') }}" target="" class="menu-link">
-                            <div class="text-truncate" data-i18n="CRM">Event Users</div>
-                        </a>
-                    </li>
+                    @canany(['create_event_user', 'update_event_user', 'delete_event_user', 'list_event_users'])
+                        <li class="menu-item {{ Route::is('events.users.*') ? 'active' : '' }}">
+                            <a href="{{ route('events.users.index') }}" target="" class="menu-link">
+                                <div class="text-truncate" data-i18n="CRM">Event Users</div>
+                            </a>
+                        </li>
+                    @endcan
                 </ul>
             </li>
         @endif
@@ -68,7 +83,8 @@
                 </a>
                 <ul class="menu-sub">
                     @canany(['create_event', 'update_event', 'delete_event', 'list_events'])
-                        <li class="menu-item {{ Route::is('events.index') || Route::is('events.edit') || Route::is('events.create') || Route::is('folders.index') || Route::is('files.index') ? 'active' : '' }}">
+                        <li
+                            class="menu-item {{ Route::is('events.index') || Route::is('events.edit') || Route::is('events.create') || Route::is('folders.index') || Route::is('files.index') ? 'active' : '' }}">
                             <a href="{{ route('events.index') }}" target="" class="menu-link">
                                 <div class="text-truncate" data-i18n="CRM">All Events</div>
                             </a>

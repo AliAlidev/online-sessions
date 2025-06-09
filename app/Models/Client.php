@@ -30,4 +30,8 @@ class Client extends Model
     {
         return $this->belongsTo(Event::class, 'id', 'client_id');
     }
+
+    function user() {
+        return $this->hasOne(User::class, 'id' ,'user_id');
+    }
 }

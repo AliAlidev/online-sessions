@@ -43,6 +43,10 @@ class PermissionSeeder extends Seeder
             'update_event_type',
             'delete_event_type',
             'list_event_types',
+            'create_event_user', 
+            'update_event_user', 
+            'delete_event_user', 
+            'list_event_users'
         ];
 
         foreach ($permissions as $permission) {

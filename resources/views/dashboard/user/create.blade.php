@@ -234,6 +234,31 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="col-md-3">
+                                    <h5>Event Users Permissions</h5>
+                                    <div class="row mb-6" style="margin: 3px">
+                                        <div class="form-check form-switch mb-2">
+                                            <input class="form-check-input" type="checkbox"
+                                                id="create_event_user" name="permissions[]" value="create_event_user">
+                                            <label class="form-check-label" for="create_event_user">Create</label>
+                                        </div>
+                                        <div class="form-check form-switch mb-2">
+                                            <input class="form-check-input" type="checkbox"
+                                                id="update_event_user" name="permissions[]" value="update_event_user">
+                                            <label class="form-check-label" for="update_event_user">Update</label>
+                                        </div>
+                                        <div class="form-check form-switch mb-2">
+                                            <input class="form-check-input" type="checkbox"
+                                                id="delete_event_user" name="permissions[]" value="delete_event_user">
+                                            <label class="form-check-label" for="delete_event_user">Delete</label>
+                                        </div>
+                                        <div class="form-check form-switch mb-2">
+                                            <input class="form-check-input" type="checkbox"
+                                                id="list_event_users" name="permissions[]" value="list_event_users">
+                                            <label class="form-check-label" for="list_event_users">List</label>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-3">

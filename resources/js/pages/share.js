@@ -133,13 +133,14 @@ function closeModal() {
 document.getElementById('closeModalBtn').addEventListener('click', closeModal);
 document.getElementById('closeXBtn').addEventListener('click', closeModal);
 
-$('#uploadForm').submit(function (e) {
+$('#uploadForm').submit(async function (e) {
 
     e.preventDefault(); // Prevent default form submission
     $('.alert').remove();
     $('.image-error').attr('hidden', true);
     var submitBtn = $("#storeButton");
     showButtonLoader(submitBtn);
+    await compressImages();
     var file = $('#image-compressed')[0].files[0];
     if (!file) {
         $('.image-error').attr('hidden', false);
@@ -280,18 +281,14 @@ function hideButtonLoader(submitBtn) {
     submitBtn.disabled = false;
 }
 
-$('#image').on('change', function (e) {
-    compressImages();
-});
-
-async function compressImages(formId) {
+async function compressImages() {
     const input = document.getElementById('image');
     const fileInput = input.files[0];
     if (!fileInput) return;
 
     let compressionRatios = [];
     try {
-        var filePath = document.getElementById('compression-ratios-file-path');
+        const filePath = document.getElementById('compression-ratios-file-path');
         const response = await fetch(filePath.value);
         if (!response.ok) {
             throw new Error(`Failed to fetch compression ratios: ${response.status}`);
@@ -299,7 +296,6 @@ async function compressImages(formId) {
         compressionRatios = await response.json();
     } catch (error) {
         console.error('Error loading compression ratios:', error);
-        // Fallback to default ratios
         compressionRatios = [
             { minSizeMB: 10, quality: 0.7 },
             { minSizeMB: 9, quality: 0.75 },
@@ -315,12 +311,13 @@ async function compressImages(formId) {
         ];
     }
 
-    const dataTransfer = new DataTransfer(); // Holds all final files
-    const fileSizeMB = fileInput.size / (1024 * 1024); // Convert bytes to MB
+    const dataTransfer = new DataTransfer();
+    const fileSizeMB = fileInput.size / (1024 * 1024);
     let quality = null;
+
     for (const ratio of compressionRatios) {
         if (fileSizeMB > ratio.minSizeMB) {
-            quality = Math.max(ratio.quality, 0.7); // Ensure minimum quality of 0.7
+            quality = Math.max(ratio.quality, 0.7);
             break;
         }
     }
@@ -329,7 +326,9 @@ async function compressImages(formId) {
         dataTransfer.items.add(fileInput);
         document.getElementById('image-compressed').files = dataTransfer.files;
         document.getElementById('file_size').value = fileInput.size;
-    } else {
+        return;
+    }
+    return new Promise((resolve, reject) => {
         new Compressor(fileInput, {
             quality: quality,
             maxWidth: 1920,
@@ -342,10 +341,13 @@ async function compressImages(formId) {
                 dataTransfer.items.add(compressedFile);
                 document.getElementById('image-compressed').files = dataTransfer.files;
                 document.getElementById('file_size').value = compressedFile.size;
+                resolve();
             },
             error(err) {
                 console.error(`Compression error for ${fileInput.name}:`, err);
+                reject(err);
             }
         });
-    }
+    });
 }
+

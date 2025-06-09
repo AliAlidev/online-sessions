@@ -314,3 +314,20 @@ if (!function_exists('isClientUser')) {
         return getUserType() == 'client';
     }
 }
+
+if (!function_exists('isEventUser')) {
+
+    function isEventUser()
+    {
+        return getUserType() == 'event-user';
+    }
+}
+
+
+if (!function_exists('isAdminUser')) {
+
+    function isAdminUser()
+    {
+        return getUserType() == 'admin';
+    }
+}

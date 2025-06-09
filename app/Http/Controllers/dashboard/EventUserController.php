@@ -9,6 +9,7 @@ use App\Models\Event;
 use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\DataTables;
 
 class EventUserController extends Controller
@@ -20,8 +21,11 @@ class EventUserController extends Controller
                 $eventUsers = User::where('dashboard_user', 1)->where('user_type', 'event-user')->orderBy('created_at', 'desc')->get();
                 return DataTables::of($eventUsers)
                     ->addColumn('actions', function ($client) {
-                        return '<a data-id="' . $client->id . '" href="' . route('events.users.edit', $client->id) . '" class="update-client btn btn-icon btn-outline-primary"><i class="bx bx-edit-alt" style="color:#696cff"></i></a>
-                                <a href="#" data-url="' . route('events.users.delete', $client->id) . '" class="delete-user btn btn-icon btn-outline-primary"><i class="bx bx-trash" style="color:red"></i> </a>';
+                        $action='';
+                        Auth::user()->hasPermissionTo('update_event_user') ? $action .= ('<a data-id="' . $client->id . '" href="' . route('events.users.edit', $client->id) . '" class="update-client btn btn-icon btn-outline-primary"><i class="bx bx-edit-alt" style="color:#696cff"></i></a>') : '' ;
+                        Auth::user()->hasPermissionTo('delete_event_user') ? $action .= ('<a href="#" data-url="' . route('events.users.delete', $client->id) . '" class="delete-user btn btn-icon btn-outline-primary"><i class="bx bx-trash" style="color:red"></i> </a>'):''; 
+                        return $action;
+                          
                     })
                     ->addIndexColumn()
                     ->rawColumns(['actions'])

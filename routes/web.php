@@ -30,7 +30,7 @@ use Illuminate\Support\Facades\Route;
 Auth::routes();
 
 Route::middleware('auth')->group(function () {
-    Route::controller(InsightController::class)->prefix('admin/insights')->name('insights.')->group(function () {
+    Route::controller(InsightController::class)->middleware('permission:insights')->prefix('admin/insights')->name('insights.')->group(function () {
         Route::match(['get', 'post'], '/', 'index')->name('index');
     });
 
@@ -111,12 +111,12 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::controller(EventUserController::class)->prefix('admin/events/users')->name('events.users.')->group(function () {
-        Route::middleware('permission:list_users')->get('/index', 'index')->name('index');
-        Route::middleware('permission:create_user')->get('/create', 'create')->name('create');
-        Route::middleware('permission:create_user')->post('/store', 'store')->name('store');
-        Route::middleware('permission:update_user')->get('/edit/{id}', 'edit')->name('edit');
-        Route::middleware('permission:update_user')->post('/update/{id}', 'update')->name('update');
-        Route::middleware('permission:delete_user')->get('/delete/{id}', 'delete')->name('delete');
+        Route::middleware('permission:list_event_users')->get('/index', 'index')->name('index');
+        Route::middleware('permission:create_event_user')->get('/create', 'create')->name('create');
+        Route::middleware('permission:create_event_user')->post('/store', 'store')->name('store');
+        Route::middleware('permission:update_event_user')->get('/edit/{id}', 'edit')->name('edit');
+        Route::middleware('permission:update_event_user')->post('/update/{id}', 'update')->name('update');
+        Route::middleware('permission:delete_event_user')->get('/delete/{id}', 'delete')->name('delete');
     });
 
     Route::controller(SettingController::class)->prefix('admin/settings')->name('settings.')->group(function () {

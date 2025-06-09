@@ -137,7 +137,6 @@ class ClientController extends Controller
         }
     }
 
-
     function updateClientUser($client)
     {
         $data['name'] = $client->planner_name;
@@ -156,6 +155,7 @@ class ClientController extends Controller
             $profile_picture = str_replace("storage/", "", $client->profile_picture);
             deleteFile($logo);
             deleteFile($profile_picture);
+            $client->user->delete();
             $client->delete();
             $count = Client::count();
             session()->flash('success', 'Client has been deleted successfully');

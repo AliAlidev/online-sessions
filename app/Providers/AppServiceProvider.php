@@ -43,7 +43,6 @@ class AppServiceProvider extends ServiceProvider
         EventFolder::observe(EventFolderObserver::class);
         FolderFile::observe(FolderFileObserver::class);
         EventType::observe(EventTypeObserver::class);
-
         ClientRole::observe(ClientRoleObserver::class);
         Client::observe(ClientObserver::class);
     }
