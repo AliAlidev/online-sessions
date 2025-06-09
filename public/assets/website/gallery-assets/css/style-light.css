@@ -92,6 +92,7 @@ body {
 .share-button{
   background-color: var(--accent-01);
 }
+
 /********************************** Main Styles **********************************/
 * {
     box-sizing: border-box;
@@ -391,6 +392,15 @@ div#swal2-html-container{
   height: 70px;
   z-index: 9993;
 }
+@media screen and (max-width: 768px) {
+  .share-button{
+      bottom: 20px;
+      left: calc(50% - 32px);
+      border-radius: 50px;
+      width: 64px;
+      height: 64px;
+    }
+}
 /********************************** Fancy Box **********************************/
 .fancybox-caption__body {
     margin: 0 auto;
@@ -435,10 +445,10 @@ div#swal2-html-container{
 }
 .video-item {
       display: flex;
-      margin-bottom: 2px;
+      margin-bottom: 6px;
       cursor: pointer;
       align-items: center;
-      padding: 4px 4px 4px 4px;
+      padding: 0;
   }
   .video-item img {
       width: 140px;
@@ -477,11 +487,12 @@ div#swal2-html-container{
     .sticky-section.sticky-section-player {
         height: 52.4vw !important;
         position: sticky;
-        top: 0;
-        
+        top: 8px;
+        margin-top: 28px;
+        scale: 1.08;
     }
     .video-list {
-    margin-top: 20px;
+    margin-top: 30px;
 }
 }
 .video-player {
@@ -497,7 +508,7 @@ div#swal2-html-container{
     min-width: 100%;
     min-height: 100%;
     transform: translate(-50%, -50%);
-    border-radius: 10px;
+    border-radius: 5px;
     background-color: #000;
     background-image: url('../images/loader-white.gif');
     background-repeat: no-repeat;

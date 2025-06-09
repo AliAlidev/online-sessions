@@ -4,7 +4,7 @@
         <!-- Video Player -->
         <div class="sticky-section sticky-section-player">
             <div class="video-player" style="{{ count($videos) == 0 ? 'display:none' : '' }}"> 
-                <iframe id="videoIframe" style="" frameborder="0" allow="autoplay" allowfullscreen
+                <iframe id="videoIframe" style="" frameborder="0" allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;" allowfullscreen
                     webkitallowfullscreen mozallowfullscreen></iframe>
             </div>
         </div>
@@ -47,6 +47,17 @@
             target.classList.add('active');
         }
     });
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    // Wait a short time to ensure Plyr is initialized
+    setTimeout(function () {
+        const playButton = document.querySelector('.plyr__control--overlaid');
+        if (playButton) {
+            playButton.style.background = '#fff !important'; // Your custom color
+        }
+    }, 3800); // Adjust delay if needed
+});
 </script>
 
 
