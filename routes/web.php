@@ -26,6 +26,22 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+//////////////////////////// website ////////////////////////////
+Route::controller(WebsiteController::class)->name('landing.')->group(function () {
+    Route::get('increase-view/{id?}', 'increaseView')->name('increase_view');
+    Route::get('events/{year}/{event_slug}', 'index')->name('index');
+    Route::get('events/{year}/{event_slug}/gallery', 'gallery')->name('gallery');
+    Route::get('events/{year}/{event_slug}/share', 'share')->name('share');
+    Route::middleware('ensure.token')->get('events/gallery-redirect-url', 'galleryRedirectUrl')->name('gallery_redirect_url');
+    Route::middleware('ensure.token')->post('events/{year}/{event_slug}/image', 'image')->name('image');
+    Route::middleware('ensure.token')->post('events/{year}/{event_slug}/video', 'video')->name('video');
+    Route::middleware('ensure.token')->get('events/share-redirect-url', 'shareRedirectUrl')->name('share_redirect_url');
+    Route::middleware('ensure.token')->post('events/share-event-image', 'shareEventImage')->name('share-event-image');
+    Route::middleware('ensure.token')->post('/delete-image/{id}', 'deleteImage')->name('delete-image');
+    Route::get('events/event-password', 'eventPassword')->name('event_password');
+    Route::middleware('ensure.token')->get('events/check-token', 'checkToken')->name('check_token');
+    Route::middleware('ensure.token')->post('/apply-event-password', 'applyEventPassword')->name('apply_event_password');
+});
 
 Auth::routes();
 
@@ -122,23 +138,6 @@ Route::middleware('auth')->group(function () {
     Route::controller(SettingController::class)->prefix('admin/settings')->name('settings.')->group(function () {
         Route::middleware('permission:insights')->match(['get', 'post'], '/bunny', 'bunnySetting')->name('bunny');
     });
-});
-
-//////////////////////////// website ////////////////////////////
-Route::controller(WebsiteController::class)->name('landing.')->group(function () {
-    Route::get('increase-view/{id?}', 'increaseView')->name('increase_view');
-    Route::get('events/{year}/{event_slug}', 'index')->name('index');
-    Route::get('events/{year}/{event_slug}/gallery', 'gallery')->name('gallery');
-    Route::get('events/{year}/{event_slug}/share', 'share')->name('share');
-    Route::middleware('ensure.token')->get('events/gallery-redirect-url', 'galleryRedirectUrl')->name('gallery_redirect_url');
-    Route::middleware('ensure.token')->post('events/{year}/{event_slug}/image', 'image')->name('image');
-    Route::middleware('ensure.token')->post('events/{year}/{event_slug}/video', 'video')->name('video');
-    Route::middleware('ensure.token')->get('events/share-redirect-url', 'shareRedirectUrl')->name('share_redirect_url');
-    Route::middleware('ensure.token')->post('events/share-event-image', 'shareEventImage')->name('share-event-image');
-    Route::middleware('ensure.token')->post('/delete-image/{id}', 'deleteImage')->name('delete-image');
-    Route::get('events/event-password', 'eventPassword')->name('event_password');
-    Route::middleware('ensure.token')->get('events/check-token', 'checkToken')->name('check_token');
-    Route::middleware('ensure.token')->post('/apply-event-password', 'applyEventPassword')->name('apply_event_password');
 });
 
 Route::fallback(function () {
