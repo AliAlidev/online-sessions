@@ -285,6 +285,35 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="col-md-3">
+                                    <h5>Client Users Permissions</h5>
+                                    <div class="row mb-6" style="margin: 3px">
+                                        <div class="form-check form-switch mb-2">
+                                            <input class="form-check-input" type="checkbox"
+                                                {{ in_array('create_client_user', $permissions) ? 'checked' : '' }}
+                                                id="create_client_user" name="permissions[]" value="create_client_user">
+                                            <label class="form-check-label" for="create_client_user">Create</label>
+                                        </div>
+                                        <div class="form-check form-switch mb-2">
+                                            <input class="form-check-input" type="checkbox"
+                                                {{ in_array('update_client_user', $permissions) ? 'checked' : '' }}
+                                                id="update_client_user" name="permissions[]" value="update_client_user">
+                                            <label class="form-check-label" for="update_client_user">Update</label>
+                                        </div>
+                                        <div class="form-check form-switch mb-2">
+                                            <input class="form-check-input" type="checkbox"
+                                                {{ in_array('delete_client_user', $permissions) ? 'checked' : '' }}
+                                                id="delete_client_user" name="permissions[]" value="delete_client_user">
+                                            <label class="form-check-label" for="delete_client_user">Delete</label>
+                                        </div>
+                                        <div class="form-check form-switch mb-2">
+                                            <input class="form-check-input" type="checkbox"
+                                                {{ in_array('list_clients_users', $permissions) ? 'checked' : '' }}
+                                                id="list_clients_users" name="permissions[]" value="list_clients_users">
+                                            <label class="form-check-label" for="list_clients_users">List</label>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-3">

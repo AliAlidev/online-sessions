@@ -25,10 +25,10 @@
         @endcan
         @if (Auth::user()->hasRole('super-admin') ||
                 Auth::user()->hasAnyPermission([
-                    'create_client',
-                    'update_client',
-                    'delete_client',
-                    'list_clients',
+                    'create_client_user',
+                    'update_client_user',
+                    'delete_client_user',
+                    'list_clients_users',
                     'create_event_user',
                     'update_event_user',
                     'delete_event_user',

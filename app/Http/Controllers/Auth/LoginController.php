@@ -47,12 +47,12 @@ class LoginController extends Controller
 
         if (Auth::user()->hasRole('super-admin'))
             return redirect()->route('insights.index');
-        else if (Auth::user()->hasAnyPermission(['create_event', 'update_event', 'delete_event']))
+        else if (Auth::user()->hasAnyPermission(['create_event', 'update_event', 'delete_event', 'list_events']))
             return redirect()->route('events.index');
-        else if (Auth::user()->hasAnyPermission(['create_client', 'update_client', 'delete_client']))
+        else if (Auth::user()->hasAnyPermission(['create_client', 'update_client', 'delete_client', 'list_clients']))
             return redirect()->route('clients.index');
-        else if (Auth::user()->hasAnyPermission(['create_role', 'update_role', 'delete_role']))
-            return redirect()->route('roles.index');
+        else if (Auth::user()->hasAnyPermission(['create_vendor', 'update_vendor', 'delete_vendor', 'list_vendors']))
+            return redirect()->route('vendors.index');
         else
             abort(403);
     }

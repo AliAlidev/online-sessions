@@ -259,6 +259,31 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="col-md-3">
+                                    <h5>Client Users Permissions</h5>
+                                    <div class="row mb-6" style="margin: 3px">
+                                        <div class="form-check form-switch mb-2">
+                                            <input class="form-check-input" type="checkbox"
+                                                id="create_client_user" name="permissions[]" value="create_client_user">
+                                            <label class="form-check-label" for="create_client_user">Create</label>
+                                        </div>
+                                        <div class="form-check form-switch mb-2">
+                                            <input class="form-check-input" type="checkbox"
+                                                id="update_client_user" name="permissions[]" value="update_client_user">
+                                            <label class="form-check-label" for="update_client_user">Update</label>
+                                        </div>
+                                        <div class="form-check form-switch mb-2">
+                                            <input class="form-check-input" type="checkbox"
+                                                id="delete_client_user" name="permissions[]" value="delete_client_user">
+                                            <label class="form-check-label" for="delete_client_user">Delete</label>
+                                        </div>
+                                        <div class="form-check form-switch mb-2">
+                                            <input class="form-check-input" type="checkbox"
+                                                id="list_clients_users" name="permissions[]" value="list_clients_users">
+                                            <label class="form-check-label" for="list_clients_users">List</label>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-3">
