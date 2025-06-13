@@ -50,7 +50,7 @@
                     @endif
                     @canany(['create_client_user', 'update_client_user', 'delete_client_user', 'list_clients_users'])
                         <li class="menu-item {{ Route::is('clients.users.*') ? 'active' : '' }}">
-                            <a href="{{ route('clients.index') }}" class="menu-link">
+                            <a href="{{ route('clients.users.index') }}" class="menu-link">
                                 <div class="text-truncate" data-i18n="Dashboards">Client Users</div>
                             </a>
                         </li>
@@ -74,7 +74,7 @@
             </li>
         @endcanany
         @canany(['create_client', 'update_client', 'delete_client', 'list_clients'])
-            <li class="menu-item {{ Route::is('clients.*') ? 'active' : '' }}">
+            <li class="menu-item {{ Route::is('clients.*') && !Route::is('clients.users.*') ? 'active' : '' }}">
                 <a href="{{ route('clients.index') }}" class="menu-link">
                     <i class="bx bxs-user-pin" style="font-size: 20px; margin: 0 10px 0 0"></i>
                     <div class="text-truncate" data-i18n="Dashboards">Clients</div>

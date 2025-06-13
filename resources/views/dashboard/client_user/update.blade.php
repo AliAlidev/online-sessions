@@ -34,67 +34,31 @@
         <div class="row">
             <div class="col-xl">
                 <form id="updateClientForm">
-                    <input type="hidden" name="client_id" value="{{ $client->id }}">
-                    <h5 class="mb-0">{{ Breadcrumbs::render('update-client', $client->id) }}</h5>
+                    <input type="hidden" name="client_user_id" value="{{ $clientUser->id }}">
+                    <h5 class="mb-0">{{ Breadcrumbs::render('update-client-user', $clientUser->id) }}</h5>
                     <div class="card mb-6">
                         <div class="card-header">
                             <h5 class="mb-0">Client Information</h5>
                         </div>
                         <div class="card-body">
                             <div class="row mb-6">
+                                <div class="col md-6">
+                                    <label for="exampleFormControlSelect1" class="form-label">Client</label>
+                                    <select class="form-select" id="exampleFormControlSelect1" name="client_id"
+                                        aria-label="Default select example">
+                                        <option selected disabled>Select Client</option>
+                                        @foreach ($clients as $key => $client)
+                                            <option {{ $clientUser->client_id == $key ? 'selected' : '' }} value="{{ $key }}">{{ $client }}</option>
+                                        @endforeach
+                                    </select>
+                                    <small class="text-body float-start error-message-div client_id-error"
+                                        style="color: #ff0000 !important" hidden></small>
+                                </div>
                                 <div class="col-md-6">
                                     <label for="planner-name" class="form-label">Client Name</label>
-                                    <input type="text" id="planner-name" class="form-control" name="planner_name"
-                                        value="{{ $client->planner_name }}" placeholder="Enter Planner Name">
-                                    <small class="text-body float-start error-message-div planner_name-error"
-                                        style="color: #ff0000 !important" hidden></small>
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="logo" class="form-label">Logo</label>
-                                    <input type="file" id="logo" class="form-control" name="logo"
-                                        accept="image/jpeg,png,jpg,gif,svg,webp">
-                                    <div class="mt-2 preview-container">
-                                        @if (isset($client->logo))
-                                            <img width="125px" height="125px"
-                                                src="{{ $client->logo ? asset($client->logo) : '' }}">
-                                        @endif
-                                    </div>
-                                    <small class="text-body float-start uploaded-file-name"
-                                        style="color: #000; font-style: italic;"></small>
-                                    <small class="text-body float-start error-message-div logo-error"
-                                        style="color: #ff0000 !important" hidden></small>
-                                </div>
-                            </div>
-                            <div class="row mb-6">
-                                <div class="col-md-6">
-                                    <label for="planner-business-name" class="form-label">Client Business Name</label>
-                                    <input type="text" id="planner-business-name" class="form-control"
-                                        value="{{ $client->planner_business_name }}" name="planner_business_name"
-                                        placeholder="Enter Planner Business Name">
-                                    <small class="text-body float-start error-message-div planner_business_name-error"
-                                        style="color: #ff0000 !important" hidden></small>
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="phone-number" class="form-label">Phone Number</label>
-                                    <input type="tel" id="phone-number" class="form-control" name="phone_number"
-                                        placeholder="Enter Phone Number" value="{{ $client->phone_number }}">
-                                    <small class="text-body float-start error-message-div phone_number-error"
-                                        style="color: #ff0000 !important" hidden></small>
-                                </div>
-                            </div>
-                            <div class="row mb-6">
-                                <div class="col-md-6">
-                                    <label for="email" class="form-label">Email</label>
-                                    <input type="email" id="email" class="form-control" name="email"
-                                        value="{{ $client->email }}" placeholder="Enter Email">
-                                    <small class="text-body float-start error-message-div email-error"
-                                        style="color: #ff0000 !important" hidden></small>
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="client_role" class="form-label">Role</label>
-                                    <input type="text" id="client_role" class="form-control" name="client_role"
-                                        value="{{ $client->client_role }}" placeholder="Enter Client role">
-                                    <small class="text-body float-start error-message-div client_role-error"
+                                    <input type="text" id="planner-name" class="form-control" name="name"
+                                        value="{{ $clientUser->name }}" placeholder="Enter Planner Name">
+                                    <small class="text-body float-start error-message-div name-error"
                                         style="color: #ff0000 !important" hidden></small>
                                 </div>
                             </div>
@@ -134,7 +98,7 @@
                     <div style="display: flex; gap: 10px; justify-content: flex-end">
                         <a href="javascript:history.back()" class="btn btn-label-primary">Close</a>
                         <button type="submit" class="btn btn-primary" style="float: right" id="updateButton">Update
-                            Client
+                            User
                             <span id="spinner" style="display:none;">
                                 <i class="fa fa-spinner fa-spin"></i>
                             </span>
@@ -165,7 +129,7 @@
             console.log(id);
 
             $.ajax({
-                url: "{{ url('admin/clients/update') }}/" + id,
+                url: "{{ url('admin/clients-users/update') }}/" + id,
                 type: 'POST',
                 processData: false,
                 contentType: false,

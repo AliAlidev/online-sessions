@@ -28,12 +28,12 @@
 
 @section('content')
     <div class="container-xxl flex-grow-1 container-p-y">
-        <h5 class="mb-0">{{ Breadcrumbs::render('clients') }}</h5>
+        <h5 class="mb-0">{{ Breadcrumbs::render('clients-users') }}</h5>
         <div class="card">
             @can('create_client')
                 <div class="row card-header flex-column flex-md-row pb-0">
                     <div class="d-md-flex justify-content-between align-items-center dt-layout-end col-md-auto ms-auto mt-0">
-                        <a href="{{ route('clients.create') }}" class="btn btn-primary">Create Client</a>
+                        <a href="{{ route('clients.users.create') }}" class="btn btn-primary">Create User</a>
                     </div>
                 </div>
             @endcan
@@ -73,7 +73,7 @@
             table = $('#clients-datatable').DataTable({
                 processing: true,
                 serverSide: true,
-                ajax: "{{ route('clients.index') }}",
+                ajax: "{{ route('clients.users.index') }}",
                 scrollX: true,
                 scrollY: '400px',
                 scrollCollapse: true,
@@ -84,8 +84,8 @@
                         searchable: false
                     },
                     {
-                        data: 'planner_name',
-                        name: 'planner_name'
+                        data: 'name',
+                        name: 'name'
                     },
                     {
                         data: 'planner_business_name',

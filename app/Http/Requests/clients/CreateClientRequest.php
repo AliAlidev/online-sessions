@@ -25,7 +25,7 @@ class CreateClientRequest extends FormRequest
             'planner_name' => 'required|string',
             'planner_business_name' => 'nullable|string',
             'phone_number' => 'nullable|string|max:20|unique:users,phone',
-            'email' => 'nullable|email|unique:users,email',
+            'email' => 'required|email|unique:users,email',
             'client_role' => 'required|string',
             'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp'
         ];

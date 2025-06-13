@@ -109,7 +109,7 @@ Route::middleware('auth')->group(function () {
         Route::middleware('permission:delete_client')->get('/delete/{id}', 'delete')->name('delete');
     });
 
-    Route::controller(ClientUserController::class)->prefix('admin/clients-users')->name('clients.users')->group(function () {
+    Route::controller(ClientUserController::class)->prefix('admin/clients-users')->name('clients.users.')->group(function () {
         Route::middleware('permission:list_clients_users')->get('/index', 'index')->name('index');
         Route::middleware('permission:create_client_user')->get('/create', 'create')->name('create');
         Route::middleware('permission:create_client_user')->post('/store', 'store')->name('store');

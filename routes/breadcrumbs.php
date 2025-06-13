@@ -4,6 +4,7 @@
 
 use App\Models\Client;
 use App\Models\Event;
+use App\Models\UserClient;
 use App\Models\Vendor;
 use Diglactic\Breadcrumbs\Breadcrumbs;
 
@@ -111,3 +112,19 @@ Breadcrumbs::for('update-event-user', function ($trail, $user) {
     $trail->parent('events-users');
     $trail->push('Update User - ' . $user->name, '');
 });
+
+Breadcrumbs::for('clients-users', function ($trail) {
+    $trail->push('Clients Users List', route('clients.users.index'));
+});
+
+Breadcrumbs::for('create-client-user', function ($trail) {
+    $trail->parent('clients-users');
+    $trail->push('Create Client User', '');
+});
+
+Breadcrumbs::for('update-client-user', function ($trail, $clientUserId) {
+    $trail->parent('clients-users');
+    $clientName = UserClient::find($clientUserId)->name;
+    $trail->push('Update Client User - ' . $clientName, '');
+});
+
