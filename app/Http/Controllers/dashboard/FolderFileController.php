@@ -44,7 +44,8 @@ class FolderFileController extends Controller
                     ->addColumn('actions', function ($file) use ($folder, $folderSlug) {
                         $action = '';
                         ($file->file_type == 'image' && Auth::user()->hasPermissionTo('delete_image')) || ($file->file_type == 'video' && Auth::user()->hasPermissionTo('delete_video')) ? $action .= '<a href="#" data-url="' . route('files.delete', [$folder->event->bunny_event_name, $folderSlug, $file->id]) . '" class="delete-file btn btn-icon btn-outline-primary m-1"><i class="bx bx-trash" style="color:red"></i> </a>' : '';
-                        ($file->file_type == 'image' && Auth::user()->hasPermissionTo('update_image')) || ($file->file_type == 'video' && Auth::user()->hasPermissionTo('update_video')) ? $action .= '<a data-id="' . $file->id . '" href="' . route('files.update', [$folder->event->bunny_event_name, $folderSlug, $file->id]) . '" class="update-file btn btn-icon btn-outline-primary"><i class="bx bx-edit-alt" style="color:#696cff"></i></a>' : '';
+                        ($file->file_type == 'image' && Auth::user()->hasPermissionTo('update_image')) || ($file->file_type == 'video' && Auth::user()->hasPermissionTo('update_video')) ? $action .= '<a data-id="' . $file->id . '" href="' . route('files.update', [$folder->event->bunny_event_name, $folderSlug, $file->id]) . '" class="update-file btn btn-icon btn-outline-primary m-1"><i class="bx bx-edit-alt" style="color:#696cff"></i></a>' : '';
+                        ((($file->file_type == 'image' && Auth::user()->hasPermissionTo('approve_decline_image')) || ($file->file_type == 'video' && Auth::user()->hasPermissionTo('approve_decline_video'))) && $file->file_status != 'approved') ? $action .= '<a title="Approve file" data-id="' . $file->id . '" href="#" data-url="' . route('files.approve.file', [$folder->event->bunny_event_name, $folderSlug, $file->id]) . '" class="approve-file-btn btn btn-icon btn-outline-primary m-1"><i class="fa fa-check" style="color:#696cff"></i></a>' : '';
                         return $action;
                     })
                     ->addIndexColumn()
@@ -109,6 +110,19 @@ class FolderFileController extends Controller
             $file->file_status = $request->get('file_status');
             $file->update();
             return response()->json(['success' => true, 'message' => 'File status has been updated successfully']);
+        } catch (Throwable $th) {
+            createServerError($th, "changeStatus", "files");
+            return false;
+        }
+    }
+
+    function approveFile($eventSlug, $folderSlug, $id)
+    {
+        try {
+            $file = FolderFile::find($id);
+            $file->file_status = 'approved';
+            $file->update();
+            return response()->json(['success' => true, 'message' => 'File has been approved successfully']);
         } catch (Throwable $th) {
             createServerError($th, "changeStatus", "files");
             return false;

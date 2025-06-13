@@ -92,6 +92,10 @@
         #qr-code-section:hover {
             cursor: pointer;
         }
+
+        .buttons-style{
+            text-align: right;
+        }
     </style>
 @endsection
 
@@ -105,6 +109,15 @@
                     <div class="card mb-6">
                         <div class="card-header d-flex justify-content-between align-items-center">
                             <h5 class="mb-0">{{ __('Event Information') }}</h5>
+                            <div class="col-md-3 buttons-style">
+                                @if (Auth::user()->hasAnyPermission(['create_folder', 'update_folder', 'delete_folder', 'list_folders']))
+                                    <a title="Folders" target="_blank" href="{{ route('folders.index', $event->bunny_event_name) }}"
+                                        class="btn btn-icon btn-primary"><i class="bx bx-folder"
+                                            style="color:white"></i></a>
+                                @endif
+                                <a title="Event Link" target="_blank" href="{{ $event->event_link }}"
+                                    class="btn btn-icon btn-primary"><i class="bx bxs-calendar-event" style="color:white"></i></a>
+                            </div>
                         </div>
                         <div class="card-body">
                             <div class="row mb-6">
@@ -184,8 +197,8 @@
                                             </div>
                                             <div class="col md-6">
                                                 <label for="exampleFormControlSelect1" class="form-label">Client</label>
-                                                <select class="form-select" id="exampleFormControlSelect1" name="client_id"
-                                                    aria-label="Default select example">
+                                                <select class="form-select" id="exampleFormControlSelect1"
+                                                    name="client_id" aria-label="Default select example">
                                                     <option selected disabled>Select Client</option>
                                                     @foreach ($clients as $key => $client)
                                                         <option {{ $event->client_id == $key ? 'selected' : '' }}
@@ -412,16 +425,14 @@
                                                     Guest Upload</label>
                                             </div>
                                             <div class="form-check form-switch mb-2">
-                                                <input class="form-check-input" type="checkbox"
-                                                    id="image_folders"
+                                                <input class="form-check-input" type="checkbox" id="image_folders"
                                                     {{ $event->setting?->image_folders == 1 ? 'checked' : '' }}
                                                     name="image_folders">
                                                 <label class="form-check-label" for="image_folders">Image
                                                     Folders</label>
                                             </div>
                                             <div class="form-check form-switch mb-2">
-                                                <input class="form-check-input" type="checkbox"
-                                                    id="video_playlist"
+                                                <input class="form-check-input" type="checkbox" id="video_playlist"
                                                     {{ $event->setting?->video_playlist == 1 ? 'checked' : '' }}
                                                     name="video_playlist">
                                                 <label class="form-check-label" for="video_playlist">Video

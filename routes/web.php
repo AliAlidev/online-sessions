@@ -75,6 +75,7 @@ Route::middleware('auth')->group(function () {
         Route::middleware(['permission:upload_video|upload_image|update_image|update_video'])->get('/show/{id?}', 'show')->name('show');
         Route::middleware(['permission:delete_image|delete_video'])->get('/delete/{id?}', 'delete')->name('delete');
         Route::middleware(['permission:approve_decline_image|approve_decline_video'])->post('/change-status', 'changeStatus')->name('change.status');
+        Route::middleware(['permission:approve_decline_image|approve_decline_video'])->get('/approve-file/{id}', 'approveFile')->name('approve.file');
         Route::middleware(['permission:upload_video|upload_image|update_image|update_video'])->post('/upload-file', 'uploadFile');
     });
 

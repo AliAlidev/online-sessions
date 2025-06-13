@@ -29,8 +29,9 @@ class FolderController extends Controller
     function index(Request $request, $eventSlug)
     {
         try {
+            $event = Event::where('bunny_event_name', $eventSlug)->first();
             if ($request->ajax()) {
-                $folders = Event::where('bunny_event_name', $eventSlug)->first()->folders()->orderBy('order', 'asc')->get();
+                $folders = $event->folders()->orderBy('order', 'asc')->get();
                 return DataTables::of($folders)
                     ->addColumn('actions', function ($folder) use ($eventSlug) {
                         $actions = '<div style="display:flex; gap:6px">';
@@ -38,7 +39,7 @@ class FolderController extends Controller
                         Auth::user()->hasPermissionTo('delete_folder') ? $actions .= '<a href="#" data-url="' . route('folders.delete', [$eventSlug, $folder->id]) . '" class="delete-folder btn btn-icon btn-outline-primary m-1"><i class="bx bx-trash" style="color:red" title="Delete folder"></i></a>' : '';
                         ($folder->folder_type == "image" && Auth::user()->hasAnyPermission(['upload_image', 'approve_decline_image'])) || ($folder->folder_type == "video" && Auth::user()->hasAnyPermission(['upload_video', 'approve_decline_video'])) ? $actions .= '<a title="Files" href="' . route('files.index', [$eventSlug, $folder->bunny_folder_name]) . '" class="btn btn-icon btn-primary mt-1" style="margin-left:3px"><i class="bx bx-file" style="color:white"></i> </a>' : '';
                         $actions .= '<div class="form-check form-switch mt-3">
-                                <input class="form-check-input folder_visibility" type="checkbox" title="Toggle folder visibility" name="folder_visibility" data-url="' . route('folders.toggle.visibility', [$eventSlug, $folder->id]). '"'. ($folder->is_visible ? 'checked':'')  . '>
+                                <input class="form-check-input folder_visibility" type="checkbox" title="Toggle folder visibility" name="folder_visibility" data-url="' . route('folders.toggle.visibility', [$eventSlug, $folder->id]) . '"' . ($folder->is_visible ? 'checked' : '')  . '>
                             </div></div>';
                         return $actions;
                     })
@@ -58,7 +59,7 @@ class FolderController extends Controller
                     ->rawColumns(['folder_thumbnail', 'folder_link', 'order', 'actions'])
                     ->make(true);
             }
-            return view('dashboard.folder.index');
+            return view('dashboard.folder.index', ["event" => $event]);
         } catch (Exception $th) {
             createServerError($th, "indexFolder", "folders");
             return false;

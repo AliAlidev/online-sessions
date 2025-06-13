@@ -84,9 +84,8 @@
         }
     </style>
 
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" rel="stylesheet" />
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" rel="stylesheet" />
     @vite(['resources/js/bootstrap.js'])
 @endsection
 
@@ -102,7 +101,7 @@
                 <div class="d-md-flex justify-content-between align-items-center dt-layout-end col-md-auto ms-auto mt-0"
                     style="gap: 10px">
                     {{-- <a href="javascript:history.back()" class="btn btn-label-primary btn-sm">Back</a> --}}
-                    <div class="dt-buttons btn-group flex-wrap mb-0">
+                    <div class="dt-buttons btn-group flex-wrap mb-0" style="gap: 10px">
                         @if (
                             ($folderType == 'video' && Auth::user()->hasPermissionTo('upload_video')) ||
                                 ($folderType == 'image' && Auth::user()->hasPermissionTo('upload_image')))
@@ -114,6 +113,8 @@
                                 </span>
                             </button>
                         @endif
+                        <a title="Refresh Folders" href="#" class="btn btn-icon btn-primary refresh-folders-table"><i
+                                class="fa fa-refresh" style="color:white"></i></a>
                     </div>
                 </div>
             </div>
@@ -395,6 +396,7 @@
 @endsection
 
 @section('scripts')
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>
     <script type="text/javascript" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.form/4.3.0/jquery.form.min.js"></script>
@@ -467,6 +469,16 @@
                 ],
                 ordering: false,
                 dom: 'lfBrtip',
+                drawCallback: function(settings) {
+                    $('[data-fancybox="preview-gallery"]').fancybox({
+                        buttons: ["zoom",
+                            "slideShow",
+                            "thumbs",
+                            "download",
+                            "close"
+                        ]
+                    });
+                }
                 // buttons: [{
                 //     extend: 'colvis', // Column visibility button
                 //     text: 'Columns', // Customize the button text
@@ -486,6 +498,35 @@
                 //     }
                 // ]
             });
+
+            $(document).on('click', '.refresh-folders-table', function() {
+                $('#files-datatable tbody').html('<tr><td colspan="10">Refreshing...</td></tr>');
+                table.ajax.reload();
+            })
+
+            $(document).on('click', '.approve-file-btn', function(e) {
+                var url = $(this).data('url');
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: 'You are about to approve the event',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes, approve it!',
+                    cancelButtonText: 'Cancel',
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: url,
+                            success: function(response) {
+                                showAlertMessage(response.message);
+                                table.ajax.reload();
+                            }
+                        });
+                    }
+                });
+
+            })
 
             $(document).on('click', '.delete-file', function(e) {
                 e.preventDefault();
@@ -855,7 +896,6 @@
                     }
                 });
             });
-
 
             function showButtonLoader(submitBtn) {
                 submitBtn.find('#spinner').show();
