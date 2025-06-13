@@ -17,8 +17,6 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Log;
 use Yajra\DataTables\DataTables;
 use Illuminate\Support\Str;
 
@@ -35,7 +33,7 @@ class EventController extends Controller
     function index(Request $request)
     {
         try {
-            if (getUserType() == 'event-user') {
+            if (isEventUser()) {
                 $event = Event::find(Auth::user()->event_id);
                 return redirect()->route('folders.index', ['event_slug' => $event->bunny_event_name]);
             }
@@ -47,7 +45,7 @@ class EventController extends Controller
                 $filterDate = $request->filter_date;
 
                 $eventsQuery = Event::with(['client', 'type'])
-                    ->when(getUserType() == 'client', fn($query) => $query->where('client_id', Auth::user()->client?->id))
+                    ->when(isClientUser(), fn($query) => $query->where('client_id', Auth::user()->clientUser?->client_id))
                     ->when(!empty($filterClient), fn($query) => $query->where('client_id', $filterClient))
                     ->when(!empty($filterType), fn($query) => $query->where('event_type_id', $filterType))
                     ->when(!empty($filterDate), fn($query) => $query->whereDate('start_date', $filterDate))
