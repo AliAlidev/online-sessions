@@ -29,16 +29,7 @@ class UpdateClientRequest extends FormRequest
             'phone_number' => 'nullable|string|max:20|unique:clients,phone_number,' . $id,
             'email' => 'nullable|email|unique:clients,email,' . $id,
             'client_role' => 'required|string',
-            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp',
-            'password' => 'nullable|confirmed|regex:/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/',
-            'password_confirmation' => 'nullable'
-        ];
-    }
-
-    function messages()
-    {
-        return [
-            'password.regex' => "The password must be at least 8 characters long and include at least one uppercase letter, one lowercase letter, one number, and one of those @$!%*?& special character."
+            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp'
         ];
     }
 }

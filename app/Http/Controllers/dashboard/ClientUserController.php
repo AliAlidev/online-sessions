@@ -13,7 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\DataTables;
 
-class ClientController extends Controller
+class ClientUserController extends Controller
 {
     function index(Request $request)
     {
@@ -71,8 +71,11 @@ class ClientController extends Controller
     {
         try {
             $data = $request->validated();
+            unset($data['password_confirmation']);
             $data['logo'] = $request->hasFile('logo') ? 'storage/' . uploadFile($request->file('logo'), 'clients/client_logo') : null;
-            Client::create($data);
+            $client = Client::create($data);
+            $user = $this->createClientUser($client);
+            $client->update(['user_id' => $user->id]);
             session()->flash('success', 'Client has been created successfully');
             return response()->json(['success' => true, 'url' => route('clients.index')]);
         } catch (Exception $th) {
@@ -81,15 +84,46 @@ class ClientController extends Controller
         }
     }
 
+    function createClientUser($client)
+    {
+        $data['name'] = $client->planner_name;
+        $data['full_name'] = $client->planner_name;
+        $data['phone'] = $client->phone_number;
+        $data['email'] = $client->email;
+        $data['password'] = $client->password;
+        $data['user_type'] = 'client';
+        $data['dashboard_user'] = 1;
+        $user = User::create($data);
+        $this->clientUserAssignPermissions($user);
+        return $user;
+    }
+
+    function clientUserAssignPermissions($user)
+    {
+        $permissions = [
+            'update_event',
+            'list_events',
+            'list_folders',
+            'update_folder',
+            'upload_image',
+            'delete_image',
+            'update_image',
+            'approve_decline_image'
+        ];
+        $user->givePermissionTo($permissions);
+    }
+
     function update(UpdateClientRequest $request)
     {
         try {
             $data = $request->validated();
+            unset($data['password_confirmation']);
             $client = Client::find($data['client_id']);
             $oldClient = clone $client;
             $data['logo'] = $request->hasFile('logo') ? 'storage/' . uploadFile($request->file('logo'), 'clients/client_logo') : $client->logo;
             unset($data['client_id']);
             $client->update($data);
+            $this->updateClientUser($client);
             // remove old images
             if ($request->hasFile('logo')) {
                 $logo = str_replace("storage/", "", $oldClient->logo);
@@ -103,6 +137,16 @@ class ClientController extends Controller
         }
     }
 
+    function updateClientUser($client)
+    {
+        $data['name'] = $client->planner_name;
+        $data['full_name'] = $client->planner_name;
+        $data['phone'] = $client->phone_number;
+        $data['email'] = $client->email;
+        $data['password'] = $client->password;
+        User::find($client->user_id)->update($data);
+    }
+
     function delete($id)
     {
         try {
@@ -111,6 +155,7 @@ class ClientController extends Controller
             $profile_picture = str_replace("storage/", "", $client->profile_picture);
             deleteFile($logo);
             deleteFile($profile_picture);
+            $client->user->delete();
             $client->delete();
             $count = Client::count();
             session()->flash('success', 'Client has been deleted successfully');

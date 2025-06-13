@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\dashboard\ClientController;
+use App\Http\Controllers\dashboard\ClientUserController;
 use App\Http\Controllers\dashboard\EventController;
 use App\Http\Controllers\dashboard\EventTypeController;
 use App\Http\Controllers\dashboard\EventUserController;
@@ -106,6 +107,15 @@ Route::middleware('auth')->group(function () {
         Route::middleware('permission:update_client')->get('/edit/{id}', 'edit')->name('edit');
         Route::middleware('permission:update_client')->post('/update/{id}', 'update')->name('update');
         Route::middleware('permission:delete_client')->get('/delete/{id}', 'delete')->name('delete');
+    });
+
+    Route::controller(ClientUserController::class)->prefix('admin/clients-users')->name('clients.users')->group(function () {
+        Route::middleware('permission:list_clients_users')->get('/index', 'index')->name('index');
+        Route::middleware('permission:create_client_user')->get('/create', 'create')->name('create');
+        Route::middleware('permission:create_client_user')->post('/store', 'store')->name('store');
+        Route::middleware('permission:update_client_user')->get('/edit/{id}', 'edit')->name('edit');
+        Route::middleware('permission:update_client_user')->post('/update/{id}', 'update')->name('update');
+        Route::middleware('permission:delete_client_user')->get('/delete/{id}', 'delete')->name('delete');
     });
 
     Route::controller(VendorController::class)->prefix('admin/vendors')->name('vendors.')->group(function () {

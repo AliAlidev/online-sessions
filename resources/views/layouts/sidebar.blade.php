@@ -35,7 +35,7 @@
                     'list_event_users',
                 ]))
             <li
-                class="menu-item {{ Route::is('users.*') || Route::is('clients.*') || Route::is('events.users.*') ? 'active open' : '' }}">
+                class="menu-item {{ Route::is('users.*') || Route::is('clients.users.*') || Route::is('events.users.*') ? 'active open' : '' }}">
                 <a href="javascript:void(0);" class="menu-link menu-toggle">
                     <i class="bx bxs-user-pin" style="font-size: 20px; margin: 0 10px 0 0"></i>
                     <div class="text-truncate" data-i18n="Dashboards">Users</div>
@@ -48,8 +48,8 @@
                             </a>
                         </li>
                     @endif
-                    @canany(['create_client', 'update_client', 'delete_client', 'list_clients'])
-                        <li class="menu-item {{ Route::is('clients.*') ? 'active' : '' }}">
+                    @canany(['create_client_user', 'update_client_user', 'delete_client_user', 'list_clients_users'])
+                        <li class="menu-item {{ Route::is('clients.users.*') ? 'active' : '' }}">
                             <a href="{{ route('clients.index') }}" class="menu-link">
                                 <div class="text-truncate" data-i18n="Dashboards">Client Users</div>
                             </a>
@@ -70,6 +70,14 @@
                 <a href="{{ route('vendors.index') }}" class="menu-link">
                     <i class="fa-solid fa-users" style="font-size: 20px; margin: 0 10px 0 0"></i>
                     <div class="text-truncate" data-i18n="Dashboards">Vendors</div>
+                </a>
+            </li>
+        @endcanany
+        @canany(['create_client', 'update_client', 'delete_client', 'list_clients'])
+            <li class="menu-item {{ Route::is('clients.*') ? 'active' : '' }}">
+                <a href="{{ route('clients.index') }}" class="menu-link">
+                    <i class="bx bxs-user-pin" style="font-size: 20px; margin: 0 10px 0 0"></i>
+                    <div class="text-truncate" data-i18n="Dashboards">Clients</div>
                 </a>
             </li>
         @endcanany

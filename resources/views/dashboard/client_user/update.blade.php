@@ -22,6 +22,10 @@
             }
         }
 
+        #basic-default-password2 {
+            pointer-events: auto;
+            z-index: 1;
+        }
     </style>
 @endsection
 
@@ -29,8 +33,9 @@
     <div class="container-xxl flex-grow-1 container-p-y">
         <div class="row">
             <div class="col-xl">
-                <form id="createClientForm">
-                    <h5 class="mb-0">{{ Breadcrumbs::render('create-client') }}</h5>
+                <form id="updateClientForm">
+                    <input type="hidden" name="client_id" value="{{ $client->id }}">
+                    <h5 class="mb-0">{{ Breadcrumbs::render('update-client', $client->id) }}</h5>
                     <div class="card mb-6">
                         <div class="card-header">
                             <h5 class="mb-0">Client Information</h5>
@@ -40,7 +45,7 @@
                                 <div class="col-md-6">
                                     <label for="planner-name" class="form-label">Client Name</label>
                                     <input type="text" id="planner-name" class="form-control" name="planner_name"
-                                        placeholder="Enter Planner Name">
+                                        value="{{ $client->planner_name }}" placeholder="Enter Planner Name">
                                     <small class="text-body float-start error-message-div planner_name-error"
                                         style="color: #ff0000 !important" hidden></small>
                                 </div>
@@ -49,6 +54,10 @@
                                     <input type="file" id="logo" class="form-control" name="logo"
                                         accept="image/jpeg,png,jpg,gif,svg,webp">
                                     <div class="mt-2 preview-container">
+                                        @if (isset($client->logo))
+                                            <img width="125px" height="125px"
+                                                src="{{ $client->logo ? asset($client->logo) : '' }}">
+                                        @endif
                                     </div>
                                     <small class="text-body float-start uploaded-file-name"
                                         style="color: #000; font-style: italic;"></small>
@@ -60,14 +69,15 @@
                                 <div class="col-md-6">
                                     <label for="planner-business-name" class="form-label">Client Business Name</label>
                                     <input type="text" id="planner-business-name" class="form-control"
-                                        name="planner_business_name" placeholder="Enter Planner Business Name">
+                                        value="{{ $client->planner_business_name }}" name="planner_business_name"
+                                        placeholder="Enter Planner Business Name">
                                     <small class="text-body float-start error-message-div planner_business_name-error"
                                         style="color: #ff0000 !important" hidden></small>
                                 </div>
                                 <div class="col-md-6">
                                     <label for="phone-number" class="form-label">Phone Number</label>
                                     <input type="tel" id="phone-number" class="form-control" name="phone_number"
-                                        placeholder="Enter Phone Number" value="">
+                                        placeholder="Enter Phone Number" value="{{ $client->phone_number }}">
                                     <small class="text-body float-start error-message-div phone_number-error"
                                         style="color: #ff0000 !important" hidden></small>
                                 </div>
@@ -76,25 +86,60 @@
                                 <div class="col-md-6">
                                     <label for="email" class="form-label">Email</label>
                                     <input type="email" id="email" class="form-control" name="email"
-                                        placeholder="Enter Email">
+                                        value="{{ $client->email }}" placeholder="Enter Email">
                                     <small class="text-body float-start error-message-div email-error"
                                         style="color: #ff0000 !important" hidden></small>
                                 </div>
                                 <div class="col-md-6">
                                     <label for="client_role" class="form-label">Role</label>
                                     <input type="text" id="client_role" class="form-control" name="client_role"
-                                        placeholder="Enter Client Role">
+                                        value="{{ $client->client_role }}" placeholder="Enter Client role">
                                     <small class="text-body float-start error-message-div client_role-error"
+                                        style="color: #ff0000 !important" hidden></small>
+                                </div>
+                            </div>
+                            <div class="row mb-6">
+                                <div class="col-md-6">
+                                    <div class="form-password-toggle">
+                                        <label class="form-label" for="password_id">Password</label>
+                                        <div class="input-group">
+                                            <input type="password" class="form-control" id="password_id"
+                                                placeholder="············" name="password">
+                                            <span id="basic-default-password2" class="input-group-text cursor-pointer">
+                                                <i class="bx bx-hide"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <small class="text-body float-start error-message-div password-error"
+                                        style="color: #ff0000 !important" hidden></small>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-password-toggle">
+                                        <label class="form-label" for="password_confirmation_id">Password
+                                            Confirmation</label>
+                                        <div class="input-group">
+                                            <input type="password" class="form-control" id="password_confirmation_id"
+                                                placeholder="············" name="password_confirmation">
+                                            <span id="basic-default-password2" class="input-group-text cursor-pointer">
+                                                <i class="bx bx-hide"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <small class="text-body float-start error-message-div password-error"
                                         style="color: #ff0000 !important" hidden></small>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-primary" style="float: right" id="storeButton">Crete Client
-                        <span id="spinner" style="display:none;">
-                            <i class="fa fa-spinner fa-spin"></i>
-                        </span>
-                    </button>
+                    <div style="display: flex; gap: 10px; justify-content: flex-end">
+                        <a href="javascript:history.back()" class="btn btn-label-primary">Close</a>
+                        <button type="submit" class="btn btn-primary" style="float: right" id="updateButton">Update
+                            Client
+                            <span id="spinner" style="display:none;">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </span>
+                        </button>
+                    </div>
                 </form>
             </div>
         </div>
@@ -109,16 +154,18 @@
             });
         }
 
-        $('#createClientForm').submit(function(e) {
+        $('#updateClientForm').submit(function(e) {
             e.preventDefault();
             clearErrors();
             var formData = new FormData(this);
             let csrfToken = $('meta[name="csrf-token"]').attr('content');
-            var submitBtn = $("#storeButton");
+            var submitBtn = $("#updateButton");
             var spinner = $(submitBtn).find("#spinner");
+            var id = $('client_id').val();
+            console.log(id);
 
             $.ajax({
-                url: "{{ route('clients.store') }}",
+                url: "{{ url('admin/clients/update') }}/" + id,
                 type: 'POST',
                 processData: false,
                 contentType: false,
