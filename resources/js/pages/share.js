@@ -1,29 +1,39 @@
-import { getUserToken } from '../auth';
+import { getUserToken } from "../auth";
 
 async function checkEventIfHavePassword() {
-    var eventSlug = $('#global-event-data').val();
-    var galleryUrl = $('#global-event-data').data('eventGalleryUrl');
-    if ($('#global-event-data').data('eventHasP')) {
+    var eventSlug = $("#global-event-data").val();
+    var galleryUrl = $("#global-event-data").data("eventGalleryUrl");
+    if ($("#global-event-data").data("eventHasP")) {
         if (localStorage.getItem(eventSlug)) {
             var token = await getUserToken();
-            axios.post(galleryUrl, {
-                _token: document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                password: localStorage.getItem(eventSlug)
-            }, {
-                headers: {
-                    'pageToken': token
-                }
-            })
-                .then(response => {
+            axios
+                .post(
+                    galleryUrl,
+                    {
+                        _token: document
+                            .querySelector('meta[name="csrf-token"]')
+                            .getAttribute("content"),
+                        password: localStorage.getItem(eventSlug),
+                    },
+                    {
+                        headers: {
+                            pageToken: token,
+                        },
+                    }
+                )
+                .then((response) => {
                     if (response.data.success) {
                         setTimeout(() => {
-                            document.querySelector('.main-container').classList.remove('auth-checking');
-                            removeGalleryMainLoader()
+                            document
+                                .querySelector(".main-container")
+                                .classList.remove("auth-checking");
+                            removeGalleryMainLoader();
                         }, 5);
                     } else {
                         gotoPasswordVerification();
                     }
-                }).catch(error => {
+                })
+                .catch((error) => {
                     gotoPasswordVerification();
                 });
         } else {
@@ -31,8 +41,10 @@ async function checkEventIfHavePassword() {
         }
     } else {
         setTimeout(() => {
-            document.querySelector('.main-container').classList.remove('auth-checking');
-            removeGalleryMainLoader()
+            document
+                .querySelector(".main-container")
+                .classList.remove("auth-checking");
+            removeGalleryMainLoader();
         }, 5);
     }
 }
@@ -40,120 +52,129 @@ async function checkEventIfHavePassword() {
 async function checkAuthentication() {
     const token = await getUserToken();
     try {
-        const response = await fetch('/events/check-token', {
-            method: 'GET',
+        const response = await fetch("/events/check-token", {
+            method: "GET",
             headers: {
-                'pageToken': token
-            }
+                pageToken: token,
+            },
         });
-        if (!response.ok) throw new Error('Unauthorized');
+        if (!response.ok) throw new Error("Unauthorized");
         checkEventIfHavePassword();
     } catch (error) {
-        window.location.href = document.getElementById('main-page-url')?.dataset?.url || '/';
+        window.location.href =
+            document.getElementById("main-page-url")?.dataset?.url || "/";
     }
 }
 
 checkAuthentication();
 
 function removeGalleryMainLoader() {
-    const loader = document.getElementById('page-loader');
+    const loader = document.getElementById("page-loader");
     if (loader) {
-        loader.style.display = 'none';
+        loader.style.display = "none";
     }
 }
 
 async function gotoPasswordVerification() {
-    var url = $('#global-event-data').data('url');
+    var url = $("#global-event-data").data("url");
     var token = await getUserToken();
-    axios.get(url, {
-        headers: {
-            'pageToken': token
-        }
-    })
-        .then(response => {
+    axios
+        .get(url, {
+            headers: {
+                pageToken: token,
+            },
+        })
+        .then((response) => {
             window.location.href = response.data.url;
-        }).catch(error => {
+        })
+        .catch((error) => {
             console.log(error);
         });
 }
 
-const dropArea = document.getElementById('dropArea');
-const fileInput = document.getElementById('image');
-const thumbnailsContainer = document.getElementById('thumbnails');
-dropArea.addEventListener('click', () => {
+const dropArea = document.getElementById("dropArea");
+const fileInput = document.getElementById("image");
+const thumbnailsContainer = document.getElementById("thumbnails");
+dropArea.addEventListener("click", () => {
     fileInput.click();
 });
-fileInput.addEventListener('change', updateThumbnails);
-dropArea.addEventListener('dragover', (event) => {
+fileInput.addEventListener("change", updateThumbnails);
+dropArea.addEventListener("dragover", (event) => {
     event.preventDefault();
-    dropArea.classList.add('dragover');
+    dropArea.classList.add("dragover");
 });
-dropArea.addEventListener('dragleave', () => {
-    dropArea.classList.remove('dragover');
+dropArea.addEventListener("dragleave", () => {
+    dropArea.classList.remove("dragover");
 });
-dropArea.addEventListener('drop', (event) => {
+dropArea.addEventListener("drop", (event) => {
     event.preventDefault();
-    dropArea.classList.remove('dragover');
+    dropArea.classList.remove("dragover");
     fileInput.files = event.dataTransfer.files;
     updateThumbnails();
 });
 // Create Thumbnails
 function updateThumbnails() {
     const files = fileInput.files;
-    thumbnailsContainer.innerHTML = '';
+    thumbnailsContainer.innerHTML = "";
     if (files.length > 0) {
-        thumbnailsContainer.style.marginTop = '15px';
+        thumbnailsContainer.style.marginTop = "15px";
         for (const file of files) {
-            if (file && file.type.startsWith('image/')) {
+            if (file && file.type.startsWith("image/")) {
                 const reader = new FileReader();
                 reader.onload = function (e) {
-                    const img = document.createElement('img');
+                    const img = document.createElement("img");
                     img.src = e.target.result;
                     thumbnailsContainer.appendChild(img);
-                }
+                };
                 reader.readAsDataURL(file);
             }
         }
     } else {
-        thumbnailsContainer.style.marginTop = '0';
+        thumbnailsContainer.style.marginTop = "0";
     }
 }
 
-
 function closeModal() {
-    const overlay = document.getElementById('overlay');
-    overlay.classList.remove('show');
-    overlay.addEventListener('transitionend', () => {
-        overlay.classList.add('hidden');
-    }, {
-        once: true
-    });
+    const overlay = document.getElementById("overlay");
+    overlay.classList.remove("show");
+    overlay.addEventListener(
+        "transitionend",
+        () => {
+            overlay.classList.add("hidden");
+        },
+        {
+            once: true,
+        }
+    );
 }
 
-document.getElementById('closeModalBtn').addEventListener('click', closeModal);
-document.getElementById('closeXBtn').addEventListener('click', closeModal);
+document.getElementById("closeModalBtn").addEventListener("click", closeModal);
+document.getElementById("closeXBtn").addEventListener("click", closeModal);
 
-$('#uploadForm').submit(async function (e) {
-
+$("#uploadForm").submit(async function (e) {
     e.preventDefault(); // Prevent default form submission
-    $('.alert').remove();
-    $('.image-error').attr('hidden', true);
+    $(".alert").remove();
+    $(".image-error").attr("hidden", true);
     var submitBtn = $("#storeButton");
     showButtonLoader(submitBtn);
     await compressImages();
-    var file = $('#image-compressed')[0].files[0];
+    var file = $("#image-compressed")[0].files[0];
     if (!file) {
-        $('.image-error').attr('hidden', false);
-        $('.image-error').text('Please select image');
+        $(".image-error").attr("hidden", false);
+        $(".image-error").text("Please select image");
         hideButtonLoader(submitBtn);
         return false;
     }
+    $(".upload-image-btn").attr("disabled", true);
+    $("#closeModalBtn").attr("disabled", true);
+    disableButton($(".upload-image-btn"));
+    disableButton($("#closeModalBtn"));
 
-    var progressBar = $('#uploadProgressModal #progressContainer');
+    var progressBar = $("#uploadProgressModal #progressContainer");
     /// open progress modal
-    const overlay = document.getElementById('overlay');
-    overlay.classList.remove('hidden');
-    setTimeout(() => overlay.classList.add('show'), 10);
+    const overlay = document.getElementById("overlay");
+    overlay.classList.remove("hidden");
+    setTimeout(() => overlay.classList.add("show"), 10);
 
     progressBar.empty(); // Clear previous progress bars
     let fileContainer = $(`
@@ -174,15 +195,23 @@ $('#uploadForm').submit(async function (e) {
     uploadFile(file, 0, submitBtn)
         .then((response) => {
             clearInterval($("#status-0").data("interval"));
-            $("#progress-bar-0").removeClass("bg-success").addClass("bg-primary").text("Completed");
-            $("#status-0").addClass('hidden-force');
+            $("#progress-bar-0")
+                .removeClass("bg-success")
+                .addClass("bg-primary")
+                .text("Completed");
+            $("#status-0").addClass("hidden-force");
             hideButtonLoader(submitBtn);
-            $('#uploadForm')[0].reset();
-            document.getElementById('thumbnails').innerHTML = '';
-            const message = response.data?.message || 'Upload completed successfully';
-            const $alert = $(`<div class="alert alert-success guest-upload-success" style=""><i class="fa fa-check" aria-hidden="true"></i>${message}</div>`);
-            $('#uploadProgressModal').prepend($alert);
-            $('#uploadProgressModalLabel').attr('hidden', true);
+            $("#uploadForm")[0].reset();
+            document.getElementById("thumbnails").innerHTML = "";
+            const message =
+                response.data?.message || "Upload completed successfully";
+            const $alert = $(
+                `<div class="alert alert-success guest-upload-success" style=""><i class="fa fa-check" aria-hidden="true"></i>${message}</div>`
+            );
+            $("#uploadProgressModal").prepend($alert);
+            $("#uploadProgressModalLabel").attr("hidden", true);
+            enableButton($(".upload-image-btn"));
+            enableButton($("#closeModalBtn"));
         })
         .catch((error) => {
             hideButtonLoader(submitBtn);
@@ -190,40 +219,54 @@ $('#uploadForm').submit(async function (e) {
         });
 });
 
+function disableButton(button) {
+    button.attr("disabled", true);
+    button.css("background-color", "grey");
+}
+
+function enableButton(button) {
+    var color = $("#button-main-color").val();
+    button.attr("disabled", false);
+    button.css("background-color", color);
+}
+
 async function uploadFile(file, index, submitBtn) {
     let formData = new FormData();
-    formData.append('file', file);
-    var csrfToken = $('meta[name="csrf-token"]').attr('content');
-    var eventId = $('#event_id').data('id');
-    formData.append('_token', csrfToken);
-    formData.append('user_name', $('#user_name').val());
-    formData.append('description', $('#caption').val());
-    formData.append('file_size', $('#file_size').val());
-    formData.append('event_id', eventId);
-    var url = document.getElementById('share-post-btn').dataset.url;
+    formData.append("file", file);
+    var csrfToken = $('meta[name="csrf-token"]').attr("content");
+    var eventId = $("#event_id").data("id");
+    formData.append("_token", csrfToken);
+    formData.append("user_name", $("#user_name").val());
+    formData.append("description", $("#caption").val());
+    formData.append("file_size", $("#file_size").val());
+    formData.append("event_id", eventId);
+    var url = document.getElementById("share-post-btn").dataset.url;
 
     $(`#file-container-${index} .start-btn`).remove(); // Remove "Start Upload" button
 
     try {
         const response = await axios.post(url, formData, {
             headers: {
-                'Content-Type': 'multipart/form-data'
+                "Content-Type": "multipart/form-data",
             },
             onUploadProgress: function (progressEvent) {
                 if (progressEvent.lengthComputable) {
-                    const percent = Math.round((progressEvent.loaded / progressEvent.total) * 100);
-                    $(`#progress-bar-${index}`).css("width", percent + "%").text(percent + "%");
+                    const percent = Math.round(
+                        (progressEvent.loaded / progressEvent.total) * 100
+                    );
+                    $(`#progress-bar-${index}`)
+                        .css("width", percent + "%")
+                        .text(percent + "%");
 
                     if (percent === 100) {
                         showProcessingStatus(0);
                     }
                 }
             },
-            timeout: 999000
+            timeout: 999000,
         });
 
         return response; // This will resolve the outer promise
-
     } catch (error) {
         let statusText = $("#status-" + index);
         statusText.text("Stage2: Failed");
@@ -236,7 +279,7 @@ async function uploadFile(file, index, submitBtn) {
 function showProcessingStatus(index) {
     let statusText = $("#status-" + index);
     let dots = 0;
-    statusText.removeClass('hidden-force');
+    statusText.removeClass("hidden-force");
     statusText.text("Stage2: Processing");
 
     let interval = setInterval(() => {
@@ -248,13 +291,13 @@ function showProcessingStatus(index) {
 }
 
 function showRetryButton(index) {
-    $(`#file-container-${index} .retry-btn`).removeClass('hidden-force'); // Show Retry button
+    $(`#file-container-${index} .retry-btn`).removeClass("hidden-force"); // Show Retry button
 }
 
 $(document).on("click", ".retry-btn", function (e) {
     e.preventDefault();
-    $(this).addClass('hidden-force');
-    var file = $('#image-compressed')[0].files[0];
+    $(this).addClass("hidden-force");
+    var file = $("#image-compressed")[0].files[0];
 
     // Reset progress bar and status text
     $("#progress-bar-0")
@@ -270,32 +313,36 @@ $(document).on("click", ".retry-btn", function (e) {
 });
 
 function showButtonLoader(submitBtn) {
-    const spinner = document.getElementById('spinner');
-    spinner.style.display = 'inline-block';
+    const spinner = document.getElementById("spinner");
+    spinner.style.display = "inline-block";
     submitBtn.disabled = true;
 }
 
 function hideButtonLoader(submitBtn) {
-    const spinner = document.getElementById('spinner');
-    spinner.style.display = 'none';
+    const spinner = document.getElementById("spinner");
+    spinner.style.display = "none";
     submitBtn.disabled = false;
 }
 
 async function compressImages() {
-    const input = document.getElementById('image');
+    const input = document.getElementById("image");
     const fileInput = input.files[0];
     if (!fileInput) return;
 
     let compressionRatios = [];
     try {
-        const filePath = document.getElementById('compression-ratios-file-path');
+        const filePath = document.getElementById(
+            "compression-ratios-file-path"
+        );
         const response = await fetch(filePath.value);
         if (!response.ok) {
-            throw new Error(`Failed to fetch compression ratios: ${response.status}`);
+            throw new Error(
+                `Failed to fetch compression ratios: ${response.status}`
+            );
         }
         compressionRatios = await response.json();
     } catch (error) {
-        console.error('Error loading compression ratios:', error);
+        console.error("Error loading compression ratios:", error);
         compressionRatios = [
             { minSizeMB: 10, quality: 0.7 },
             { minSizeMB: 9, quality: 0.75 },
@@ -307,7 +354,7 @@ async function compressImages() {
             { minSizeMB: 3, quality: 0.93 },
             { minSizeMB: 2, quality: 0.94 },
             { minSizeMB: 1, quality: 0.95 },
-            { minSizeMB: 0.5, quality: 0.99 }
+            { minSizeMB: 0.5, quality: 0.99 },
         ];
     }
 
@@ -324,8 +371,8 @@ async function compressImages() {
 
     if (quality === null) {
         dataTransfer.items.add(fileInput);
-        document.getElementById('image-compressed').files = dataTransfer.files;
-        document.getElementById('file_size').value = fileInput.size;
+        document.getElementById("image-compressed").files = dataTransfer.files;
+        document.getElementById("file_size").value = fileInput.size;
         return;
     }
     return new Promise((resolve, reject) => {
@@ -336,18 +383,19 @@ async function compressImages() {
             success(result) {
                 const compressedFile = new File([result], fileInput.name, {
                     type: fileInput.type,
-                    lastModified: Date.now()
+                    lastModified: Date.now(),
                 });
                 dataTransfer.items.add(compressedFile);
-                document.getElementById('image-compressed').files = dataTransfer.files;
-                document.getElementById('file_size').value = compressedFile.size;
+                document.getElementById("image-compressed").files =
+                    dataTransfer.files;
+                document.getElementById("file_size").value =
+                    compressedFile.size;
                 resolve();
             },
             error(err) {
                 console.error(`Compression error for ${fileInput.name}:`, err);
                 reject(err);
-            }
+            },
         });
     });
 }
-

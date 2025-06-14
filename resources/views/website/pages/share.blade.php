@@ -20,6 +20,7 @@
 @endpush
 
 @section('content')
+    <input type="hidden" id="button-main-color" value="{{ $event->setting->accent_color != '' ? $event->setting->accent_color : '#B89148' }}">
     <div id="page-loader">
         <img src="{{ asset('assets/img/loader/loader.gif') }}" width="40px" alt="">
         <p>Loading....</p>
@@ -93,7 +94,7 @@
 
         <div id="overlay" class="overlay hidden">
             <div class="modal" id="uploadProgressModal">
-                <span id="closeXBtn" class="close-x">&times;</span>
+                <span id="closeXBtn" class="close-x"></span>
                 <h5 class="modal-title" id="uploadProgressModalLabel">Uploading...</h5>
                 <div id="progressContainer"></div>
                 <button type="button" class="close-btn" id="closeModalBtn">Close</button>

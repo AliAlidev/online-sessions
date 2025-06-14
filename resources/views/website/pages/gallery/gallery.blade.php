@@ -19,6 +19,14 @@
         .loader {
             border-top: 4px solid {{ $event->setting->accent_color != '' ? $event->setting->accent_color : '#B89148' }};
         }
+
+        .fancybox-container {
+            z-index: 9999 !important;
+        }
+
+        .swal2-container {
+            z-index: 9999999 !important;
+        }
     </style>
     @vite(['resources/js/app.js', 'resources/js/pages/gallery.js'])
 @endpush
@@ -30,14 +38,16 @@
     <div class="main-container auth-checking">
         <div class="main-header">
             <div class="top-bar" style="position:relative">
-                    <a href="{{ route('landing.index', ['year' => $year, 'event_slug' => $event_slug]) }}"><img
-                            class="top-bar-image" src="{{ asset($event->profile_picture) }}" alt="">
-                        @if ($event->setting->theme == 'dark')
-                            <img src="{{ asset('assets/img/illustrations/gallery-profile-crown-white.svg') }}" alt="" style="position:absolute;z-index:9999;top:-12px;left:3px; width:144px;">
-                        @else
-                            <img src="{{ asset('assets/img/illustrations/gallery-profile-crown-black.svg') }}" alt="" style="position:absolute;z-index:9999;top:-12px;left:3px; width:144px;">
-                        @endif
-                    </a>
+                <a href="{{ route('landing.index', ['year' => $year, 'event_slug' => $event_slug]) }}"><img
+                        class="top-bar-image" src="{{ asset($event->profile_picture) }}" alt="">
+                    @if ($event->setting->theme == 'dark')
+                        <img src="{{ asset('assets/img/illustrations/gallery-profile-crown-white.svg') }}" alt=""
+                            style="position:absolute;z-index:9999;top:-12px;left:3px; width:144px;">
+                    @else
+                        <img src="{{ asset('assets/img/illustrations/gallery-profile-crown-black.svg') }}" alt=""
+                            style="position:absolute;z-index:9999;top:-12px;left:3px; width:144px;">
+                    @endif
+                </a>
                 <div class="event-title-date">
                     <h1 class="event-title">
                         {{ isset($event->event_alias_name) ? $event->event_alias_name : $event->event_name }}</h1>
@@ -99,11 +109,11 @@
         </div>
         <div id="loader-div" hidden>
             <div class="loader-container">
-                    @if ($event->setting->theme == 'dark')
-                        <img src="{{ asset('assets/img/loader/loader-white.gif') }}" width="34px" alt="">
-                    @else
-                        <img src="{{ asset('assets/img/loader/loader.gif') }}" width="34px" alt="">
-                    @endif
+                @if ($event->setting->theme == 'dark')
+                    <img src="{{ asset('assets/img/loader/loader-white.gif') }}" width="34px" alt="">
+                @else
+                    <img src="{{ asset('assets/img/loader/loader.gif') }}" width="34px" alt="">
+                @endif
             </div>
         </div>
         <div id="gallery-div"></div>
@@ -122,7 +132,11 @@
                 </div>
             </a>
             <!-- Scroll to Top -->
-            <button id="scrollTopBtn" title="Go to top"><svg width="30px" height="30px" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><line class="scroll-to-top-cls-1" x1="16" x2="25" y1="11.5" y2="20.5"/><line class="scroll-to-top-cls-1" x1="7" x2="16" y1="20.5" y2="11.5"/></svg></button>
+            <button id="scrollTopBtn" title="Go to top"><svg width="30px" height="30px" viewBox="0 0 32 32"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <line class="scroll-to-top-cls-1" x1="16" x2="25" y1="11.5" y2="20.5" />
+                    <line class="scroll-to-top-cls-1" x1="7" x2="16" y1="20.5" y2="11.5" />
+                </svg></button>
         </div>
     </div>
     {{-- <input type="hidden" id="delete-button-svg" data-svg="{{ asset('assets/website/gallery-assets/images/delete-icon.svg') }}"> --}}
@@ -136,31 +150,34 @@
             scrollTopBtn.style.display = window.scrollY > 1000 ? "block" : "none";
         };
         scrollTopBtn.onclick = function() {
-            window.scrollTo({ top: 0, behavior: "smooth" });
+            window.scrollTo({
+                top: 0,
+                behavior: "smooth"
+            });
         };
     </script>
     <script>
-    document.querySelectorAll('.folder-thumbnail').forEach(folder => {
-        folder.addEventListener('click', function () {
-            // Remove 'clicked' from all other folders
-            document.querySelectorAll('.folder-thumbnail').forEach(f => f.classList.remove('clicked'));
+        document.querySelectorAll('.folder-thumbnail').forEach(folder => {
+            folder.addEventListener('click', function() {
+                // Remove 'clicked' from all other folders
+                document.querySelectorAll('.folder-thumbnail').forEach(f => f.classList.remove('clicked'));
 
-            // Add 'clicked' to the current one
-            this.classList.add('clicked');
+                // Add 'clicked' to the current one
+                this.classList.add('clicked');
+            });
         });
-    });
     </script>
     <script>
         $(document).on('touchstart', function(e) {
-        // If fancybox is open and tap outside image content
-        if ($.fancybox.getInstance()) {
-            const instance = $.fancybox.getInstance();
-            const $content = instance.current.$content;
+            // If fancybox is open and tap outside image content
+            if ($.fancybox.getInstance()) {
+                const instance = $.fancybox.getInstance();
+                const $content = instance.current.$content;
 
-            if (!$content.is(e.target) && $content.has(e.target).length === 0) {
-            instance.close();
+                if (!$content.is(e.target) && $content.has(e.target).length === 0) {
+                    instance.close();
+                }
             }
-        }
         });
     </script>
 @endpush

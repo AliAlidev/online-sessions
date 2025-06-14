@@ -1,29 +1,39 @@
-import { getUserToken } from '../auth';
+import { getUserToken } from "../auth";
 
 async function checkEventIfHavePassword() {
-    var eventSlug = $('#global-event-data').val();
-    var galleryUrl = $('#global-event-data').data('eventGalleryUrl');
-    if ($('#global-event-data').data('eventHasP')) {
+    var eventSlug = $("#global-event-data").val();
+    var galleryUrl = $("#global-event-data").data("eventGalleryUrl");
+    if ($("#global-event-data").data("eventHasP")) {
         if (localStorage.getItem(eventSlug)) {
             var token = await getUserToken();
-            axios.post(galleryUrl, {
-                _token: document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                password: localStorage.getItem(eventSlug)
-            }, {
-                headers: {
-                    'pageToken': token
-                }
-            })
-                .then(response => {
+            axios
+                .post(
+                    galleryUrl,
+                    {
+                        _token: document
+                            .querySelector('meta[name="csrf-token"]')
+                            .getAttribute("content"),
+                        password: localStorage.getItem(eventSlug),
+                    },
+                    {
+                        headers: {
+                            pageToken: token,
+                        },
+                    }
+                )
+                .then((response) => {
                     if (response.data.success) {
                         setTimeout(() => {
-                            document.querySelector('.main-container').classList.remove('auth-checking');
+                            document
+                                .querySelector(".main-container")
+                                .classList.remove("auth-checking");
                             removeGalleryMainLoader();
                         }, 5);
                     } else {
                         gotoPasswordVerification();
                     }
-                }).catch(error => {
+                })
+                .catch((error) => {
                     gotoPasswordVerification();
                 });
         } else {
@@ -31,61 +41,65 @@ async function checkEventIfHavePassword() {
         }
     } else {
         setTimeout(() => {
-            document.querySelector('.main-container').classList.remove('auth-checking');
+            document
+                .querySelector(".main-container")
+                .classList.remove("auth-checking");
             removeGalleryMainLoader();
         }, 5);
     }
 }
 
-
 function removeGalleryMainLoader() {
-    const loader = document.getElementById('page-loader');
+    const loader = document.getElementById("page-loader");
     if (loader) {
-        loader.style.display = 'none';
+        loader.style.display = "none";
     }
 }
 
 async function checkAuthentication() {
     const token = await getUserToken();
     try {
-        const response = await fetch('/events/check-token', {
-            method: 'GET',
+        const response = await fetch("/events/check-token", {
+            method: "GET",
             headers: {
-                'pageToken': token
-            }
+                pageToken: token,
+            },
         });
-        if (!response.ok) throw new Error('Unauthorized');
+        if (!response.ok) throw new Error("Unauthorized");
         checkEventIfHavePassword();
     } catch (error) {
-        window.location.href = document.getElementById('main-page-url')?.dataset?.url || '/';
+        window.location.href =
+            document.getElementById("main-page-url")?.dataset?.url || "/";
     }
 }
 
 checkAuthentication();
 
 async function gotoPasswordVerification() {
-    var url = $('#global-event-data').data('url');
+    var url = $("#global-event-data").data("url");
     var token = await getUserToken();
-    axios.get(url, {
-        headers: {
-            'pageToken': token
-        }
-    })
-        .then(response => {
+    axios
+        .get(url, {
+            headers: {
+                pageToken: token,
+            },
+        })
+        .then((response) => {
             window.location.href = response.data.url;
-        }).catch(error => {
+        })
+        .catch((error) => {
             console.log(error);
         });
 }
 
 function scrollTabs(event) {
-    var element = event.target.closest('.scroll-arrow');
+    var element = event.target.closest(".scroll-arrow");
     var distance = element.dataset.distance;
 
     const tabs = document.getElementById("tabs");
     tabs.scrollBy({
         left: distance,
-        behavior: 'smooth'
+        behavior: "smooth",
     });
     checkScroll();
 }
@@ -98,41 +112,41 @@ function checkScroll() {
 }
 
 function loadVideo(event) {
-    var element = event.target.closest('.video-item');
+    var element = event.target.closest(".video-item");
     var videoUrl = element.dataset.url;
     var videoId = element.dataset.videoId;
     var videoViewIncrement = element.dataset.incrementView;
-    const playerIframe = document.getElementById('videoIframe');
+    const playerIframe = document.getElementById("videoIframe");
     const videoSrc = `${videoUrl}?autoplay=true`;
     // Update the iframe source with the selected video
     playerIframe.src = videoSrc;
     // Initialize player.js on the iframe
     const player = new playerjs.Player(playerIframe);
     // Event listeners using player.js
-    player.on('ready', () => {
+    player.on("ready", () => {
         player.play(); // Play the video once loaded
     });
-    player.on('error', (error) => {
-        console.log('Error occurred:', error);
+    player.on("error", (error) => {
+        console.log("Error occurred:", error);
     });
-    player.on('ended', () => {
+    player.on("ended", () => {
         $.ajax({
             url: videoViewIncrement,
-            method: 'GET',
+            method: "GET",
             success: function (response) {
                 console.log(videoId);
 
-                $('#video-' + videoId).text(response.view_count);
+                $("#video-" + videoId).text(response.view_count);
                 console.log(response.view_count);
-            }
-        })
+            },
+        });
         player.pause();
     });
 }
 
-const refreshButton = document.querySelector('.refresh-button');
+const refreshButton = document.querySelector(".refresh-button");
 if (refreshButton) {
-    refreshButton.addEventListener('click', function (event) {
+    refreshButton.addEventListener("click", function (event) {
         var element = event.target;
         document.getElementById(element.dataset.id).click();
     });
@@ -140,40 +154,53 @@ if (refreshButton) {
 
 async function selectFolder(event) {
     event.preventDefault();
-    var element = event.target.closest('.folder');
+    var element = event.target.closest(".folder");
     var folderId = element.dataset.id;
     var folderType = element.dataset.type;
     var url = element.dataset.url;
     var folderLink = element.dataset.folderLink;
-    var csrfToken = $('meta[name="csrf-token"]').attr('content');
-    $('.refresh-button').attr('data-id', 'folder-' + folderId);
+    var csrfToken = $('meta[name="csrf-token"]').attr("content");
+    $(".refresh-button").attr("data-id", "folder-" + folderId);
     // var $folder = element.dataset.object;
-    if (folderType == 'link') {
-        window.open(folderLink, '_blank', 'noopener,noreferrer');
+    if (folderType == "link") {
+        window.open(folderLink, "_blank", "noopener,noreferrer");
         return false;
     }
-    if (folderType == 'fake') {
+    if (folderType == "fake") {
         return false;
     }
-    $('#gallery-div').hide();
-    $('#loader-div').attr('hidden', false);
+    $("#gallery-div").hide();
+    $("#loader-div").attr("hidden", false);
     var token = await getUserToken();
-    axios.post(url, {
-        _token: csrfToken,
-        folder_id: folderId,
-    }, { headers: { 'pageToken': token } })
-        .then(response => {
+    axios
+        .post(
+            url,
+            {
+                _token: csrfToken,
+                folder_id: folderId,
+            },
+            { headers: { pageToken: token } }
+        )
+        .then((response) => {
             var result = response.data;
-            $('#gallery-div').html(result.html);
+            $("#gallery-div").html(result.html);
 
-            if (folderType == 'video') {
-                $.getScript("//assets.mediadelivery.net/playerjs/player-0.1.0.min.js").then(() => {
-                    const playerIframe = document.getElementById('videoIframe');
+            if (folderType == "video") {
+                $.getScript(
+                    "//assets.mediadelivery.net/playerjs/player-0.1.0.min.js"
+                ).then(() => {
+                    const playerIframe = document.getElementById("videoIframe");
                     // Ensure the iframe has a valid `src` attribute
-                    if (!playerIframe.src || playerIframe.src === "about:blank") {
+                    if (
+                        !playerIframe.src ||
+                        playerIframe.src === "about:blank"
+                    ) {
                         var fileUrl = null;
-                        result.files.forEach(file => {
-                            if (fileUrl == null && file.file_status == "approved") {
+                        result.files.forEach((file) => {
+                            if (
+                                fileUrl == null &&
+                                file.file_status == "approved"
+                            ) {
                                 fileUrl = file.file;
                             }
                         });
@@ -190,7 +217,7 @@ async function selectFolder(event) {
                         fullscreen: true,
                         showTitle: false,
                         startTime: 0,
-                        enableVideoInfo: true
+                        enableVideoInfo: true,
                     });
 
                     // Make sure to trigger play once the player is ready
@@ -199,172 +226,224 @@ async function selectFolder(event) {
                         player.mute(); // Mute the video using the correct method
                     };
 
-                    player.on('error', (error) => {
-                        console.error('Error occurred:', error);
+                    player.on("error", (error) => {
+                        console.error("Error occurred:", error);
                     });
                 });
 
-                document.querySelectorAll('.video-item').forEach(video => {
-                    video.addEventListener('click', loadVideo);
+                document.querySelectorAll(".video-item").forEach((video) => {
+                    video.addEventListener("click", loadVideo);
                 });
-                $('#gallery-div').show();
-                $('#loader-div').attr('hidden', true);
-                $('.refresh-button').removeClass('disabled');
-            } else if (folderType == 'image') {
-                var canDownload = result.eventSupportDownload ? 'download' : '';
-                $.getScript("https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js").done(function () {
-                    $('[data-fancybox="gallery"]').fancybox({
-                        clickOutside: "close",
-                        buttons: [
-                            "zoom",
-                            "slideShow",
-                            "fullScreen",
-                            canDownload,
-                            "delete",
-                            "close",
-                        ],
-                        btnTpl: {
-                            delete: `<button data-fancybox-delete class="fancybox-button fancybox-button--delete" title="Delete" hidden>
+                $("#gallery-div").show();
+                $("#loader-div").attr("hidden", true);
+                $(".refresh-button").removeClass("disabled");
+            } else if (folderType == "image") {
+                var canDownload = result.eventSupportDownload ? "download" : "";
+                $.getScript(
+                    "https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"
+                )
+                    .done(function () {
+                        $('[data-fancybox="gallery"]').fancybox({
+                            clickOutside: "close",
+                            buttons: [
+                                "zoom",
+                                "slideShow",
+                                "fullScreen",
+                                canDownload,
+                                "delete",
+                                "close",
+                            ],
+                            btnTpl: {
+                                delete: `<button data-fancybox-delete class="fancybox-button fancybox-button--delete" title="Delete" hidden>
                            <svg viewBox="300 -100 500 900" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M446.857 400C533.645 400 604 470.355 604 557.143C604 643.93 533.645 714.286 446.857 714.286C360.07 714.286 289.714 643.93 289.714 557.143C289.714 470.355 360.07 400 446.857 400ZM289.714 0C350.92 0 400.888 48.1134 403.86 108.582L404 114.286H546.857C562.637 114.286 575.429 127.078 575.429 142.857C575.429 157.51 564.399 169.586 550.189 171.236L546.857 171.429H522.6L505.621 380.917C487.152 374.762 467.394 371.429 446.857 371.429C344.29 371.429 261.143 454.576 261.143 557.143C261.143 607.054 280.832 652.367 312.867 685.738L197.331 685.714C141.516 685.714 95.0499 642.864 90.5391 587.23L56.8 171.429H32.5714C17.919 171.429 5.84265 160.399 4.19222 146.189L4 142.857C4 128.205 15.0297 116.128 29.2394 114.478L32.5714 114.286H175.429C175.429 51.1675 226.596 0 289.714 0ZM396.312 486.404L394.333 484.751C389.461 481.376 382.959 481.376 378.087 484.751L376.109 486.404L374.456 488.382C371.081 493.254 371.081 499.757 374.456 504.628L376.109 506.607L426.667 557.163L376.183 607.643L374.529 609.621C371.155 614.493 371.155 620.995 374.529 625.867L376.183 627.846L378.161 629.499C383.033 632.874 389.535 632.874 394.407 629.499L396.386 627.846L446.867 577.363L497.411 627.91L499.39 629.563C504.261 632.938 510.764 632.938 515.636 629.563L517.614 627.91L519.267 625.931C522.642 621.06 522.642 614.557 519.267 609.685L517.614 607.707L467.067 557.163L517.693 506.608L519.346 504.63C522.721 499.758 522.721 493.256 519.346 488.384L517.693 486.405L515.715 484.752C510.843 481.377 504.341 481.377 499.469 484.752L497.49 486.405L446.867 536.963L396.312 486.404ZM289.714 57.1429C259.59 57.1429 234.91 80.4536 232.728 110.021L232.571 114.286H346.857L346.7 110.021C344.519 80.4536 319.839 57.1429 289.714 57.1429Z" fill="#CCCCCC"/>
                                 </svg>
-                                </button>`
-                        },
-                        afterLoad: function (instance, current) {
-                            updateDeleteButtonState(instance, current);
-                        },
-                        afterShow: function (instance, current) {
-                            updateDeleteButtonState(instance, current);
-                        },
-                        beforeShow: function (instance, current) {
-                            const $deleteBtn = $(instance.$refs.toolbar).find('.fancybox-button--delete');
-                            $deleteBtn.off('click').on('click', function () {
-                                if (!$(this).is(':disabled') && confirm('Delete this image?')) {
-                                    const imgId = current.opts.$orig.data('image-id');
-                                    deleteImage(current, instance);
+                                </button>`,
+                            },
+                            afterLoad: function (instance, current) {
+                                updateDeleteButtonState(instance, current);
+                            },
+                            afterShow: function (instance, current) {
+                                updateDeleteButtonState(instance, current);
+                            },
+                            beforeShow: function (instance, current) {
+                                const $deleteBtn = $(
+                                    instance.$refs.toolbar
+                                ).find(".fancybox-button--delete");
+
+                                $deleteBtn
+                                    .off("click")
+                                    .on("click", function () {
+                                        if (!$(this).is(":disabled")) {
+                                            $('.fancybox-container').css('z-index', '99999');
+                                            Swal.fire({
+                                                title: "Are you sure?",
+                                                text: "This image will be permanently deleted.",
+                                                icon: "warning",
+                                                showCancelButton: true,
+                                                confirmButtonColor: "#d33",
+                                                cancelButtonColor: "#3085d6",
+                                                confirmButtonText:
+                                                    "Yes, delete it!",
+                                                cancelButtonText: "Cancel",
+                                                customClass: {
+                                                    popup: "swal2-override-zindex",
+                                                },
+                                            }).then((result) => {
+                                                if (result.isConfirmed) {
+                                                    deleteImage(
+                                                        current,
+                                                        instance
+                                                    );
+                                                }
+                                            });
+                                        }
+                                    });
+                            },
+                        });
+
+                        async function deleteImage(current, instance) {
+                            const imgId = current.opts.$orig.data("image-id");
+                            var token = await getUserToken();
+                            axios
+                                .post(
+                                    "/delete-image/" + imgId,
+                                    {
+                                        _token: csrfToken,
+                                        folder_id: folderId,
+                                    },
+                                    { headers: { pageToken: token } }
+                                )
+                                .then((response) => {
+                                    instance.close();
+                                    if (response.data.success) {
+                                        Swal.fire({
+                                            position: "top",
+                                            title: "Done!",
+                                            text:
+                                                response.message ||
+                                                "Image was deleted successfully",
+                                            icon: "success",
+                                            showConfirmButton: false,
+                                            showCloseButton: true,
+                                        });
+                                        current.opts.$orig
+                                            .closest(".grid-item")
+                                            .remove();
+                                    } else {
+                                        Swal.fire({
+                                            position: "top",
+                                            title: "Error!",
+                                            text:
+                                                response.data.message ||
+                                                "Delete failed",
+                                            icon: "error",
+                                        });
+                                    }
+                                })
+                                .catch((xhr) => {
+                                    instance.close();
+                                    Swal.fire({
+                                        position: "top",
+                                        title: "Error!",
+                                        text:
+                                            xhr.responseJSON?.message ||
+                                            "Delete failed",
+                                        icon: "error",
+                                    });
+                                });
+                        }
+
+                        function updateDeleteButtonState(instance, current) {
+                            // Get the actual clicked element (not the clone)
+                            const $orig = current.opts.$orig;
+                            const canDelete = $orig.data("can-delete") === true;
+
+                            // Find the delete button in the actual toolbar (not in clones)
+                            const $toolbar = $(instance.$refs.toolbar);
+                            const $deleteBtn = $toolbar.find(
+                                ".fancybox-button--delete"
+                            );
+
+                            // Set disabled state and visual appearance
+                            $deleteBtn.toggle(canDelete);
+                        }
+
+                        const lazyLoad = (entries, observer) => {
+                            entries.forEach((entry) => {
+                                if (entry.isIntersecting) {
+                                    const img = entry.target;
+                                    img.src = img.getAttribute("data-src");
+                                    img.removeAttribute("data-src");
+                                    observer.unobserve(img);
+                                    handleGridItemLayout();
                                 }
                             });
-                        }  
-                    });
+                        };
 
-                    async function deleteImage(current, instance) {
-                        const imgId = current.opts.$orig.data('image-id');
-                        var token = await getUserToken();
-                        axios.post('/delete-image/' + imgId, {
-                            _token: csrfToken,
-                            folder_id: folderId
-                        }, { headers: { 'pageToken': token } }).then(response => {
-                            instance.close();
-                            if (response.data.success) {
-                                Swal.fire({
-                                    position: 'top',
-                                    title: 'Done!',
-                                    text: response.message || 'Image was deleted successfully',
-                                    icon: 'success',
-                                    showConfirmButton: false,
-                                    showCloseButton: true, 
-                                });
-                                current.opts.$orig.closest('.grid-item').remove();
-                            } else {
-                                Swal.fire({
-                                    position: 'top',
-                                    title: 'Error!',
-                                    text: response.data.message || 'Delete failed',
-                                    icon: 'error'
-                                });
-                            }
-                        }).catch(xhr => {
-                            instance.close();
-                            Swal.fire({
-                                position: 'top',
-                                title: 'Error!',
-                                text: xhr.responseJSON?.message || 'Delete failed',
-                                icon: 'error'
-                            });
+                        const observer = new IntersectionObserver(lazyLoad, {
+                            root: null,
+                            rootMargin: "0px",
+                            threshold: 0.1,
                         });
-                    }
 
-                    function updateDeleteButtonState(instance, current) {
-                        // Get the actual clicked element (not the clone)
-                        const $orig = current.opts.$orig;
-                        const canDelete = $orig.data('can-delete') === true;
+                        const imagesToLoad = document.querySelectorAll(
+                            "#gallery img[data-src]"
+                        );
+                        imagesToLoad.forEach((img) => observer.observe(img));
 
-                        // Find the delete button in the actual toolbar (not in clones)
-                        const $toolbar = $(instance.$refs.toolbar);
-                        const $deleteBtn = $toolbar.find('.fancybox-button--delete');
-
-                        // Set disabled state and visual appearance
-                        $deleteBtn.toggle(canDelete);
-                    }
-
-                    const lazyLoad = (entries, observer) => {
-                        entries.forEach(entry => {
-                            if (entry.isIntersecting) {
-                                const img = entry.target;
-                                img.src = img.getAttribute('data-src');
-                                img.removeAttribute('data-src');
-                                observer.unobserve(img);
-                                handleGridItemLayout();
-                            }
-                        });
-                    };
-
-                    const observer = new IntersectionObserver(lazyLoad, {
-                        root: null,
-                        rootMargin: '0px',
-                        threshold: 0.1
+                        $("#gallery-div").show();
+                        $("#loader-div").attr("hidden", true);
+                        $(".refresh-button").removeClass("disabled");
+                    })
+                    .fail((error) => {
+                        console.log(error);
                     });
-
-                    const imagesToLoad = document.querySelectorAll('#gallery img[data-src]');
-                    imagesToLoad.forEach(img => observer.observe(img));
-
-                    $('#gallery-div').show();
-                    $('#loader-div').attr('hidden', true);
-                    $('.refresh-button').removeClass('disabled');
-
-                }).fail(error => {
-                    console.log(error);
-                });
-                document.getElementById("tabs").addEventListener("scroll", checkScroll);
+                document
+                    .getElementById("tabs")
+                    .addEventListener("scroll", checkScroll);
                 window.removeEventListener("load", checkScroll);
                 window.addEventListener("load", checkScroll);
-
             }
         })
-        .catch(error => {
-            $('#loader-div').attr('hidden', true);
+        .catch((error) => {
+            $("#loader-div").attr("hidden", true);
             console.log(error.response.data.message);
         });
 }
 
-document.querySelectorAll('.folder-thumbnail').forEach(folder => {
-    folder.addEventListener('click', selectFolder);
+document.querySelectorAll(".folder-thumbnail").forEach((folder) => {
+    folder.addEventListener("click", selectFolder);
 });
 
-document.getElementById('scroll-left').addEventListener('click', scrollTabs);
-document.getElementById('scroll-right').addEventListener('click', scrollTabs);
+document.getElementById("scroll-left").addEventListener("click", scrollTabs);
+document.getElementById("scroll-right").addEventListener("click", scrollTabs);
 
 async function goToShare(event) {
     event.preventDefault();
-    var element = event.target.closest('a');
+    var element = event.target.closest("a");
     var url = element.dataset.url;
     var supportImageUpload = element.dataset.supportImageUpload;
     if (supportImageUpload) {
         var token = await getUserToken();
-        axios.get(url, { headers: { 'pageToken': token } })
-            .then(response => {
+        axios
+            .get(url, { headers: { pageToken: token } })
+            .then((response) => {
                 window.location.href = response.data.url;
-            }).catch(error => {
+            })
+            .catch((error) => {
                 console.log(error);
             });
     }
 }
 
-document.querySelector('.share-btn-div').addEventListener('click', goToShare);
+document.querySelector(".share-btn-div").addEventListener("click", goToShare);
 
 function makeRequestWhenReady() {
     if (window.tokenInitialized) {
-        var element = $('.horizontal-scroll').children('.folder-thumbnail').first();
+        var element = $(".horizontal-scroll")
+            .children(".folder-thumbnail")
+            .first();
         element.click();
     } else {
         setTimeout(makeRequestWhenReady, 100);
@@ -378,11 +457,10 @@ $(document).ready(function () {
 function handleGridItemLayout() {
     const gridItems = document.querySelectorAll(".grid-item");
 
-    gridItems.forEach(item => {
-        const img = item.querySelector('img');
+    gridItems.forEach((item) => {
+        const img = item.querySelector("img");
 
-        if (!img.hasAttribute('src'))
-            return;
+        if (!img.hasAttribute("src")) return;
         // Function to handle the layout
         const adjustLayout = () => {
             const rowHeight = 10; // Match the grid-auto-rows value in CSS
@@ -418,25 +496,23 @@ function handleGridItemLayout() {
     });
 }
 
-document.addEventListener('click', function (e) {
-    const target = e.target.closest('.fancybox-button--download');
+document.addEventListener("click", function (e) {
+    const target = e.target.closest(".fancybox-button--download");
     if (!target) return;
     e.preventDefault();
     fetch(target.href)
-        .then(res => res.blob())
-        .then(blob => {
+        .then((res) => res.blob())
+        .then((blob) => {
             const blobUrl = URL.createObjectURL(blob);
-            const link = document.createElement('a');
+            const link = document.createElement("a");
             link.href = blobUrl;
-            link.download = target.href.split('/').pop(); // Optional: customize filename
+            link.download = target.href.split("/").pop(); // Optional: customize filename
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
             URL.revokeObjectURL(blobUrl);
         })
-        .catch(err => {
-            console.error('Download failed:', err);
+        .catch((err) => {
+            console.error("Download failed:", err);
         });
 });
-
-
