@@ -171,6 +171,14 @@
                                 </div>
                             </div>
                             <div class="row mb-5">
+                                <div class="col-md-6">
+                                    <label for="folderPassword" class="form-label">Folder Password</label>
+                                    <input type="password" id="folderPassword" class="form-control" name="password">
+                                    <small class="text-body float-start error-message-div password-error"
+                                        style="color: #ff0000 !important" hidden></small>
+                                </div>
+                            </div>
+                            <div class="row mb-5">
                                 <div class="col-md-12">
                                     <label for="description" class="form-label">Description</label>
                                     <textarea id="description" class="form-control" name="description" rows="4" placeholder="Enter Description"></textarea>
@@ -257,6 +265,14 @@
                                     <input type="text" id="folderLinkInput" class="form-control" name="folder_link"
                                         placeholder="Enter Folder Link">
                                     <small class="text-body float-start error-message-div folder_link-error"
+                                        style="color: #ff0000 !important" hidden></small>
+                                </div>
+                            </div>
+                            <div class="row mb-5">
+                                <div class="col-md-6">
+                                    <label for="folderPasswordInput" class="form-label">Folder Password</label>
+                                    <input type="password" id="folderPasswordInput" class="form-control" name="password">
+                                    <small class="text-body float-start error-message-div password-error"
                                         style="color: #ff0000 !important" hidden></small>
                                 </div>
                             </div>

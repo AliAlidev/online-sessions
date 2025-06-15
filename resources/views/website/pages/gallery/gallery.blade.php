@@ -27,6 +27,19 @@
         .swal2-container {
             z-index: 9999999 !important;
         }
+
+        .lock-indicator {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            background-color: rgba(0, 0, 0, 0.6);
+            color: white;
+            padding: 4px 8px;
+            border-top-left-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
     </style>
     @vite(['resources/js/app.js', 'resources/js/pages/gallery.js'])
 @endpush
@@ -62,7 +75,7 @@
                             <div id="folder-{{ $folder->id }}" class="folder folder-thumbnail"
                                 data-type= "{{ $folder->folder_type }}" data-folder-name="{{ $folder->folder_name }}"
                                 data-id="{{ $folder->id }}" data-folder-link="{{ $folder->folder_link }}"
-                                data-url="{{ $folder->folder_type == 'image' ? route('landing.image', ['year' => $year, 'event_slug' => $event_slug]) : route('landing.video', ['year' => $year, 'event_slug' => $event_slug]) }}">
+                                data-url="{{ $folder->folder_type == 'image' ? route('landing.image', ['year' => $year, 'event_slug' => $event_slug]) : route('landing.video', ['year' => $year, 'event_slug' => $event_slug]) }}" data-has-password="{{isset($folder->password)}}">
                                 <svg style="" width="100%" height="100%" viewBox="0 0 120 100" fill="none"
                                     xmlns="http://www.w3.org/2000/svg">
                                     <path
@@ -75,6 +88,20 @@
                                 <div class="folder-name">
                                     <p class="folder-name-text">{{ $folder->folder_name }}</p>
                                 </div>
+                                @if (isset($folder->password))
+                                    <div class="lock-indicator">
+                                        <svg width="18px" height="18px" viewBox="0 0 24 24" fill="none"
+                                            xmlns="http://www.w3.org/2000/svg">
+                                            <rect x="5.73685" y="12.0526" width="12.5263" height="8.94737" rx="2"
+                                                stroke="#fff" stroke-width="2" stroke-linecap="round"
+                                                stroke-linejoin="round" />
+                                            <path
+                                                d="M7.52631 12.0526V8.47368C7.52631 6.00294 9.52924 4 12 4C14.4707 4 16.4737 6.00294 16.4737 8.47368V12.0526"
+                                                stroke="#fff" stroke-width="2" stroke-linecap="round"
+                                                stroke-linejoin="round" />
+                                        </svg>
+                                    </div>
+                                @endif
                             </div>
                         @endif
                     @endforeach
@@ -139,7 +166,7 @@
                 </svg></button>
         </div>
     </div>
-    {{-- <input type="hidden" id="delete-button-svg" data-svg="{{ asset('assets/website/gallery-assets/images/delete-icon.svg') }}"> --}}
+    <input type="hidden" id="check_folder_password_url" value="{{route('landing.check_folder_password')}}">
 @endsection
 
 @push('scripts')

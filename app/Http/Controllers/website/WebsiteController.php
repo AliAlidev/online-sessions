@@ -268,4 +268,11 @@ class WebsiteController extends Controller
     {
         return response()->json(['success' => true]);
     }
+
+    function checkFolderPassword(Request $request)
+    {
+        $data = $request->all();
+        $currentPassword = EventFolder::find($data['folder_id'])->password;
+        return strcmp($currentPassword, $data['password']) == 0;
+    }
 }

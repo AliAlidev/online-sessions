@@ -42,6 +42,7 @@ Route::controller(WebsiteController::class)->name('landing.')->group(function ()
     Route::get('events/event-password', 'eventPassword')->name('event_password');
     Route::middleware('ensure.token')->get('events/check-token', 'checkToken')->name('check_token');
     Route::middleware('ensure.token')->post('/apply-event-password', 'applyEventPassword')->name('apply_event_password');
+    Route::middleware('ensure.token')->post('/check-folder-password', 'checkFolderPassword')->name('check_folder_password');
 });
 
 Auth::routes();

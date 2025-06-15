@@ -118,13 +118,10 @@ function loadVideo(event) {
     var videoViewIncrement = element.dataset.incrementView;
     const playerIframe = document.getElementById("videoIframe");
     const videoSrc = `${videoUrl}?autoplay=true`;
-    // Update the iframe source with the selected video
     playerIframe.src = videoSrc;
-    // Initialize player.js on the iframe
     const player = new playerjs.Player(playerIframe);
-    // Event listeners using player.js
     player.on("ready", () => {
-        player.play(); // Play the video once loaded
+        player.play();
     });
     player.on("error", (error) => {
         console.log("Error occurred:", error);
@@ -159,7 +156,115 @@ async function selectFolder(event) {
     var folderType = element.dataset.type;
     var url = element.dataset.url;
     var folderLink = element.dataset.folderLink;
+    var hasPassword = element.dataset.hasPassword;
     var csrfToken = $('meta[name="csrf-token"]').attr("content");
+    if (hasPassword) {
+        showPasswordPrompt(folderId, folderType, folderLink, csrfToken, url);
+    } else {
+        fetchFolderContent(folderId, folderType, folderLink, csrfToken, url);
+    }
+}
+
+async function showPasswordPrompt(
+    folderId,
+    folderType,
+    folderLink,
+    csrfToken,
+    url
+) {
+    try {
+        const result = await Swal.fire({
+            title: "Enter Folder Password",
+            input: "password",
+            inputLabel: "",
+            inputPlaceholder: "Enter Folder Password",
+            inputAttributes: {
+                maxlength: 50,
+                autocapitalize: "off",
+                autocorrect: "off",
+            },
+            showCancelButton: true,
+            confirmButtonText: "Submit",
+            cancelButtonText: "Cancel",
+            allowOutsideClick: false,
+            showLoaderOnConfirm: true,
+            preConfirm: async (password) => {
+                if (!password) {
+                    Swal.showValidationMessage("Password is required");
+                    Promise.reject();
+                } else {
+                    try {
+                        const isValid = await isPasswordValid(
+                            password,
+                            folderId
+                        );
+                        if (!isValid) {
+                            Swal.showValidationMessage("Invalid password");
+                            Promise.reject();
+                        }
+                        return password;
+                    } catch (error) {
+                        console.error("Validation error:", error);
+                        Swal.showValidationMessage(
+                            error.message || "Error validating password"
+                        );
+                        Promise.reject();
+                    }
+                }
+            },
+        });
+
+        if (result.isConfirmed) {
+            await fetchFolderContent(
+                folderId,
+                folderType,
+                folderLink,
+                csrfToken,
+                url
+            );
+        }
+    } catch (error) {
+        console.error("Password prompt error:", error);
+        // Optionally show an error toast or retry logic here
+    }
+}
+
+async function isPasswordValid(password, folderId) {
+    return new Promise(async (resolve, reject) => {
+        var checkPasswordUrl = document.getElementById(
+            "check_folder_password_url"
+        ).value;
+        var token = await getUserToken();
+
+        $.ajax({
+            url: checkPasswordUrl,
+            type: "POST",
+            data: {
+                _token: $('meta[name="csrf-token"]').attr("content"),
+                folder_id: folderId,
+                password: password,
+            },
+            headers: {
+                pageToken: token,
+            },
+            success: function (result) {
+                resolve(result);
+            },
+            error: function (xhr, status, error) {
+                console.error("Password validation error:", error);
+                reject(error);
+            },
+        });
+    });
+}
+
+async function fetchFolderContent(
+    folderId,
+    folderType,
+    folderLink,
+    csrfToken,
+    url
+) {
     $(".refresh-button").attr("data-id", "folder-" + folderId);
     // var $folder = element.dataset.object;
     if (folderType == "link") {
@@ -275,7 +380,10 @@ async function selectFolder(event) {
                                     .off("click")
                                     .on("click", function () {
                                         if (!$(this).is(":disabled")) {
-                                            $('.fancybox-container').css('z-index', '99999');
+                                            $(".fancybox-container").css(
+                                                "z-index",
+                                                "99999"
+                                            );
                                             Swal.fire({
                                                 title: "Are you sure?",
                                                 text: "This image will be permanently deleted.",

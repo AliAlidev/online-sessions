@@ -45,7 +45,8 @@ class UpdateFolderRequest extends FormRequest
             'description' => 'nullable|string',
             'folder_thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp',
             'folder_link' => $link,
-            'order' => 'required|numeric'
+            'order' => 'required|numeric',
+            'password' => 'nullable'
         ];
     }
 }
