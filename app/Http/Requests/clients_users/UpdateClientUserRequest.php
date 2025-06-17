@@ -26,11 +26,12 @@ class UpdateClientUserRequest extends FormRequest
     {
         $clientUser = UserClient::find($this->client_user_id);
         $requiredPassword = $clientUser->client_id != $this->client_id ? "required|":"nullable|";
+        $clientUser = UserClient::find($this->client_user_id);
         
         return [
             "client_user_id"=> "required",
             'client_id' => 'nullable|exists:clients,id|unique:users_clients,client_id,' . $request->client_user_id,
-            'name' => 'nullable|string|unique:users,name,' . $request->client_user_id,
+            'name' => 'nullable|string|unique:users,name,' . $clientUser->user->id,
             'password' => $requiredPassword . 'confirmed|regex:/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/',
             'password_confirmation' => 'nullable'
         ];
