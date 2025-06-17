@@ -23,7 +23,7 @@ class CreateClientUserRequest extends FormRequest
     {
         return [
             'client_id' => 'required|exists:clients,id|unique:users_clients,client_id',
-            'name' => 'required|string|unique:users_clients,name',
+            'name' => 'required|string|unique:users,name',
             'password' => 'required|confirmed|regex:/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/',
             'password_confirmation' => 'required'
         ];

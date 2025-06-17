@@ -11,7 +11,6 @@ use App\Models\UserClient;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 use Yajra\DataTables\DataTables;
 
 class ClientUserController extends Controller
@@ -139,7 +138,6 @@ class ClientUserController extends Controller
             session()->flash('success', 'Client has been updated successfully');
             return response()->json(['success' => true, 'url' => route('clients.users.edit', $clientUser->id)]);
         } catch (Exception $th) {
-            dd('' . $th->getMessage());
             createServerError($th, "updateClient", "clients");
             return false;
         }
@@ -155,6 +153,10 @@ class ClientUserController extends Controller
         }
         $clientUser->name = $newData["name"];
         $clientUser->save();
+        $userData = ['name' => $newData["name"]];
+        if (isset($newData['password']))
+            $userData['password'] = $newData['password'];
+        User::find($clientUser->user_id)->update($userData);
     }
 
     function delete($id)

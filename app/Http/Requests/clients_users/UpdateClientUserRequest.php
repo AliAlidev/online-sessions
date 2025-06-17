@@ -30,7 +30,7 @@ class UpdateClientUserRequest extends FormRequest
         return [
             "client_user_id"=> "required",
             'client_id' => 'nullable|exists:clients,id|unique:users_clients,client_id,' . $request->client_user_id,
-            'name' => 'nullable|string|unique:users_clients,name,' . $request->client_user_id,
+            'name' => 'nullable|string|unique:users,name,' . $request->client_user_id,
             'password' => $requiredPassword . 'confirmed|regex:/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/',
             'password_confirmation' => 'nullable'
         ];

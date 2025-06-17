@@ -23,7 +23,7 @@ class UpdateEventUserRequest extends FormRequest
     {
         $id = request()->route('id') ?? null;
         return [
-            'name' => 'required|string',
+            'name' => 'required|string|unique:users,name,' . $id,
             'full_name' => 'nullable|string',
             'phone' => 'nullable|string|max:20|unique:users,email,' . $id,
             'email' => 'nullable|email|unique:users,email,' . $id,
