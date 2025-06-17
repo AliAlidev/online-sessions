@@ -118,8 +118,6 @@ class FolderController extends Controller
             $hasThumbnail = $data['folder_thumbnail'] ?? null;
             $data['folder_thumbnail'] = isset($data['folder_thumbnail']) ? 'storage/' . uploadFile($data['folder_thumbnail'], 'folders/folder_thumbnail') : $folder->folder_thumbnail;
             unset($data['folder_id']);
-            if (!isset($data['password']))
-                unset($data['password']);
             $folder->update($data);
             if (isset($hasThumbnail)) {
                 $folderThumbnail = str_replace("storage/", "", $oldFolder->folder_thumbnail);

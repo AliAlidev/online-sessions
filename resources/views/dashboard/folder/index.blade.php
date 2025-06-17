@@ -173,7 +173,7 @@
                             <div class="row mb-5">
                                 <div class="col-md-6">
                                     <label for="folderPassword" class="form-label">Folder Password</label>
-                                    <input type="password" id="folderPassword" class="form-control" name="password">
+                                    <input type="text" id="folderPassword" class="form-control" name="password">
                                     <small class="text-body float-start error-message-div password-error"
                                         style="color: #ff0000 !important" hidden></small>
                                 </div>
@@ -271,7 +271,7 @@
                             <div class="row mb-5">
                                 <div class="col-md-6">
                                     <label for="folderPasswordInput" class="form-label">Folder Password</label>
-                                    <input type="password" id="folderPasswordInput" class="form-control" name="password">
+                                    <input type="text" id="folderPasswordInput" class="form-control" name="password">
                                     <small class="text-body float-start error-message-div password-error"
                                         style="color: #ff0000 !important" hidden></small>
                                 </div>
@@ -418,6 +418,7 @@
                                 $('#folderNameInput').val(response.data.folder_name);
                                 $('#folderTypeInput').val(response.data.folder_type);
                                 $('#folderLinkInput').val(response.data.folder_link);
+                                $('#folderPasswordInput').val(response.data.password);
                                 if (response.data.folder_thumbnail) {
                                     $('.preview-container-update img').attr('src', "\\" + response
                                         .data.folder_thumbnail);
