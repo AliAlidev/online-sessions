@@ -22,7 +22,11 @@ class CreateUserRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|unique:users,name',
+            'name' => ['required', 'string', 'unique:users,name',    function ($attribute, $value, $fail) {
+                if (filter_var($value, FILTER_VALIDATE_EMAIL)) {
+                    $fail('The name field must not be an email address.');
+                }
+            }],
             'full_name' => 'nullable|string',
             'phone' => 'nullable|string|max:20|unique:users,phone',
             'email' => 'required|email|unique:users,email',

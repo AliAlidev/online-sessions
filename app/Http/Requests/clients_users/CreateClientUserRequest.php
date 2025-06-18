@@ -23,7 +23,11 @@ class CreateClientUserRequest extends FormRequest
     {
         return [
             'client_id' => 'required|exists:clients,id|unique:users_clients,client_id',
-            'name' => 'required|string|unique:users,name',
+            'name' => ['required', 'string', 'unique:users,name', function ($attribute, $value, $fail) {
+                if (filter_var($value, FILTER_VALIDATE_EMAIL)) {
+                    $fail('The name field must not be an email address.');
+                }
+            }],
             'password' => 'required|confirmed|regex:/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/',
             'password_confirmation' => 'required'
         ];
@@ -32,7 +36,7 @@ class CreateClientUserRequest extends FormRequest
     function messages()
     {
         return [
-            'client_id.unique'=> 'You already make this client as client user',
+            'client_id.unique' => 'You already make this client as client user',
             'password.regex' => "The password must be at least 8 characters long and include at least one uppercase letter, one lowercase letter, one number, and one of those @$!%*?& special character."
         ];
     }

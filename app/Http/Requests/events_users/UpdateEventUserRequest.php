@@ -23,7 +23,11 @@ class UpdateEventUserRequest extends FormRequest
     {
         $id = request()->route('id') ?? null;
         return [
-            'name' => 'required|string|unique:users,name,' . $id,
+            'name' => ['required', 'string', 'unique:users,name,' . $id, function ($attribute, $value, $fail) {
+                if (filter_var($value, FILTER_VALIDATE_EMAIL)) {
+                    $fail('The name field must not be an email address.');
+                }
+            }],
             'full_name' => 'nullable|string',
             'phone' => 'nullable|string|max:20|unique:users,email,' . $id,
             'email' => 'nullable|email|unique:users,email,' . $id,
