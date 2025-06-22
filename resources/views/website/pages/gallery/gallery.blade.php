@@ -25,9 +25,9 @@
         }
 
         .swal2-container {
-            z-index: 9999999 !important;
+            z-index: 9999 !important;
+            padding: 3rem !important;
         }
-
         .lock-indicator {
             position: absolute;
             bottom: 0;
@@ -82,26 +82,26 @@
                                         d="M0 4V96C0 98.2091 1.79086 100 4 100H116C118.209 100 120 98.2091 120 96V13.9672C120 11.7581 118.209 9.96721 116 9.96721H51.6985C50.7965 9.96721 49.921 9.66234 49.2141 9.10208L38.8209 0.865137C38.1139 0.304877 37.2384 0 36.3364 0H4C1.79086 0 0 1.79086 0 4Z"
                                         fill="var(--accent-01)" />
                                 </svg>
-                                <div class="tab"
-                                    style="background-image: url('{{ asset($folder->folder_thumbnail) }}')">
+                                <div class="tab" style="background-image: url('{{ asset($folder->folder_thumbnail) }}')">       
+                                        @if (isset($folder->password))
+                                            <div class="lock-indicator">
+                                                <svg width="18px" height="18px" viewBox="0 0 24 24" fill="none"
+                                                    xmlns="http://www.w3.org/2000/svg">
+                                                    <rect x="5.73685" y="12.0526" width="12.5263" height="8.94737" rx="2"
+                                                        stroke="#fff" stroke-width="2" stroke-linecap="round"
+                                                        stroke-linejoin="round" />
+                                                    <path
+                                                        d="M7.52631 12.0526V8.47368C7.52631 6.00294 9.52924 4 12 4C14.4707 4 16.4737 6.00294 16.4737 8.47368V12.0526"
+                                                        stroke="#fff" stroke-width="2" stroke-linecap="round"
+                                                        stroke-linejoin="round" />
+                                                </svg>
+                                            </div>
+                                        @endif
                                 </div>
                                 <div class="folder-name">
                                     <p class="folder-name-text">{{ $folder->folder_name }}</p>
                                 </div>
-                                @if (isset($folder->password))
-                                    <div class="lock-indicator">
-                                        <svg width="18px" height="18px" viewBox="0 0 24 24" fill="none"
-                                            xmlns="http://www.w3.org/2000/svg">
-                                            <rect x="5.73685" y="12.0526" width="12.5263" height="8.94737" rx="2"
-                                                stroke="#fff" stroke-width="2" stroke-linecap="round"
-                                                stroke-linejoin="round" />
-                                            <path
-                                                d="M7.52631 12.0526V8.47368C7.52631 6.00294 9.52924 4 12 4C14.4707 4 16.4737 6.00294 16.4737 8.47368V12.0526"
-                                                stroke="#fff" stroke-width="2" stroke-linecap="round"
-                                                stroke-linejoin="round" />
-                                        </svg>
-                                    </div>
-                                @endif
+                                
                             </div>
                         @endif
                     @endforeach

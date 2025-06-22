@@ -142,7 +142,7 @@ body {
   flex-direction: column;
   justify-content: start;
   align-items: start;
-  gap: 8px;
+  gap: 4px;
 }
 h1.event-title{
   margin: 0;
@@ -150,7 +150,7 @@ h1.event-title{
   transform-origin: bottom;
   font-size: 28px;
   line-height: 30px;
-  font-weight:normal;
+  font-weight:600;
   max-width: 400px;
   letter-spacing: 0.6px;
 }
@@ -377,7 +377,6 @@ h2#swal2-title {
 div#swal2-html-container{
   color: var(--primary-02) !important;
 }
-
 /********************************** Share Button **********************************/
 .share-button{
   display: flex;
@@ -400,6 +399,22 @@ div#swal2-html-container{
       width: 64px;
       height: 64px;
     }
+}
+/********************************** Gallery Login *******************************/
+.gallery-login-container{
+  opacity: 1 !important;
+  background-color: var(--primary-04);
+}
+.gallery-login-card {
+    background-color: #fff !important;
+}
+.gallery-login-btn{
+  background-color: var(--primary-03) !important;
+  color: var(--primary-01) !important;
+}
+.gallery-login-btn:hover {
+    background-color: var(--primary-03) !important;
+  color: var(--primary-01) !important;
 }
 /********************************** Fancy Box **********************************/
 .fancybox-caption__body {
@@ -588,8 +603,9 @@ div#swal2-html-container{
         height: 120px;
     }
     h1.event-title {
-    font-size: 22px;
-    line-height: 22px;
-        max-width: 360px;
+      font-size: 24px;
+      line-height: 26px;
+      font-weight: 600;
+      max-width: 360px;
 }
 }

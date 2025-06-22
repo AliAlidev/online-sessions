@@ -174,7 +174,12 @@ async function showPasswordPrompt(
 ) {
     try {
         const result = await Swal.fire({
-            title: "Enter Folder Password",
+            html: `
+                <div style="display: flex; flex-direction: column; align-items: center;">
+                    <img src="/assets/img/illustrations/love-lock-dark.svg" width="80" alt="Love Lock Icon" style="margin-bottom: 10px;" />
+                    <p>This Folder is Private, Please Provide a Password to Enter</p>
+                </div>
+            `,
             input: "password",
             inputLabel: "",
             inputPlaceholder: "Enter Folder Password",
@@ -184,7 +189,7 @@ async function showPasswordPrompt(
                 autocorrect: "off",
             },
             showCancelButton: true,
-            confirmButtonText: "Submit",
+            confirmButtonText: "Enter",
             cancelButtonText: "Cancel",
             allowOutsideClick: false,
             showLoaderOnConfirm: true,

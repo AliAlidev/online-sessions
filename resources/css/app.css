@@ -129,7 +129,21 @@
 .swal2-container {
     z-index: 9999 !important;
 }
-
+.swal2-popup {
+    padding: 2.6rem !important;
+    max-width: 460px;
+}
+input#swal2-input{
+    padding: .5rem 1rem;
+    font-size: 0.9375rem;
+    font-weight: 400;
+    line-height: 1.375;
+    border-color: color-mix(in sRGB, #22303e 52%, #fff);
+    border-radius: 0.375rem;
+}
+button.swal2-confirm.swal2-styled {
+    background-color: #292929;
+}
 .video-player {
     width: 100%;
     display: flex;
@@ -799,26 +813,8 @@
     cursor: pointer;
     padding: 0;
 }
-
-.gallery-login-container {
-    background-color: rgb(231, 231, 231, 0.4);
-    background-size: 200px;
-    background-repeat: repeat;
-}
-
-.gallery-login-card {
-    background-color: rgba(255, 255, 255, 0.2);
-    backdrop-filter: blur(2px);
-    -webkit-backdrop-filter: blur(2px);
-}
-
 .gallery-login-btn {
     background-color: #292929;
-    box-shadow: unset !important;
-}
-
-.gallery-login-btn:hover {
-    background-color: #292929 !important;
     box-shadow: unset !important;
 }
 .form-control:focus,
@@ -853,12 +849,8 @@ button#formAuthenticationBtn {
     box-shadow: unset;
     border: unset;
 }
-
-
-.gallery-login-container {
-            background-image: url('{{ asset('assets/img/illustrations/wedding-patterrn-light.svg') }}');
-        }
         .enter-password-text {
+            font-family: inherit;
             text-align: center;
             line-height: normal;
             color: #292929;

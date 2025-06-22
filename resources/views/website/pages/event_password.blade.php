@@ -11,7 +11,7 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&amp;display=swap"
         rel="stylesheet">
-
+    
     <link rel="stylesheet" href="../assets/vendor/fonts/boxicons.css">
     <link rel="stylesheet" href="{{ asset('assets/vendor/css/core.css') }}" class="template-customizer-core-css">
     <link rel="stylesheet" href="{{ asset('assets/vendor/css/theme-default.css') }}"
@@ -23,6 +23,12 @@
     @vite(['resources/js/app.js', 'resources/js/pages/event_password.js'])
     @vite(['resources/css/app.css'])
     <script src="{{ asset('assets/js/config.js') }}"></script>
+    <!-- CSS -->
+    @if ($event->setting->theme == 'dark')
+        <link rel="stylesheet" href="{{ asset('assets/website/gallery-assets/css/style-dark.css') }}" />
+    @else
+        <link rel="stylesheet" href="{{ asset('assets/website/gallery-assets/css/style-light.css') }}" />
+    @endif
 </head>
 
 <body>
@@ -35,8 +41,13 @@
                         <div class="alert-danger-invalid-token" id="global-error-message" style="display: none">
                         </div>
                         <div style="text-align:center;margin-bottom:10px">
-                            <img src="{{ asset('assets/img/illustrations/love-lock.svg') }}" width="80px;"
-                                alt="">
+                            @if ($event->setting->theme == 'dark')
+                                <img src="{{ asset('assets/img/illustrations/love-lock-white.svg') }}" width="80px;" alt="">
+                            @else
+                                <img src="{{ asset('assets/img/illustrations/love-lock-dark.svg') }}" width="80px;" alt="">
+                            @endif 
+                            
+                                
                         </div>
                         <h5 class="mb-1 enter-password-text">Please enter the password to access our special moments.
                         </h5>
@@ -62,7 +73,11 @@
         </div>
     </div>
     <div class="gallery-login-logo">
-        <img src="{{ asset('assets/img/icons/logo-black.svg') }}" width="170px" alt="">
+        @if ($event->setting->theme == 'dark')
+            <img src="{{ asset('assets/img/icons/logo-white.svg') }}" width="170px" alt="">
+        @else
+            <img src="{{ asset('assets/img/icons/logo-black.svg') }}" width="170px" alt="">
+        @endif    
     </div>
     <script src="{{ asset('assets/vendor/libs/jquery/jquery.js') }}"></script>
     <script src="{{ asset('assets/vendor/libs/popper/popper.js') }}"></script>

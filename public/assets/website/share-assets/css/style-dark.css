@@ -164,7 +164,7 @@ body {
   flex-direction: column;
   justify-content: start;
   align-items: start;
-  gap: 8px;
+  gap: 4px;
 }
 h1.event-title{
   margin: 0;
@@ -172,7 +172,7 @@ h1.event-title{
   transform-origin: bottom;
   font-size: 28px;
   line-height: 30px;
-  font-weight:normal;
+  font-weight:600;
   max-width: 400px;
   letter-spacing: 0.6px;
 }
@@ -545,8 +545,9 @@ textarea#caption{
 }
 @media (max-width: 768px) {
  h1.event-title {
-    font-size: 22px;
-    line-height: 22px;
-        max-width: 360px;
+    font-size: 24px;
+      line-height: 26px;
+      font-weight: 600;
+      max-width: 360px;
 }
 }
