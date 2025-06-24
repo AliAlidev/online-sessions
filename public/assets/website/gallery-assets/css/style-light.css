@@ -159,7 +159,7 @@ h1.event-title{
   line-height: 30px;
   font-weight:600;
   max-width: 400px;
-  letter-spacing: 1px;
+  letter-spacing: 0.8px;
 }
 .event-date{
   font-size: 16px;
@@ -344,6 +344,9 @@ h1.event-title{
     bottom: 10px;
 }
 /********************************** Image Delete Popup **********************************/
+button.swal2-cancel.swal2-styled{
+  background-color: grey !important;
+}
 /* Resize and restyle the success icon */
 .swal2-icon.swal2-success {
   border-color: var(--accent-01) !important;

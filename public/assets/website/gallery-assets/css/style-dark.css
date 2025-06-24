@@ -157,7 +157,7 @@ h1.event-title{
   line-height: 30px;
   font-weight:600;
   max-width: 400px;
-  letter-spacing: 1px;;
+  letter-spacing: 0.8px;;
 }
 .event-date{
   font-size: 16px;
@@ -338,6 +338,9 @@ h1.event-title{
     bottom: 10px;
 }
 /********************************** Image Delete Popup **********************************/
+button.swal2-cancel.swal2-styled{
+  background-color: grey !important;
+}
 .swal2-popup.swal2-modal.swal2-icon-success.swal2-show{
   background-color: var(--primary-01) !important;
 }
@@ -375,7 +378,7 @@ h1.event-title{
   color: var(--primary-02) !important;
 }
 h2#swal2-title {
-  color: var(--primary-02) !important;
+  color: var(--primary-01) !important;
 }
 div#swal2-html-container{
   color: var(--primary-01) !important;
