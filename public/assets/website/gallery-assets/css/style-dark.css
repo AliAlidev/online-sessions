@@ -24,7 +24,7 @@
     --primary-03: #EDEDED; /** Bright Gray **/
     --primary-04: #292929; /** Chromaphobic Black **/
     --font-event-title-01: "Playfair Display", serif;
-    --font-body-01: 'Roboto-Regular';
+    --font-body-01: "Montserrat", sans-serif;
     --plyr-color-main: #1e90ff; /* Replace with your desired color */
 }
   #scrollTopBtn {
@@ -44,6 +44,12 @@
   }
  .scroll-to-top-cls-1{stroke:#fff}
 /******* Fonts *******/
+.montserrat {
+  font-family: "Montserrat", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+}
 body {
     font-family:var(--font-body-01);
 }
@@ -151,7 +157,7 @@ h1.event-title{
   line-height: 30px;
   font-weight:600;
   max-width: 400px;
-  letter-spacing: 0.6px;;
+  letter-spacing: 1px;;
 }
 .event-date{
   font-size: 16px;
@@ -205,7 +211,7 @@ h1.event-title{
 }
 .folder-name-text{
   text-shadow: unset;
-  font-weight: normal;
+  font-weight: 500;
 }
 /* Scroll Arrows */
 .scroll-container {

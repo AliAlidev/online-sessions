@@ -8,7 +8,7 @@
     "name": "axios"
   },
   "resources/css/app.css": {
-    "file": "assets/app-CQQ6LUDc.css",
+    "file": "assets/app-B1GA4hxn.css",
     "src": "resources/css/app.css",
     "isEntry": true
   },
@@ -41,7 +41,7 @@
     ]
   },
   "resources/js/pages/gallery.js": {
-    "file": "assets/gallery-eWQdQo9M.js",
+    "file": "assets/gallery-tCT3GTVF.js",
     "name": "gallery",
     "src": "resources/js/pages/gallery.js",
     "isEntry": true,

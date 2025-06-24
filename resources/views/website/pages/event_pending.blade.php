@@ -83,7 +83,7 @@
                     </a>
                 </div>
                 <!-- Beautiful beginning -->
-                <h3 class="" style="color:#000">A beautiful beginning is on its way.</h3>
+                <h3 class="beautiful-beginning montserrat">A beautiful beginning is on its way.</h3>
                 <!-- counter Section -->
                 <div class="timer-container">
                     <div class="timer" id="countdown">

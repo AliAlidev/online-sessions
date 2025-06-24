@@ -177,7 +177,7 @@ async function showPasswordPrompt(
             html: `
                 <div style="display: flex; flex-direction: column; align-items: center;">
                     <img src="/assets/img/illustrations/love-lock-dark.svg" width="80" alt="Love Lock Icon" style="margin-bottom: 10px;" />
-                    <p>This Folder is Private, Please Provide a Password to Enter</p>
+                    <p class="private-folder">This Folder is Private, Please Provide a Password to Enter</p>
                 </div>
             `,
             input: "password",

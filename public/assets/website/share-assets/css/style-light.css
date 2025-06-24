@@ -24,7 +24,14 @@
     --primary-03: #292929; /** Chromaphobic Black **/
     --primary-04: #E7E7E7; /** White Smoke **/
     --font-event-title-01: "Playfair Display", serif;
-    --font-body-01: 'Roboto-Regular';
+    --font-body-01: "Montserrat", sans-serif;
+}
+/******* Fonts *******/
+.montserrat {
+  font-family: "Montserrat", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
 }
 .modal {
     position: relative;
@@ -163,7 +170,7 @@ h1.event-title{
   line-height: 28px;
   font-weight:600;
   max-width: 400px;
-  letter-spacing: 0.6px;
+  letter-spacing: 1px;
 }
 .event-date{
   font-size: 16px;

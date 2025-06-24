@@ -133,6 +133,10 @@
     padding: 2.6rem !important;
     max-width: 460px;
 }
+.private-folder{
+    font-size: 18px;
+    line-height: 18px;
+}
 input#swal2-input{
     padding: .5rem 1rem;
     font-size: 0.9375rem;
