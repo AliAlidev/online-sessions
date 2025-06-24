@@ -152,6 +152,7 @@ button.swal2-confirm.swal2-styled {
     width: 100%;
     display: flex;
     justify-content: center;
+    overflow: hidden;
 }
 
 #page-loader {
