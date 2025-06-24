@@ -477,6 +477,7 @@ button {
   {
     visibility: visible;
     max-width: 400px;
+    padding: 0 8px;
   }
   .event-title-date.event-title-date-mobile
   {

@@ -130,8 +130,13 @@
     z-index: 9999 !important;
 }
 .swal2-popup {
-    padding: 2.6rem !important;
+    padding: 1.2rem 0 !important;
     max-width: 460px;
+}
+@media screen and (max-width: 768px) {
+.swal2-popup {
+    width: 90vw !important;
+}
 }
 .private-folder{
     font-size: 18px;
