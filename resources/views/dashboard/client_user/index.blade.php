@@ -30,7 +30,7 @@
     <div class="container-xxl flex-grow-1 container-p-y">
         <h5 class="mb-0">{{ Breadcrumbs::render('clients-users') }}</h5>
         <div class="card">
-            @can('create_client')
+            @can('create_client_user')
                 <div class="row card-header flex-column flex-md-row pb-0">
                     <div class="d-md-flex justify-content-between align-items-center dt-layout-end col-md-auto ms-auto mt-0">
                         <a href="{{ route('clients.users.create') }}" class="btn btn-primary">Create User</a>

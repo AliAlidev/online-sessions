@@ -63,13 +63,9 @@ class LoginController extends Controller
             'email' => 'required|string',
             'password' => 'required|string',
         ]);
-
-        $fieldType = filter_var($request->email, FILTER_VALIDATE_EMAIL) ? 'email' : 'name';
-
-        if (Auth::attempt([$fieldType => $request->email, 'password' => $request->password], $request->filled('remember'))) {
+        if (Auth::attempt(['name' => $request->email, 'password' => $request->password], $request->filled('remember'))) {
             return $this->authenticated($request, Auth::user());
         }
-
         return back()->withErrors(['email' => 'Invalid credentials.'])->withInput();
     }
 }

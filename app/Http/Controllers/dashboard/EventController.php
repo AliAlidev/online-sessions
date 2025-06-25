@@ -72,11 +72,6 @@ class EventController extends Controller
                     ->editColumn('profile_picture', fn($row) => $row->profile_picture ? '<img src="/' . $row->profile_picture . '" width="100" height="100">' : '')
                     ->editColumn('cover_image', fn($row) => $row->cover_image ? '<img src="/' . $row->cover_image . '" width="100" height="100">' : '')
                     ->editColumn('event_link', function ($row) {
-                        $status = eventStatus($row);
-                        if ($status == 'Expired')
-                            return '<a target="_blank" class="btn btn-label-linkedin" href="' . route('events.expired', ['event_slug' => $row->bunny_event_name, 'year' => $row->bunny_main_folder_name]) . '"> Link </a>';
-                        if ($status == 'Pending')
-                            return '<a target="_blank" class="btn btn-label-linkedin" href="' . route('events.pending', ['event_slug' => $row->bunny_event_name, 'year' => $row->bunny_main_folder_name]) . '"> Link </a>';
                         return '<a target="_blank" class="btn btn-label-linkedin" href="' . $row->event_link . '"> Link </a>';
                     })
                     ->addColumn('actions', function ($event) {
