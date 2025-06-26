@@ -3,32 +3,32 @@
     "file": "assets/auth-CrJnzGtq.js",
     "name": "auth"
   },
-  "_axios-8o6r61Bn.js": {
-    "file": "assets/axios-8o6r61Bn.js",
-    "name": "axios"
+  "_index-Br2Bnn-U.js": {
+    "file": "assets/index-Br2Bnn-U.js",
+    "name": "index"
   },
   "resources/css/app.css": {
-    "file": "assets/app-Dl5c4IgP.css",
+    "file": "assets/app-xRGi-ehw.css",
     "src": "resources/css/app.css",
     "isEntry": true
   },
   "resources/js/app.js": {
-    "file": "assets/app-CBbqRvD3.js",
+    "file": "assets/app-4uq9ugQd.js",
     "name": "app",
     "src": "resources/js/app.js",
     "isEntry": true,
     "imports": [
-      "_axios-8o6r61Bn.js",
+      "_index-Br2Bnn-U.js",
       "_auth-CrJnzGtq.js"
     ]
   },
   "resources/js/bootstrap.js": {
-    "file": "assets/bootstrap-BQNCvtVp.js",
+    "file": "assets/bootstrap-BSF8pfDz.js",
     "name": "bootstrap",
     "src": "resources/js/bootstrap.js",
     "isEntry": true,
     "imports": [
-      "_axios-8o6r61Bn.js"
+      "_index-Br2Bnn-U.js"
     ]
   },
   "resources/js/pages/event_password.js": {
@@ -41,7 +41,7 @@
     ]
   },
   "resources/js/pages/gallery.js": {
-    "file": "assets/gallery-tCT3GTVF.js",
+    "file": "assets/gallery-DNLtLHi1.js",
     "name": "gallery",
     "src": "resources/js/pages/gallery.js",
     "isEntry": true,
@@ -59,7 +59,7 @@
     ]
   },
   "resources/js/pages/share.js": {
-    "file": "assets/share-CHBHiTxf.js",
+    "file": "assets/share-CDkU1xLp.js",
     "name": "share",
     "src": "resources/js/pages/share.js",
     "isEntry": true,

@@ -268,6 +268,16 @@ async function uploadFile(file, index, submitBtn) {
 
         return response; // This will resolve the outer promise
     } catch (error) {
+        var message = error.response.data.message;
+        const $alert = $(
+            `<div class="alert alert-danger guest-upload-danger" style=""><i class="fa fa-close" aria-hidden="true"></i>${message}</div>`
+        );
+        $(".alert-danger").remove();
+        $(".alert-success").remove();
+        $("#uploadProgressModal").prepend($alert);
+        enableButton($("#closeModalBtn"));
+         enableButton($(".upload-image-btn"));
+
         let statusText = $("#status-" + index);
         statusText.text("Stage2: Failed");
         clearInterval(statusText.data("interval"));

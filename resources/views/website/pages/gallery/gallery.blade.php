@@ -28,6 +28,7 @@
             z-index: 9999 !important;
             padding: 3rem !important;
         }
+
         .lock-indicator {
             position: absolute;
             bottom: 0;
@@ -70,38 +71,40 @@
             <!-- Horizontal Scroll -->
             <div class="scroll-container">
                 <div class="horizontal-scroll" id="tabs">
-                    @foreach ($folders as $folder)
+                    @foreach ($folders ?? [] as $folder)
                         @if ($folder->is_visible)
                             <div id="folder-{{ $folder->id }}" class="folder folder-thumbnail"
                                 data-type= "{{ $folder->folder_type }}" data-folder-name="{{ $folder->folder_name }}"
                                 data-id="{{ $folder->id }}" data-folder-link="{{ $folder->folder_link }}"
-                                data-url="{{ $folder->folder_type == 'image' ? route('landing.image', ['year' => $year, 'event_slug' => $event_slug]) : route('landing.video', ['year' => $year, 'event_slug' => $event_slug]) }}" data-has-password="{{isset($folder->password)}}">
+                                data-url="{{ $folder->folder_type == 'image' ? route('landing.image', ['year' => $year, 'event_slug' => $event_slug]) : route('landing.video', ['year' => $year, 'event_slug' => $event_slug]) }}"
+                                data-has-password="{{ isset($folder->password) }}">
                                 <svg style="" width="100%" height="100%" viewBox="0 0 120 100" fill="none"
                                     xmlns="http://www.w3.org/2000/svg">
                                     <path
                                         d="M0 4V96C0 98.2091 1.79086 100 4 100H116C118.209 100 120 98.2091 120 96V13.9672C120 11.7581 118.209 9.96721 116 9.96721H51.6985C50.7965 9.96721 49.921 9.66234 49.2141 9.10208L38.8209 0.865137C38.1139 0.304877 37.2384 0 36.3364 0H4C1.79086 0 0 1.79086 0 4Z"
                                         fill="var(--accent-01)" />
                                 </svg>
-                                <div class="tab" style="background-image: url('{{ asset($folder->folder_thumbnail) }}')">       
-                                        @if (isset($folder->password))
-                                            <div class="lock-indicator">
-                                                <svg width="18px" height="18px" viewBox="0 0 24 24" fill="none"
-                                                    xmlns="http://www.w3.org/2000/svg">
-                                                    <rect x="5.73685" y="12.0526" width="12.5263" height="8.94737" rx="2"
-                                                        stroke="#fff" stroke-width="2" stroke-linecap="round"
-                                                        stroke-linejoin="round" />
-                                                    <path
-                                                        d="M7.52631 12.0526V8.47368C7.52631 6.00294 9.52924 4 12 4C14.4707 4 16.4737 6.00294 16.4737 8.47368V12.0526"
-                                                        stroke="#fff" stroke-width="2" stroke-linecap="round"
-                                                        stroke-linejoin="round" />
-                                                </svg>
-                                            </div>
-                                        @endif
+                                <div class="tab"
+                                    style="background-image: url('{{ asset($folder->folder_thumbnail) }}')">
+                                    @if (isset($folder->password))
+                                        <div class="lock-indicator">
+                                            <svg width="18px" height="18px" viewBox="0 0 24 24" fill="none"
+                                                xmlns="http://www.w3.org/2000/svg">
+                                                <rect x="5.73685" y="12.0526" width="12.5263" height="8.94737"
+                                                    rx="2" stroke="#fff" stroke-width="2" stroke-linecap="round"
+                                                    stroke-linejoin="round" />
+                                                <path
+                                                    d="M7.52631 12.0526V8.47368C7.52631 6.00294 9.52924 4 12 4C14.4707 4 16.4737 6.00294 16.4737 8.47368V12.0526"
+                                                    stroke="#fff" stroke-width="2" stroke-linecap="round"
+                                                    stroke-linejoin="round" />
+                                            </svg>
+                                        </div>
+                                    @endif
                                 </div>
                                 <div class="folder-name">
                                     <p class="folder-name-text">{{ $folder->folder_name }}</p>
                                 </div>
-                                
+
                             </div>
                         @endif
                     @endforeach
@@ -110,7 +113,7 @@
             </div><!-- End Scroll Container -->
         </div><!-- End Main Header -->
         <div class="reload-btn-div">
-            <a data-id= "{{ 'folder-' . $folder->id }}" class="refresh-button">
+            <a data-id= "{{ 'folder-' . (isset($folder) ? $folder->id : 0 )}}" class="refresh-button">
                 <svg class="reload-icon" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                     <path d="M14.66 15.66A8 8 0 1 1 17 10h-2a6 6 0 1 0-1.76 4.24l1.42 1.42zM12 10h8l-4 4-4-4z"
                         fill="currentColor" />
@@ -166,7 +169,7 @@
                 </svg></button>
         </div>
     </div>
-    <input type="hidden" id="check_folder_password_url" value="{{route('landing.check_folder_password')}}">
+    <input type="hidden" id="check_folder_password_url" value="{{ route('landing.check_folder_password') }}">
 @endsection
 
 @push('scripts')

@@ -142,7 +142,8 @@ class EventController extends Controller
                 'welcome_message' => $data['welcome_message'],
                 'qr_code' => $data['qr_code'],
                 'bunny_main_folder_name' => Carbon::parse($data['start_date'])->year,
-                'enable_organizer' => isset($data['enable_organizer']) ? 1 : 0
+                'enable_organizer' => isset($data['enable_organizer']) ? 1 : 0,
+                'page_length' => isset($data['page_length']) ? $data['page_length'] : 10
             ]);
             $allowGuestUpload = isset($data['image_share_guest_book']) && $data['image_share_guest_book'] == 'on' ? 1 : 0;
             $event->setting()->create([
@@ -227,7 +228,8 @@ class EventController extends Controller
                 'description' => $data['description'],
                 'event_password' => $data['event_password'],
                 'welcome_message' => $data['welcome_message'],
-                'enable_organizer' => isset($data['enable_organizer']) ? 1 : 0
+                'enable_organizer' => isset($data['enable_organizer']) ? 1 : 0,
+                'page_length' => isset($data['page_length']) ? $data['page_length'] : 10
             ];
             if (!isClientUser()) {
                 $eventData['event_type_id'] = $data['event_type_id'];

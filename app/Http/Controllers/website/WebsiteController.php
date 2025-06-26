@@ -124,14 +124,25 @@ class WebsiteController extends Controller
 
     function image(Request $request)
     {
+        $page = $request->page ?? 1;
         $folderId = $request->folder_id;
         $folder = EventFolder::find($folderId);
-        $images = $folder->files()->where('file_status', 'approved')->orderBy('created_at', 'desc')->get();
+        $perPage = $folder->event?->page_length ?? 10;
+        $images = $folder->files()
+            ->where('file_status', 'approved')
+            ->orderBy('created_at', 'desc')
+            ->paginate($perPage, '*', 'page', $page);
         $eventSupportDownload = $folder->event->supportImageDownload();
         return response()->json([
             'success' => true,
             'html' => view('website.pages.gallery.image', ['images' => $images, 'folder' => $folder])->render(),
-            'eventSupportDownload' => $eventSupportDownload
+            'eventSupportDownload' => $eventSupportDownload,
+            'pagination' => [
+                'current_page' => $images->currentPage(),
+                'last_page' => $images->lastPage(),
+                'total' => $images->total(),
+                'has_more_pages' => $images->hasMorePages()
+            ]
         ]);
     }
 
@@ -142,7 +153,6 @@ class WebsiteController extends Controller
         $event = Event::where('bunny_event_name', $eventSlug)->first();
         if (!$event->supportImageUpload())
             return redirect()->route('landing.index', ['year' => $year, 'event_slug' => $eventSlug]);
-
         $status = eventStatus($event);
         if ($status == 'Pending')
             return view('website.pages.event_pending', ['event' => $event, 'year' => $year, 'event_slug' => $eventSlug]);
@@ -180,19 +190,22 @@ class WebsiteController extends Controller
         $settingId = $setting['image_setting_id'];
         if (!checkImageConfig($setting['image']))
             throw ValidationException::withMessages(['success' => false, 'message' => "Image uploading is not allowed, please check bunny setting"]);
-
         try {
             $event = Event::find($data['event_id']);
             $guestFolder = $event->folders()->where('folder_name', 'Guest Upload')->first();
-            $this->prepareImageData($data, $guestFolder, $settingId, $event);
-            $path = $this->uploadImageToBunny($guestFolder, $data);
-            if (!$path['success']) {
-                return response()->json(['success' => false, 'message' => $path['message']], 400);
+            if ($guestFolder) {
+                $this->prepareImageData($data, $guestFolder, $settingId, $event);
+                $path = $this->uploadImageToBunny($guestFolder, $data);
+                if (!$path['success']) {
+                    return response()->json(['success' => false, 'message' => $path['message']], 400);
+                }
+                $data['file'] = $path['path'];
+                unset($data['event_id']);
+                FolderFile::create($data);
+                return response()->json(['success' => true, 'message' => 'Image has been uploaded successfully']);
+            } else {
+                return response()->json(['success' => false, 'message' => "Guest folder not exits please add it first"], 400);
             }
-            $data['file'] = $path['path'];
-            unset($data['event_id']);
-            FolderFile::create($data);
-            return response()->json(['success' => true, 'message' => 'Image has been uploaded successfully']);
         } catch (Throwable $e) {
             createServerError($e, "updateFile", "files");
             return response()->json(['success' => false, 'message' => $e->getMessage()], 400);

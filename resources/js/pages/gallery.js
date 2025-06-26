@@ -161,7 +161,7 @@ async function selectFolder(event) {
     if (hasPassword) {
         showPasswordPrompt(folderId, folderType, folderLink, csrfToken, url);
     } else {
-        fetchFolderContent(folderId, folderType, folderLink, csrfToken, url);
+        fetchFolderContent(folderId, folderType, folderLink, csrfToken, url, 1);
     }
 }
 
@@ -225,7 +225,8 @@ async function showPasswordPrompt(
                 folderType,
                 folderLink,
                 csrfToken,
-                url
+                url,
+                1
             );
         }
     } catch (error) {
@@ -263,15 +264,31 @@ async function isPasswordValid(password, folderId) {
     });
 }
 
+function initPagination(folderId, folderType, folderLink, csrfToken, url) {
+    $("#pagination-links").on("click", "a", function (e) {
+        e.preventDefault();
+        const pageUrl = new URL(this.href);
+        const page = pageUrl.searchParams.get("page");
+        fetchFolderContent(
+            folderId,
+            folderType,
+            folderLink,
+            csrfToken,
+            url,
+            parseInt(page)
+        );
+    });
+}
+
 async function fetchFolderContent(
     folderId,
     folderType,
     folderLink,
     csrfToken,
-    url
+    url,
+    page = 1
 ) {
     $(".refresh-button").attr("data-id", "folder-" + folderId);
-    // var $folder = element.dataset.object;
     if (folderType == "link") {
         window.open(folderLink, "_blank", "noopener,noreferrer");
         return false;
@@ -288,12 +305,14 @@ async function fetchFolderContent(
             {
                 _token: csrfToken,
                 folder_id: folderId,
+                page: page,
             },
             { headers: { pageToken: token } }
         )
         .then((response) => {
             var result = response.data;
             $("#gallery-div").html(result.html);
+            initPagination(folderId, folderType, folderLink, csrfToken, url);
 
             if (folderType == "video") {
                 $.getScript(

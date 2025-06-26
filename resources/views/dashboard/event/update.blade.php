@@ -93,7 +93,7 @@
             cursor: pointer;
         }
 
-        .buttons-style{
+        .buttons-style {
             text-align: right;
         }
     </style>
@@ -111,12 +111,14 @@
                             <h5 class="mb-0">{{ __('Event Information') }}</h5>
                             <div class="col-md-3 buttons-style">
                                 @if (Auth::user()->hasAnyPermission(['create_folder', 'update_folder', 'delete_folder', 'list_folders']))
-                                    <a title="Folders" target="_blank" href="{{ route('folders.index', $event->bunny_event_name) }}"
+                                    <a title="Folders" target="_blank"
+                                        href="{{ route('folders.index', $event->bunny_event_name) }}"
                                         class="btn btn-icon btn-primary"><i class="bx bx-folder"
                                             style="color:white"></i></a>
                                 @endif
                                 <a title="Event Link" target="_blank" href="{{ $event->event_link }}"
-                                    class="btn btn-icon btn-primary"><i class="bx bxs-calendar-event" style="color:white"></i></a>
+                                    class="btn btn-icon btn-primary"><i class="bx bxs-calendar-event"
+                                        style="color:white"></i></a>
                             </div>
                         </div>
                         <div class="card-body">
@@ -411,6 +413,18 @@
                             <h5 class="mb-0">{{ __('Event Setting') }}</h5>
                         </div>
                         <div class="card-body">
+                            <div class="row mb-6">
+                                <div class="col-md-2">
+                                    <label class="form-label" for="page_length_id">{{ __('Page Length') }}</label>
+                                    <div class="input-group input-group-merge">
+                                        <input type="number" id="page_length_id" class="form-control"
+                                            name="page_length" placeholder="Page Length" step="1" min="1"
+                                            value="{{$event->page_length}}">
+                                    </div>
+                                    <small class="text-body float-start error-message-div page_length-error"
+                                        style="color: #ff0000 !important"></small>
+                                </div>
+                            </div>
                             <div class="row mb-6">
                                 @if (!isClientUser())
                                     <div class="col-md-4">

@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
@@ -51,8 +50,6 @@ class Event extends Model
         $status = eventStatus($this);
         if ($status == 'Pending') return true;
         return false;
-
-        // return Carbon::parse($this->start_date)->gte(Carbon::now()->endOfDay()) ? true : false;
     }
 
     function supportAutoApprove()

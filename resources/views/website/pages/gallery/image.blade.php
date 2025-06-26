@@ -10,5 +10,8 @@
                 </a>
             </div>
         @endforeach
-    </div><!-- End Gallery -->
-</div><!-- End Main Body -->
+    </div>
+    <div id="pagination-links" class="pagination-wrapper">
+        {{ $images->appends(request()->except('page'))->links('website.pagination.pagination') }}
+    </div>
+</div>
