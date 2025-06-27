@@ -151,7 +151,6 @@ Route::middleware('auth')->group(function () {
         Route::middleware('permission:insights')->match(['get', 'post'], '/bunny', 'bunnySetting')->name('bunny');
     });
 });
-
 Route::fallback(function () {
     return redirect()->route('login');
 });
