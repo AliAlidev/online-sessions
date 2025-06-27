@@ -48,11 +48,11 @@ Route::controller(WebsiteController::class)->name('landing.')->group(function ()
 Auth::routes();
 
 Route::middleware('auth')->group(function () {
-    Route::controller(InsightController::class)->middleware('permission:insights')->prefix('admin/insights')->name('insights.')->group(function () {
+    Route::controller(InsightController::class)->middleware('permission:insights')->prefix('insights')->name('insights.')->group(function () {
         Route::match(['get', 'post'], '/', 'index')->name('index');
     });
 
-    Route::controller(EventTypeController::class)->prefix('admin/events-types')->name('events.types.')->group(function () {
+    Route::controller(EventTypeController::class)->prefix('events-types')->name('events.types.')->group(function () {
         Route::middleware('permission:list_event_types')->get('/', 'index')->name('index');
         Route::middleware('permission:create_event_type')->post('/store', 'store')->name('store');
         Route::middleware('permission:update_event_type')->post('/update/{id}', 'update')->name('update');
@@ -60,7 +60,7 @@ Route::middleware('auth')->group(function () {
         Route::middleware('permission:delete_event_type')->get('/delete/{id}', 'delete')->name('delete');
     });
 
-    Route::controller(FolderController::class)->prefix('admin/{event_slug}/folders')->name('folders.')->group(function () {
+    Route::controller(FolderController::class)->prefix('{event_slug}/folders')->name('folders.')->group(function () {
         Route::middleware('permission:list_folders')->get('/', 'index')->name('index');
         Route::middleware('permission:create_folder')->post('/store', 'store')->name('store');
         Route::middleware('permission:update_folder')->post('/update/{id?}', 'update')->name('update');
@@ -69,7 +69,7 @@ Route::middleware('auth')->group(function () {
         Route::middleware('permission:update_folder')->get('/toggle-visibility/{id?}', 'toggleVisibility')->name('toggle.visibility');
     });
 
-    Route::controller(FolderFileController::class)->prefix('admin/{event_slug}/{folder_slug}/files')->name('files.')->group(function () {
+    Route::controller(FolderFileController::class)->prefix('{event_slug}/{folder_slug}/files')->name('files.')->group(function () {
         Route::middleware(['permission:upload_video|upload_image|update_image|update_video|approve_decline_image|approve_decline_video'])->get('/', 'index')->name('index');
         Route::middleware(['permission:upload_video|upload_image'])->post('/store', 'store')->name('store');
         Route::middleware(['permission:update_image|update_video'])->post('/update/{id?}', 'update')->name('update');
@@ -80,7 +80,7 @@ Route::middleware('auth')->group(function () {
         Route::middleware(['permission:upload_video|upload_image|update_image|update_video'])->post('/upload-file', 'uploadFile');
     });
 
-    Route::controller(EventController::class)->prefix('admin')->name('events.')->group(function () {
+    Route::controller(EventController::class)->prefix('')->name('events.')->group(function () {
         Route::middleware('permission:list_events')->get('events', 'index')->name('index');
         Route::middleware('permission:create_event')->get('/create', 'create')->name('create');
         Route::middleware('permission:create_event')->post('/store', 'store')->name('store');
@@ -92,7 +92,7 @@ Route::middleware('auth')->group(function () {
         Route::get('pending/{year}/{event_slug}', 'pending')->name('pending');
     });
 
-    Route::controller(RoleController::class)->prefix('admin/roles')->name('roles.')->group(function () {
+    Route::controller(RoleController::class)->prefix('roles')->name('roles.')->group(function () {
         Route::middleware('permission:list_roles')->get('/index', 'index')->name('index');
         Route::middleware('permission:create_role')->get('/create', 'create')->name('create');
         Route::middleware('permission:create_role')->post('/store', 'store')->name('store');
@@ -102,7 +102,7 @@ Route::middleware('auth')->group(function () {
         Route::middleware('permission:list_roles')->get('/show/{id}', 'show');
     });
 
-    Route::controller(ClientController::class)->prefix('admin/clients')->name('clients.')->group(function () {
+    Route::controller(ClientController::class)->prefix('clients')->name('clients.')->group(function () {
         Route::middleware('permission:list_clients')->get('/index', 'index')->name('index');
         Route::middleware('permission:create_client')->get('/create', 'create')->name('create');
         Route::middleware('permission:create_client')->post('/store', 'store')->name('store');
@@ -111,7 +111,7 @@ Route::middleware('auth')->group(function () {
         Route::middleware('permission:delete_client')->get('/delete/{id}', 'delete')->name('delete');
     });
 
-    Route::controller(ClientUserController::class)->prefix('admin/clients-users')->name('clients.users.')->group(function () {
+    Route::controller(ClientUserController::class)->prefix('clients-users')->name('clients.users.')->group(function () {
         Route::middleware('permission:list_clients_users')->get('/index', 'index')->name('index');
         Route::middleware('permission:create_client_user')->get('/create', 'create')->name('create');
         Route::middleware('permission:create_client_user')->post('/store', 'store')->name('store');
@@ -120,7 +120,7 @@ Route::middleware('auth')->group(function () {
         Route::middleware('permission:delete_client_user')->get('/delete/{id}', 'delete')->name('delete');
     });
 
-    Route::controller(VendorController::class)->prefix('admin/vendors')->name('vendors.')->group(function () {
+    Route::controller(VendorController::class)->prefix('vendors')->name('vendors.')->group(function () {
         Route::middleware('permission:list_vendors')->get('/index', 'index')->name('index');
         Route::middleware('permission:create_vendor')->get('/create', 'create')->name('create');
         Route::middleware('permission:create_vendor')->post('/store', 'store')->name('store');
@@ -129,7 +129,7 @@ Route::middleware('auth')->group(function () {
         Route::middleware('permission:delete_vendor')->get('/delete/{id}', 'delete')->name('delete');
     });
 
-    Route::controller(UserController::class)->prefix('admin/users')->name('users.')->group(function () {
+    Route::controller(UserController::class)->prefix('users')->name('users.')->group(function () {
         Route::middleware('permission:list_users')->get('/index', 'index')->name('index');
         Route::middleware('permission:create_user')->get('/create', 'create')->name('create');
         Route::middleware('permission:create_user')->post('/store', 'store')->name('store');
@@ -138,7 +138,7 @@ Route::middleware('auth')->group(function () {
         Route::middleware('permission:delete_user')->get('/delete/{id}', 'delete')->name('delete');
     });
 
-    Route::controller(EventUserController::class)->prefix('admin/events/users')->name('events.users.')->group(function () {
+    Route::controller(EventUserController::class)->prefix('events/users')->name('events.users.')->group(function () {
         Route::middleware('permission:list_event_users')->get('/index', 'index')->name('index');
         Route::middleware('permission:create_event_user')->get('/create', 'create')->name('create');
         Route::middleware('permission:create_event_user')->post('/store', 'store')->name('store');
@@ -147,7 +147,7 @@ Route::middleware('auth')->group(function () {
         Route::middleware('permission:delete_event_user')->get('/delete/{id}', 'delete')->name('delete');
     });
 
-    Route::controller(SettingController::class)->prefix('admin/settings')->name('settings.')->group(function () {
+    Route::controller(SettingController::class)->prefix('settings')->name('settings.')->group(function () {
         Route::middleware('permission:insights')->match(['get', 'post'], '/bunny', 'bunnySetting')->name('bunny');
     });
 });
