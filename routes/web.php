@@ -152,6 +152,6 @@ Route::controller(WebsiteController::class)->name('landing.')->group(function ()
     Route::middleware('ensure.token')->post('/check-folder-password', 'checkFolderPassword')->name('check_folder_password');
 });
 
-Route::fallback(function () {
-    return redirect()->route('login');
-});
+// Route::fallback(function () {
+//     return redirect()->route('login');
+// });
