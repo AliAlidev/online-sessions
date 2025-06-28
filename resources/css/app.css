@@ -137,12 +137,6 @@
     max-width: 460px;
 }
 
-@media screen and (max-width: 768px) {
-    .swal2-popup {
-        width: 90vw !important;
-    }
-}
-
 .private-folder {
     font-size: 18px;
     line-height: 18px;
@@ -190,16 +184,16 @@ button.swal2-confirm.swal2-styled {
 }
 
 .pagination-wrapper {
+    text-align: left;
     margin-top: 20px;
     flex-wrap: wrap;
     font-size: 14px;
 }
 
 .pagination-btn {
-    padding: 6px 12px;
+    padding: 5px 12px 7px 12px;
     border: 1px solid #ccc;
     border-radius: 4px;
-    margin: 0 2px;
     color: #333;
     text-decoration: none;
 }
@@ -209,19 +203,35 @@ button.swal2-confirm.swal2-styled {
 }
 
 .pagination-btn.active {
-    background-color: #dc3545;
     color: white;
-    border-color: #dc3545;
     font-weight: bold;
 }
 
 .pagination-btn.disabled {
-    color: #999;
-    background-color: #f9f9f9;
     pointer-events: none;
     cursor: not-allowed;
 }
-
+.pagination-btn.left-arrow {
+    margin-right: 4px;
+    padding: 5px 9px 7px 11px;
+}
+@media screen and (max-width: 768px) {
+    .swal2-popup {
+        width: 90vw !important;
+    }
+    .pagination-wrapper {
+    display: flex;
+    justify-content: start;
+    }
+    .pagination-btn{
+        padding: 6px 12px 6px;
+        margin-right: 4px;
+    }
+    .pagination-btn.disabled{
+        padding: 5px 9px 7px 11px;
+        margin-right:4px;
+    }
+}
 /* Responsive classes (you can replace with Tailwind if you're using it) */
 @media (max-width: 640px) {
     .pagination-responsive {
