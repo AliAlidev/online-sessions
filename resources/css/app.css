@@ -213,7 +213,10 @@ button.swal2-confirm.swal2-styled {
 }
 .pagination-btn.left-arrow {
     margin-right: 4px;
-    padding: 5px 9px 7px 11px;
+    padding: 5px 4px 7px 7px;
+}
+.pagination-btn.right-arrow {
+    padding: 5px 8px 7px 8px;
 }
 @media screen and (max-width: 768px) {
     .swal2-popup {
