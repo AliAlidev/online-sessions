@@ -335,7 +335,7 @@
                                     <label class="form-label" for="page_length_id">{{ __('Page Length') }}</label>
                                     <div class="input-group input-group-merge">
                                         <input type="number" id="page_length_id" class="form-control"
-                                            name="page_length" placeholder="Page Length" step="1" min="1" value="1">
+                                            name="page_length" placeholder="Page Length" step="1" min="1" value="60">
                                     </div>
                                     <small class="text-body float-start error-message-div page_length-error"
                                         style="color: #ff0000 !important"></small>
