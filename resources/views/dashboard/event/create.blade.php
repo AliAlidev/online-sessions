@@ -436,7 +436,7 @@
                             </div>
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-primary" style="float: right" id="storeButton">Crete Event
+                    <button type="submit" class="btn btn-primary" style="float: right" id="storeButton">Create Event
                         <span id="spinner" style="display:none;">
                             <i class="fa fa-spinner fa-spin"></i>
                         </span>
