@@ -382,8 +382,8 @@
                                             <div class="col-md-4">
                                                 <select class="form-select organizers-organizer_id">
                                                     <option value="" selected disabled>Select Option</option>
-                                                    @foreach ($clients as $key => $client)
-                                                        <option value="{{ $key }}">{{ $client }}</option>
+                                                    @foreach ($vendors as $key => $vendor)
+                                                        <option value="{{ $key }}">{{ $vendor }}</option>
                                                     @endforeach
                                                 </select>
                                                 <small class="text-body float-start error-message-div"
